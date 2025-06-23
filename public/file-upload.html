@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Upload - CHIRA Platforms</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #8359BC 0%, #432E5D 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            color: #ffffff;
+        }
+
+        .header {
+            background-color: #8359BC;
+            border-bottom: 1px solid #7259c5;
+            padding: 30px 20px;
+            text-align: center;
+            color: #ffffff;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+        }
+
+        .header .subtitle {
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 15px;
+        }
+
+        .header .copyright {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.4;
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        .upload-container {
+            background-color: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+            padding: 40px;
+            max-width: 700px;
+            width: 100%;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #2d3748;
+        }
+
+        .upload-title {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #4a3d8f;
+            text-align: center;
+        }
+
+        .upload-description {
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            color: #4a5568;
+            text-align: center;
+        }
+
+        .upload-form {
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        input[type="text"], select {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #8359BC;
+            box-shadow: 0 0 0 3px rgba(131, 89, 188, 0.1);
+        }
+
+        .file-input-container {
+            background: rgba(255, 255, 255, 0.8);
+            border: 2px dashed #8359BC;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 30px;
+        }
+
+        .file-input-container:hover {
+            background: rgba(255, 255, 255, 1);
+            border-color: #4a3d8f;
+        }
+
+        .file-input-label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+        }
+
+        .upload-icon {
+            width: 70px;
+            height: 70px;
+            background-color: #f0ebff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            color: #8359BC;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .file-input-text {
+            font-size: 18px;
+            font-weight: 500;
+            color: #4a5568;
+        }
+
+        .file-input-subtext {
+            font-size: 14px;
+            color: #718096;
+        }
+
+        .selected-file {
+            display: none;
+            background: rgba(131, 89, 188, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-size: 14px;
+        }
+
+        .file-name {
+            font-weight: 600;
+            color: #4a3d8f;
+            margin-bottom: 5px;
+        }
+
+        .file-size {
+            color: #718096;
+        }
+
+        .remove-file {
+            background-color: #feebc8;
+            color: #c05621;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+            font-size: 12px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .remove-file:hover {
+            background-color: #fed7aa;
+        }
+
+        .upload-button {
+            width: 100%;
+            background: linear-gradient(45deg, #4a3d8f, #7259c5);
+            color: white;
+            border: none;
+            padding: 18px;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px rgba(131, 89, 188, 0.3);
+        }
+
+        .upload-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(131, 89, 188, 0.4);
+        }
+
+        .upload-button:active {
+            transform: translateY(-1px);
+        }
+
+        .upload-button:disabled {
+            background: #cbd5e0;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .file-list {
+            margin-top: 30px;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 20px;
+        }
+
+        .file-list-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #4a3d8f;
+        }
+
+        .file-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .file-item-name {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .file-icon {
+            background-color: #f0ebff;
+            width: 30px;
+            height: 30px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            color: #8359BC;
+        }
+
+        .file-item-details {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: #718096;
+            font-size: 14px;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #8359BC;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background-color: #432E5D;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 8px 15px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            z-index: 100;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+
+        .back-button:hover {
+            background-color: #5a3ea8;
+        }
+
+        .footer {
+            background-color: #432E5D;
+            border-top: 1px solid #7259c5;
+            padding: 20px;
+            text-align: center;
+            color: #ffffff;
+            margin-top: auto;
+        }
+
+        .footer .copyright {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.4;
+        }
+
+        .footer .additional-info {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.6);
+            margin-top: 10px;
+        }
+
+        .trial-indicator {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background-color: rgba(255, 255, 255, 0.9);
+            color: #5a3ea8;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 11px;
+            font-weight: bold;
+            z-index: 1000;
+            border: 1px solid #7259c5;
+        }
+
+        /* User profile styles */
+        .user-profile {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            background-color: rgba(255, 255, 255, 0.9);
+            color: #4a3d8f;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            z-index: 1000;
+            border: 1px solid #7259c5;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .user-avatar {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background-color: #4a3d8f;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .logout-button {
+            position: fixed;
+            top: 10px;
+            left: 190px;
+            background-color: #432E5D;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 8px 15px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            z-index: 1000;
+            text-decoration: none;
+        }
+        
+        .logout-button:hover {
+            background-color: #5a3ea8;
+        }
+
+        @media (max-width: 768px) {
+            .upload-container {
+                padding: 30px;
+            }
+            
+            .upload-title {
+                font-size: 24px;
+            }
+            
+            .file-input-container {
+                padding: 20px;
+            }
+            
+            .upload-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .upload-container {
+                padding: 20px;
+            }
+            
+            .upload-title {
+                font-size: 20px;
+            }
+            
+            .file-input-text {
+                font-size: 16px;
+            }
+            
+            .file-input-container {
+                padding: 15px;
+            }
+            
+            .upload-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 18px;
+            }
+            
+            .back-button {
+                top: 10px;
+                left: 10px;
+                padding: 6px 12px;
+                font-size: 12px;
+            }
+            
+            .user-profile {
+                top: 5px;
+                left: 5px;
+                padding: 5px 10px;
+                font-size: 10px;
+            }
+            
+            .user-avatar {
+                width: 20px;
+                height: 20px;
+                font-size: 10px;
+            }
+            
+            .logout-button {
+                top: 5px;
+                left: 140px;
+                padding: 5px 10px;
+                font-size: 10px;
+            }
+        }
+
+        /* AI Help Button Styles */
+        .ai-help-section {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .ai-help-button {
+            background-color: #4a3d8f;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin: 0 auto;
+        }
+
+        .ai-help-button:hover {
+            background-color: #5a3ea8;
+        }
+
+        .ai-icon {
+            font-size: 18px;
+        }
+
+        .ai-help-tooltip {
+            display: none;
+            position: absolute;
+            background-color: #ffffff;
+            color: #4a3d8f;
+            padding: 8px 12px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            font-size: 14px;
+            white-space: nowrap;
+            z-index: 1000;
+        }
+
+        .ai-help-section:hover .ai-help-tooltip {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="trial-indicator">TRIAL VERSION</div>
+    <div class="user-profile" id="user-profile">
+        <div class="user-avatar" id="user-avatar">U</div>
+        <span id="user-name">User</span>
+    </div>
+    <a href="/logout" class="logout-button">Log Out</a>
+    <a href="/" class="back-button">← Back to Home</a>
+    
+    <header class="header">
+        <h1>File Upload Portal</h1>
+        <p class="subtitle">Trial Application - Some Features may be Unavailable or Limited</p>
+        <p class="copyright">Property of CHIRA Platforms LLC. Confidential and Proprietary. © 2025 CHIRA Platforms. All rights reserved.</p>
+    </header>
+
+    <main class="main-content">
+        <div class="upload-container">
+            <h2 class="upload-title">Secure File Upload</h2>
+            <p class="upload-description">Upload documents, data files, or other materials needed for your projects. All uploads are encrypted and stored safely.</p>
+            
+            <form id="uploadForm" class="upload-form">
+                <div class="form-group">
+                    <label for="fileDescription">Description (Optional)</label>
+                    <input type="text" id="fileDescription" name="fileDescription" placeholder="Brief description of the file">
+                </div>
+                
+                <div class="form-group">
+                    <label for="fileCategory">File Category</label>
+                    <select id="fileCategory" name="fileCategory" required>
+                        <option value="">Select a category</option>
+                        <option value="document">Document</option>
+                        <option value="image">Image</option>
+                        <option value="spreadsheet">Spreadsheet</option>
+                        <option value="presentation">Presentation</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                
+                <div class="ai-help-section">
+                    <button type="button" id="aiHelpButton" class="ai-help-button">
+                        Ask CHIRA AI for File help
+                    </button>
+                    <div class="ai-help-tooltip">Get assistance with file selection and organization</div>
+                </div>
+                
+                <div class="file-input-container" id="dropZone">
+                    <label class="file-input-label">
+                        <div class="upload-icon">📁</div>
+                        <input type="file" id="fileInput" class="file-input">
+                        <div class="file-input-text">Drag and drop file here or click to browse</div>
+                        <div class="file-input-subtext">Maximum file size: 25MB</div>
+                    </label>
+                </div>
+                
+                <div class="selected-file" id="selectedFile">
+                    <div class="file-name" id="fileName">filename.pdf</div>
+                    <div class="file-size" id="fileSize">Size: 2.4 MB</div>
+                    <button type="button" id="removeFile" class="remove-file">Remove File</button>
+                </div>
+                
+                <button type="submit" id="uploadButton" class="upload-button" disabled>Upload File</button>
+                
+                <div class="loading" id="loadingIndicator">
+                    <div class="spinner"></div>
+                    <p style="margin-top: 10px; color: #4a5568;">Uploading file...</p>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p class="copyright">Property of CHIRA Platforms LLC. Confidential and Proprietary. © 2025 CHIRA Platforms. All rights reserved.</p>
+        <p class="additional-info">This portal provides secure access to client services and materials. For technical support, contact your account representative.</p>
+    </footer>
+
+    <script>
+        // File Upload Handling
+        const fileInput = document.getElementById('fileInput');
+        const dropZone = document.getElementById('dropZone');
+        const selectedFile = document.getElementById('selectedFile');
+        const fileName = document.getElementById('fileName');
+        const fileSize = document.getElementById('fileSize');
+        const removeFile = document.getElementById('removeFile');
+        const uploadButton = document.getElementById('uploadButton');
+        const uploadForm = document.getElementById('uploadForm');
+        const loadingIndicator = document.getElementById('loadingIndicator');
+        
+        // Prevent default drag behaviors
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, preventDefaults, false);
+            document.body.addEventListener(eventName, preventDefaults, false);
+        });
+        
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        
+        // Highlight drop zone when item is dragged over it
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropZone.addEventListener(eventName, highlight, false);
+        });
+        
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, unhighlight, false);
+        });
+        
+        function highlight() {
+            dropZone.style.borderColor = '#4a3d8f';
+            dropZone.style.backgroundColor = 'white';
+        }
+        
+        function unhighlight() {
+            dropZone.style.borderColor = '#8359BC';
+            dropZone.style.backgroundColor = 'rgba(255, 255, 255, 0.8)';
+        }
+        
+        // Handle dropped files
+        dropZone.addEventListener('drop', handleDrop, false);
+        
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            
+            if (files.length) {
+                handleFiles(files);
+            }
+        }
+        
+        // Handle selected files from input
+        fileInput.addEventListener('change', function() {
+            handleFiles(this.files);
+        });
+        
+        function handleFiles(files) {
+            if (files.length) {
+                const file = files[0]; // Only handle the first file
+                
+                // Check file size (max 25MB)
+                if (file.size > 25 * 1024 * 1024) {
+                    alert('File is too large. Maximum file size is 25MB.');
+                    return;
+                }
+                
+                // Store the file in a global variable to ensure it's accessible during submission
+                window.selectedUploadFile = file;
+                
+                // Display file info
+                fileName.textContent = file.name;
+                fileSize.textContent = 'Size: ' + formatFileSize(file.size);
+                selectedFile.style.display = 'block';
+                uploadButton.disabled = false;
+                console.log('File selected successfully:', file.name);
+            }
+        }
+        
+        // Format file size in KB, MB
+        function formatFileSize(bytes) {
+            if (bytes < 1024) {
+                return bytes + ' B';
+            } else if (bytes < 1024 * 1024) {
+                return (bytes / 1024).toFixed(1) + ' KB';
+            } else {
+                return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+            }
+        }
+        
+        // Remove selected file
+        removeFile.addEventListener('click', function() {
+            fileInput.value = '';
+            selectedFile.style.display = 'none';
+            uploadButton.disabled = true;
+        });
+        
+        // Handle form submission
+        uploadForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Check if a file is selected using both the input and our cached variable
+            if (!fileInput.files.length && !window.selectedUploadFile) {
+                alert('Please select a file before uploading');
+                return;
+            }
+            
+            // Show loading state
+            uploadButton.style.display = 'none';
+            loadingIndicator.style.display = 'block';
+            
+            // Create FormData object with the file
+            const formData = new FormData();
+            const fileToUpload = (fileInput.files.length > 0) ? fileInput.files[0] : window.selectedUploadFile;
+            formData.append('file', fileToUpload);
+            
+            // Log what file we're using
+            console.log('Uploading file:', fileToUpload.name, 'Size:', formatFileSize(fileToUpload.size));
+            
+            // Add optional metadata if needed by the FastAPI endpoint
+            const fileCategory = document.getElementById('fileCategory').value;
+            const fileDesc = document.getElementById('fileDescription').value || '';
+            if (fileCategory) {
+                formData.append('category', fileCategory);
+            }
+            if (fileDesc) {
+                formData.append('description', fileDesc);
+            }
+            
+            // Perform file upload using fetch API
+            fetch('http://localhost:9876/upload/', {
+                method: 'POST',
+                body: formData,
+            })
+            .then(response => {
+                if (!response.ok) {
+                    console.error('Server response not ok:', response.status, response.statusText);
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Success:', data);
+                alert('File uploaded successfully!');
+                
+                // Reset form and UI
+                uploadForm.reset();
+                selectedFile.style.display = 'none';
+                uploadButton.disabled = true;
+            })
+            .catch(error => {
+                console.error('Error uploading file:', error);
+                alert('Error uploading file. Please try again later.');
+            })
+            .finally(() => {
+                // Hide loading state
+                uploadButton.style.display = 'block';
+                loadingIndicator.style.display = 'none';
+            });
+        });
+        
+        // AI Help Button Handling
+        const aiHelpButton = document.getElementById('aiHelpButton');
+        aiHelpButton.addEventListener('click', function() {
+            // Simple AI help simulation
+            alert('CHIRA AI: For best results, upload files in PDF or DOCX format. Ensure your files are under 25MB.');
+        });
+    </script>
+</body>
+</html>

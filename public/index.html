@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CHIRA Client Portal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #8359BC;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            color: #ffffff;
+        }
+
+        .header {
+            background-color: #8359BC;
+            border-bottom: 1px solid #7259c5;
+            padding: 30px 20px;
+            text-align: center;
+            color: #ffffff;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+        }
+
+        .header .subtitle {
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 15px;
+        }
+
+        .header .copyright {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.4;
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 0;
+        }
+
+        .menu-container {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            min-height: calc(100vh - 200px);
+        }
+
+        .menu-item {
+            background-color: #ffffff;
+            border: 2px solid #e9ecef;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: 600;
+            color: #4a3d8f;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .menu-item:hover {
+            background-color: #f9f8fd;
+            border-color: #7259c5;
+            color: #5a3ea8;
+            transform: scale(1.02);
+            z-index: 10;
+            box-shadow: 0 4px 15px rgba(90, 62, 168, 0.2);
+        }
+
+        .menu-item:active {
+            transform: scale(1.01);
+        }
+
+        .menu-item:nth-child(1) {
+            border-right: 1px solid #e9ecef;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .menu-item:nth-child(2) {
+            border-left: 1px solid #e9ecef;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .menu-item:nth-child(3) {
+            border-right: 1px solid #e9ecef;
+            border-top: 1px solid #e9ecef;
+        }
+
+        .menu-item:nth-child(4) {
+            border-left: 1px solid #e9ecef;
+            border-top: 1px solid #e9ecef;
+        }
+
+        .footer {
+            background-color: #432E5D;
+            border-top: 1px solid #7259c5;
+            padding: 20px;
+            text-align: center;
+            color: #ffffff;
+        }
+
+        .footer .copyright {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.4;
+        }
+
+        .footer .additional-info {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.6);
+            margin-top: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .menu-item {
+                font-size: 18px;
+            }
+
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .header .subtitle {
+                font-size: 14px;
+            }
+            
+            .menu-container {
+                grid-template-columns: 1fr;
+                grid-template-rows: repeat(4, 1fr);
+            }
+            
+            .menu-item:nth-child(1) {
+                border-right: none;
+                border-bottom: 1px solid #e9ecef;
+            }
+
+            .menu-item:nth-child(2) {
+                border-left: none;
+                border-bottom: 1px solid #e9ecef;
+            }
+
+            .menu-item:nth-child(3) {
+                border-right: none;
+                border-bottom: 1px solid #e9ecef;
+                border-top: none;
+            }
+
+            .menu-item:nth-child(4) {
+                border-left: none;
+                border-top: none;
+            }
+            
+            .footer {
+                padding: 15px 10px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 20px;
+            }
+            
+            .header .subtitle {
+                font-size: 12px;
+            }
+            
+            .menu-item {
+                font-size: 16px;
+                padding: 15px 10px;
+                height: 100px;
+            }
+            
+            .trial-indicator {
+                font-size: 9px;
+                padding: 4px 8px;
+            }
+            
+            .footer .copyright,
+            .footer .additional-info {
+                font-size: 10px;
+            }
+        }
+
+        /* Loading animation for trial version */
+        .trial-indicator {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background-color: rgba(255, 255, 255, 0.9);
+            color: #5a3ea8;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 11px;
+            font-weight: bold;
+            z-index: 1000;
+            border: 1px solid #7259c5;
+        }
+
+        /* User profile styles */
+        .user-profile {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            background-color: rgba(255, 255, 255, 0.9);
+            color: #4a3d8f;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            z-index: 1000;
+            border: 1px solid #7259c5;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .user-avatar {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background-color: #4a3d8f;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .logout-button {
+            position: fixed;
+            top: 10px;
+            left: 190px;
+            background-color: #432E5D;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 8px 15px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            z-index: 1000;
+            text-decoration: none;
+        }
+        
+        .logout-button:hover {
+            background-color: #5a3ea8;
+        }
+        
+        @media (max-width: 480px) {
+            .user-profile {
+                top: 5px;
+                left: 5px;
+                padding: 5px 10px;
+                font-size: 10px;
+            }
+            
+            .user-avatar {
+                width: 20px;
+                height: 20px;
+                font-size: 10px;
+            }
+            
+            .logout-button {
+                top: 5px;
+                left: 140px;
+                padding: 5px 10px;
+                font-size: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="trial-indicator">TRIAL VERSION</div>
+    <div class="user-profile" id="user-profile">
+        <div class="user-avatar" id="user-avatar">U</div>
+        <span id="user-name">User</span>
+    </div>
+    <a href="/logout" class="logout-button">Log Out</a>
+    
+    <header class="header">
+        <h1>Welcome to the CHIRA Client Portal</h1>
+        <p class="subtitle">Trial Application - Some Features may be Unavailable or Limited</p>
+        <p class="copyright">Property of CHIRA Platforms LLC. Confidential and Proprietary. © 2025 CHIRA Platforms. All rights reserved.</p>
+    </header>
+
+    <!-- Adding API test section -->
+    <div style="text-align: center; padding: 20px; background-color: #f1eaf7; margin: 10px; border-radius: 8px; display: none;">
+        <button id="api-btn" class="logout-button" style="position: static; margin: 0 auto;">Test API Connection</button>
+        <div id="api-response" style="margin-top: 15px; padding: 15px; background-color: white; border-radius: 8px; color: #4a3d8f; display: none;"></div>
+    </div>
+
+    <main class="main-content">
+        <div class="menu-container">
+            <a href="#" class="menu-item" onclick="handleMenuClick('request')" id="request-btn">
+                Ask a Question
+            </a>
+            <a href="#" class="menu-item" onclick="handleMenuClick('materials')" id="materials-btn">
+                Client Project Portal
+            </a>
+            <a href="#" class="menu-item" onclick="handleMenuClick('upload')" id="upload-btn">
+                File Upload
+            </a>
+            <a href="#" class="menu-item" onclick="handleMenuClick('payment')" id="payment-btn">
+                Payment
+            </a>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p class="copyright">Property of CHIRA Platforms LLC. Confidential and Proprietary. © 2025 CHIRA Platforms. All rights reserved.</p>
+        <p class="additional-info">This portal provides secure access to client services and materials. For technical support, contact your account representative.</p>
+    </footer>
+
+    <script>
+        function handleMenuClick(action) {
+            // Add loading effect
+            const btn = document.getElementById(action + '-btn');
+            const originalText = btn.textContent;
+            btn.style.backgroundColor = '#ede9f9';
+            btn.textContent = 'Loading...';
+            
+            setTimeout(() => {
+                btn.style.backgroundColor = '';
+                btn.textContent = originalText;
+                
+                // Direct to appropriate pages
+                if (action === 'request') {
+                    window.location.href = 'request.html';
+                    return;
+                }
+                
+                if (action === 'payment') {
+                    window.location.href = 'payment.html';
+                    return;
+                }
+                
+                if (action === 'materials') {
+                    window.location.href = 'client-portal.html';
+                    return;
+                }
+                
+                if (action === 'upload') {
+                    window.location.href = 'file-upload.html';
+                    return;
+                }
+            }, 800);
+        }
+
+        // Add some interactive feedback
+        document.addEventListener('DOMContentLoaded', function() {
+            const menuItems = document.querySelectorAll('.menu-item');
+            
+            menuItems.forEach(item => {
+                item.addEventListener('mouseenter', function() {
+                    this.style.transition = 'all 0.3s ease';
+                });
+                
+                item.addEventListener('mouseleave', function() {
+                    this.style.transition = 'all 0.3s ease';
+                });
+            });
+        });
+
+        // Fetch user profile
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('/user-profile')
+                .then(response => response.json())
+                .then(user => {
+                    document.getElementById('user-name').textContent = user.name || 'User';
+                    if (user.name) {
+                        const initials = user.name.split(' ')
+                            .map(name => name.charAt(0))
+                            .join('')
+                            .substring(0, 2)
+                            .toUpperCase();
+                        document.getElementById('user-avatar').textContent = initials;
+                    }
+                })
+                .catch(error => console.error('Error fetching user profile:', error));
+        });
+    </script>
+    
+    <!-- Add js.script.js file -->
+    <script src="/js/js.script.js"></script>
+</body>
+</html>

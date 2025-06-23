@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - CHIRA Client Portal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #8359BC;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            color: #ffffff;
+        }
+
+        .header {
+            background-color: #8359BC;
+            border-bottom: 1px solid #7259c5;
+            padding: 30px 20px;
+            text-align: center;
+            color: #ffffff;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+        }
+
+        .header .subtitle {
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 15px;
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+        }
+
+        .login-container {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            padding: 40px;
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+        }
+
+        .login-title {
+            color: #4a3d8f;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .login-description {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .login-button {
+            background-color: #4a3d8f;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 15px 30px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 10px auto;
+            display: inline-block;
+            text-decoration: none;
+        }
+
+        .login-button:hover {
+            background-color: #5a3ea8;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(90, 62, 168, 0.3);
+        }
+
+        .trial-indicator {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background-color: rgba(255, 255, 255, 0.9);
+            color: #5a3ea8;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 11px;
+            font-weight: bold;
+            z-index: 1000;
+            border: 1px solid #7259c5;
+        }
+
+        .footer {
+            background-color: #432E5D;
+            border-top: 1px solid #7259c5;
+            padding: 20px;
+            text-align: center;
+            color: #ffffff;
+        }
+
+        .footer .copyright {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.4;
+        }
+
+        .footer .additional-info {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.6);
+            margin-top: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .login-container {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="trial-indicator">TRIAL VERSION</div>
+    
+    <header class="header">
+        <h1>CHIRA Client Portal</h1>
+        <p class="subtitle">Secure Login Required</p>
+    </header>
+
+    <main class="main-content">
+        <div class="login-container">
+            <h2 class="login-title">Welcome to CHIRA Client Portal</h2>
+            <p class="login-description">
+                Please log in to access your secure CHIRA client dashboard. 
+                All client data and interactions are protected by industry-standard encryption.
+            </p>
+            
+            <form id="login-form" action="/login" method="post" style="text-align: left; margin-top: 20px;">
+                <div style="margin-bottom: 15px;">
+                    <label for="email" style="display: block; margin-bottom: 5px; color: #4a3d8f; font-size: 14px; font-weight: 500;">Email Address</label>
+                    <input type="email" id="email" name="email" required 
+                           style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px;">
+                </div>
+                <div style="margin-bottom: 20px;">
+                    <label for="password" style="display: block; margin-bottom: 5px; color: #4a3d8f; font-size: 14px; font-weight: 500;">Password</label>
+                    <input type="password" id="password" name="password" required
+                           style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px;">
+                    <p style="font-size: 12px; color: #888; margin-top: 5px;">For demo: use any email and password</p>
+                </div>
+                <div style="margin-top: 20px; text-align: center;">
+                    <button type="submit" class="login-button">Log In</button>
+                </div>
+            </form>
+            
+            <p class="login-description" style="margin-top: 20px; font-size: 12px;">
+                By logging in, you agree to our Terms of Service and Privacy Policy. 
+                Contact your account manager if you have trouble accessing your account.
+            </p>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p class="copyright">Property of CHIRA Platforms LLC. Confidential and Proprietary. © 2025 CHIRA Platforms. All rights reserved.</p>
+        <p class="additional-info">This portal provides secure access to client services and materials.</p>
+    </footer>
+
+    <script>
+        // If user is already logged in and got redirected here, send them to homepage
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('alreadyLoggedIn') === 'true') {
+                window.location.href = '/';
+            }
+        });
+    </script>
+</body>
+</html>

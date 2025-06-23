@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Client Project Portal - CHIRA Platforms</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #8359BC 0%, #432E5D 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            color: #ffffff;
+        }
+
+        .header {
+            background-color: #8359BC;
+            border-bottom: 1px solid #7259c5;
+            padding: 30px 20px;
+            text-align: center;
+            color: #ffffff;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+        }
+
+        .header .subtitle {
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 15px;
+        }
+
+        .header .copyright {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.4;
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        .coming-soon-container {
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .coming-soon-title {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #ffffff;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .coming-soon-text {
+            font-size: 18px;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background-color: #432E5D;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 8px 15px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            z-index: 100;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+
+        .back-button:hover {
+            background-color: #5a3ea8;
+        }
+
+        .footer {
+            background-color: #432E5D;
+            border-top: 1px solid #7259c5;
+            padding: 20px;
+            text-align: center;
+            color: #ffffff;
+        }
+
+        .footer .copyright {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.4;
+        }
+
+        .footer .additional-info {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.6);
+            margin-top: 10px;
+        }
+
+        .trial-indicator {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background-color: rgba(255, 255, 255, 0.9);
+            color: #5a3ea8;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 11px;
+            font-weight: bold;
+            z-index: 1000;
+            border: 1px solid #7259c5;
+        }
+
+        /* User profile styles */
+        .user-profile {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            background-color: rgba(255, 255, 255, 0.9);
+            color: #4a3d8f;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            z-index: 1000;
+            border: 1px solid #7259c5;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .user-avatar {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background-color: #4a3d8f;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .logout-button {
+            position: fixed;
+            top: 10px;
+            left: 190px;
+            background-color: #432E5D;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 8px 15px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            z-index: 1000;
+            text-decoration: none;
+        }
+        
+        .logout-button:hover {
+            background-color: #5a3ea8;
+        }
+
+        @media (max-width: 768px) {
+            .coming-soon-title {
+                font-size: 36px;
+            }
+            
+            .coming-soon-text {
+                font-size: 16px;
+            }
+            
+            .coming-soon-container {
+                padding: 30px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .coming-soon-title {
+                font-size: 28px;
+            }
+            
+            .coming-soon-text {
+                font-size: 14px;
+            }
+            
+            .coming-soon-container {
+                padding: 20px;
+            }
+            
+            .back-button {
+                top: 10px;
+                left: 10px;
+                padding: 6px 12px;
+                font-size: 12px;
+            }
+            
+            .user-profile {
+                top: 5px;
+                left: 5px;
+                padding: 5px 10px;
+                font-size: 10px;
+            }
+            
+            .user-avatar {
+                width: 20px;
+                height: 20px;
+                font-size: 10px;
+            }
+            
+            .logout-button {
+                top: 5px;
+                left: 140px;
+                padding: 5px 10px;
+                font-size: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="trial-indicator">TRIAL VERSION</div>
+    <div class="user-profile" id="user-profile">
+        <div class="user-avatar" id="user-avatar">U</div>
+        <span id="user-name">User</span>
+    </div>
+    <a href="/logout" class="logout-button">Log Out</a>
+    <a href="index.html" class="back-button">← Back to Home</a>
+    
+    <header class="header">
+        <h1>Client Project Portal</h1>
+        <p class="subtitle">Trial Application - Some Features may be Unavailable or Limited</p>
+        <p class="copyright">Property of CHIRA Platforms LLC. Confidential and Proprietary. © 2025 CHIRA Platforms. All rights reserved.</p>
+    </header>
+
+    <main class="main-content">
+        <div class="coming-soon-container">
+            <h2 class="coming-soon-title">Coming Soon</h2>
+            <p class="coming-soon-text">We're working hard to bring you the best client project management experience. The Client Project Portal will provide secure access to all your project documents, timelines, and deliverables in one place.</p>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p class="copyright">Property of CHIRA Platforms LLC. Confidential and Proprietary. © 2025 CHIRA Platforms. All rights reserved.</p>
+        <p class="additional-info">This portal provides secure access to client services and materials. For technical support, contact your account representative.</p>
+    </footer>
+
+    <script>
+        // Fetch user profile
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('/user-profile')
+                .then(response => response.json())
+                .then(user => {
+                    document.getElementById('user-name').textContent = user.name || 'User';
+                    if (user.name) {
+                        const initials = user.name.split(' ')
+                            .map(name => name.charAt(0))
+                            .join('')
+                            .substring(0, 2)
+                            .toUpperCase();
+                        document.getElementById('user-avatar').textContent = initials;
+                    }
+                })
+                .catch(error => console.error('Error fetching user profile:', error));
+        });
+    </script>
+</body>
+</html>

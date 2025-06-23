@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Make a Request - CHIRA Client Portal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #8359BC;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            color: #ffffff;
+        }
+
+        .header {
+            background-color: #8359BC;
+            border-bottom: 1px solid #7259c5;
+            padding: 30px 20px;
+            text-align: center;
+            color: #ffffff;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            letter-spacing: 0.5px;
+        }
+
+        .header .subtitle {
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 15px;
+        }
+
+        .header .trial-notice {
+            font-size: 14px;
+            color: #4a3d8f;
+            background-color: rgba(255, 255, 255, 0.9);
+            border: 1px solid #7259c5;
+            border-radius: 4px;
+            padding: 8px 12px;
+            margin: 15px auto;
+            display: inline-block;
+        }
+
+        .header .copyright {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.4;
+            margin-top: 10px;
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+        }
+
+        .request-container {
+            background-color: #ffffff;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            max-width: 800px;
+            width: 100%;
+        }
+
+        .request-form {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .textarea-container {
+            position: relative;
+        }
+
+        .request-textarea {
+            width: 100%;
+            min-height: 200px;
+            padding: 20px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 16px;
+            font-family: Arial, sans-serif;
+            resize: vertical;
+            transition: border-color 0.3s ease;
+        }
+
+        .request-textarea:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+        }
+
+        .request-textarea::placeholder {
+            color: #999;
+            font-style: italic;
+        }
+
+        .button-container {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .request-button {
+            background-color: #5a3ea8;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 15px 30px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 200px;
+        }
+
+        .request-button:hover {
+            background-color: #7259c5;
+            box-shadow: 0 4px 12px rgba(90, 62, 168, 0.3);
+        }
+
+        .request-button:active {
+            transform: translateY(0);
+        }
+
+        .ai-button {
+            background-color: #6b4fc1;
+        }
+
+        .ai-button:hover {
+            background-color: #8169d9;
+            box-shadow: 0 4px 12px rgba(107, 79, 193, 0.3);
+        }
+
+        .send-button {
+            background-color: #4a3d8f;
+            font-size: 18px;
+            min-width: 250px;
+            padding: 18px 40px;
+        }
+
+        .send-button:hover {
+            background-color: #5a3ea8;
+            box-shadow: 0 4px 12px rgba(74, 61, 143, 0.3);
+        }
+
+        .send-button:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .footer {
+            background-color: #432E5D;
+            border-top: 1px solid #7259c5;
+            padding: 20px;
+            text-align: center;
+            color: #ffffff;
+        }
+
+        .footer .copyright {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.4;
+        }
+
+        .footer .additional-info {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.6);
+            margin-top: 10px;
+        }
+
+        .trial-indicator {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background-color: rgba(255, 255, 255, 0.9);
+            color: #5a3ea8;
+            border: 1px solid #7259c5;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 11px;
+            font-weight: bold;
+            z-index: 1000;
+        }
+
+        .back-button {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 8px 15px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .back-button:hover {
+            background-color: #545b62;
+        }
+
+        /* Enhanced responsive design */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .header .subtitle {
+                font-size: 16px;
+            }
+            
+            .header .trial-notice {
+                font-size: 12px;
+                padding: 6px 10px;
+            }
+
+            .request-container {
+                padding: 25px;
+                margin: 0 10px;
+            }
+
+            .button-container {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .request-button {
+                width: 100%;
+                max-width: 300px;
+            }
+
+            .main-content {
+                padding: 20px 10px;
+                align-items: flex-start;
+            }
+            
+            .request-textarea {
+                min-height: 150px;
+                padding: 15px;
+                font-size: 14px;
+            }
+            
+            .back-button {
+                top: 5px;
+                left: 5px;
+                padding: 6px 12px;
+                font-size: 11px;
+            }
+            
+            .trial-indicator {
+                top: 5px;
+                right: 5px;
+                font-size: 10px;
+                padding: 4px 8px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 20px;
+            }
+            
+            .header .subtitle {
+                font-size: 14px;
+            }
+            
+            .header .trial-notice {
+                font-size: 11px;
+                padding: 5px 8px;
+                margin: 10px auto;
+            }
+            
+            .header .copyright,
+            .footer .copyright {
+                font-size: 10px;
+            }
+            
+            .footer .additional-info {
+                font-size: 9px;
+            }
+            
+            .request-container {
+                padding: 15px;
+                margin: 0 5px;
+            }
+            
+            .request-form {
+                gap: 15px;
+            }
+            
+            .request-textarea {
+                min-height: 120px;
+                padding: 12px;
+                font-size: 13px;
+            }
+            
+            .request-button {
+                padding: 12px 20px;
+                font-size: 14px;
+                min-width: 100%;
+            }
+            
+            .send-button {
+                font-size: 16px;
+                padding: 14px 25px;
+            }
+            
+            .back-button {
+                padding: 5px 10px;
+                font-size: 10px;
+            }
+            
+            .main-content {
+                padding: 15px 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="trial-indicator">TRIAL VERSION</div>
+    <button class="back-button" onclick="goBack()">← Back to Portal</button>
+    
+    <header class="header">
+        <h1>Make a Request</h1>
+        <p class="subtitle">Ask a CHIRA Team Member and we will Respond to You in 2 Business Days</p>
+        <div class="trial-notice">Trial Application - Some Features may be Unavailable or Limited</div>
+        <p class="copyright">Property of CHIRA Platforms LLC. Confidential and Proprietary. © 2025 CHIRA Platforms. All rights reserved.</p>
+    </header>
+
+    <main class="main-content">
+        <div class="request-container">
+            <form class="request-form" onsubmit="submitRequest(event)">
+                <div class="textarea-container">
+                    <textarea 
+                        class="request-textarea" 
+                        id="requestText"
+                        placeholder="Type your request here... Describe your question, issue, or service request in detail. Our team will review and respond within 2 business days."
+                        required
+                    ></textarea>
+                </div>
+                
+                <div class="button-container">
+                    <button type="button" class="request-button" onclick="askTeamMember()">
+                        Ask a CHIRA Team Member
+                    </button>
+                    <button type="button" class="request-button ai-button" onclick="askChiraAI()">
+                        Ask CHIRA AI
+                    </button>
+                </div>
+                
+                <div class="button-container">
+                    <button type="submit" class="request-button send-button" id="sendButton">
+                        Send Request
+                    </button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p class="copyright">Property of CHIRA Platforms LLC. Confidential and Proprietary. © 2025 CHIRA Platforms. All rights reserved.</p>
+        <p class="additional-info">All requests are securely processed and confidentially handled by our team. Response time: 2 business days.</p>
+    </footer>
+
+    <script>
+        let selectedOption = '';
+
+        function askTeamMember() {
+            selectedOption = 'team';
+            updateButtonStyles();
+            document.getElementById('sendButton').disabled = false;
+            showFeedback('Selected: Ask a CHIRA Team Member - Your request will be reviewed by our human experts.');
+        }
+
+        function askChiraAI() {
+            selectedOption = 'ai';
+            updateButtonStyles();
+            document.getElementById('sendButton').disabled = false;
+            showFeedback('Selected: Ask CHIRA AI - You will receive an AI-powered response for immediate assistance.');
+        }
+
+        function updateButtonStyles() {
+            // Reset all buttons
+            document.querySelectorAll('.request-button').forEach(btn => {
+                btn.style.transform = '';
+                btn.style.boxShadow = '';
+            });
+
+            // Highlight selected option
+            if (selectedOption === 'team') {
+                const teamBtn = document.querySelector('.request-button:not(.ai-button):not(.send-button)');
+                teamBtn.style.transform = 'scale(1.05)';
+                teamBtn.style.boxShadow = '0 4px 15px rgba(0, 123, 255, 0.4)';
+            } else if (selectedOption === 'ai') {
+                const aiBtn = document.querySelector('.ai-button');
+                aiBtn.style.transform = 'scale(1.05)';
+                aiBtn.style.boxShadow = '0 4px 15px rgba(40, 167, 69, 0.4)';
+            }
+        }
+
+        function submitRequest(event) {
+            event.preventDefault();
+            
+            const requestText = document.getElementById('requestText').value.trim();
+            
+            if (!requestText) {
+                alert('Please enter your request before sending.');
+                return;
+            }
+            
+            if (!selectedOption) {
+                alert('Please select either "Ask a CHIRA Team Member" or "Ask CHIRA AI" before sending your request.');
+                return;
+            }
+
+            // Show loading state
+            const sendButton = document.getElementById('sendButton');
+            const originalText = sendButton.textContent;
+            sendButton.textContent = 'Sending...';
+            sendButton.disabled = true;
+
+            // Simulate sending request
+            setTimeout(() => {
+                const responseType = selectedOption === 'team' ? 'CHIRA Team Member' : 'CHIRA AI';
+                const responseTime = selectedOption === 'team' ? '2 business days' : 'shortly';
+                
+                alert(`✅ Request Submitted Successfully!\n\nYour request has been sent to: ${responseType}\nExpected response time: ${responseTime}\n\n⚠️ Trial Version: This is a demonstration. In the full version, your request would be processed and you would receive email confirmation.`);
+                
+                // Reset form
+                document.getElementById('requestText').value = '';
+                selectedOption = '';
+                sendButton.textContent = originalText;
+                sendButton.disabled = true;
+                updateButtonStyles();
+            }, 2000);
+        }
+
+        function showFeedback(message) {
+            // You could implement a toast notification here
+            console.log(message);
+        }
+
+        function goBack() {
+            if (confirm('Are you sure you want to go back? Any unsaved changes will be lost.')) {
+                window.location.href = 'index.html';
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('sendButton').disabled = true;
+        });
+    </script>
+</body>
+</html>
