@@ -13,16 +13,16 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #8359BC;
+            background-color: #251F30 !important;
+            color: #fff;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            color: #ffffff;
         }
 
         .header {
-            background-color: #8359BC;
-            border-bottom: 1px solid #7259c5;
+            background-color: #552f92;
+            border-bottom: 1px solid #552f92;
             padding: 30px 20px;
             text-align: center;
             color: #ffffff;
@@ -112,8 +112,8 @@
         }
 
         .footer {
-            background-color: #432E5D;
-            border-top: 1px solid #7259c5;
+            background-color: #251F30 !important;
+            border-top: 1px solid #552f92;
             padding: 20px;
             text-align: center;
             color: #ffffff;
@@ -288,17 +288,89 @@
                 font-size: 10px;
             }
         }
+
+        /* Navigation bar styles */
+        .navbar {
+            background-color: #ffffff !important;
+            color: #552f92 !important;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            z-index: 1001;
+        }
+
+        .navbar-brand {
+            color: #552f92 !important;
+            font-weight: bold;
+        }
+
+        .navbar-nav .nav-link {
+            color: #552f92 !important;
+        }
+
+        .btn {
+            background-color: #552f92;
+            color: white;
+            border: 2px solid #552f92;
+        }
+
+        .btn:hover {
+            background-color: #5a3ea8;
+        }
     </style>
 </head>
 <body>
     <div class="trial-indicator">TRIAL VERSION</div>
-    <div class="user-profile" id="user-profile">
-        <div class="user-avatar" id="user-avatar">U</div>
-        <span id="user-name">User</span>
-    </div>
-    <a href="/logout" class="logout-button">Log Out</a>
     
-    <header class="header">
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top" style="background-color: #ffffff; box-shadow: 0 2px 4px rgba(0,0,0,0.1); z-index: 1001;">
+        <div class="container-fluid">
+            <!-- Left side - Account Management -->
+            <div class="navbar-nav d-flex flex-row">
+                <span class="nav-link d-flex align-items-center" style="color: #251F30;">
+                    <div class="user-avatar" id="user-avatar" style="display: inline-block; width: 30px; height: 30px; background-color: #251F30; color: white; border-radius: 50%; text-align: center; line-height: 30px; margin-right: 8px; font-size: 12px;">U</div>
+                    <span id="user-name">User</span>
+                </span>
+                <a class="btn ms-2" href="/logout" style="background-color: #251F30; color: white; border: 2px solid #251F30;">Logout</a>
+            </div>
+            
+            <!-- Center - CHIRA Logo -->
+            <a class="navbar-brand position-absolute top-50 start-50 translate-middle d-flex align-items-center" href="/" style="color: #251F30; font-weight: bold;">
+                <img src="/images/chira-logo-nav.png" 
+                     alt="CHIRA Logo" 
+                     class="navbar-logo me-2" 
+                     style="height: 40px; width: auto;" 
+                     onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
+                <span style="display: none;">CHIRA</span>
+            </a>
+            
+            <!-- Right side - Website Navigation -->
+            <div class="navbar-nav ms-auto d-flex flex-row">
+                <a class="nav-link" href="/" style="color: #251F30;">Home</a>
+                <a class="nav-link" href="/contact" style="color: #251F30;">Contact Us</a>
+            </div>
+            
+            <!-- Mobile toggle button -->
+            <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <!-- Mobile menu -->
+            <div class="collapse navbar-collapse d-lg-none" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <span class="nav-link" style="color: #251F30;">
+                            <div class="user-avatar" style="display: inline-block; width: 30px; height: 30px; background-color: #251F30; color: white; border-radius: 50%; text-align: center; line-height: 30px; margin-right: 8px; font-size: 12px;">U</div>
+                            <span id="user-name-mobile">User</span>
+                        </span>
+                    </li>
+                    <li class="nav-item"><a class="nav-link" href="/" style="color: #251F30;">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/contact" style="color: #251F30;">Contact Us</a></li>
+                    <li class="nav-item"><a class="btn ms-2" href="/logout" style="background-color: #251F30; color: white; border: 2px solid #251F30;">Logout</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    
+    <header class="header" style="margin-top: 76px;">
         <h1>Welcome to the CHIRA Client Portal</h1>
         <p class="subtitle">Trial Application - Some Features may be Unavailable or Limited</p>
         <p class="copyright">Property of CHIRA Platforms LLC. Confidential and Proprietary. © 2025 CHIRA Platforms. All rights reserved.</p>

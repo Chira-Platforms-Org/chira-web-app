@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome to CHIRA - Loading</title>
+    <title>Welcome to CHIRA Client Portal</title>
     <style>
         * {
             margin: 0;
@@ -13,7 +13,8 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #8359BC 0%, #432E5D 100%);
+            background-color: #251F30 !important;
+            color: #fff;
             height: 100vh;
             display: flex;
             justify-content: center;
@@ -25,75 +26,60 @@
             text-align: center;
             color: white;
             position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px; /* Added gap for better spacing between elements */
         }
 
         .welcome-logo {
-            font-size: 52px;
-            font-weight: 700;
             margin-bottom: 30px;
             opacity: 0;
-            transform: translateY(30px);
-            animation: fadeInUp 1s ease-out forwards;
-            letter-spacing: 2px;
-            text-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            animation: fadeInUp 1.2s ease-out 0.5s forwards;
+            width: 200px;
+            height: auto;
         }
 
-        .welcome-text {
-            font-size: 24px;
+        /* Modern loading animation with dots */
+        .loading-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
             opacity: 0;
-            transform: translateY(30px);
-            animation: fadeInUp 1s ease-out 0.5s forwards;
-            margin-bottom: 40px;
+            animation: fadeIn 1s ease-out 1.5s forwards;
         }
 
-        .loading-bar {
-            width: 300px;
-            height: 8px;
-            background-color: rgba(255, 255, 255, 0.2);
-            border-radius: 4px;
-            margin: 0 auto;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .loading-progress {
-            width: 0;
-            height: 100%;
-            background: linear-gradient(90deg, #ffffff, #d8c5ff);
-            border-radius: 4px;
-            animation: loadProgress 3s ease-out forwards;
-        }
-
-        .loading-text {
-            font-size: 14px;
-            margin-top: 15px;
-            opacity: 0;
-            animation: pulse 2s infinite, fadeIn 1s ease-out 1s forwards;
-        }
-
-        .client-portal-text {
-            position: absolute;
-            bottom: -50px;
-            left: 0;
-            right: 0;
-            font-size: 16px;
-            opacity: 0;
-            animation: fadeIn 1s ease-out 2.5s forwards;
-        }
-
-        .particles {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-        }
-
-        .particle {
-            position: absolute;
-            background: rgba(255, 255, 255, 0.5);
+        .loading-dot {
+            width: 12px;
+            height: 12px;
+            background-color: white;
             border-radius: 50%;
+            margin: 0 6px;
+            animation: loadingBounce 1.4s infinite ease-in-out both;
+        }
+
+        .loading-dot:nth-child(1) {
+            animation-delay: -0.32s;
+        }
+
+        .loading-dot:nth-child(2) {
+            animation-delay: -0.16s;
+        }
+
+        @keyframes loadingBounce {
+            0%, 80%, 100% {
+                transform: scale(0);
+                opacity: 0.5;
+            }
+            40% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         @keyframes fadeInUp {
@@ -108,36 +94,41 @@
         }
 
         @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-            to {
-                opacity: 1;
-            }
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
-        @keyframes pulse {
-            0% {
-                opacity: 0.4;
-            }
-            50% {
-                opacity: 0.8;
-            }
-            100% {
-                opacity: 0.4;
-            }
+        .continue-button {
+            background-color: transparent;
+            border: 2px solid white;
+            color: white;
+            padding: 12px 30px;
+            font-size: 18px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            opacity: 0;
+            animation: fadeInUp 1s ease-out 2.5s forwards;
+            margin-top: 40px; /* Added more spacing to move button lower */
         }
 
-        @keyframes loadProgress {
-            0% {
-                width: 0;
-            }
-            60% {
-                width: 80%;
-            }
-            100% {
-                width: 100%;
-            }
+        .continue-button:hover {
+            background-color: white;
+            color: #251F30;
+            transform: translateY(-2px);
+        }
+
+        /* Client portal indicator */
+        .client-portal-indicator {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: bold;
         }
 
         /* Trial indicator */
@@ -145,79 +136,97 @@
             position: fixed;
             top: 10px;
             right: 10px;
-            background-color: rgba(255, 255, 255, 0.9);
-            color: #5a3ea8;
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
             padding: 5px 10px;
             border-radius: 15px;
-            font-size: 11px;
+            font-size: 12px;
             font-weight: bold;
-            z-index: 1000;
-            border: 1px solid #7259c5;
+        }
+
+        /* Loading progress bar */
+        .progress-bar-container {
+            width: 250px;
+            height: 4px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 2px;
+            margin-top: 15px;
+            overflow: hidden;
             opacity: 0;
-            animation: fadeIn 0.5s ease-out 2s forwards;
+            animation: fadeIn 1s ease-out 1.8s forwards;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background-color: white;
+            border-radius: 2px;
+            animation: progress 3s ease-out forwards;
+        }
+
+        @keyframes progress {
+            0% { width: 0%; }
+            100% { width: 100%; }
+        }
+
+        .welcome-message {
+            color: white;
+            font-size: 24px;
+            margin-bottom: 15px;
+            opacity: 0;
+            animation: fadeInUp 1s ease-out 1.8s forwards;
+        }
+
+        .user-name {
+            font-weight: bold;
+            color: white;
         }
     </style>
 </head>
 <body>
-    <div class="particles" id="particles"></div>
+    <div class="client-portal-indicator">CLIENT PORTAL</div>
     <div class="trial-indicator">TRIAL VERSION</div>
+    
     <div class="welcome-container">
-        <h1 class="welcome-logo">CHIRA</h1>
-        <p class="welcome-text">Welcome to your Client Portal</p>
-        <div class="loading-bar">
-            <div class="loading-progress"></div>
+        <img src="/images/dark-background-chira.png" alt="CHIRA Logo" class="welcome-logo">
+        
+        <div class="welcome-message">Welcome to your <span class="user-name">Client Portal</span></div>
+        
+        <div class="loading-container">
+            <div class="loading-dot"></div>
+            <div class="loading-dot"></div>
+            <div class="loading-dot"></div>
         </div>
-        <p class="loading-text">Loading your personalized dashboard...</p>
-        <p class="client-portal-text">Property of CHIRA Platforms LLC. Confidential and Proprietary.</p>
+        
+        <div class="progress-bar-container">
+            <div class="progress-bar"></div>
+        </div>
+        
+        <button class="continue-button" onclick="redirectToDashboard()">Go to Dashboard</button>
     </div>
 
     <script>
-        // Create particles
-        const particlesContainer = document.getElementById('particles');
-        const particleCount = 30;
-        
-        for (let i = 0; i < particleCount; i++) {
-            const particle = document.createElement('div');
-            particle.classList.add('particle');
-            
-            // Random size between 2 and 6px
-            const size = Math.random() * 4 + 2;
-            particle.style.width = size + 'px';
-            particle.style.height = size + 'px';
-            
-            // Random position
-            particle.style.left = Math.random() * 100 + '%';
-            particle.style.top = Math.random() * 100 + '%';
-            
-            // Random opacity
-            particle.style.opacity = Math.random() * 0.6 + 0.2;
-            
-            // Animation
-            particle.style.animation = `
-                fadeIn ${Math.random() * 2 + 1}s ease-out,
-                float ${Math.random() * 10 + 10}s ease-in-out infinite alternate
-            `;
-            
-            particlesContainer.appendChild(particle);
-        }
-        
-        // Redirect after animation completes
-        setTimeout(() => {
-            window.location.href = 'index.html';
-        }, 4000); // 4 seconds - adjust timing as needed
-
-        // Get user name if available
-        document.addEventListener('DOMContentLoaded', function() {
+        // Get user info if available
+        window.addEventListener('DOMContentLoaded', function() {
             fetch('/user-profile')
                 .then(response => response.json())
                 .then(user => {
                     if (user && user.name) {
-                        const firstName = user.name.split(' ')[0];
-                        document.querySelector('.welcome-text').textContent = `Welcome, ${firstName}`;
+                        document.querySelector('.user-name').textContent = user.name;
                     }
                 })
                 .catch(error => console.error('Error fetching user profile:', error));
         });
+
+        // Redirect to dashboard page
+        function redirectToDashboard() {
+            window.location.href = '/dashboard';
+        }
+        
+        // Auto redirect after 5 seconds
+        setTimeout(function() {
+            window.location.href = '/dashboard';
+        }, 5000);
     </script>
 </body>
 </html>

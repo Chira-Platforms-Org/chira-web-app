@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Welcome to CHIRA</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      overflow: hidden;
+    }
+    
+    /* Hero Section Specific Styles */
+    .hero-section {
+
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-color: #251F30 !important;
+      height: 100vh;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      position: relative;
+      padding: 0;
+      margin: 0;
+    }
+
+    .hero-section .dark-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(37, 31, 48, 0.7);
+    }
+
+    .hero-section .container {
+      position: relative;
+      z-index: 2;
+    }
+
+    .img-fluid {
+      opacity: 0;
+      transform: translateY(30px);
+      animation: fadeInUp 1s ease forwards 0.5s;
+    }
+
+    hr {
+      opacity: 0;
+      animation: fadeIn 1s ease forwards 1s;
+    }
+
+    .welcome-text {
+      opacity: 0;
+      animation: fadeInUp 1s ease forwards 1.5s;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .continue-hint {
+      position: absolute;
+      bottom: 30px;
+      width: 100%;
+      text-align: center;
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 1rem;
+      opacity: 0;
+      animation: fadeIn 1s ease forwards 2.5s;
+    }
+  </style>
+</head>
+<body>
+  <!-- Hero Section -->
+  <section id="home" class="hero-section">
+    <!-- Dark overlay for better text readability -->
+    <div class="dark-overlay"></div>
+    <div class="container">
+      <div class="logo-container text-center">
+        <img src="/images/dark-background-chira.png" 
+             alt="CHIRA Logo" 
+             class="img-fluid mx-auto d-block hero-logo" 
+             style="width: 35%; max-width: 400px; height: auto;" 
+             onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+        <div class="logo-fallback" style="display: none; font-size: 3rem; font-weight: bold; color: white; text-align: center;">
+          CHIRA
+        </div>
+      </div>
+      <hr class="w-50 mx-auto my-4" style="border-color: white;">
+      <div class="welcome-text text-center">
+        <h4 class="text-white fw-bold"> Data Made Simple</h4>
+      </div>
+    </div>
+    <div class="continue-hint">
+      Scroll down or tap to continue
+    </div>
+  </section>
+
+  <script>
+    // Track whether we've already redirected to avoid multiple redirects
+    let hasRedirected = false;
+    
+    // Handle navigation to main site
+    function navigateToMain(e) {
+      // Prevent multiple redirects
+      if (hasRedirected) return;
+      hasRedirected = true;
+      
+      // Apply fade out animation
+      document.querySelector('.hero-section').style.opacity = '0';
+      document.querySelector('.hero-section').style.transition = 'opacity 0.8s ease';
+      
+      // Redirect after animation completes
+      setTimeout(() => {
+        window.location.href = '/home';
+      }, 800);
+    }
+    
+    // Add event listeners for scroll, tap, and click after a delay
+    setTimeout(() => {
+      window.addEventListener('wheel', navigateToMain);
+      window.addEventListener('touchstart', navigateToMain);
+      window.addEventListener('click', navigateToMain);
+    }, 2500); // Wait 2.5 seconds before enabling navigation
+    
+    // Auto-redirect after 7 seconds
+    setTimeout(() => {
+      navigateToMain();
+    }, 7000);
+  </script>
+</body>
+</html>

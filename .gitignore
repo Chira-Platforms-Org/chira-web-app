@@ -1,27 +1,54 @@
-# Dependency directories
+# Dependencies
 node_modules/
+*/node_modules/
 
 # Environment variables
 .env
 .env.local
-.env.development
-.env.test
-.env.production
+.env.development.local
+.env.test.local
+.env.production.local
 
-# Debug logs
+# Logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+lerna-debug.log*
 
-# Mac OS
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+.venv/
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# OS generated files
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
 
-# Uploaded files
-services/file-upload-service/uploads/*
-!services/file-upload-service/uploads/.gitkeep
+# Uploads
+uploads/
+processed_files/
 
-# IDE files
-.idea/
-.vscode/
-*.sublime-project
-*.sublime-workspace
+# Package-lock files (optional, some prefer to include these)
+package-lock.json

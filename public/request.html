@@ -13,16 +13,16 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #8359BC;
+            background-color: #251F30 !important;
+            color: #fff;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            color: #ffffff;
         }
 
         .header {
-            background-color: #8359BC;
-            border-bottom: 1px solid #7259c5;
+            background-color: #552f92;
+            border-bottom: 1px solid #552f92;
             padding: 30px 20px;
             text-align: center;
             color: #ffffff;
@@ -167,8 +167,8 @@
         }
 
         .footer {
-            background-color: #432E5D;
-            border-top: 1px solid #7259c5;
+            background-color: #251F30 !important;
+            border-top: 1px solid #251F30;
             padding: 20px;
             text-align: center;
             color: #ffffff;
@@ -216,6 +216,34 @@
 
         .back-button:hover {
             background-color: #545b62;
+        }
+
+        /* Navigation Bar */
+        .navbar {
+            background-color: #fff !important;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            z-index: 1001;
+        }
+
+        .navbar-brand {
+            color: #552f92 !important;
+            font-weight: bold;
+        }
+
+        .navbar-logo {
+            height: 40px;
+            width: auto;
+            filter: none;
+        }
+
+        .nav-link {
+            color: #552f92 !important;
+        }
+
+        .btn {
+            background-color: #552f92;
+            color: white;
+            border: 2px solid #552f92;
         }
 
         /* Enhanced responsive design */
@@ -337,8 +365,35 @@
 </head>
 <body>
     <div class="trial-indicator">TRIAL VERSION</div>
-    <button class="back-button" onclick="goBack()">← Back to Portal</button>
     
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top" style="background-color: #ffffff; box-shadow: 0 2px 4px rgba(0,0,0,0.1); z-index: 1001;">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="/" style="color: #552f92; font-weight: bold;">
+                <img src="/images/chira-logo-nav.png" 
+                     alt="CHIRA Logo" 
+                     class="navbar-logo me-2" 
+                     style="height: 40px; width: auto;" 
+                     onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
+                <span style="display: none;">CHIRA</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="/" style="color: #552f92;">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/contact" style="color: #552f92;">Contact Us</a></li>
+                    <li class="nav-item"><a class="btn ms-2" href="/logout" style="background-color: #552f92; color: white; border: 2px solid #552f92;">Logout</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="user-profile" id="user-profile">
+        <!-- User profile content -->
+    </div>
+
     <header class="header">
         <h1>Make a Request</h1>
         <p class="subtitle">Ask a CHIRA Team Member and we will Respond to You in 2 Business Days</p>
@@ -377,8 +432,9 @@
     </main>
 
     <footer class="footer">
-        <p class="copyright">Property of CHIRA Platforms LLC. Confidential and Proprietary. © 2025 CHIRA Platforms. All rights reserved.</p>
-        <p class="additional-info">All requests are securely processed and confidentially handled by our team. Response time: 2 business days.</p>
+        <div class="container text-center">
+            <p class="copyright">&copy; 2025 CHIRA. All rights reserved.</p>
+        </div>
     </footer>
 
     <script>
@@ -438,20 +494,38 @@
             sendButton.textContent = 'Sending...';
             sendButton.disabled = true;
 
-            // Simulate sending request
-            setTimeout(() => {
-                const responseType = selectedOption === 'team' ? 'CHIRA Team Member' : 'CHIRA AI';
-                const responseTime = selectedOption === 'team' ? '2 business days' : 'shortly';
-                
-                alert(`✅ Request Submitted Successfully!\n\nYour request has been sent to: ${responseType}\nExpected response time: ${responseTime}\n\n⚠️ Trial Version: This is a demonstration. In the full version, your request would be processed and you would receive email confirmation.`);
-                
-                // Reset form
-                document.getElementById('requestText').value = '';
-                selectedOption = '';
+            // Actually send the request to the server
+            const formData = new FormData();
+            formData.append('requestText', requestText);
+            formData.append('requestType', selectedOption);
+            
+            fetch('/submit-request', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (response.ok) {
+                    const responseType = selectedOption === 'team' ? 'CHIRA Team Member' : 'CHIRA AI';
+                    const responseTime = selectedOption === 'team' ? '2 business days' : 'shortly';
+                    
+                    alert(`✅ Request Submitted Successfully!\n\nYour request has been sent to: ${responseType}\nExpected response time: ${responseTime}\n\nYou will receive email confirmation shortly.`);
+                    
+                    // Reset form
+                    document.getElementById('requestText').value = '';
+                    selectedOption = '';
+                    sendButton.textContent = originalText;
+                    sendButton.disabled = true;
+                    updateButtonStyles();
+                } else {
+                    throw new Error('Server error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('There was an error sending your request. Please try again later.');
                 sendButton.textContent = originalText;
-                sendButton.disabled = true;
-                updateButtonStyles();
-            }, 2000);
+                sendButton.disabled = false;
+            });
         }
 
         function showFeedback(message) {
