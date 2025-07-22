@@ -1,4 +1,3 @@
-name = "chira-web-app"
->>>>>>> b471345427f679ee56226e69c773ba5f1c42c1d8
+name = "chira-webapp-work"
 main = "index.js"
 compatibility_date = "2025-07-20"
