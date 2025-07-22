@@ -8,4 +8,4 @@ export default {
     // For all other requests, let Cloudflare Pages handle them
     return fetch(request);
   }
-}
+};
