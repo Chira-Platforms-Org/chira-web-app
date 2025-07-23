@@ -1,3 +1,8 @@
-name = "chira-webapp-work"
+name = "chira-web-app"
 main = "index.js"
 compatibility_date = "2025-07-20"
+
+# Replace with your actual domain and zone/account info
+route = "chira-platforms.com/*"
+zone_id = "y92864bcc35a59948e426467db4ff92ff"
+account_id = "e8358cbcb6fb31b43310cb266a472d38"
