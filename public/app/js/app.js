@@ -32,6 +32,7 @@ function renderHero(data) {
   const qualityGrade = data?.quality_overview?.grade || '--';
 
   document.getElementById('dataset-title').textContent = prettyTitle(datasetName);
+  document.getElementById('context-dataset-name').textContent = prettyTitle(datasetName);
   document.getElementById('dataset-subtitle').textContent = recommendationMessage;
   document.getElementById('quality-score').textContent = formatMaybeNumber(qualityScore);
   document.getElementById('quality-grade').textContent = `Grade ${qualityGrade}`;
