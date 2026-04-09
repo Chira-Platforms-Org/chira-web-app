@@ -43,8 +43,8 @@ body::before {
 }
 
 @keyframes twinkle {
-  0%, 100% { opacity: 0.22; }
-  50% { opacity: 0.32; }
+  0%, 100% { opacity: 0.52; }
+  50% { opacity: 0.72; }
 }
 
 html, body {
