@@ -23,8 +23,26 @@ html, body {
   margin: 0;
   padding: 0;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: var(--bg);
   color: var(--text);
+  background:
+  radial-gradient(circle at top left, rgba(139, 92, 246, 0.06), transparent 40%),
+  radial-gradient(circle at bottom right, rgba(192, 132, 252, 0.05), transparent 45%),
+  #f9f9fb;
+}
+
+/* Subtle Data Texture */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+
+  background-image:
+    radial-gradient(rgba(139, 92, 246, 0.08) 0.6px, transparent 0.6px);
+
+  background-size: 18px 18px;
+  opacity: 0.15;
 }
 
 body {
@@ -659,4 +677,10 @@ body {
     padding-left: 16px;
     padding-right: 16px;
   }
+}
+
+/* Ensure content sits above background layers */
+.app-shell {
+  position: relative;
+  z-index: 1;
 }
