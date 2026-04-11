@@ -25,10 +25,9 @@ html, body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   color: var(--text);
   background:
-    radial-gradient(circle at top left, rgba(139, 92, 246, 0.14), transparent 34%),
-    radial-gradient(circle at top right, rgba(109, 70, 178, 0.08), transparent 28%),
-    radial-gradient(circle at bottom right, rgba(192, 132, 252, 0.12), transparent 36%),
-    #f8f7fb;
+    radial-gradient(circle at top left, rgba(139, 92, 246, 0.08), transparent 40%),
+    radial-gradient(circle at bottom right, rgba(192, 132, 252, 0.06), transparent 50%),
+    #f4f2f8;
 }
 
 /* Subtle edge texture */
