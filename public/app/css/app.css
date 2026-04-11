@@ -25,12 +25,13 @@ html, body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   color: var(--text);
   background:
-  radial-gradient(circle at top left, rgba(139, 92, 246, 0.06), transparent 40%),
-  radial-gradient(circle at bottom right, rgba(192, 132, 252, 0.05), transparent 45%),
-  #f9f9fb;
+    radial-gradient(circle at top left, rgba(139, 92, 246, 0.14), transparent 34%),
+    radial-gradient(circle at top right, rgba(109, 70, 178, 0.08), transparent 28%),
+    radial-gradient(circle at bottom right, rgba(192, 132, 252, 0.12), transparent 36%),
+    #f8f7fb;
 }
 
-/* Subtle Data Texture */
+/* Subtle edge texture */
 body::after {
   content: "";
   position: fixed;
@@ -38,11 +39,26 @@ body::after {
   pointer-events: none;
   z-index: 0;
 
-  background-image:
-    radial-gradient(rgba(139, 92, 246, 0.08) 0.6px, transparent 0.6px);
+  background:
+    radial-gradient(circle at 8% 82%, rgba(139, 92, 246, 0.18) 0.9px, transparent 1px),
+    radial-gradient(circle at 92% 18%, rgba(192, 132, 252, 0.14) 0.9px, transparent 1px),
+    radial-gradient(circle at 88% 88%, rgba(139, 92, 246, 0.12) 0.8px, transparent 0.9px);
 
-  background-size: 18px 18px;
-  opacity: 0.15;
+  background-size:
+    22px 22px,
+    26px 26px,
+    30px 30px;
+
+  mask-image:
+    radial-gradient(circle at 8% 82%, black 0%, transparent 42%),
+    radial-gradient(circle at 92% 18%, black 0%, transparent 38%),
+    radial-gradient(circle at 88% 88%, black 0%, transparent 40%);
+  -webkit-mask-image:
+    radial-gradient(circle at 8% 82%, black 0%, transparent 42%),
+    radial-gradient(circle at 92% 18%, black 0%, transparent 38%),
+    radial-gradient(circle at 88% 88%, black 0%, transparent 40%);
+
+  opacity: 0.45;
 }
 
 body {
