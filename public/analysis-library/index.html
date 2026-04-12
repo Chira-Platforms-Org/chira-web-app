@@ -1,1 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CHIRA Analysis Library</title>
+  <link href="css/analysis-library.css?v=1" rel="stylesheet">
+</head>
+<body>
+  <header class="app-header">
+    <div class="app-shell header-inner">
+      <div class="brand-block">
+        <div class="brand-mark">chira<span>.</span></div>
+        <div class="brand-subtitle">Analysis Library</div>
+      </div>
 
+      <div class="header-actions">
+        <a href="/app/" class="header-link">Back to Overview</a>
+        <span class="header-pill">TEST UI V1</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="app-main">
+    <section class="project-context-section">
+      <div class="app-shell">
+        <div class="project-context-bar">
+          <div class="context-left">
+            <div class="context-pill">
+              <span class="context-label">Current Project</span>
+              <span class="context-value" id="context-dataset-name">Loading dataset...</span>
+            </div>
+
+            <div class="context-pill">
+              <span class="context-label">Current Tool</span>
+              <span class="context-value">Analysis Library</span>
+            </div>
+          </div>
+
+          <div class="context-right">
+            <a href="/hub/" class="context-link">Workspace</a>
+            <a href="/app/" class="context-link">Overview</a>
+            <a href="/analysis-library/" class="context-link active">Analysis Library</a>
+            <a href="#" class="context-link disabled">Deep Analytics</a>
+            <a href="#" class="context-link disabled">Statistical Tools</a>
+            <a href="#" class="context-link disabled">Machine Learning</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="hero-summary">
+      <div class="app-shell">
+        <div class="hero-card">
+          <div class="hero-copy">
+            <p class="eyebrow">FULL ANALYSIS EXPLORATION</p>
+            <h1 id="library-title">Loading dataset...</h1>
+            <p id="library-subtitle" class="hero-subtitle">
+              Preparing the full analysis library.
+            </p>
+
+            <div class="hero-stats" id="hero-stats"></div>
+          </div>
+
+          <div class="hero-side">
+            <div class="score-panel">
+              <div class="score-label">Valid Analyses</div>
+              <div class="score-value" id="valid-analysis-count">--</div>
+              <div class="score-grade" id="featured-count">--</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="library-section">
+      <div class="app-shell">
+        <div class="section-heading">
+          <h2>Analysis Groups</h2>
+          <p>Browse all viable analyses grouped by type. Featured overview analyses are marked clearly.</p>
+        </div>
+
+        <div id="analysis-library-groups" class="library-groups"></div>
+      </div>
+    </section>
+  </main>
+
+  <script src="js/analysis-library.js"></script>
+</body>
+</html>
