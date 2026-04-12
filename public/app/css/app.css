@@ -704,6 +704,48 @@ body {
   }
 }
 
+.analysis-library-card {
+  background: linear-gradient(180deg, #fcfbfe 0%, #f7f2ff 100%);
+}
+
+.analysis-library-badge {
+  background: #efe6ff;
+  color: #6d46b2;
+}
+
+.analysis-library-preview {
+  min-height: 160px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.library-chip-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.library-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 10px 12px;
+  border-radius: 999px;
+  background: #f4edff;
+  border: 1px solid #dfd0fb;
+  color: #4a3368;
+  font-size: 0.86rem;
+  font-weight: 700;
+}
+
+.library-link-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+
 /* Ensure content sits above background layers */
 .app-shell {
   position: relative;
