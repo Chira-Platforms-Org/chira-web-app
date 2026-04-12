@@ -116,6 +116,8 @@ function renderAnalysisCards(data) {
     return;
   }
 
+  const analysisLibraryCard = renderAnalysisLibraryGatewayCard(data);
+
   target.innerHTML = cards.map((card, index) => {
     const detailId = `details-${index}`;
     const chartMarkup = renderChart(card);
@@ -161,7 +163,69 @@ function renderAnalysisCards(data) {
         </div>
       </article>
     `;
-  }).join('');
+  }).join('') + analysisLibraryCard;
+}
+
+function renderAnalysisLibraryGatewayCard(data) {
+  const allCandidates = Array.isArray(data?.all_analysis_candidates) ? data.all_analysis_candidates : [];
+  const featuredCount = Array.isArray(data?.next_best_analyses) ? data.next_best_analyses.length : 0;
+
+  const groupedCounts = countAnalysisTypes(allCandidates);
+
+  const chips = Object.entries(groupedCounts)
+    .map(([type, count]) => `<span class="library-chip">${escapeHtml(prettyLabel(type))} · ${count}</span>`)
+    .join('');
+
+  return `
+    <article class="analysis-card analysis-library-card">
+      <div class="analysis-card-top">
+        <div class="analysis-meta-row">
+          <span class="analysis-badge analysis-library-badge">explore</span>
+          <span class="analysis-score">${allCandidates.length} valid analyses</span>
+        </div>
+
+        <h3 class="analysis-title">Open Analysis Library</h3>
+        <p class="analysis-subtitle">Browse every viable analysis generated for this dataset.</p>
+      </div>
+
+      <div class="chart-wrap">
+        <div class="chart-card analysis-library-preview">
+          <p class="chart-title">Analysis types</p>
+          <div class="library-chip-wrap">
+            ${chips || '<span class="library-chip">No grouped analyses available</span>'}
+          </div>
+        </div>
+      </div>
+
+      <div class="analysis-body">
+        ${insightBlock('Summary', `${allCandidates.length} valid analyses found. ${featuredCount} are currently featured in Overview.`)}
+        ${insightBlock('Why it matters', 'Some useful analyses are not shown in the overview because stronger candidates competed for limited featured space.')}
+        ${insightBlock('Next step', 'Open the Analysis Library to browse all valid analyses by type and explore beyond the featured recommendations.')}
+      </div>
+
+      <div class="card-actions">
+        <a class="toggle-button library-link-button" href="/analysis-library/">Open Analysis Library</a>
+      </div>
+    </article>
+  `;
+}
+
+function countAnalysisTypes(items) {
+  const counts = {};
+
+  for (const item of items) {
+    const type = item?.analysis_type || 'other';
+    counts[type] = (counts[type] || 0) + 1;
+  }
+
+  return counts;
+}
+
+function prettyLabel(text) {
+  if (!text) return 'Other';
+  return String(text)
+    .replace(/_/g, ' ')
+    .replace(/\b\w/g, char => char.toUpperCase());
 }
 
 function insightBlock(label, text) {
