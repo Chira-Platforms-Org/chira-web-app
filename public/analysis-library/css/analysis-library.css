@@ -454,3 +454,133 @@ body {
     width: min(100% - 20px, 1240px);
   }
 }
+
+.chart-preview {
+  margin: 14px 0 10px;
+}
+
+.chart-card {
+  background: var(--surface-soft);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 14px 14px 12px;
+}
+
+.chart-card-title {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--accent-dark);
+  margin-bottom: 12px;
+}
+
+.chart-placeholder {
+  background: var(--surface-soft);
+  border: 1px dashed var(--border);
+  border-radius: 14px;
+  padding: 22px 14px;
+  text-align: center;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.mini-bar-chart,
+.mini-hist-chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  height: 210px;
+}
+
+.mini-bar-item,
+.mini-hist-item {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  height: 100%;
+}
+
+.mini-bar-wrap {
+  width: 100%;
+  height: 150px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.mini-bar {
+  width: 100%;
+  max-width: 72px;
+  min-height: 8px;
+  border-radius: 10px 10px 6px 6px;
+  background: linear-gradient(180deg, #8f66dd 0%, #6d46b2 100%);
+}
+
+.mini-bar-hist {
+  background: linear-gradient(180deg, #6d8fff 0%, #4c73df 100%);
+}
+
+.mini-bar-value {
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: var(--accent-dark);
+  text-align: center;
+}
+
+.mini-bar-label {
+  font-size: 0.72rem;
+  color: var(--muted);
+  text-align: center;
+  line-height: 1.25;
+  word-break: break-word;
+}
+
+.mini-line-chart,
+.mini-scatter-chart {
+  height: 180px;
+  border-radius: 12px;
+  background: #faf8fe;
+  border: 1px solid var(--border);
+  padding: 10px;
+  color: var(--accent);
+}
+
+.mini-line-svg,
+.mini-scatter-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.mini-line-label-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.mini-line-label {
+  flex: 1;
+  min-width: 0;
+  font-size: 0.72rem;
+  color: var(--muted);
+  text-align: center;
+  word-break: break-word;
+}
+
+.mini-axis-caption {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 10px;
+  font-size: 0.78rem;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.key-insight {
+  margin: 10px 0 0;
+}
