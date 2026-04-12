@@ -1,4 +1,4 @@
-const DATA_PATH = '../app/sample_01_supply_chain_profile.json';
+const DATA_PATH = '/app/sample_01_supply_chain_profile.json';
 
 document.addEventListener('DOMContentLoaded', async () => {
   try {
