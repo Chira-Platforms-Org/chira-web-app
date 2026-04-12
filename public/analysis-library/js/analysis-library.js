@@ -96,19 +96,19 @@ function renderGroups(data) {
 }
 
 function renderAnalysisCard(card) {
-  const confidence = formatMaybeNumber(card?.confidence);
-  const description = card?.description || 'No description available.';
-  const explanation = card?.recommendation_explanation || 'No explanation available.';
-  const nextStep = card?.next_step || 'No next step available.';
-  const featured = card?.source === 'overview';
+  const confidence = formatMaybeNumber(card?.scoring?.confidence);
+  const description = card?.copy?.description || 'No description available.';
+  const explanation = card?.copy?.recommendation_explanation || 'No explanation available.';
+  const nextStep = card?.key_insight?.next_step || 'No next step available.';
+  const featured = card?.analysis_tier === 'overview';
 
-  // 👇 NEW: chart + insight extraction
+  const title = card?.display?.title || card?.internal_title || 'Untitled Analysis';
+  const subtitle = card?.display?.subtitle || '';
   const chartType = card?.chart?.type || null;
-  const keyInsight = card?.insight?.short_summary || 'No key insight available.';
+  const keyInsight = card?.key_insight?.short_summary || 'No key insight available.';
 
   return `
     <article class="analysis-card">
-      
       <div class="card-top">
         <div class="card-badges">
           <span class="badge badge-type">${escapeHtml(prettyTitle(card?.analysis_type || 'other'))}</span>
@@ -122,18 +122,16 @@ function renderAnalysisCard(card) {
         <div class="card-confidence">Confidence: ${escapeHtml(confidence)}</div>
       </div>
 
-      <h4 class="card-title">${escapeHtml(card?.display_title || card?.title || 'Untitled Analysis')}</h4>
-      <p class="card-subtitle">${escapeHtml(card?.display_subtitle || '')}</p>
+      <h4 class="card-title">${escapeHtml(title)}</h4>
+      <p class="card-subtitle">${escapeHtml(subtitle)}</p>
 
-      <!-- 🔥 NEW: Chart Preview -->
       <div class="chart-preview">
         ${renderChartPreview(chartType)}
       </div>
 
-      <!-- 🔥 NEW: Key Insight -->
       <div class="key-insight">
         <span class="info-label">Key Insight</span>
-        <p>${escapeHtml(keyInsight)}</p>
+        <p class="info-value">${escapeHtml(keyInsight)}</p>
       </div>
 
       <div class="card-body">
@@ -152,7 +150,6 @@ function renderAnalysisCard(card) {
           <p class="info-value">${escapeHtml(nextStep)}</p>
         </div>
       </div>
-
     </article>
   `;
 }
