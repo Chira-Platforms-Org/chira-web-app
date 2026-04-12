@@ -1,6 +1,6 @@
 {
   "meta": {
-    "dataset_name": "sample_employee_salaries",
+    "dataset_name": "sample_01_supply_chain",
     "rows": 310000,
     "columns": 13,
     "generated_at": "2026-04-12T05:13:43.682148+00:00",
