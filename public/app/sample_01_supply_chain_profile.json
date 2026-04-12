@@ -3,7 +3,7 @@
     "dataset_name": "sample_01_supply_chain",
     "rows": 100,
     "columns": 24,
-    "generated_at": "2026-04-07T02:06:12.294282+00:00",
+    "generated_at": "2026-04-11T23:08:02.982021+00:00",
     "engine_version": "phase2a",
     "analysis_status": "success"
   },
@@ -763,10 +763,10 @@
       "confidence": 0.95,
       "confidence_label": "High confidence",
       "suggested_variables": [
-        "Product type",
-        "Customer demographics",
         "Price",
-        "Location"
+        "Location",
+        "Product type",
+        "Customer demographics"
       ],
       "reason": "A grouping field ('Location') and metric ('Price') were detected, supporting grouped performance comparison.",
       "blocking_issues": [],
@@ -843,6 +843,11 @@
         "identifier": null,
         "aggregation": "sum"
       },
+      "presentation": {
+        "mode": "chart",
+        "primary_asset_type": "chart",
+        "frontend_supported": true
+      },
       "chart": {
         "type": "bar_chart",
         "recommended_visuals": [
@@ -882,9 +887,9 @@
       "confidence_label": "High confidence",
       "suggested_variables": [
         "Product type",
+        "Location",
         "Revenue generated",
-        "Customer demographics",
-        "Location"
+        "Customer demographics"
       ],
       "reason": "A grouping field ('Location') and metric ('Revenue generated') were detected, supporting grouped performance comparison.",
       "blocking_issues": [],
@@ -961,6 +966,11 @@
         "identifier": null,
         "aggregation": "sum"
       },
+      "presentation": {
+        "mode": "chart",
+        "primary_asset_type": "chart",
+        "frontend_supported": true
+      },
       "chart": {
         "type": "bar_chart",
         "recommended_visuals": [
@@ -999,9 +1009,9 @@
       "confidence": 0.9,
       "confidence_label": "High confidence",
       "suggested_variables": [
-        "Product type",
         "Price",
-        "Location"
+        "Location",
+        "Product type"
       ],
       "reason": "A numeric metric ('Price') was detected, making distribution analysis useful.",
       "blocking_issues": [],
@@ -1077,6 +1087,11 @@
         "identifier": null,
         "aggregation": "frequency"
       },
+      "presentation": {
+        "mode": "chart",
+        "primary_asset_type": "chart",
+        "frontend_supported": true
+      },
       "chart": {
         "type": "histogram",
         "recommended_visuals": [
@@ -1118,8 +1133,8 @@
       "confidence_label": "High confidence",
       "suggested_variables": [
         "Product type",
-        "Revenue generated",
-        "Location"
+        "Location",
+        "Revenue generated"
       ],
       "reason": "A numeric metric ('Revenue generated') was detected, making distribution analysis useful.",
       "blocking_issues": [],
@@ -1195,6 +1210,11 @@
         "identifier": null,
         "aggregation": "frequency"
       },
+      "presentation": {
+        "mode": "chart",
+        "primary_asset_type": "chart",
+        "frontend_supported": true
+      },
       "chart": {
         "type": "histogram",
         "recommended_visuals": [
@@ -1236,9 +1256,9 @@
       "confidence_label": "High confidence",
       "suggested_variables": [
         "Shipping costs",
+        "Location",
         "Product type",
-        "Customer demographics",
-        "Location"
+        "Customer demographics"
       ],
       "reason": "A grouping field ('Location') and metric ('Shipping costs') were detected, supporting grouped performance comparison.",
       "blocking_issues": [],
@@ -1314,6 +1334,11 @@
         "date": null,
         "identifier": null,
         "aggregation": "sum"
+      },
+      "presentation": {
+        "mode": "chart",
+        "primary_asset_type": "chart",
+        "frontend_supported": true
       },
       "chart": {
         "type": "bar_chart",
@@ -1431,6 +1456,11 @@
         "identifier": null,
         "aggregation": "frequency"
       },
+      "presentation": {
+        "mode": "chart",
+        "primary_asset_type": "chart",
+        "frontend_supported": true
+      },
       "chart": {
         "type": "histogram",
         "recommended_visuals": [
@@ -1459,6 +1489,1247 @@
       }
     }
   ],
+  "all_analysis_candidates": [
+    {
+      "analysis_code": "category_performance_analysis",
+      "title": "Location by Price",
+      "display_title": "How price differs by location",
+      "display_subtitle": "Compares Price across Location groups",
+      "display_x_label": "Location",
+      "display_y_label": "Price",
+      "status": "recommended_now",
+      "analysis_tier": "overview",
+      "priority": "high",
+      "confidence": 0.95,
+      "confidence_label": "High confidence",
+      "suggested_variables": [
+        "Price",
+        "Location",
+        "Product type",
+        "Customer demographics"
+      ],
+      "reason": "A grouping field ('Location') and metric ('Price') were detected, supporting grouped performance comparison.",
+      "blocking_issues": [],
+      "readiness": {
+        "score": 100,
+        "label": "Ready",
+        "status": "ready_now"
+      },
+      "recommended_visuals": [
+        "bar_chart",
+        "price_by_location_bar_chart",
+        "price_by_location_summary_table"
+      ],
+      "description": "Compare price across location groups to identify differences in performance, concentration, or variation.",
+      "recommendation_explanation": "This analysis shows how price differs across location groups, making it easier to spot stronger groups, weaker groups, and possible concentration.",
+      "evidence": {
+        "dataset_quality_score": 100.0,
+        "avg_required_missing_pct": 0.0,
+        "selected_metric": "Price",
+        "metric_health": "Excellent",
+        "metric_missing_pct": 0.0,
+        "selected_group": "Location",
+        "group_health": "Excellent",
+        "group_missing_pct": 0.0
+      },
+      "action": {
+        "can_auto_run": true,
+        "default_chart": "bar_chart",
+        "default_date": null,
+        "default_metric": "Price",
+        "default_group": "Location",
+        "default_identifier": null,
+        "default_x": null,
+        "default_y": null,
+        "next_step": "Launch a grouped comparison of 'Price' across 'Location' groups."
+      },
+      "ui": {
+        "category": "comparison",
+        "badge": "Recommended",
+        "icon": "bar_chart"
+      },
+      "semantics": {
+        "analysis_family": "group_comparison",
+        "question_type": "compare_groups",
+        "primary_metric": "Price",
+        "primary_group": "Location",
+        "primary_date": null,
+        "primary_identifier": null,
+        "secondary_metric": null,
+        "aggregation": "sum"
+      },
+      "information_gain_score": 1.47,
+      "signal_filter_status": "passed",
+      "signal_filter_reason": null,
+      "included_in_overview": true,
+      "overview_rank": 1,
+      "analysis_type": "category",
+      "display": {
+        "title": "How price differs by location",
+        "subtitle": "Compares Price across Location groups",
+        "x_label": "Location",
+        "y_label": "Price"
+      },
+      "data_binding": {
+        "x": "Location",
+        "y": "Price",
+        "group_by": "Location",
+        "date_field": null
+      },
+      "primary_fields": {
+        "metric": "Price",
+        "comparison_metric": null,
+        "group": "Location",
+        "date": null,
+        "identifier": null,
+        "aggregation": "sum"
+      },
+      "presentation": {
+        "mode": "chart",
+        "primary_asset_type": "chart",
+        "frontend_supported": true
+      },
+      "chart": {
+        "type": "bar_chart",
+        "recommended_visuals": [
+          "bar_chart",
+          "price_by_location_bar_chart",
+          "price_by_location_summary_table"
+        ]
+      },
+      "scoring": {
+        "confidence": 0.95,
+        "confidence_label": "High confidence",
+        "information_gain": 1.47,
+        "priority": "high",
+        "readiness": {
+          "score": 100,
+          "label": "Ready",
+          "status": "ready_now"
+        }
+      },
+      "copy": {
+        "description": "Compare price across location groups to identify differences in performance, concentration, or variation.",
+        "recommendation_explanation": "This analysis shows how price differs across location groups, making it easier to spot stronger groups, weaker groups, and possible concentration.",
+        "next_step": "Launch a grouped comparison of 'Price' across 'Location' groups."
+      }
+    },
+    {
+      "analysis_code": "category_performance_analysis",
+      "title": "Location by Revenue Generated",
+      "display_title": "Which locations drive higher revenue generated",
+      "display_subtitle": "Compares Revenue Generated across Location groups",
+      "display_x_label": "Location",
+      "display_y_label": "Revenue Generated",
+      "status": "recommended_now",
+      "analysis_tier": "overview",
+      "priority": "high",
+      "confidence": 0.95,
+      "confidence_label": "High confidence",
+      "suggested_variables": [
+        "Product type",
+        "Location",
+        "Revenue generated",
+        "Customer demographics"
+      ],
+      "reason": "A grouping field ('Location') and metric ('Revenue generated') were detected, supporting grouped performance comparison.",
+      "blocking_issues": [],
+      "readiness": {
+        "score": 100,
+        "label": "Ready",
+        "status": "ready_now"
+      },
+      "recommended_visuals": [
+        "bar_chart",
+        "revenue_generated_by_location_bar_chart",
+        "revenue_generated_by_location_summary_table"
+      ],
+      "description": "Compare revenue generated across location groups to identify differences in performance, concentration, or variation.",
+      "recommendation_explanation": "This analysis shows how revenue generated differs across location groups, making it easier to spot stronger groups, weaker groups, and possible concentration.",
+      "evidence": {
+        "dataset_quality_score": 100.0,
+        "avg_required_missing_pct": 0.0,
+        "selected_metric": "Revenue generated",
+        "metric_health": "Excellent",
+        "metric_missing_pct": 0.0,
+        "selected_group": "Location",
+        "group_health": "Excellent",
+        "group_missing_pct": 0.0
+      },
+      "action": {
+        "can_auto_run": true,
+        "default_chart": "bar_chart",
+        "default_date": null,
+        "default_metric": "Revenue generated",
+        "default_group": "Location",
+        "default_identifier": null,
+        "default_x": null,
+        "default_y": null,
+        "next_step": "Launch a grouped comparison of 'Revenue generated' across 'Location' groups."
+      },
+      "ui": {
+        "category": "comparison",
+        "badge": "Recommended",
+        "icon": "bar_chart"
+      },
+      "semantics": {
+        "analysis_family": "group_comparison",
+        "question_type": "compare_groups",
+        "primary_metric": "Revenue generated",
+        "primary_group": "Location",
+        "primary_date": null,
+        "primary_identifier": null,
+        "secondary_metric": null,
+        "aggregation": "sum"
+      },
+      "information_gain_score": 1.47,
+      "signal_filter_status": "passed",
+      "signal_filter_reason": null,
+      "included_in_overview": true,
+      "overview_rank": 2,
+      "analysis_type": "category",
+      "display": {
+        "title": "Which locations drive higher revenue generated",
+        "subtitle": "Compares Revenue Generated across Location groups",
+        "x_label": "Location",
+        "y_label": "Revenue Generated"
+      },
+      "data_binding": {
+        "x": "Location",
+        "y": "Revenue generated",
+        "group_by": "Location",
+        "date_field": null
+      },
+      "primary_fields": {
+        "metric": "Revenue generated",
+        "comparison_metric": null,
+        "group": "Location",
+        "date": null,
+        "identifier": null,
+        "aggregation": "sum"
+      },
+      "presentation": {
+        "mode": "chart",
+        "primary_asset_type": "chart",
+        "frontend_supported": true
+      },
+      "chart": {
+        "type": "bar_chart",
+        "recommended_visuals": [
+          "bar_chart",
+          "revenue_generated_by_location_bar_chart",
+          "revenue_generated_by_location_summary_table"
+        ]
+      },
+      "scoring": {
+        "confidence": 0.95,
+        "confidence_label": "High confidence",
+        "information_gain": 1.47,
+        "priority": "high",
+        "readiness": {
+          "score": 100,
+          "label": "Ready",
+          "status": "ready_now"
+        }
+      },
+      "copy": {
+        "description": "Compare revenue generated across location groups to identify differences in performance, concentration, or variation.",
+        "recommendation_explanation": "This analysis shows how revenue generated differs across location groups, making it easier to spot stronger groups, weaker groups, and possible concentration.",
+        "next_step": "Launch a grouped comparison of 'Revenue generated' across 'Location' groups."
+      }
+    },
+    {
+      "analysis_code": "segmentation_analysis",
+      "title": "Location Segment Analysis",
+      "display_title": "How location segments differ",
+      "display_subtitle": "Highlights differences across Location segments",
+      "display_x_label": "Location",
+      "display_y_label": "Price",
+      "status": "recommended_now",
+      "analysis_tier": "secondary",
+      "priority": "medium",
+      "confidence": 0.95,
+      "confidence_label": "High confidence",
+      "suggested_variables": [
+        "Shipping costs",
+        "Location",
+        "Product type",
+        "Price",
+        "Revenue generated"
+      ],
+      "reason": "Multiple grouping fields and at least one metric were detected, including 'Location' and 'Price', supporting segment-level analysis.",
+      "blocking_issues": [],
+      "readiness": {
+        "score": 100,
+        "label": "Ready",
+        "status": "ready_now"
+      },
+      "recommended_visuals": [
+        "price_by_location_segment_chart",
+        "price_location_heatmap"
+      ],
+      "description": "Segment the dataset by location and compare price across groups to identify meaningful differences in behavior or performance.",
+      "recommendation_explanation": "This analysis can show whether different location segments behave differently on price, which may help identify stronger segments, weaker segments, or uneven performance across the dataset.",
+      "evidence": {
+        "dataset_quality_score": 100.0,
+        "avg_required_missing_pct": 0.0,
+        "selected_metric": "Price",
+        "metric_health": "Excellent",
+        "metric_missing_pct": 0.0,
+        "selected_group": "Location",
+        "group_health": "Excellent",
+        "group_missing_pct": 0.0
+      },
+      "action": {
+        "can_auto_run": true,
+        "default_chart": "price_by_location_segment_chart",
+        "default_date": null,
+        "default_metric": "Price",
+        "default_group": "Location",
+        "default_identifier": null,
+        "default_x": null,
+        "default_y": null,
+        "next_step": "Launch a segmented comparison of 'Price' across 'Location' groups."
+      },
+      "ui": {
+        "category": "segmentation",
+        "badge": "Recommended",
+        "icon": "layers"
+      },
+      "semantics": {
+        "analysis_family": "group_comparison",
+        "question_type": "compare_groups",
+        "primary_metric": "Price",
+        "primary_group": "Location",
+        "primary_date": null,
+        "primary_identifier": null,
+        "secondary_metric": null,
+        "aggregation": "sum"
+      },
+      "information_gain_score": 1.394,
+      "signal_filter_status": "passed",
+      "signal_filter_reason": null,
+      "included_in_overview": false,
+      "overview_rank": null,
+      "analysis_type": "segmentation",
+      "display": {
+        "title": "How location segments differ",
+        "subtitle": "Highlights differences across Location segments",
+        "x_label": "Location",
+        "y_label": "Price"
+      },
+      "data_binding": {
+        "x": "Location",
+        "y": "Price",
+        "group_by": "Location",
+        "date_field": null
+      },
+      "primary_fields": {
+        "metric": "Price",
+        "comparison_metric": null,
+        "group": "Location",
+        "date": null,
+        "identifier": null,
+        "aggregation": "sum"
+      },
+      "presentation": {
+        "mode": "summary",
+        "primary_asset_type": "insight_block",
+        "frontend_supported": false
+      },
+      "chart": {
+        "type": "price_by_location_segment_chart",
+        "recommended_visuals": [
+          "price_by_location_segment_chart",
+          "price_location_heatmap"
+        ]
+      },
+      "scoring": {
+        "confidence": 0.95,
+        "confidence_label": "High confidence",
+        "information_gain": 1.394,
+        "priority": "medium",
+        "readiness": {
+          "score": 100,
+          "label": "Ready",
+          "status": "ready_now"
+        }
+      },
+      "copy": {
+        "description": "Segment the dataset by location and compare price across groups to identify meaningful differences in behavior or performance.",
+        "recommendation_explanation": "This analysis can show whether different location segments behave differently on price, which may help identify stronger segments, weaker segments, or uneven performance across the dataset.",
+        "next_step": "Launch a segmented comparison of 'Price' across 'Location' groups."
+      }
+    },
+    {
+      "analysis_code": "distribution_analysis",
+      "title": "Price Distribution",
+      "display_title": "How price is distributed",
+      "display_subtitle": "Shows the typical range of Price and whether unusual values stand out",
+      "display_x_label": "Price",
+      "display_y_label": "Frequency",
+      "status": "recommended_now",
+      "analysis_tier": "overview",
+      "priority": "medium",
+      "confidence": 0.9,
+      "confidence_label": "High confidence",
+      "suggested_variables": [
+        "Price",
+        "Location",
+        "Product type"
+      ],
+      "reason": "A numeric metric ('Price') was detected, making distribution analysis useful.",
+      "blocking_issues": [],
+      "readiness": {
+        "score": 100,
+        "label": "Ready",
+        "status": "ready_now"
+      },
+      "recommended_visuals": [
+        "histogram",
+        "price_histogram",
+        "price_density_curve",
+        "price_discrete_bar",
+        "price_summary_card"
+      ],
+      "description": "Examine the distribution of price to identify typical ranges, spread, skew, and potential outliers.",
+      "recommendation_explanation": "This analysis helps show what values are typical for price, how widely they vary, and whether unusual values or skewed patterns may be affecting the metric.",
+      "evidence": {
+        "dataset_quality_score": 100.0,
+        "avg_required_missing_pct": 0.0,
+        "selected_metric": "Price",
+        "metric_health": "Excellent",
+        "metric_missing_pct": 0.0
+      },
+      "action": {
+        "can_auto_run": true,
+        "default_chart": "histogram",
+        "default_date": null,
+        "default_metric": "Price",
+        "default_group": null,
+        "default_identifier": null,
+        "default_x": null,
+        "default_y": null,
+        "next_step": "Launch a distribution view for 'Price' to inspect spread and outliers."
+      },
+      "ui": {
+        "category": "distribution",
+        "badge": "Recommended",
+        "icon": "stacked_bar_chart"
+      },
+      "semantics": {
+        "analysis_family": "distribution",
+        "question_type": "understand_spread",
+        "primary_metric": "Price",
+        "primary_group": null,
+        "primary_date": null,
+        "primary_identifier": null,
+        "secondary_metric": null,
+        "aggregation": "frequency"
+      },
+      "information_gain_score": 1.382,
+      "signal_filter_status": "passed",
+      "signal_filter_reason": null,
+      "included_in_overview": true,
+      "overview_rank": 3,
+      "analysis_type": "distribution",
+      "display": {
+        "title": "How price is distributed",
+        "subtitle": "Shows the typical range of Price and whether unusual values stand out",
+        "x_label": "Price",
+        "y_label": "Frequency"
+      },
+      "data_binding": {
+        "x": "Price",
+        "y": "frequency",
+        "group_by": null,
+        "date_field": null
+      },
+      "primary_fields": {
+        "metric": "Price",
+        "comparison_metric": null,
+        "group": null,
+        "date": null,
+        "identifier": null,
+        "aggregation": "frequency"
+      },
+      "presentation": {
+        "mode": "chart",
+        "primary_asset_type": "chart",
+        "frontend_supported": true
+      },
+      "chart": {
+        "type": "histogram",
+        "recommended_visuals": [
+          "histogram",
+          "price_histogram",
+          "price_density_curve",
+          "price_discrete_bar",
+          "price_summary_card"
+        ]
+      },
+      "scoring": {
+        "confidence": 0.9,
+        "confidence_label": "High confidence",
+        "information_gain": 1.382,
+        "priority": "medium",
+        "readiness": {
+          "score": 100,
+          "label": "Ready",
+          "status": "ready_now"
+        }
+      },
+      "copy": {
+        "description": "Examine the distribution of price to identify typical ranges, spread, skew, and potential outliers.",
+        "recommendation_explanation": "This analysis helps show what values are typical for price, how widely they vary, and whether unusual values or skewed patterns may be affecting the metric.",
+        "next_step": "Launch a distribution view for 'Price' to inspect spread and outliers."
+      }
+    },
+    {
+      "analysis_code": "distribution_analysis",
+      "title": "Revenue Generated Distribution",
+      "display_title": "How revenue generated is distributed",
+      "display_subtitle": "Shows the typical range of Revenue Generated and whether unusual values stand out",
+      "display_x_label": "Revenue Generated",
+      "display_y_label": "Frequency",
+      "status": "recommended_now",
+      "analysis_tier": "overview",
+      "priority": "medium",
+      "confidence": 0.9,
+      "confidence_label": "High confidence",
+      "suggested_variables": [
+        "Product type",
+        "Location",
+        "Revenue generated"
+      ],
+      "reason": "A numeric metric ('Revenue generated') was detected, making distribution analysis useful.",
+      "blocking_issues": [],
+      "readiness": {
+        "score": 100,
+        "label": "Ready",
+        "status": "ready_now"
+      },
+      "recommended_visuals": [
+        "histogram",
+        "revenue_generated_histogram",
+        "revenue_generated_density_curve",
+        "revenue_generated_discrete_bar",
+        "revenue_generated_summary_card"
+      ],
+      "description": "Examine the distribution of revenue generated to identify typical ranges, spread, skew, and potential outliers.",
+      "recommendation_explanation": "This analysis helps show what values are typical for revenue generated, how widely they vary, and whether unusual values or skewed patterns may be affecting the metric.",
+      "evidence": {
+        "dataset_quality_score": 100.0,
+        "avg_required_missing_pct": 0.0,
+        "selected_metric": "Revenue generated",
+        "metric_health": "Excellent",
+        "metric_missing_pct": 0.0
+      },
+      "action": {
+        "can_auto_run": true,
+        "default_chart": "histogram",
+        "default_date": null,
+        "default_metric": "Revenue generated",
+        "default_group": null,
+        "default_identifier": null,
+        "default_x": null,
+        "default_y": null,
+        "next_step": "Launch a distribution view for 'Revenue generated' to inspect spread and outliers."
+      },
+      "ui": {
+        "category": "distribution",
+        "badge": "Recommended",
+        "icon": "stacked_bar_chart"
+      },
+      "semantics": {
+        "analysis_family": "distribution",
+        "question_type": "understand_spread",
+        "primary_metric": "Revenue generated",
+        "primary_group": null,
+        "primary_date": null,
+        "primary_identifier": null,
+        "secondary_metric": null,
+        "aggregation": "frequency"
+      },
+      "information_gain_score": 1.382,
+      "signal_filter_status": "passed",
+      "signal_filter_reason": null,
+      "included_in_overview": true,
+      "overview_rank": 4,
+      "analysis_type": "distribution",
+      "display": {
+        "title": "How revenue generated is distributed",
+        "subtitle": "Shows the typical range of Revenue Generated and whether unusual values stand out",
+        "x_label": "Revenue Generated",
+        "y_label": "Frequency"
+      },
+      "data_binding": {
+        "x": "Revenue generated",
+        "y": "frequency",
+        "group_by": null,
+        "date_field": null
+      },
+      "primary_fields": {
+        "metric": "Revenue generated",
+        "comparison_metric": null,
+        "group": null,
+        "date": null,
+        "identifier": null,
+        "aggregation": "frequency"
+      },
+      "presentation": {
+        "mode": "chart",
+        "primary_asset_type": "chart",
+        "frontend_supported": true
+      },
+      "chart": {
+        "type": "histogram",
+        "recommended_visuals": [
+          "histogram",
+          "revenue_generated_histogram",
+          "revenue_generated_density_curve",
+          "revenue_generated_discrete_bar",
+          "revenue_generated_summary_card"
+        ]
+      },
+      "scoring": {
+        "confidence": 0.9,
+        "confidence_label": "High confidence",
+        "information_gain": 1.382,
+        "priority": "medium",
+        "readiness": {
+          "score": 100,
+          "label": "Ready",
+          "status": "ready_now"
+        }
+      },
+      "copy": {
+        "description": "Examine the distribution of revenue generated to identify typical ranges, spread, skew, and potential outliers.",
+        "recommendation_explanation": "This analysis helps show what values are typical for revenue generated, how widely they vary, and whether unusual values or skewed patterns may be affecting the metric.",
+        "next_step": "Launch a distribution view for 'Revenue generated' to inspect spread and outliers."
+      }
+    },
+    {
+      "analysis_code": "category_performance_analysis",
+      "title": "Location by Shipping Costs",
+      "display_title": "How shipping costs differ by location",
+      "display_subtitle": "Compares Shipping Costs across Location groups",
+      "display_x_label": "Location",
+      "display_y_label": "Shipping Costs",
+      "status": "recommended_now",
+      "analysis_tier": "overview",
+      "priority": "high",
+      "confidence": 0.95,
+      "confidence_label": "High confidence",
+      "suggested_variables": [
+        "Shipping costs",
+        "Location",
+        "Product type",
+        "Customer demographics"
+      ],
+      "reason": "A grouping field ('Location') and metric ('Shipping costs') were detected, supporting grouped performance comparison.",
+      "blocking_issues": [],
+      "readiness": {
+        "score": 100,
+        "label": "Ready",
+        "status": "ready_now"
+      },
+      "recommended_visuals": [
+        "bar_chart",
+        "shipping_costs_by_location_bar_chart",
+        "shipping_costs_by_location_summary_table"
+      ],
+      "description": "Compare shipping costs across location groups to identify differences in performance, concentration, or variation.",
+      "recommendation_explanation": "This analysis shows how shipping costs differ across location groups, making it easier to spot stronger groups, weaker groups, and possible concentration.",
+      "evidence": {
+        "dataset_quality_score": 100.0,
+        "avg_required_missing_pct": 0.0,
+        "selected_metric": "Shipping costs",
+        "metric_health": "Excellent",
+        "metric_missing_pct": 0.0,
+        "selected_group": "Location",
+        "group_health": "Excellent",
+        "group_missing_pct": 0.0
+      },
+      "action": {
+        "can_auto_run": true,
+        "default_chart": "bar_chart",
+        "default_date": null,
+        "default_metric": "Shipping costs",
+        "default_group": "Location",
+        "default_identifier": null,
+        "default_x": null,
+        "default_y": null,
+        "next_step": "Launch a grouped comparison of 'Shipping costs' across 'Location' groups."
+      },
+      "ui": {
+        "category": "comparison",
+        "badge": "Recommended",
+        "icon": "bar_chart"
+      },
+      "semantics": {
+        "analysis_family": "group_comparison",
+        "question_type": "compare_groups",
+        "primary_metric": "Shipping costs",
+        "primary_group": "Location",
+        "primary_date": null,
+        "primary_identifier": null,
+        "secondary_metric": null,
+        "aggregation": "sum"
+      },
+      "information_gain_score": 1.37,
+      "signal_filter_status": "passed",
+      "signal_filter_reason": null,
+      "included_in_overview": true,
+      "overview_rank": 5,
+      "analysis_type": "category",
+      "display": {
+        "title": "How shipping costs differ by location",
+        "subtitle": "Compares Shipping Costs across Location groups",
+        "x_label": "Location",
+        "y_label": "Shipping Costs"
+      },
+      "data_binding": {
+        "x": "Location",
+        "y": "Shipping costs",
+        "group_by": "Location",
+        "date_field": null
+      },
+      "primary_fields": {
+        "metric": "Shipping costs",
+        "comparison_metric": null,
+        "group": "Location",
+        "date": null,
+        "identifier": null,
+        "aggregation": "sum"
+      },
+      "presentation": {
+        "mode": "chart",
+        "primary_asset_type": "chart",
+        "frontend_supported": true
+      },
+      "chart": {
+        "type": "bar_chart",
+        "recommended_visuals": [
+          "bar_chart",
+          "shipping_costs_by_location_bar_chart",
+          "shipping_costs_by_location_summary_table"
+        ]
+      },
+      "scoring": {
+        "confidence": 0.95,
+        "confidence_label": "High confidence",
+        "information_gain": 1.37,
+        "priority": "high",
+        "readiness": {
+          "score": 100,
+          "label": "Ready",
+          "status": "ready_now"
+        }
+      },
+      "copy": {
+        "description": "Compare shipping costs across location groups to identify differences in performance, concentration, or variation.",
+        "recommendation_explanation": "This analysis shows how shipping costs differ across location groups, making it easier to spot stronger groups, weaker groups, and possible concentration.",
+        "next_step": "Launch a grouped comparison of 'Shipping costs' across 'Location' groups."
+      }
+    },
+    {
+      "analysis_code": "distribution_analysis",
+      "title": "Shipping Costs Distribution",
+      "display_title": "How shipping costs are distributed",
+      "display_subtitle": "Shows the typical range of Shipping Costs and whether unusual values stand out",
+      "display_x_label": "Shipping Costs",
+      "display_y_label": "Frequency",
+      "status": "recommended_now",
+      "analysis_tier": "secondary",
+      "priority": "medium",
+      "confidence": 0.9,
+      "confidence_label": "High confidence",
+      "suggested_variables": [
+        "Shipping costs",
+        "Location",
+        "Product type"
+      ],
+      "reason": "A numeric metric ('Shipping costs') was detected, making distribution analysis useful.",
+      "blocking_issues": [],
+      "readiness": {
+        "score": 100,
+        "label": "Ready",
+        "status": "ready_now"
+      },
+      "recommended_visuals": [
+        "histogram",
+        "shipping_costs_histogram",
+        "shipping_costs_density_curve",
+        "shipping_costs_discrete_bar",
+        "shipping_costs_summary_card"
+      ],
+      "description": "Examine the distribution of shipping costs to identify typical ranges, spread, skew, and potential outliers.",
+      "recommendation_explanation": "This analysis helps show what values are typical for shipping costs, how widely they vary, and whether unusual values or skewed patterns may be affecting the metric.",
+      "evidence": {
+        "dataset_quality_score": 100.0,
+        "avg_required_missing_pct": 0.0,
+        "selected_metric": "Shipping costs",
+        "metric_health": "Excellent",
+        "metric_missing_pct": 0.0
+      },
+      "action": {
+        "can_auto_run": true,
+        "default_chart": "histogram",
+        "default_date": null,
+        "default_metric": "Shipping costs",
+        "default_group": null,
+        "default_identifier": null,
+        "default_x": null,
+        "default_y": null,
+        "next_step": "Launch a distribution view for 'Shipping costs' to inspect spread and outliers."
+      },
+      "ui": {
+        "category": "distribution",
+        "badge": "Recommended",
+        "icon": "stacked_bar_chart"
+      },
+      "semantics": {
+        "analysis_family": "distribution",
+        "question_type": "understand_spread",
+        "primary_metric": "Shipping costs",
+        "primary_group": null,
+        "primary_date": null,
+        "primary_identifier": null,
+        "secondary_metric": null,
+        "aggregation": "frequency"
+      },
+      "information_gain_score": 1.274,
+      "signal_filter_status": "passed",
+      "signal_filter_reason": null,
+      "included_in_overview": false,
+      "overview_rank": null,
+      "analysis_type": "distribution",
+      "display": {
+        "title": "How shipping costs are distributed",
+        "subtitle": "Shows the typical range of Shipping Costs and whether unusual values stand out",
+        "x_label": "Shipping Costs",
+        "y_label": "Frequency"
+      },
+      "data_binding": {
+        "x": "Shipping costs",
+        "y": "frequency",
+        "group_by": null,
+        "date_field": null
+      },
+      "primary_fields": {
+        "metric": "Shipping costs",
+        "comparison_metric": null,
+        "group": null,
+        "date": null,
+        "identifier": null,
+        "aggregation": "frequency"
+      },
+      "presentation": {
+        "mode": "chart",
+        "primary_asset_type": "chart",
+        "frontend_supported": true
+      },
+      "chart": {
+        "type": "histogram",
+        "recommended_visuals": [
+          "histogram",
+          "shipping_costs_histogram",
+          "shipping_costs_density_curve",
+          "shipping_costs_discrete_bar",
+          "shipping_costs_summary_card"
+        ]
+      },
+      "scoring": {
+        "confidence": 0.9,
+        "confidence_label": "High confidence",
+        "information_gain": 1.274,
+        "priority": "medium",
+        "readiness": {
+          "score": 100,
+          "label": "Ready",
+          "status": "ready_now"
+        }
+      },
+      "copy": {
+        "description": "Examine the distribution of shipping costs to identify typical ranges, spread, skew, and potential outliers.",
+        "recommendation_explanation": "This analysis helps show what values are typical for shipping costs, how widely they vary, and whether unusual values or skewed patterns may be affecting the metric.",
+        "next_step": "Launch a distribution view for 'Shipping costs' to inspect spread and outliers."
+      }
+    },
+    {
+      "analysis_code": "distribution_analysis",
+      "title": "Manufacturing Costs Distribution",
+      "display_title": "How manufacturing costs are distributed",
+      "display_subtitle": "Shows the typical range of Manufacturing Costs and whether unusual values stand out",
+      "display_x_label": "Manufacturing Costs",
+      "display_y_label": "Frequency",
+      "status": "recommended_now",
+      "analysis_tier": "overview",
+      "priority": "medium",
+      "confidence": 0.9,
+      "confidence_label": "High confidence",
+      "suggested_variables": [
+        "Product type",
+        "Location",
+        "Manufacturing costs"
+      ],
+      "reason": "A numeric metric ('Manufacturing costs') was detected, making distribution analysis useful.",
+      "blocking_issues": [],
+      "readiness": {
+        "score": 100,
+        "label": "Ready",
+        "status": "ready_now"
+      },
+      "recommended_visuals": [
+        "histogram",
+        "manufacturing_costs_histogram",
+        "manufacturing_costs_density_curve",
+        "manufacturing_costs_discrete_bar",
+        "manufacturing_costs_summary_card"
+      ],
+      "description": "Examine the distribution of manufacturing costs to identify typical ranges, spread, skew, and potential outliers.",
+      "recommendation_explanation": "This analysis helps show what values are typical for manufacturing costs, how widely they vary, and whether unusual values or skewed patterns may be affecting the metric.",
+      "evidence": {
+        "dataset_quality_score": 100.0,
+        "avg_required_missing_pct": 0.0,
+        "selected_metric": "Manufacturing costs",
+        "metric_health": "Excellent",
+        "metric_missing_pct": 0.0
+      },
+      "action": {
+        "can_auto_run": true,
+        "default_chart": "histogram",
+        "default_date": null,
+        "default_metric": "Manufacturing costs",
+        "default_group": null,
+        "default_identifier": null,
+        "default_x": null,
+        "default_y": null,
+        "next_step": "Launch a distribution view for 'Manufacturing costs' to inspect spread and outliers."
+      },
+      "ui": {
+        "category": "distribution",
+        "badge": "Recommended",
+        "icon": "stacked_bar_chart"
+      },
+      "semantics": {
+        "analysis_family": "distribution",
+        "question_type": "understand_spread",
+        "primary_metric": "Manufacturing costs",
+        "primary_group": null,
+        "primary_date": null,
+        "primary_identifier": null,
+        "secondary_metric": null,
+        "aggregation": "frequency"
+      },
+      "information_gain_score": 1.274,
+      "signal_filter_status": "passed",
+      "signal_filter_reason": null,
+      "included_in_overview": true,
+      "overview_rank": 6,
+      "analysis_type": "distribution",
+      "display": {
+        "title": "How manufacturing costs are distributed",
+        "subtitle": "Shows the typical range of Manufacturing Costs and whether unusual values stand out",
+        "x_label": "Manufacturing Costs",
+        "y_label": "Frequency"
+      },
+      "data_binding": {
+        "x": "Manufacturing costs",
+        "y": "frequency",
+        "group_by": null,
+        "date_field": null
+      },
+      "primary_fields": {
+        "metric": "Manufacturing costs",
+        "comparison_metric": null,
+        "group": null,
+        "date": null,
+        "identifier": null,
+        "aggregation": "frequency"
+      },
+      "presentation": {
+        "mode": "chart",
+        "primary_asset_type": "chart",
+        "frontend_supported": true
+      },
+      "chart": {
+        "type": "histogram",
+        "recommended_visuals": [
+          "histogram",
+          "manufacturing_costs_histogram",
+          "manufacturing_costs_density_curve",
+          "manufacturing_costs_discrete_bar",
+          "manufacturing_costs_summary_card"
+        ]
+      },
+      "scoring": {
+        "confidence": 0.9,
+        "confidence_label": "High confidence",
+        "information_gain": 1.274,
+        "priority": "medium",
+        "readiness": {
+          "score": 100,
+          "label": "Ready",
+          "status": "ready_now"
+        }
+      },
+      "copy": {
+        "description": "Examine the distribution of manufacturing costs to identify typical ranges, spread, skew, and potential outliers.",
+        "recommendation_explanation": "This analysis helps show what values are typical for manufacturing costs, how widely they vary, and whether unusual values or skewed patterns may be affecting the metric.",
+        "next_step": "Launch a distribution view for 'Manufacturing costs' to inspect spread and outliers."
+      }
+    },
+    {
+      "analysis_code": "category_performance_analysis",
+      "title": "Shipping Carriers by Price",
+      "display_title": "How price differs by shipping carriers",
+      "display_subtitle": "Compares Price across Shipping Carriers groups",
+      "display_x_label": "Shipping Carriers",
+      "display_y_label": "Price",
+      "status": "recommended_now",
+      "analysis_tier": "secondary",
+      "priority": "high",
+      "confidence": 0.95,
+      "confidence_label": "High confidence",
+      "suggested_variables": [
+        "Price",
+        "Shipping carriers",
+        "Location",
+        "Product type"
+      ],
+      "reason": "A grouping field ('Shipping carriers') and metric ('Price') were detected, supporting grouped performance comparison.",
+      "blocking_issues": [],
+      "readiness": {
+        "score": 100,
+        "label": "Ready",
+        "status": "ready_now"
+      },
+      "recommended_visuals": [
+        "bar_chart",
+        "price_by_shipping_carriers_bar_chart",
+        "price_by_shipping_carriers_summary_table"
+      ],
+      "description": "Compare price across shipping carriers groups to identify differences in performance, concentration, or variation.",
+      "recommendation_explanation": "This analysis shows how price differs across shipping carriers groups, making it easier to spot stronger groups, weaker groups, and possible concentration.",
+      "evidence": {
+        "dataset_quality_score": 100.0,
+        "avg_required_missing_pct": 0.0,
+        "selected_metric": "Price",
+        "metric_health": "Excellent",
+        "metric_missing_pct": 0.0,
+        "selected_group": "Shipping carriers",
+        "group_health": "Excellent",
+        "group_missing_pct": 0.0
+      },
+      "action": {
+        "can_auto_run": true,
+        "default_chart": "bar_chart",
+        "default_date": null,
+        "default_metric": "Price",
+        "default_group": "Shipping carriers",
+        "default_identifier": null,
+        "default_x": null,
+        "default_y": null,
+        "next_step": "Launch a grouped comparison of 'Price' across 'Shipping carriers' groups."
+      },
+      "ui": {
+        "category": "comparison",
+        "badge": "Recommended",
+        "icon": "bar_chart"
+      },
+      "semantics": {
+        "analysis_family": "group_comparison",
+        "question_type": "compare_groups",
+        "primary_metric": "Price",
+        "primary_group": "Shipping carriers",
+        "primary_date": null,
+        "primary_identifier": null,
+        "secondary_metric": null,
+        "aggregation": "sum"
+      },
+      "information_gain_score": 1.27,
+      "signal_filter_status": "passed",
+      "signal_filter_reason": null,
+      "included_in_overview": false,
+      "overview_rank": null,
+      "analysis_type": "category",
+      "display": {
+        "title": "How price differs by shipping carriers",
+        "subtitle": "Compares Price across Shipping Carriers groups",
+        "x_label": "Shipping Carriers",
+        "y_label": "Price"
+      },
+      "data_binding": {
+        "x": "Shipping carriers",
+        "y": "Price",
+        "group_by": "Shipping carriers",
+        "date_field": null
+      },
+      "primary_fields": {
+        "metric": "Price",
+        "comparison_metric": null,
+        "group": "Shipping carriers",
+        "date": null,
+        "identifier": null,
+        "aggregation": "sum"
+      },
+      "presentation": {
+        "mode": "chart",
+        "primary_asset_type": "chart",
+        "frontend_supported": true
+      },
+      "chart": {
+        "type": "bar_chart",
+        "recommended_visuals": [
+          "bar_chart",
+          "price_by_shipping_carriers_bar_chart",
+          "price_by_shipping_carriers_summary_table"
+        ]
+      },
+      "scoring": {
+        "confidence": 0.95,
+        "confidence_label": "High confidence",
+        "information_gain": 1.27,
+        "priority": "high",
+        "readiness": {
+          "score": 100,
+          "label": "Ready",
+          "status": "ready_now"
+        }
+      },
+      "copy": {
+        "description": "Compare price across shipping carriers groups to identify differences in performance, concentration, or variation.",
+        "recommendation_explanation": "This analysis shows how price differs across shipping carriers groups, making it easier to spot stronger groups, weaker groups, and possible concentration.",
+        "next_step": "Launch a grouped comparison of 'Price' across 'Shipping carriers' groups."
+      }
+    },
+    {
+      "analysis_code": "category_performance_analysis",
+      "title": "Shipping Carriers by Revenue Generated",
+      "display_title": "Which shipping carrierss drive higher revenue generated",
+      "display_subtitle": "Compares Revenue Generated across Shipping Carriers groups",
+      "display_x_label": "Shipping Carriers",
+      "display_y_label": "Revenue Generated",
+      "status": "recommended_now",
+      "analysis_tier": "secondary",
+      "priority": "high",
+      "confidence": 0.95,
+      "confidence_label": "High confidence",
+      "suggested_variables": [
+        "Product type",
+        "Shipping carriers",
+        "Location",
+        "Revenue generated"
+      ],
+      "reason": "A grouping field ('Shipping carriers') and metric ('Revenue generated') were detected, supporting grouped performance comparison.",
+      "blocking_issues": [],
+      "readiness": {
+        "score": 100,
+        "label": "Ready",
+        "status": "ready_now"
+      },
+      "recommended_visuals": [
+        "bar_chart",
+        "revenue_generated_by_shipping_carriers_bar_chart",
+        "revenue_generated_by_shipping_carriers_summary_table"
+      ],
+      "description": "Compare revenue generated across shipping carriers groups to identify differences in performance, concentration, or variation.",
+      "recommendation_explanation": "This analysis shows how revenue generated differs across shipping carriers groups, making it easier to spot stronger groups, weaker groups, and possible concentration.",
+      "evidence": {
+        "dataset_quality_score": 100.0,
+        "avg_required_missing_pct": 0.0,
+        "selected_metric": "Revenue generated",
+        "metric_health": "Excellent",
+        "metric_missing_pct": 0.0,
+        "selected_group": "Shipping carriers",
+        "group_health": "Excellent",
+        "group_missing_pct": 0.0
+      },
+      "action": {
+        "can_auto_run": true,
+        "default_chart": "bar_chart",
+        "default_date": null,
+        "default_metric": "Revenue generated",
+        "default_group": "Shipping carriers",
+        "default_identifier": null,
+        "default_x": null,
+        "default_y": null,
+        "next_step": "Launch a grouped comparison of 'Revenue generated' across 'Shipping carriers' groups."
+      },
+      "ui": {
+        "category": "comparison",
+        "badge": "Recommended",
+        "icon": "bar_chart"
+      },
+      "semantics": {
+        "analysis_family": "group_comparison",
+        "question_type": "compare_groups",
+        "primary_metric": "Revenue generated",
+        "primary_group": "Shipping carriers",
+        "primary_date": null,
+        "primary_identifier": null,
+        "secondary_metric": null,
+        "aggregation": "sum"
+      },
+      "information_gain_score": 1.27,
+      "signal_filter_status": "passed",
+      "signal_filter_reason": null,
+      "included_in_overview": false,
+      "overview_rank": null,
+      "analysis_type": "category",
+      "display": {
+        "title": "Which shipping carrierss drive higher revenue generated",
+        "subtitle": "Compares Revenue Generated across Shipping Carriers groups",
+        "x_label": "Shipping Carriers",
+        "y_label": "Revenue Generated"
+      },
+      "data_binding": {
+        "x": "Shipping carriers",
+        "y": "Revenue generated",
+        "group_by": "Shipping carriers",
+        "date_field": null
+      },
+      "primary_fields": {
+        "metric": "Revenue generated",
+        "comparison_metric": null,
+        "group": "Shipping carriers",
+        "date": null,
+        "identifier": null,
+        "aggregation": "sum"
+      },
+      "presentation": {
+        "mode": "chart",
+        "primary_asset_type": "chart",
+        "frontend_supported": true
+      },
+      "chart": {
+        "type": "bar_chart",
+        "recommended_visuals": [
+          "bar_chart",
+          "revenue_generated_by_shipping_carriers_bar_chart",
+          "revenue_generated_by_shipping_carriers_summary_table"
+        ]
+      },
+      "scoring": {
+        "confidence": 0.95,
+        "confidence_label": "High confidence",
+        "information_gain": 1.27,
+        "priority": "high",
+        "readiness": {
+          "score": 100,
+          "label": "Ready",
+          "status": "ready_now"
+        }
+      },
+      "copy": {
+        "description": "Compare revenue generated across shipping carriers groups to identify differences in performance, concentration, or variation.",
+        "recommendation_explanation": "This analysis shows how revenue generated differs across shipping carriers groups, making it easier to spot stronger groups, weaker groups, and possible concentration.",
+        "next_step": "Launch a grouped comparison of 'Revenue generated' across 'Shipping carriers' groups."
+      }
+    }
+  ],
   "analysis_recommendation_summary": {
     "status": "recommendations_available",
     "message": "6 strong analysis recommendation(s) identified.",
@@ -1472,10 +2743,10 @@
       "analysis_title": "Location by Price",
       "artifact_id": "insight_concentration",
       "title": "Concentration Check",
-      "short_summary": "Chennai contributes 27.71% of overall price.",
+      "short_summary": "27.71% of overall price comes from Chennai.",
       "message": "The top Location group contributes 27.71% of total Price.",
-      "why_it_matters": "If one group contributes a large share of price, overall performance may depend heavily on it.",
-      "next_step": "Review whether this concentration reflects broad strength or only a narrow spike.",
+      "why_it_matters": "A large share concentrated in one group can make overall results more sensitive to changes there.",
+      "next_step": "Check whether this concentration is stable or driven by a small number of unusually large records.",
       "severity": "info",
       "evidence": {
         "top_group": "Chennai",
@@ -1495,7 +2766,7 @@
         {
           "analysis_code": "category_performance_analysis",
           "title": "Bottom Group",
-          "short_summary": "revenue generated is lowest in Delhi.",
+          "short_summary": "Delhi has the lowest revenue generated.",
           "priority_score": 64.25
         }
       ]
@@ -1505,10 +2776,10 @@
       "analysis_title": "Location by Revenue Generated",
       "artifact_id": "insight_bottom_group",
       "title": "Bottom Group",
-      "short_summary": "revenue generated is lowest in Delhi.",
+      "short_summary": "Delhi has the lowest revenue generated.",
       "message": "The lowest-performing Location was 'Delhi' with Revenue generated = 5401.85.",
-      "why_it_matters": "This weaker result may reflect lower volume, weaker performance, or structural differences in that group.",
-      "next_step": "Review whether Delhi has fewer records or meaningfully different behavior than the stronger groups.",
+      "why_it_matters": "Delhi may have lower activity, lower demand, or fewer high-value records.",
+      "next_step": "Check whether the lower result in Delhi reflects low volume, pricing, or data sparsity.",
       "severity": "info",
       "evidence": {
         "Location": "Delhi",
@@ -3718,9 +4989,9 @@
               "Location": "Chennai",
               "Price": 68.14740116229075
             },
-            "why_it_matters": "Chennai appears to be contributing more strongly than the other groups.",
-            "next_step": "Review whether Chennai leads because of higher volume, larger values, or more consistent performance.",
-            "short_summary": "Chennai leads on price.",
+            "why_it_matters": "This suggests Chennai is an important driver of overall performance.",
+            "next_step": "Compare Chennai with the next strongest group to see what is driving the gap.",
+            "short_summary": "Chennai has the highest price.",
             "priority": {
               "score": 59.5,
               "label": "low",
@@ -3745,9 +5016,9 @@
               "Location": "Bangalore",
               "Price": 38.03316869295659
             },
-            "why_it_matters": "Bangalore may have lower activity, lower demand, or fewer high-value records.",
-            "next_step": "Check whether the lower result in Bangalore reflects low volume, pricing, or data sparsity.",
-            "short_summary": "Bangalore has the lowest price.",
+            "why_it_matters": "This weaker result may reflect lower volume, weaker performance, or structural differences in that group.",
+            "next_step": "Review whether Bangalore has fewer records or meaningfully different behavior than the stronger groups.",
+            "short_summary": "price is lowest in Bangalore.",
             "priority": {
               "score": 64.25,
               "label": "medium",
@@ -3773,9 +5044,9 @@
               "top_group_share_pct": 27.71,
               "group_count": 5
             },
-            "why_it_matters": "If one group contributes a large share of price, overall performance may depend heavily on it.",
-            "next_step": "Review whether this concentration reflects broad strength or only a narrow spike.",
-            "short_summary": "Chennai contributes 27.71% of overall price.",
+            "why_it_matters": "A large share concentrated in one group can make overall results more sensitive to changes there.",
+            "next_step": "Check whether this concentration is stable or driven by a small number of unusually large records.",
+            "short_summary": "27.71% of overall price comes from Chennai.",
             "priority": {
               "score": 66.0,
               "label": "medium",
@@ -3921,9 +5192,9 @@
               "Location": "Mumbai",
               "Revenue generated": 6261.5921307940625
             },
-            "why_it_matters": "Mumbai appears to be contributing more strongly than the other groups.",
-            "next_step": "Review whether Mumbai leads because of higher volume, larger values, or more consistent performance.",
-            "short_summary": "Mumbai leads on revenue generated.",
+            "why_it_matters": "This suggests Mumbai is an important driver of overall performance.",
+            "next_step": "Compare Mumbai with the next strongest group to see what is driving the gap.",
+            "short_summary": "Mumbai has the highest revenue generated.",
             "priority": {
               "score": 59.5,
               "label": "low",
@@ -3948,9 +5219,9 @@
               "Location": "Delhi",
               "Revenue generated": 5401.846748323534
             },
-            "why_it_matters": "This weaker result may reflect lower volume, weaker performance, or structural differences in that group.",
-            "next_step": "Review whether Delhi has fewer records or meaningfully different behavior than the stronger groups.",
-            "short_summary": "revenue generated is lowest in Delhi.",
+            "why_it_matters": "Delhi may have lower activity, lower demand, or fewer high-value records.",
+            "next_step": "Check whether the lower result in Delhi reflects low volume, pricing, or data sparsity.",
+            "short_summary": "Delhi has the lowest revenue generated.",
             "priority": {
               "score": 64.25,
               "label": "medium",
@@ -3976,9 +5247,9 @@
               "top_group_share_pct": 21.74,
               "group_count": 5
             },
-            "why_it_matters": "This level of concentration suggests performance may not be evenly distributed across groups.",
-            "next_step": "Compare record counts and average values to see what is driving the concentration.",
-            "short_summary": "Mumbai accounts for 21.74% of total revenue generated.",
+            "why_it_matters": "A large share concentrated in one group can make overall results more sensitive to changes there.",
+            "next_step": "Check whether this concentration is stable or driven by a small number of unusually large records.",
+            "short_summary": "21.74% of overall revenue generated comes from Mumbai.",
             "priority": {
               "score": 46.25,
               "label": "low",
@@ -4417,9 +5688,9 @@
               "max": 9866.47,
               "std_dev": 2732.84
             },
-            "why_it_matters": "This pattern suggests the metric is not being dominated by only a small number of unusual values.",
-            "next_step": "Review whether the distribution stays similarly balanced across time or segments.",
-            "short_summary": "Revenue generated looks reasonably well distributed overall.",
+            "why_it_matters": "A more balanced distribution makes summary statistics easier to interpret.",
+            "next_step": "Use the median and percentile ranges to confirm what a typical value looks like.",
+            "short_summary": "Revenue generated appears fairly balanced across its range.",
             "priority": {
               "score": 55.25,
               "label": "low",
@@ -4446,9 +5717,9 @@
               "lower_bound": -5348.85,
               "upper_bound": 16415.67
             },
-            "why_it_matters": "This pattern suggests the metric is not being dominated by only a small number of unusual values.",
-            "next_step": "Review whether the distribution stays similarly balanced across time or segments.",
-            "short_summary": "Revenue generated looks reasonably well distributed overall.",
+            "why_it_matters": "A more balanced distribution makes summary statistics easier to interpret.",
+            "next_step": "Use the median and percentile ranges to confirm what a typical value looks like.",
+            "short_summary": "Revenue generated appears fairly balanced across its range.",
             "priority": {
               "score": 39.9,
               "label": "low",
@@ -4594,9 +5865,9 @@
               "Location": "Mumbai",
               "Shipping costs": 6.248988771672237
             },
-            "why_it_matters": "Mumbai appears to be contributing more strongly than the other groups.",
-            "next_step": "Review whether Mumbai leads because of higher volume, larger values, or more consistent performance.",
-            "short_summary": "Mumbai leads on shipping costs.",
+            "why_it_matters": "This suggests Mumbai is an important driver of overall performance.",
+            "next_step": "Compare Mumbai with the next strongest group to see what is driving the gap.",
+            "short_summary": "Mumbai has the highest shipping costs.",
             "priority": {
               "score": 59.5,
               "label": "low",
@@ -4621,9 +5892,9 @@
               "Location": "Chennai",
               "Shipping costs": 4.689078824802844
             },
-            "why_it_matters": "This suggests Chennai is underperforming relative to the stronger groups.",
-            "next_step": "Compare Chennai with the strongest group to identify the biggest performance gap.",
-            "short_summary": "Chennai trails the other groups.",
+            "why_it_matters": "This weaker result may reflect lower volume, weaker performance, or structural differences in that group.",
+            "next_step": "Review whether Chennai has fewer records or meaningfully different behavior than the stronger groups.",
+            "short_summary": "shipping costs is lowest in Chennai.",
             "priority": {
               "score": 64.25,
               "label": "medium",
@@ -4649,9 +5920,9 @@
               "top_group_share_pct": 22.71,
               "group_count": 5
             },
-            "why_it_matters": "A large share concentrated in one group can make overall results more sensitive to changes there.",
-            "next_step": "Check whether this concentration is stable or driven by a small number of unusually large records.",
-            "short_summary": "22.71% of overall shipping costs comes from Mumbai.",
+            "why_it_matters": "This level of concentration suggests performance may not be evenly distributed across groups.",
+            "next_step": "Compare record counts and average values to see what is driving the concentration.",
+            "short_summary": "Mumbai accounts for 22.71% of total shipping costs.",
             "priority": {
               "score": 46.25,
               "label": "low",
@@ -4855,9 +6126,9 @@
               "max": 99.47,
               "std_dev": 28.98
             },
-            "why_it_matters": "This pattern suggests the metric is not being dominated by only a small number of unusual values.",
-            "next_step": "Review whether the distribution stays similarly balanced across time or segments.",
-            "short_summary": "Manufacturing costs looks reasonably well distributed overall.",
+            "why_it_matters": "A more balanced distribution makes summary statistics easier to interpret.",
+            "next_step": "Use the median and percentile ranges to confirm what a typical value looks like.",
+            "short_summary": "Manufacturing costs appears fairly balanced across its range.",
             "priority": {
               "score": 55.25,
               "label": "low",
@@ -4884,9 +6155,9 @@
               "lower_bound": -45.47,
               "upper_bound": 137.08
             },
-            "why_it_matters": "This pattern suggests the metric is not being dominated by only a small number of unusual values.",
-            "next_step": "Review whether the distribution stays similarly balanced across time or segments.",
-            "short_summary": "Manufacturing costs looks reasonably well distributed overall.",
+            "why_it_matters": "A more balanced distribution makes summary statistics easier to interpret.",
+            "next_step": "Use the median and percentile ranges to confirm what a typical value looks like.",
+            "short_summary": "Manufacturing costs appears fairly balanced across its range.",
             "priority": {
               "score": 39.9,
               "label": "low",
@@ -5021,11 +6292,11 @@
       "key_insight": {
         "artifact_id": "insight_concentration",
         "title": "Concentration Check",
-        "short_summary": "Chennai contributes 27.71% of overall price.",
+        "short_summary": "27.71% of overall price comes from Chennai.",
         "detailed_explanation": "The top Location group contributes 27.71% of total Price.",
         "message": "The top Location group contributes 27.71% of total Price.",
-        "why_it_matters": "If one group contributes a large share of price, overall performance may depend heavily on it.",
-        "next_step": "Review whether this concentration reflects broad strength or only a narrow spike.",
+        "why_it_matters": "A large share concentrated in one group can make overall results more sensitive to changes there.",
+        "next_step": "Check whether this concentration is stable or driven by a small number of unusually large records.",
         "priority": {
           "score": 66.0,
           "label": "medium",
@@ -5044,11 +6315,11 @@
         {
           "artifact_id": "insight_top_group",
           "title": "Top Group",
-          "short_summary": "Chennai leads on price.",
+          "short_summary": "Chennai has the highest price.",
           "detailed_explanation": "The highest-performing Location was 'Chennai' with Price = 68.15.",
           "message": "The highest-performing Location was 'Chennai' with Price = 68.15.",
-          "why_it_matters": "Chennai appears to be contributing more strongly than the other groups.",
-          "next_step": "Review whether Chennai leads because of higher volume, larger values, or more consistent performance.",
+          "why_it_matters": "This suggests Chennai is an important driver of overall performance.",
+          "next_step": "Compare Chennai with the next strongest group to see what is driving the gap.",
           "priority": {
             "score": 59.5,
             "label": "low",
@@ -5066,11 +6337,11 @@
         {
           "artifact_id": "insight_bottom_group",
           "title": "Bottom Group",
-          "short_summary": "Bangalore has the lowest price.",
+          "short_summary": "price is lowest in Bangalore.",
           "detailed_explanation": "The lowest-performing Location was 'Bangalore' with Price = 38.03.",
           "message": "The lowest-performing Location was 'Bangalore' with Price = 38.03.",
-          "why_it_matters": "Bangalore may have lower activity, lower demand, or fewer high-value records.",
-          "next_step": "Check whether the lower result in Bangalore reflects low volume, pricing, or data sparsity.",
+          "why_it_matters": "This weaker result may reflect lower volume, weaker performance, or structural differences in that group.",
+          "next_step": "Review whether Bangalore has fewer records or meaningfully different behavior than the stronger groups.",
           "priority": {
             "score": 64.25,
             "label": "medium",
@@ -5201,11 +6472,11 @@
       "key_insight": {
         "artifact_id": "insight_bottom_group",
         "title": "Bottom Group",
-        "short_summary": "revenue generated is lowest in Delhi.",
+        "short_summary": "Delhi has the lowest revenue generated.",
         "detailed_explanation": "The lowest-performing Location was 'Delhi' with Revenue generated = 5401.85.",
         "message": "The lowest-performing Location was 'Delhi' with Revenue generated = 5401.85.",
-        "why_it_matters": "This weaker result may reflect lower volume, weaker performance, or structural differences in that group.",
-        "next_step": "Review whether Delhi has fewer records or meaningfully different behavior than the stronger groups.",
+        "why_it_matters": "Delhi may have lower activity, lower demand, or fewer high-value records.",
+        "next_step": "Check whether the lower result in Delhi reflects low volume, pricing, or data sparsity.",
         "priority": {
           "score": 64.25,
           "label": "medium",
@@ -5224,11 +6495,11 @@
         {
           "artifact_id": "insight_top_group",
           "title": "Top Group",
-          "short_summary": "Mumbai leads on revenue generated.",
+          "short_summary": "Mumbai has the highest revenue generated.",
           "detailed_explanation": "The highest-performing Location was 'Mumbai' with Revenue generated = 6261.59.",
           "message": "The highest-performing Location was 'Mumbai' with Revenue generated = 6261.59.",
-          "why_it_matters": "Mumbai appears to be contributing more strongly than the other groups.",
-          "next_step": "Review whether Mumbai leads because of higher volume, larger values, or more consistent performance.",
+          "why_it_matters": "This suggests Mumbai is an important driver of overall performance.",
+          "next_step": "Compare Mumbai with the next strongest group to see what is driving the gap.",
           "priority": {
             "score": 59.5,
             "label": "low",
@@ -5246,11 +6517,11 @@
         {
           "artifact_id": "insight_concentration",
           "title": "Concentration Check",
-          "short_summary": "Mumbai accounts for 21.74% of total revenue generated.",
+          "short_summary": "21.74% of overall revenue generated comes from Mumbai.",
           "detailed_explanation": "The top Location group contributes 21.74% of total Revenue generated.",
           "message": "The top Location group contributes 21.74% of total Revenue generated.",
-          "why_it_matters": "This level of concentration suggests performance may not be evenly distributed across groups.",
-          "next_step": "Compare record counts and average values to see what is driving the concentration.",
+          "why_it_matters": "A large share concentrated in one group can make overall results more sensitive to changes there.",
+          "next_step": "Check whether this concentration is stable or driven by a small number of unusually large records.",
           "priority": {
             "score": 46.25,
             "label": "low",
@@ -5619,11 +6890,11 @@
       "key_insight": {
         "artifact_id": "insight_distribution_range",
         "title": "Range and Spread",
-        "short_summary": "Revenue generated looks reasonably well distributed overall.",
+        "short_summary": "Revenue generated appears fairly balanced across its range.",
         "detailed_explanation": "'Revenue generated' ranges from 1061.62 to 9866.47, with a standard deviation of 2732.84.",
         "message": "'Revenue generated' ranges from 1061.62 to 9866.47, with a standard deviation of 2732.84.",
-        "why_it_matters": "This pattern suggests the metric is not being dominated by only a small number of unusual values.",
-        "next_step": "Review whether the distribution stays similarly balanced across time or segments.",
+        "why_it_matters": "A more balanced distribution makes summary statistics easier to interpret.",
+        "next_step": "Use the median and percentile ranges to confirm what a typical value looks like.",
         "priority": {
           "score": 55.25,
           "label": "low",
@@ -5664,11 +6935,11 @@
         {
           "artifact_id": "insight_outlier_signal",
           "title": "Outlier Signal",
-          "short_summary": "Revenue generated looks reasonably well distributed overall.",
+          "short_summary": "Revenue generated appears fairly balanced across its range.",
           "detailed_explanation": "No strong outlier signal was detected in 'Revenue generated' based on the IQR rule.",
           "message": "No strong outlier signal was detected in 'Revenue generated' based on the IQR rule.",
-          "why_it_matters": "This pattern suggests the metric is not being dominated by only a small number of unusual values.",
-          "next_step": "Review whether the distribution stays similarly balanced across time or segments.",
+          "why_it_matters": "A more balanced distribution makes summary statistics easier to interpret.",
+          "next_step": "Use the median and percentile ranges to confirm what a typical value looks like.",
           "priority": {
             "score": 39.9,
             "label": "low",
@@ -5799,11 +7070,11 @@
       "key_insight": {
         "artifact_id": "insight_bottom_group",
         "title": "Bottom Group",
-        "short_summary": "Chennai trails the other groups.",
+        "short_summary": "shipping costs is lowest in Chennai.",
         "detailed_explanation": "The lowest-performing Location was 'Chennai' with Shipping costs = 4.69.",
         "message": "The lowest-performing Location was 'Chennai' with Shipping costs = 4.69.",
-        "why_it_matters": "This suggests Chennai is underperforming relative to the stronger groups.",
-        "next_step": "Compare Chennai with the strongest group to identify the biggest performance gap.",
+        "why_it_matters": "This weaker result may reflect lower volume, weaker performance, or structural differences in that group.",
+        "next_step": "Review whether Chennai has fewer records or meaningfully different behavior than the stronger groups.",
         "priority": {
           "score": 64.25,
           "label": "medium",
@@ -5822,11 +7093,11 @@
         {
           "artifact_id": "insight_top_group",
           "title": "Top Group",
-          "short_summary": "Mumbai leads on shipping costs.",
+          "short_summary": "Mumbai has the highest shipping costs.",
           "detailed_explanation": "The highest-performing Location was 'Mumbai' with Shipping costs = 6.25.",
           "message": "The highest-performing Location was 'Mumbai' with Shipping costs = 6.25.",
-          "why_it_matters": "Mumbai appears to be contributing more strongly than the other groups.",
-          "next_step": "Review whether Mumbai leads because of higher volume, larger values, or more consistent performance.",
+          "why_it_matters": "This suggests Mumbai is an important driver of overall performance.",
+          "next_step": "Compare Mumbai with the next strongest group to see what is driving the gap.",
           "priority": {
             "score": 59.5,
             "label": "low",
@@ -5844,11 +7115,11 @@
         {
           "artifact_id": "insight_concentration",
           "title": "Concentration Check",
-          "short_summary": "22.71% of overall shipping costs comes from Mumbai.",
+          "short_summary": "Mumbai accounts for 22.71% of total shipping costs.",
           "detailed_explanation": "The top Location group contributes 22.71% of total Shipping costs.",
           "message": "The top Location group contributes 22.71% of total Shipping costs.",
-          "why_it_matters": "A large share concentrated in one group can make overall results more sensitive to changes there.",
-          "next_step": "Check whether this concentration is stable or driven by a small number of unusually large records.",
+          "why_it_matters": "This level of concentration suggests performance may not be evenly distributed across groups.",
+          "next_step": "Compare record counts and average values to see what is driving the concentration.",
           "priority": {
             "score": 46.25,
             "label": "low",
@@ -6008,11 +7279,11 @@
       "key_insight": {
         "artifact_id": "insight_distribution_range",
         "title": "Range and Spread",
-        "short_summary": "Manufacturing costs looks reasonably well distributed overall.",
+        "short_summary": "Manufacturing costs appears fairly balanced across its range.",
         "detailed_explanation": "'Manufacturing costs' ranges from 1.09 to 99.47, with a standard deviation of 28.98.",
         "message": "'Manufacturing costs' ranges from 1.09 to 99.47, with a standard deviation of 28.98.",
-        "why_it_matters": "This pattern suggests the metric is not being dominated by only a small number of unusual values.",
-        "next_step": "Review whether the distribution stays similarly balanced across time or segments.",
+        "why_it_matters": "A more balanced distribution makes summary statistics easier to interpret.",
+        "next_step": "Use the median and percentile ranges to confirm what a typical value looks like.",
         "priority": {
           "score": 55.25,
           "label": "low",
@@ -6053,11 +7324,11 @@
         {
           "artifact_id": "insight_outlier_signal",
           "title": "Outlier Signal",
-          "short_summary": "Manufacturing costs looks reasonably well distributed overall.",
+          "short_summary": "Manufacturing costs appears fairly balanced across its range.",
           "detailed_explanation": "No strong outlier signal was detected in 'Manufacturing costs' based on the IQR rule.",
           "message": "No strong outlier signal was detected in 'Manufacturing costs' based on the IQR rule.",
-          "why_it_matters": "This pattern suggests the metric is not being dominated by only a small number of unusual values.",
-          "next_step": "Review whether the distribution stays similarly balanced across time or segments.",
+          "why_it_matters": "A more balanced distribution makes summary statistics easier to interpret.",
+          "next_step": "Use the median and percentile ranges to confirm what a typical value looks like.",
           "priority": {
             "score": 39.9,
             "label": "low",
