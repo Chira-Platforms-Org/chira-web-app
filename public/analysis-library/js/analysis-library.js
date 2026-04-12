@@ -22,7 +22,9 @@ function renderLibraryPage(data) {
 
 function renderHeader(data) {
   const datasetName = prettyTitle(data?.meta?.dataset_name || 'Unknown Dataset');
-  const candidates = Array.isArray(data?.all_analysis_candidates) ? data.all_analysis_candidates : [];
+  const candidates = Array.isArray(data?.executed_library_analysis_cards)
+  ? data.executed_library_analysis_cards
+  : [];
   const featuredCount = candidates.filter(item => item?.included_in_overview).length;
 
   document.getElementById('context-dataset-name').textContent = datasetName;
@@ -45,7 +47,9 @@ function renderHeader(data) {
 }
 
 function renderGroups(data) {
-  const candidates = Array.isArray(data?.all_analysis_candidates) ? data.all_analysis_candidates : [];
+  const candidates = Array.isArray(data?.executed_library_analysis_cards)
+  ? data.executed_library_analysis_cards
+  : [];
   const target = document.getElementById('analysis-groups');
 
   if (!candidates.length) {
@@ -92,14 +96,19 @@ function renderGroups(data) {
 }
 
 function renderAnalysisCard(card) {
-  const confidence = formatMaybeNumber(card?.scoring?.confidence);
-  const description = card?.copy?.description || 'No description available.';
-  const explanation = card?.copy?.recommendation_explanation || 'No explanation available.';
-  const nextStep = card?.copy?.next_step || 'No next step available.';
-  const featured = Boolean(card?.included_in_overview);
+  const confidence = formatMaybeNumber(card?.confidence);
+  const description = card?.description || 'No description available.';
+  const explanation = card?.recommendation_explanation || 'No explanation available.';
+  const nextStep = card?.next_step || 'No next step available.';
+  const featured = card?.source === 'overview';
+
+  // 👇 NEW: chart + insight extraction
+  const chartType = card?.chart?.type || null;
+  const keyInsight = card?.insight?.short_summary || 'No key insight available.';
 
   return `
     <article class="analysis-card">
+      
       <div class="card-top">
         <div class="card-badges">
           <span class="badge badge-type">${escapeHtml(prettyTitle(card?.analysis_type || 'other'))}</span>
@@ -113,8 +122,19 @@ function renderAnalysisCard(card) {
         <div class="card-confidence">Confidence: ${escapeHtml(confidence)}</div>
       </div>
 
-      <h4 class="card-title">${escapeHtml(card?.display?.title || card?.title || 'Untitled Analysis')}</h4>
-      <p class="card-subtitle">${escapeHtml(card?.display?.subtitle || '')}</p>
+      <h4 class="card-title">${escapeHtml(card?.display_title || card?.title || 'Untitled Analysis')}</h4>
+      <p class="card-subtitle">${escapeHtml(card?.display_subtitle || '')}</p>
+
+      <!-- 🔥 NEW: Chart Preview -->
+      <div class="chart-preview">
+        ${renderChartPreview(chartType)}
+      </div>
+
+      <!-- 🔥 NEW: Key Insight -->
+      <div class="key-insight">
+        <span class="info-label">Key Insight</span>
+        <p>${escapeHtml(keyInsight)}</p>
+      </div>
 
       <div class="card-body">
         <div class="info-block">
@@ -132,6 +152,7 @@ function renderAnalysisCard(card) {
           <p class="info-value">${escapeHtml(nextStep)}</p>
         </div>
       </div>
+
     </article>
   `;
 }
@@ -167,6 +188,19 @@ function formatMaybeNumber(value) {
   const num = Number(value);
   if (Number.isNaN(num)) return String(value);
   return Number.isInteger(num) ? String(num) : num.toFixed(1);
+}
+
+function renderChartPreview(chartType) {
+  if (!chartType) {
+    return `<div class="chart-placeholder">No chart available</div>`;
+  }
+
+  // For now, just show type (we’ll wire real charts next)
+  return `
+    <div class="chart-placeholder">
+      ${escapeHtml(prettyTitle(chartType))}
+    </div>
+  `;
 }
 
 function escapeHtml(value) {
