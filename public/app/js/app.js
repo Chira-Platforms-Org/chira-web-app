@@ -302,9 +302,16 @@ function renderChart(card) {
     return renderHistogram(card);
   }
 
+  if (chartType === 'line_chart') {
+    return renderLineChart(card);
+  }
+
+  if (chartType === 'scatter_plot' || chartType === 'hexbin') {
+    return renderScatterPlot(card);
+  }
+
   return `<div class="empty-state">Chart type "${escapeHtml(chartType || 'unknown')}" is not yet supported in V1.</div>`;
 }
-
 function renderBarChart(card) {
   const xField = card?.chart?.x_field;
   const yField = card?.chart?.y_field;
@@ -383,6 +390,138 @@ function renderHistogram(card) {
       <line x1="${padding.left}" y1="${padding.top + innerHeight}" x2="${width - padding.right}" y2="${padding.top + innerHeight}" stroke="#d8d2e3" stroke-width="1" />
       <line x1="${padding.left}" y1="${padding.top}" x2="${padding.left}" y2="${padding.top + innerHeight}" stroke="#d8d2e3" stroke-width="1" />
       ${bars}
+    </svg>
+  `;
+}
+
+function renderLineChart(card) {
+  const xField = card?.chart?.x_field;
+  const yField = card?.chart?.y_field;
+  const data = card.chart.data;
+
+  const points = data.map((d, i) => {
+    const rawValue = Number(d?.[yField]);
+    return {
+      xLabel: String(d?.[xField] ?? i),
+      value: Number.isNaN(rawValue) ? 0 : rawValue
+    };
+  });
+
+  const width = 640;
+  const height = 250;
+  const padding = { top: 20, right: 20, bottom: 70, left: 52 };
+  const innerWidth = width - padding.left - padding.right;
+  const innerHeight = height - padding.top - padding.bottom;
+
+  const values = points.map(p => p.value);
+  const minValue = Math.min(...values, 0);
+  const maxValue = Math.max(...values, 1);
+  const range = Math.max(maxValue - minValue, 1);
+
+  const coords = points.map((point, i) => {
+    const x = points.length === 1
+      ? padding.left + innerWidth / 2
+      : padding.left + (i / (points.length - 1)) * innerWidth;
+
+    const y = padding.top + innerHeight - ((point.value - minValue) / range) * innerHeight;
+
+    return { ...point, x, y };
+  });
+
+  const polylinePoints = coords.map(p => `${p.x},${p.y}`).join(' ');
+
+  const labels = coords.map(point => `
+    <text
+      x="${point.x}"
+      y="${padding.top + innerHeight + 18}"
+      text-anchor="end"
+      transform="rotate(-35 ${point.x} ${padding.top + innerHeight + 18})"
+      class="chart-axis-label"
+    >${escapeHtml(point.xLabel)}</text>
+  `).join('');
+
+  const dots = coords.map(point => `
+    <circle cx="${point.x}" cy="${point.y}" r="4" fill="#6d46b2"></circle>
+  `).join('');
+
+  return `
+    <svg viewBox="0 0 ${width} ${height}" class="chart-svg" role="img" aria-label="Line chart">
+      <line x1="${padding.left}" y1="${padding.top + innerHeight}" x2="${width - padding.right}" y2="${padding.top + innerHeight}" stroke="#d8d2e3" stroke-width="1" />
+      <line x1="${padding.left}" y1="${padding.top}" x2="${padding.left}" y2="${padding.top + innerHeight}" stroke="#d8d2e3" stroke-width="1" />
+
+      <polyline
+        fill="none"
+        stroke="#6d46b2"
+        stroke-width="3"
+        stroke-linejoin="round"
+        stroke-linecap="round"
+        points="${polylinePoints}"
+      ></polyline>
+
+      ${dots}
+      ${labels}
+    </svg>
+  `;
+}
+
+function renderScatterPlot(card) {
+  const xField = card?.chart?.x_field;
+  const yField = card?.chart?.y_field;
+  const data = card.chart.data;
+
+  const points = data
+    .map(d => {
+      const x = Number(d?.[xField]);
+      const y = Number(d?.[yField]);
+      return { x, y };
+    })
+    .filter(point => !Number.isNaN(point.x) && !Number.isNaN(point.y));
+
+  if (!points.length) {
+    return `<div class="empty-state">No scatter data available.</div>`;
+  }
+
+  const width = 640;
+  const height = 250;
+  const padding = { top: 20, right: 20, bottom: 50, left: 52 };
+  const innerWidth = width - padding.left - padding.right;
+  const innerHeight = height - padding.top - padding.bottom;
+
+  const minX = Math.min(...points.map(p => p.x));
+  const maxX = Math.max(...points.map(p => p.x));
+  const minY = Math.min(...points.map(p => p.y));
+  const maxY = Math.max(...points.map(p => p.y));
+
+  const xRange = Math.max(maxX - minX, 1);
+  const yRange = Math.max(maxY - minY, 1);
+
+  const circles = points.map(point => {
+    const cx = padding.left + ((point.x - minX) / xRange) * innerWidth;
+    const cy = padding.top + innerHeight - ((point.y - minY) / yRange) * innerHeight;
+
+    return `<circle cx="${cx}" cy="${cy}" r="3.2" fill="#6d46b2" fill-opacity="0.45"></circle>`;
+  }).join('');
+
+  return `
+    <svg viewBox="0 0 ${width} ${height}" class="chart-svg" role="img" aria-label="Scatter plot">
+      <line x1="${padding.left}" y1="${padding.top + innerHeight}" x2="${width - padding.right}" y2="${padding.top + innerHeight}" stroke="#d8d2e3" stroke-width="1" />
+      <line x1="${padding.left}" y1="${padding.top}" x2="${padding.left}" y2="${padding.top + innerHeight}" stroke="#d8d2e3" stroke-width="1" />
+
+      ${circles}
+
+      <text x="${width / 2}" y="${height - 8}" text-anchor="middle" class="chart-axis-label">
+        ${escapeHtml(String(xField || 'X'))}
+      </text>
+
+      <text
+        x="16"
+        y="${height / 2}"
+        text-anchor="middle"
+        transform="rotate(-90 16 ${height / 2})"
+        class="chart-axis-label"
+      >
+        ${escapeHtml(String(yField || 'Y'))}
+      </text>
     </svg>
   `;
 }
