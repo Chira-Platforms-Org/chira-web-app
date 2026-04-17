@@ -1,4 +1,4 @@
-const DATA_PATH = 'data/sample_02_global_fuel_prices_profile.json';
+const DATA_PATH = 'sample_02_global_fuel_prices_profile.json';
 
 document.addEventListener('DOMContentLoaded', async () => {
   try {
