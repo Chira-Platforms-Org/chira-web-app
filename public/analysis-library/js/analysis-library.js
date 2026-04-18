@@ -328,12 +328,14 @@ function renderLineChartPreview(chart) {
           <polyline
             fill="none"
             stroke="currentColor"
-            stroke-width="2.5"
+            stroke-width="1.2"
+            stroke-linejoin="round"
+            stroke-linecap="round"
             points="${polylinePoints}"
           ></polyline>
-          ${coords.map(p => `
-            <circle cx="${p.x}" cy="${p.y}" r="2.2" fill="currentColor"></circle>
-          `).join('')}
+          ${coords.length <= 18 ? coords.map(p => `
+            <circle cx="${p.x}" cy="${p.y}" r="1.2" fill="currentColor"></circle>
+            `).join('') : ''}
         </svg>
       </div>
       <div class="mini-line-label-row">
