@@ -430,18 +430,23 @@ function renderLineChart(card) {
 
   const polylinePoints = coords.map(p => `${p.x},${p.y}`).join(' ');
 
-  const labels = coords.map(point => `
+  const maxLabels = 8;
+const labelStep = Math.max(1, Math.ceil(coords.length / maxLabels));
+
+const labels = coords
+  .filter((point, index) => index % labelStep === 0 || index === coords.length - 1)
+  .map(point => `
     <text
       x="${point.x}"
       y="${padding.top + innerHeight + 18}"
       text-anchor="end"
       transform="rotate(-35 ${point.x} ${padding.top + innerHeight + 18})"
       class="chart-axis-label"
-    >${escapeHtml(point.xLabel)}</text>
+    >${escapeHtml(formatAxisDateLabel(point.xLabel))}</text>
   `).join('');
 
   const dots = coords.map(point => `
-    <circle cx="${point.x}" cy="${point.y}" r="4" fill="#6d46b2"></circle>
+    <circle cx="${point.x}" cy="${point.y}" r="2.2" fill="#6d46b2"></circle>
   `).join('');
 
   return `
@@ -452,7 +457,7 @@ function renderLineChart(card) {
       <polyline
         fill="none"
         stroke="#6d46b2"
-        stroke-width="3"
+        stroke-width="1.8"
         stroke-linejoin="round"
         stroke-linecap="round"
         points="${polylinePoints}"
@@ -499,7 +504,7 @@ function renderScatterPlot(card) {
     const cx = padding.left + ((point.x - minX) / xRange) * innerWidth;
     const cy = padding.top + innerHeight - ((point.y - minY) / yRange) * innerHeight;
 
-    return `<circle cx="${cx}" cy="${cy}" r="3.2" fill="#6d46b2" fill-opacity="0.45"></circle>`;
+    return `<circle cx="${cx}" cy="${cy}" r="2.2" fill="#6d46b2" fill-opacity="0.45"></circle>`;
   }).join('');
 
   return `
@@ -583,6 +588,22 @@ function formatMaybeSignedNumber(value) {
   const num = Number(value);
   if (Number.isNaN(num)) return String(value);
   return `${num > 0 ? '+' : ''}${num.toFixed(1)}`;
+}
+
+function formatAxisDateLabel(value) {
+  const text = String(value || '');
+
+  // If it looks like YYYY-MM-DD, shorten it
+  if (/^\d{4}-\d{2}-\d{2}$/.test(text)) {
+    return text.slice(0, 7); // YYYY-MM
+  }
+
+  // If it looks like YYYY-MM, keep as-is
+  if (/^\d{4}-\d{2}$/.test(text)) {
+    return text;
+  }
+
+  return text;
 }
 
 function shortNumber(value) {
