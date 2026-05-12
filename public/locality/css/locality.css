@@ -715,6 +715,102 @@ body::after {
 }
 
 /* =========================
+   HERO MAP REFINEMENT FIX
+========================= */
+
+.map-card {
+  position: relative;
+}
+
+.map-node span {
+  display: block;
+}
+
+.map-node small {
+  display: block;
+  margin-top: 3px;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  opacity: 0.55;
+}
+
+.mini-node {
+  position: absolute;
+  top: 292px;
+  left: 245px;
+  padding: 10px 13px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.82);
+  color: rgba(20,50,92,0.7);
+  border: 1px solid rgba(20,50,92,0.08);
+  font-size: 0.68rem;
+  font-weight: 800;
+  box-shadow: 0 10px 28px rgba(20,50,92,0.06);
+  z-index: 4;
+}
+
+.demand-region {
+  position: absolute;
+  bottom: 105px;
+  right: 95px;
+
+  width: 150px;
+  height: 108px;
+
+  border-radius: 44% 56% 48% 52% / 48% 42% 58% 52%;
+
+  background:
+    radial-gradient(
+      circle at 45% 45%,
+      rgba(126,217,87,0.34),
+      rgba(126,217,87,0.16) 58%,
+      rgba(126,217,87,0.06)
+    );
+
+  color: #3d6f24;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  box-shadow: 0 22px 55px rgba(126,217,87,0.18);
+  z-index: 3;
+
+  animation: demandPulse 5.8s ease-in-out infinite;
+}
+
+.demand-region span {
+  display: block;
+  font-weight: 900;
+  font-size: 0.9rem;
+}
+
+.demand-region small {
+  display: block;
+  margin-top: 4px;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  opacity: 0.58;
+}
+
+@keyframes demandPulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.9;
+  }
+
+  50% {
+    transform: scale(1.045);
+    opacity: 1;
+  }
+}
+
+/* =========================
    RESPONSIVE
 ========================= */
 
