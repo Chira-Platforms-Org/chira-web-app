@@ -289,33 +289,26 @@ body::after {
 
 .map-node {
   position: absolute;
-
   padding: 14px 18px;
   border-radius: 18px;
-
   font-size: 0.88rem;
-  font-weight: 700;
-
+  font-weight: 800;
   backdrop-filter: blur(12px);
-
-  box-shadow:
-    0 10px 30px rgba(20,50,92,0.08);
-
+  box-shadow: 0 10px 30px rgba(20,50,92,0.08);
   animation: floatNode 5s ease-in-out infinite;
+  z-index: 3;
 }
 
-@keyframes floatNode {
-  0% {
-    transform: translateY(0px);
-  }
-
-  50% {
-    transform: translateY(-8px);
-  }
-
-  100% {
-    transform: translateY(0px);
-  }
+.map-node small,
+.demand-region small,
+.mini-node span {
+  display: block;
+  margin-top: 3px;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  opacity: 0.58;
 }
 
 .farm-node {
@@ -328,9 +321,51 @@ body::after {
   color: var(--navy);
 }
 
-.demand-node {
-  background: rgba(126,217,87,0.18);
+.mini-node {
+  position: absolute;
+  padding: 10px 13px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.76);
+  color: rgba(20,50,92,0.72);
+  border: 1px solid rgba(20,50,92,0.06);
+  font-size: 0.68rem;
+  font-weight: 800;
+  box-shadow: 0 10px 28px rgba(20,50,92,0.05);
+  z-index: 3;
+}
+
+.demand-region {
+  position: absolute;
+  width: 150px;
+  height: 108px;
+  border-radius: 44% 56% 48% 52% / 48% 42% 58% 52%;
+  background:
+    radial-gradient(circle at 45% 45%, rgba(126,217,87,0.34), rgba(126,217,87,0.16) 58%, rgba(126,217,87,0.06));
   color: #3d6f24;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  animation: demandPulse 5.8s ease-in-out infinite;
+  box-shadow: 0 22px 55px rgba(126,217,87,0.18);
+  z-index: 2;
+}
+
+.demand-region span {
+  font-weight: 900;
+  font-size: 0.9rem;
+}
+
+@keyframes demandPulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.9;
+  }
+
+  50% {
+    transform: scale(1.045);
+    opacity: 1;
+  }
 }
 
 .node-one {
@@ -344,13 +379,47 @@ body::after {
 }
 
 .node-three {
-  bottom: 180px;
-  left: 140px;
+  top: 292px;
+  left: 245px;
 }
 
 .node-four {
-  bottom: 120px;
-  right: 110px;
+  bottom: 110px;
+  right: 95px;
+}
+
+.route-pulse {
+  position: absolute;
+  width: 9px;
+  height: 9px;
+  border-radius: 999px;
+  background: var(--green);
+  box-shadow: 0 0 18px rgba(8,196,100,0.45);
+  opacity: 0.72;
+  z-index: 4;
+}
+
+.pulse-one {
+  animation: pulseRouteOne 8s ease-in-out infinite;
+}
+
+.pulse-two {
+  animation: pulseRouteTwo 10s ease-in-out infinite;
+  opacity: 0.45;
+}
+
+@keyframes pulseRouteOne {
+  0% { top: 150px; left: 140px; }
+  35% { top: 210px; left: 310px; }
+  70% { top: 178px; left: 470px; }
+  100% { top: 150px; left: 140px; }
+}
+
+@keyframes pulseRouteTwo {
+  0% { top: 330px; left: 185px; }
+  45% { top: 425px; left: 360px; }
+  80% { top: 360px; left: 500px; }
+  100% { top: 330px; left: 185px; }
 }
 
 /* =========================
