@@ -1257,6 +1257,10 @@ body::after {
   animation: insightFloatIn 0.55s ease both;
 }
 
+.leaflet-tile {
+  filter: saturate(1.08) contrast(1.02);
+}
+
 
 @keyframes insightFloatIn {
   from {
