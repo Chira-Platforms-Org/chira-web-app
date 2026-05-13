@@ -1308,5 +1308,5 @@ body::after {
 }
 
 .leaflet-tile {
-  filter: saturate(1.05) contrast(1.01);
+  filter: saturate(1.2) contrast(1.01);
 }
