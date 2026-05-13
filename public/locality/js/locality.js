@@ -69,9 +69,61 @@ const profiles = [
      organic: true,
      lat: 33.3471,
      lng: -112.2576
-   }
+   },
+   {
+     name: "Arcadia Table",
+     type: "buyer",
+     productType: "produce",
+     product: "Weekly produce sourcing",
+     location: "Phoenix, AZ",
+     organic: false,
+     lat: 33.4942,
+     lng: -111.9865
+   },
+   {
+     name: "Mesa Fresh Market",
+     type: "buyer",
+     productType: "produce",
+     product: "Local produce and dairy",
+     location: "Mesa, AZ",
+     organic: false,
+     lat: 33.4152,
+     lng: -111.8315
+   },
+   {
+     name: "Tempe Kitchen Co.",
+     type: "buyer",
+     productType: "specialty",
+     product: "Restaurant sourcing",
+     location: "Tempe, AZ",
+     organic: false,
+     lat: 33.4255,
+     lng: -111.9400
+   },
+   {
+     name: "Scottsdale Grocer",
+     type: "buyer",
+     productType: "produce",
+     product: "Organic produce requests",
+     location: "Scottsdale, AZ",
+     organic: false,
+     lat: 33.4942,
+     lng: -111.9261
+   },
+   {
+     name: "Chandler Local Pantry",
+     type: "buyer",
+     productType: "dairy",
+     product: "Dairy, eggs, herbs",
+     location: "Chandler, AZ",
+     organic: false,
+     lat: 33.3062,
+     lng: -111.8413
+}
+];
 
-   const markers = [];
+const markers = [];
+   
 
 function getFarmIcon(productType) {
   if (productType === "produce") return "🥬";
