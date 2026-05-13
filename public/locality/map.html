@@ -1,1 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+  <title>Locality Map | Chira Platforms</title>
+
+  <!-- Leaflet Map CSS -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  />
+
+  <link rel="stylesheet" href="css/locality.css" />
+</head>
+
+<body class="map-page">
+
+  <header class="map-topbar">
+    <a href="index.html" class="map-brand">
+      <img src="images/LOCALITY LOGO.png" alt="Locality" />
+    </a>
+
+    <div class="map-search">
+      <input type="text" placeholder="Search farms, buyers, products..." />
+    </div>
+
+    <nav class="map-nav">
+      <a href="index.html">Home</a>
+      <a href="supplier.html">Suppliers</a>
+      <a href="buyer.html">Buyers</a>
+      <a href="analytics.html">Analytics</a>
+    </nav>
+  </header>
+
+  <main class="map-layout">
+
+    <aside class="map-sidebar">
+      <div class="sidebar-section">
+        <p class="sidebar-eyebrow">Marketplace</p>
+        <h2>Phoenix Regional Network</h2>
+        <p>
+          Explore sample farms, buyers, sourcing activity, and regional supply opportunities.
+        </p>
+      </div>
+
+      <div class="sidebar-section">
+        <h3>Filters</h3>
+
+        <label class="filter-label">Profile Type</label>
+        <select id="typeFilter">
+          <option value="all">All profiles</option>
+          <option value="farm">Farms / Suppliers</option>
+          <option value="buyer">Buyers / Businesses</option>
+        </select>
+
+        <label class="filter-label">Product Focus</label>
+        <select id="productFilter">
+          <option value="all">All products</option>
+          <option value="produce">Produce</option>
+          <option value="dairy">Dairy</option>
+          <option value="meat">Meat</option>
+          <option value="specialty">Specialty</option>
+        </select>
+
+        <label class="filter-toggle">
+          <input type="checkbox" id="organicFilter" />
+          <span>Organic certified only</span>
+        </label>
+      </div>
+
+      <div class="sidebar-section">
+        <h3>Regional Snapshot</h3>
+
+        <div class="stat-grid">
+          <div>
+            <strong>12</strong>
+            <span>farms</span>
+          </div>
+          <div>
+            <strong>18</strong>
+            <span>buyers</span>
+          </div>
+          <div>
+            <strong>4</strong>
+            <span>coalitions</span>
+          </div>
+          <div>
+            <strong>6</strong>
+            <span>regions</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <h3>Legend</h3>
+
+        <div class="legend-row">
+          <span class="legend-dot farm"></span>
+          Farms / suppliers
+        </div>
+
+        <div class="legend-row">
+          <span class="legend-dot buyer"></span>
+          Buyers / businesses
+        </div>
+
+        <div class="legend-row">
+          <span class="legend-region"></span>
+          Regional demand area
+        </div>
+      </div>
+    </aside>
+
+    <section class="map-main">
+      <div id="localityMap"></div>
+
+      <div class="floating-insight insight-one">
+        <span>High activity</span>
+        <strong>East Valley sourcing corridor</strong>
+      </div>
+
+      <div class="floating-insight insight-two">
+        <span>Seasonal supply</span>
+        <strong>Leafy greens and citrus availability rising</strong>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Leaflet Map JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <script src="js/locality.js"></script>
+</body>
+</html>
