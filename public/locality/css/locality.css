@@ -1293,3 +1293,20 @@ body::after {
     display: none;
   }
 }
+
+.leaflet-tile {
+  filter: saturate(1.08) contrast(1.02);
+}
+
+.map-main::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 500;
+
+  background:
+    radial-gradient(circle at center,
+      transparent 58%,
+      rgba(8, 24, 18, 0.055) 100%);
+}
