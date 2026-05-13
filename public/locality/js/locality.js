@@ -19,113 +19,81 @@ if (mapElement) {
    }).addTo(map);
 
    
-  const profiles = [
-    {
-      name: "Queen Creek Harvest",
-      type: "farm",
-      productType: "produce",
-      product: "Leafy greens, tomatoes, herbs",
-      location: "Queen Creek, AZ",
-      organic: true,
-      lat: 33.2487,
-      lng: -111.6343
-    },
-    {
-      name: "Desert Bloom Produce",
-      type: "farm",
-      productType: "produce",
-      product: "Citrus, melons, seasonal vegetables",
-      location: "Mesa, AZ",
-      organic: false,
-      lat: 33.3650,
-      lng: -111.7200
-    },
-    {
-      name: "Copper Creek Dairy",
-      type: "farm",
-      productType: "dairy",
-      product: "Milk, cheese, yogurt",
-      location: "Buckeye, AZ",
-      organic: true,
-      lat: 33.3703,
-      lng: -112.5838
-    },
-    {
-      name: "Sonoran Pastures",
-      type: "farm",
-      productType: "meat",
-      product: "Beef, poultry, eggs",
-      location: "Casa Grande, AZ",
-      organic: false,
-      lat: 32.8795,
-      lng: -111.7574
-    },
-    {
-      name: "Verde Citrus Collective",
-      type: "farm",
-      productType: "produce",
-      product: "Citrus, dates, specialty fruit",
-      location: "Goodyear, AZ",
-      organic: true,
-      lat: 33.4353,
-      lng: -112.3582
-    },
-    {
-      name: "Arcadia Table",
-      type: "buyer",
-      productType: "produce",
-      product: "Weekly produce sourcing",
-      location: "Phoenix, AZ",
-      organic: false,
-      lat: 33.4942,
-      lng: -111.9865
-    },
-    {
-      name: "Mesa Fresh Market",
-      type: "buyer",
-      productType: "produce",
-      product: "Local produce and dairy",
-      location: "Mesa, AZ",
-      organic: false,
-      lat: 33.4152,
-      lng: -111.8315
-    },
-    {
-      name: "Tempe Kitchen Co.",
-      type: "buyer",
-      productType: "specialty",
-      product: "Restaurant sourcing",
-      location: "Tempe, AZ",
-      organic: false,
-      lat: 33.4255,
-      lng: -111.9400
-    },
-    {
-      name: "Scottsdale Grocer",
-      type: "buyer",
-      productType: "produce",
-      product: "Organic produce requests",
-      location: "Scottsdale, AZ",
-      organic: false,
-      lat: 33.4942,
-      lng: -111.9261
-    },
-    {
-      name: "Chandler Local Pantry",
-      type: "buyer",
-      productType: "dairy",
-      product: "Dairy, eggs, herbs",
-      location: "Chandler, AZ",
-      organic: false,
-      lat: 33.3062,
-      lng: -111.8413
-    }
-  ];
+const profiles = [
+   {
+     name: "Queen Creek Harvest",
+     type: "farm",
+     productType: "produce",
+     product: "Leafy greens, tomatoes, herbs",
+     location: "Queen Creek, AZ",
+     organic: true,
+     lat: 33.1917,
+     lng: -111.5582
+   },
+   {
+     name: "Desert Bloom Produce",
+     type: "farm",
+     productType: "produce",
+     product: "Citrus, melons, seasonal vegetables",
+     location: "East Mesa / Apache Junction, AZ",
+     organic: false,
+     lat: 33.3707,
+     lng: -111.5721
+   },
+   {
+     name: "Copper Creek Dairy",
+     type: "farm",
+     productType: "dairy",
+     product: "Milk, cheese, yogurt",
+     location: "Buckeye, AZ",
+     organic: true,
+     lat: 33.3356,
+     lng: -112.6175
+   },
+   {
+     name: "Sonoran Pastures",
+     type: "farm",
+     productType: "meat",
+     product: "Beef, poultry, eggs",
+     location: "Casa Grande, AZ",
+     organic: false,
+     lat: 32.9272,
+     lng: -111.7419
+   },
+   {
+     name: "Verde Citrus Collective",
+     type: "farm",
+     productType: "produce",
+     product: "Citrus, dates, specialty fruit",
+     location: "Goodyear / Laveen, AZ",
+     organic: true,
+     lat: 33.3471,
+     lng: -112.2576
+   }
 
-  const markers = [];
+   const markers = [];
 
+function getFarmIcon(productType) {
+  if (productType === "produce") return "🥬";
+  if (productType === "dairy") return "🥛";
+  if (productType === "meat") return "🥚";
+  if (productType === "specialty") return "🌿";
+  return "🌱";
+}
+
+function getBuyerIcon(productType) {
+  if (productType === "produce") return "🛒";
+  if (productType === "dairy") return "🥣";
+  if (productType === "meat") return "🍽️";
+  if (productType === "specialty") return "☕";
+  return "●";
+}
+   
   function createPin(profile) {
-    const iconSymbol = profile.type === "farm" ? "🌱" : "◎";
+    const iconSymbol = profile.type === "farm"
+     ? getFarmIcon(profile.productType)
+     : getBuyerIcon(profile.productType);
+     
     const pinClass = profile.type === "farm" ? "farm-pin" : "buyer-pin";
 
     const organicBadge = profile.organic
