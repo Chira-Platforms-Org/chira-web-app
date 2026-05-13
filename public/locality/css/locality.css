@@ -1257,10 +1257,6 @@ body::after {
   animation: insightFloatIn 0.55s ease both;
 }
 
-.leaflet-tile {
-  filter: saturate(1.08) contrast(1.02);
-}
-
 
 @keyframes insightFloatIn {
   from {
@@ -1311,12 +1307,6 @@ body::after {
       rgba(8, 24, 18, 0.055) 100%);
 }
 
-/* Warm Locality map treatment */
 .leaflet-tile {
-  filter:
-    saturate(1.22)
-    contrast(1.04)
-    sepia(0.18)
-    hue-rotate(-8deg)
-    brightness(1.04);
+  filter: saturate(1.05) contrast(1.01);
 }
