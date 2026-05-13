@@ -1248,8 +1248,26 @@ body::after {
 }
 
 .insight-two {
-  bottom: 34px;
+  top: 128px;
   right: 34px;
+  animation-delay: 0.12s;
+}
+
+.floating-insight {
+  animation: insightFloatIn 0.55s ease both;
+}
+
+
+@keyframes insightFloatIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 /* Responsive */
