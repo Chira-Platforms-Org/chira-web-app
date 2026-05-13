@@ -1310,3 +1310,13 @@ body::after {
       transparent 58%,
       rgba(8, 24, 18, 0.055) 100%);
 }
+
+/* Warm Locality map treatment */
+.leaflet-tile {
+  filter:
+    saturate(1.12)
+    contrast(1.02)
+    sepia(0.08)
+    hue-rotate(-4deg)
+    brightness(1.03);
+}
