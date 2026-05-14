@@ -1151,35 +1151,43 @@ body::after {
 
 /* Custom pin styles */
 
-.locality-pin {
-  width: 52px;
-  height: 52px;
+.pin-wrap {
+  position: relative;
+  width: 68px;
+  height: 78px;
 
-  border-radius: 20px 20px 20px 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.locality-pin {
+  width: 48px;
+  height: 58px;
+
+  position: relative;
+
+  border-radius: 24px 24px 24px 8px;
   transform: rotate(-45deg);
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  box-shadow:
-    0 14px 30px rgba(20, 50, 92, 0.24),
-    inset 0 0 0 1px rgba(255,255,255,0.18);
-
   border: 4px solid white;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  box-shadow:
+    0 14px 28px rgba(20, 50, 92, 0.24),
+    inset 0 0 0 1px rgba(255,255,255,0.24);
+
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
 }
 
-.locality-pin:hover {
+.pin-wrap:hover .locality-pin {
   transform: rotate(-45deg) scale(1.08);
   box-shadow:
-    0 20px 44px rgba(20, 50, 92, 0.28),
-    inset 0 0 0 1px rgba(255,255,255,0.22);
-}
-
-.locality-pin span {
-  transform: rotate(45deg);
-  font-size: 1.25rem;
+    0 20px 42px rgba(20, 50, 92, 0.28),
+    inset 0 0 0 1px rgba(255,255,255,0.3);
 }
 
 .locality-pin.farm-pin {
@@ -1189,23 +1197,89 @@ body::after {
 .locality-pin.buyer-pin {
   background: linear-gradient(135deg, #1f6feb, #4f9cff);
 }
+
+.pin-svg {
+  width: 24px;
+  height: 24px;
+
+  transform: rotate(45deg);
+
+  fill: none;
+  stroke: white;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+
+  filter: drop-shadow(0 1px 1px rgba(0,0,0,0.16));
+}
+
+/* Organic badge attached to pin */
 .organic-badge {
   position: absolute;
-  top: -8px;
-  right: -8px;
+  top: -12px;
+  right: -12px;
 
-  width: 20px;
-  height: 20px;
+  width: 25px;
+  height: 25px;
 
   border-radius: 999px;
-  background: #f4c542;
-  border: 2px solid white;
+  background: white;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  font-size: 0.7rem;
+  box-shadow: 0 8px 18px rgba(20,50,92,0.18);
+
+  transform: rotate(45deg);
+}
+
+.organic-inner {
+  width: 18px;
+  height: 18px;
+
+  border-radius: 999px;
+  border: 1.7px solid var(--green);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.organic-inner svg {
+  width: 12px;
+  height: 12px;
+
+  fill: none;
+  stroke: var(--green);
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Optional product chip beneath farm pins */
+.product-chip {
+  position: absolute;
+  left: 50%;
+  bottom: -2px;
+
+  transform: translateX(-50%);
+
+  padding: 4px 9px;
+
+  border-radius: 999px;
+  background: rgba(255,255,255,0.94);
+
+  border: 1px solid rgba(20,50,92,0.08);
+  box-shadow: 0 8px 18px rgba(20,50,92,0.12);
+
+  color: var(--navy);
+  font-size: 0.62rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+
+  white-space: nowrap;
 }
 
 /* Demand region */
