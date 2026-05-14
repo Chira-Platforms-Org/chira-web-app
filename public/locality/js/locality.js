@@ -125,46 +125,109 @@ const profiles = [
 const markers = [];
    
 
-function getFarmIcon(productType) {
-  if (productType === "produce") return "🥬";
-  if (productType === "dairy") return "🥛";
-  if (productType === "meat") return "🥚";
-  if (productType === "specialty") return "🌿";
-  return "🌱";
+function getProductIcon(productType) {
+  if (productType === "produce") {
+    return `
+      <svg viewBox="0 0 24 24" class="pin-svg">
+        <path d="M6 13c0-4.8 3.7-8.7 8.5-8.9 1.1 0 2.2.1 3.2.4-.1 1-.4 2.1-1 3.1C14.8 11.5 10.7 13.3 6 13Z"/>
+        <path d="M6 13c.5 4.2 3.6 6.7 7.1 6.7 3.8 0 6.8-3.1 6.8-6.9 0-1.4-.4-2.7-1.1-3.8"/>
+        <path d="M6 13c2.8-.2 6.2-1.7 9.5-5.6"/>
+      </svg>
+    `;
+  }
+
+  if (productType === "dairy") {
+    return `
+      <svg viewBox="0 0 24 24" class="pin-svg">
+        <path d="M9 3h6l-.6 4.2 1.7 2.2c.6.8.9 1.7.9 2.7V20c0 .7-.5 1-1.1 1H8.1C7.5 21 7 20.7 7 20v-7.9c0-1 .3-1.9.9-2.7l1.7-2.2L9 3Z"/>
+        <path d="M8 13h8"/>
+        <path d="M10 7h4"/>
+      </svg>
+    `;
+  }
+
+  if (productType === "meat") {
+    return `
+      <svg viewBox="0 0 24 24" class="pin-svg">
+        <path d="M8.5 18.5c-3-2.1-3.9-5.9-1.9-8.8 2.3-3.3 6.8-4.5 10.3-2.7 2.9 1.5 4.1 4.8 2.7 7.4-1.8 3.4-7 6.3-11.1 4.1Z"/>
+        <path d="M8.5 18.5 5 22"/>
+        <path d="M15.5 9.5c.8.5 1.2 1.4 1 2.2"/>
+      </svg>
+    `;
+  }
+
+  return `
+    <svg viewBox="0 0 24 24" class="pin-svg">
+      <path d="M12 21c4.5-4.6 7-8.2 7-11.2C19 5.9 15.9 3 12 3S5 5.9 5 9.8C5 12.8 7.5 16.4 12 21Z"/>
+      <circle cx="12" cy="9.5" r="2.4"/>
+    </svg>
+  `;
 }
 
 function getBuyerIcon(productType) {
-  if (productType === "produce") return "🛒";
-  if (productType === "dairy") return "🥣";
-  if (productType === "meat") return "🍽️";
-  if (productType === "specialty") return "☕";
-  return "●";
+  if (productType === "specialty") {
+    return `
+      <svg viewBox="0 0 24 24" class="pin-svg">
+        <path d="M6 9h11v5.5A4.5 4.5 0 0 1 12.5 19h-2A4.5 4.5 0 0 1 6 14.5V9Z"/>
+        <path d="M17 10h1.5a2.5 2.5 0 0 1 0 5H17"/>
+        <path d="M8 5c0 1 .6 1.4.6 2.2"/>
+        <path d="M12 5c0 1 .6 1.4.6 2.2"/>
+      </svg>
+    `;
+  }
+
+  return `
+    <svg viewBox="0 0 24 24" class="pin-svg">
+      <path d="M6 8h12l-1.2 10H7.2L6 8Z"/>
+      <path d="M9 8a3 3 0 0 1 6 0"/>
+      <path d="M8 12h8"/>
+    </svg>
+  `;
+}
+
+function getOrganicBadge() {
+  return `
+    <div class="organic-badge">
+      <span class="organic-inner">
+        <svg viewBox="0 0 24 24">
+          <path d="M5 13c0-4.8 3.7-8.7 8.6-8.9 1.3-.1 2.5.1 3.7.5-.2 1.2-.6 2.5-1.3 3.7C14 11.8 10.1 13.5 5 13Z"/>
+          <path d="M5 13c2.8-.1 6.5-1.6 10.2-5.5"/>
+          <path d="M5 13c.5 4 3.5 6.4 7 6.4"/>
+        </svg>
+      </span>
+    </div>
+  `;
 }
    
   function createPin(profile) {
-    const iconSymbol = profile.type === "farm"
-     ? getFarmIcon(profile.productType)
-     : getBuyerIcon(profile.productType);
-     
-    const pinClass = profile.type === "farm" ? "farm-pin" : "buyer-pin";
+  const pinClass = profile.type === "farm" ? "farm-pin" : "buyer-pin";
 
-    const organicBadge = profile.organic
-      ? `<div class="organic-badge">✓</div>`
-      : "";
+  const mainIcon = profile.type === "farm"
+    ? getProductIcon(profile.productType)
+    : getBuyerIcon(profile.productType);
 
-    return L.divIcon({
-      className: "",
-      html: `
+  const organicBadge = profile.organic ? getOrganicBadge() : "";
+
+  const productChip = profile.type === "farm"
+    ? `<div class="product-chip">${profile.productType}</div>`
+    : "";
+
+  return L.divIcon({
+    className: "",
+    html: `
+      <div class="pin-wrap">
         <div class="locality-pin ${pinClass}">
-          <span>${iconSymbol}</span>
+          ${mainIcon}
           ${organicBadge}
         </div>
-      `,
-      iconSize: [46, 46],
-      iconAnchor: [23, 46],
-      popupAnchor: [0, -44]
-    });
-  }
+        ${productChip}
+      </div>
+    `,
+    iconSize: [68, 78],
+    iconAnchor: [34, 68],
+    popupAnchor: [0, -62]
+  });
+}
 
   function popupContent(profile) {
     return `
