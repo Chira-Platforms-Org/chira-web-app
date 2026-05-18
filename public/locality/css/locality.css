@@ -1123,6 +1123,57 @@ body::after {
   color: var(--navy);
 }
 
+.profile-hover-card {
+  background: rgba(255,255,255,0.94);
+  border: none;
+  border-radius: 22px;
+  padding: 0;
+
+  box-shadow:
+    0 24px 55px rgba(20,50,92,0.18);
+
+  backdrop-filter: blur(18px);
+}
+
+.profile-hover-card .leaflet-tooltip-content {
+  margin: 0;
+}
+
+.profile-popup {
+  min-width: 240px;
+  padding: 18px;
+}
+
+.profile-popup h3 {
+  font-size: 1rem;
+  margin-bottom: 6px;
+}
+
+.profile-popup .profile-meta {
+  color: var(--muted);
+  font-size: 0.82rem;
+  margin-bottom: 12px;
+}
+
+.profile-stats {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+
+  margin-top: 14px;
+}
+
+.profile-stat {
+  padding: 6px 10px;
+  border-radius: 999px;
+
+  background: rgba(20,50,92,0.06);
+
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--navy);
+}
+
 .profile-popup h3 {
   margin: 0 0 6px;
   color: var(--navy);
@@ -1271,6 +1322,48 @@ body::after {
   stroke-width: 2.2;
   stroke-linecap: round;
   stroke-linejoin: round;
+}
+
+.coalition-badge {
+  position: absolute;
+  bottom: -6px;
+  left: -10px;
+
+  width: 26px;
+  height: 26px;
+
+  border-radius: 999px;
+  background: white;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  box-shadow: 0 8px 18px rgba(20,50,92,0.16);
+
+  transform: rotate(45deg);
+}
+
+.coalition-inner {
+  width: 18px;
+  height: 18px;
+
+  border-radius: 999px;
+  border: 1.7px solid #3b82f6;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.coalition-inner svg {
+  width: 11px;
+  height: 11px;
+
+  fill: none;
+  stroke: #3b82f6;
+  stroke-width: 2;
+  stroke-linecap: round;
 }
 
 /* Demand region */
