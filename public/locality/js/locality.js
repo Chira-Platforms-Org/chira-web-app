@@ -330,7 +330,11 @@ function getOrganicBadge() {
   permanent: false,
   direction: "top",
   offset: [0, -50],
-  className: "profile-hover-card"
+  className: "profile-hover-card",
+         
+});
+       marker.on("click", () => {
+  openProfilePanel(profile);
 });
 
 marker.on("mouseover", function () {
@@ -345,6 +349,67 @@ marker.on("mouseout", function () {
     });
   }
 
+function openProfilePanel(profile) {
+  const panel = document.getElementById("profilePanel");
+  if (!panel) return;
+
+  document.getElementById("profileLogo").textContent =
+    profile.logoInitials || profile.name.slice(0, 2).toUpperCase();
+
+  document.getElementById("profileLogo").classList.toggle("buyer", profile.type === "buyer");
+  document.getElementById("profileType").textContent =
+    profile.type === "farm" ? "Supplier profile" : "Buyer profile";
+
+  document.getElementById("profileName").textContent = profile.name;
+  document.getElementById("profileLocation").textContent = profile.location;
+  document.getElementById("profileDescription").textContent =
+    profile.description || profile.product;
+
+  document.getElementById("profileTags").innerHTML = `
+    <span>${profile.productType}</span>
+    ${profile.organic ? "<span>Organic</span>" : ""}
+    ${profile.coalition ? `<span>Coalition</span>` : ""}
+  `;
+
+  document.getElementById("profileStats").innerHTML =
+    profile.type === "farm"
+      ? `
+        <div class="profile-stat">
+          <small>Availability</small>
+          <strong>${profile.availability || "Seasonal"}</strong>
+        </div>
+        <div class="profile-stat">
+          <small>Products</small>
+          <strong>${profile.product}</strong>
+        </div>
+        <div class="profile-stat">
+          <small>Lead Time</small>
+          <strong>${profile.leadTime || "Contact supplier"}</strong>
+        </div>
+        <div class="profile-stat">
+          <small>Minimum Order</small>
+          <strong>${profile.minimumOrder || "Flexible"}</strong>
+        </div>
+      `
+      : `
+        <div class="profile-stat">
+          <small>Demand Need</small>
+          <strong>${profile.demandNeed || profile.product}</strong>
+        </div>
+        <div class="profile-stat">
+          <small>Order Frequency</small>
+          <strong>${profile.orderFrequency || "Recurring"}</strong>
+        </div>
+        <div class="profile-stat">
+          <small>Preferred Radius</small>
+          <strong>${profile.preferredRadius || "Regional"}</strong>
+        </div>
+      `;
+
+  panel.classList.add("active");
+}
+
+   
   renderMarkers();
 
   document.getElementById("typeFilter")?.addEventListener("change", renderMarkers);
@@ -367,6 +432,10 @@ marker.on("mouseout", function () {
     </div>
   `);
 
+   document.getElementById("profileClose")?.addEventListener("click", () => {
+  document.getElementById("profilePanel")?.classList.remove("active");
+});
+
   L.circle([33.4484, -112.0740], {
     radius: 10000,
     color: "#14325c",
@@ -381,3 +450,4 @@ marker.on("mouseout", function () {
     </div>
   `);
 }
+
