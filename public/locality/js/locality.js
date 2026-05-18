@@ -23,6 +23,7 @@ const profiles = [
    {
      name: "Queen Creek Harvest",
      type: "farm",
+     coalition: "east-valley-growers",
      iconVariant: "leaf",
      productType: "produce",
      product: "Leafy greens, tomatoes, herbs",
@@ -45,6 +46,7 @@ const profiles = [
    {
      name: "Copper Creek Dairy",
      type: "farm",
+     coalition: "west-valley-dairy",
      iconVariant: "barn",
      productType: "dairy",
      product: "Milk, cheese, yogurt",
@@ -56,6 +58,7 @@ const profiles = [
    {
      name: "Sonoran Pastures",
      type: "farm",
+     coalition: "west-valley-dairy",
      iconVariant: "sun",
      productType: "meat",
      product: "Beef, poultry, eggs",
@@ -135,6 +138,7 @@ const profiles = [
 {
   name: "Sonoran Grove Co.",
   type: "farm",
+  coalition: "east-valley-growers",
   iconVariant: "orchard",
   productType: "produce",
   product: "Citrus, olives, herbs",
@@ -227,11 +231,27 @@ function getOrganicBadge() {
     </div>
   `;
 }
-   
+
+   function getCoalitionBadge() {
+  return `
+    <div class="coalition-badge">
+      <span class="coalition-inner">
+        <svg viewBox="0 0 24 24">
+          <circle cx="8" cy="8" r="3"></circle>
+          <circle cx="16" cy="8" r="3"></circle>
+          <circle cx="12" cy="15" r="3"></circle>
+        </svg>
+      </span>
+    </div>
+  `;
+}
+
  function createPin(profile) {
   const pinClass = profile.type === "farm" ? "farm-pin" : "buyer-pin";
   const mainIcon = getProfileIcon(profile.iconVariant);
+
   const organicBadge = profile.organic ? getOrganicBadge() : "";
+  const coalitionBadge = profile.coalition ? getCoalitionBadge() : "";
 
   return L.divIcon({
     className: "",
@@ -240,6 +260,7 @@ function getOrganicBadge() {
         <div class="locality-pin ${pinClass}">
           <span class="pin-glyph">${mainIcon}</span>
           ${organicBadge}
+          ${coalitionBadge}
         </div>
       </div>
     `,
@@ -248,17 +269,43 @@ function getOrganicBadge() {
     popupAnchor: [0, -62]
   });
 }
-  function popupContent(profile) {
-    return `
-      <div class="profile-popup">
-        <h3>${profile.name}</h3>
-        <p><strong>${profile.location}</strong></p>
-        <p>${profile.product}</p>
-        <p>${profile.type === "farm" ? "Supplier profile" : "Buyer profile"}</p>
-        ${profile.organic ? `<span class="popup-badge">Organic certified</span>` : ""}
+ function popupContent(profile) {
+  return `
+    <div class="profile-popup">
+
+      <h3>${profile.name}</h3>
+
+      <div class="profile-meta">
+        ${profile.location}
       </div>
-    `;
-  }
+
+      <p>${profile.product}</p>
+
+      <div class="profile-stats">
+        <span class="profile-stat">
+          ${profile.type === "farm" ? "Supplier" : "Buyer"}
+        </span>
+
+        ${
+          profile.organic
+            ? `<span class="profile-stat">Organic</span>`
+            : ""
+        }
+
+        ${
+          profile.coalition
+            ? `<span class="profile-stat">Coalition</span>`
+            : ""
+        }
+
+        <span class="profile-stat">
+          Weekly Availability
+        </span>
+      </div>
+
+    </div>
+  `;
+}
 
   function renderMarkers() {
     markers.forEach((marker) => map.removeLayer(marker));
@@ -279,7 +326,20 @@ function getOrganicBadge() {
         icon: createPin(profile)
       }).addTo(map);
 
-      marker.bindPopup(popupContent(profile));
+      marker.bindTooltip(popupContent(profile), {
+  permanent: false,
+  direction: "top",
+  offset: [0, -50],
+  className: "profile-hover-card"
+});
+
+marker.on("mouseover", function () {
+  this.openTooltip();
+});
+
+marker.on("mouseout", function () {
+  this.closeTooltip();
+});
 
       markers.push(marker);
     });
