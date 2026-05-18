@@ -1478,3 +1478,32 @@ body::after {
 .leaflet-tile {
   filter: saturate(1.2) contrast(1.01);
 }
+
+.profile-panel {
+  position: absolute;
+  top: 28px;
+  right: 34px;
+  width: 340px;
+  z-index: 3000;
+
+  padding: 24px;
+  border-radius: 28px;
+
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(18px);
+
+  border: 1px solid rgba(20, 50, 92, 0.08);
+  box-shadow: 0 24px 70px rgba(20, 50, 92, 0.22);
+
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(18px) scale(0.98);
+
+  transition: opacity 0.28s ease, transform 0.28s ease;
+}
+
+.profile-panel.active {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateX(0) scale(1);
+}
