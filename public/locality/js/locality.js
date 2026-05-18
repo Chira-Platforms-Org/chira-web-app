@@ -23,6 +23,7 @@ const profiles = [
    {
      name: "Queen Creek Harvest",
      type: "farm",
+     iconVariant: "leaf",
      productType: "produce",
      product: "Leafy greens, tomatoes, herbs",
      location: "Queen Creek, AZ",
@@ -33,6 +34,7 @@ const profiles = [
    {
      name: "Desert Bloom Produce",
      type: "farm",
+     iconVariant: "sprout",
      productType: "produce",
      product: "Citrus, melons, seasonal vegetables",
      location: "East Mesa / Apache Junction, AZ",
@@ -43,6 +45,7 @@ const profiles = [
    {
      name: "Copper Creek Dairy",
      type: "farm",
+     iconVariant: "barn",
      productType: "dairy",
      product: "Milk, cheese, yogurt",
      location: "Buckeye, AZ",
@@ -53,6 +56,7 @@ const profiles = [
    {
      name: "Sonoran Pastures",
      type: "farm",
+     iconVariant: "sun",
      productType: "meat",
      product: "Beef, poultry, eggs",
      location: "Casa Grande, AZ",
@@ -63,6 +67,7 @@ const profiles = [
    {
      name: "Verde Citrus Collective",
      type: "farm",
+     iconVariant: "orchard",
      productType: "produce",
      product: "Citrus, dates, specialty fruit",
      location: "Goodyear / Laveen, AZ",
@@ -70,9 +75,11 @@ const profiles = [
      lat: 33.3471,
      lng: -112.2576
    },
+   
    {
      name: "Arcadia Table",
      type: "buyer",
+     iconVariant: "table",
      productType: "produce",
      product: "Weekly produce sourcing",
      location: "Phoenix, AZ",
@@ -83,6 +90,7 @@ const profiles = [
    {
      name: "Mesa Fresh Market",
      type: "buyer",
+     iconVariant: "basket",
      productType: "produce",
      product: "Local produce and dairy",
      location: "Mesa, AZ",
@@ -93,6 +101,7 @@ const profiles = [
    {
      name: "Tempe Kitchen Co.",
      type: "buyer",
+     iconVariant: "kitchen",
      productType: "specialty",
      product: "Restaurant sourcing",
      location: "Tempe, AZ",
@@ -103,6 +112,7 @@ const profiles = [
    {
      name: "Scottsdale Grocer",
      type: "buyer",
+     iconVariant: "store",
      productType: "produce",
      product: "Organic produce requests",
      location: "Scottsdale, AZ",
@@ -113,77 +123,96 @@ const profiles = [
    {
      name: "Chandler Local Pantry",
      type: "buyer",
+     iconVariant: "kitchen",
      productType: "dairy",
      product: "Dairy, eggs, herbs",
      location: "Chandler, AZ",
      organic: false,
      lat: 33.3062,
      lng: -111.8413
+},
+   
+{
+  name: "Sonoran Grove Co.",
+  type: "farm",
+  iconVariant: "orchard",
+  productType: "produce",
+  product: "Citrus, olives, herbs",
+  location: "North Scottsdale, AZ",
+  organic: true,
+  lat: 33.7055,
+  lng: -111.8892
+},
+{
+  name: "Agua Fria Fields",
+  type: "farm",
+  iconVariant: "field",
+  productType: "grains",
+  product: "Wheat, hay, feed crops",
+  location: "Buckeye, AZ",
+  organic: false,
+  lat: 33.2768,
+  lng: -112.8594
+},
+{
+  name: "Mesa Verde Organics",
+  type: "farm",
+  iconVariant: "sprout",
+  productType: "produce",
+  product: "Microgreens, lettuce, herbs",
+  location: "East Mesa, AZ",
+  organic: true,
+  lat: 33.3558,
+  lng: -111.6285
+},
+{
+  name: "Phoenix Artisan Market",
+  type: "buyer",
+  iconVariant: "market",
+  productType: "mixed",
+  product: "Regional sourcing",
+  location: "Downtown Phoenix, AZ",
+  organic: false,
+  lat: 33.4519,
+  lng: -112.0735
+},
+{
+  name: "Gilbert Community Foods",
+  type: "buyer",
+  iconVariant: "basket",
+  productType: "mixed",
+  product: "Local produce purchasing",
+  location: "Gilbert, AZ",
+  organic: true,
+  lat: 33.3526,
+  lng: -111.7890
 }
 ];
 
 const markers = [];
    
 
-function getProductIcon(productType) {
-  if (productType === "produce") {
-    return `
-      <svg viewBox="0 0 24 24" class="pin-svg">
-        <path d="M6 13c0-4.8 3.7-8.7 8.5-8.9 1.1 0 2.2.1 3.2.4-.1 1-.4 2.1-1 3.1C14.8 11.5 10.7 13.3 6 13Z"/>
-        <path d="M6 13c.5 4.2 3.6 6.7 7.1 6.7 3.8 0 6.8-3.1 6.8-6.9 0-1.4-.4-2.7-1.1-3.8"/>
-        <path d="M6 13c2.8-.2 6.2-1.7 9.5-5.6"/>
-      </svg>
-    `;
-  }
+function getProfileIcon(variant) {
+  const icons = {
+    leaf: "❦",
+    sun: "◉",
+    field: "≋",
+    sprout: "◜",
+    barn: "⌂",
+    orchard: "✿",
 
-  if (productType === "dairy") {
-    return `
-      <svg viewBox="0 0 24 24" class="pin-svg">
-        <path d="M9 3h6l-.6 4.2 1.7 2.2c.6.8.9 1.7.9 2.7V20c0 .7-.5 1-1.1 1H8.1C7.5 21 7 20.7 7 20v-7.9c0-1 .3-1.9.9-2.7l1.7-2.2L9 3Z"/>
-        <path d="M8 13h8"/>
-        <path d="M10 7h4"/>
-      </svg>
-    `;
-  }
+    market: "▣",
+    basket: "◫",
+    store: "⌑",
+    kitchen: "◌",
+    table: "⬒",
+    hall: "◈"
+  };
 
-  if (productType === "meat") {
-    return `
-      <svg viewBox="0 0 24 24" class="pin-svg">
-        <path d="M8.5 18.5c-3-2.1-3.9-5.9-1.9-8.8 2.3-3.3 6.8-4.5 10.3-2.7 2.9 1.5 4.1 4.8 2.7 7.4-1.8 3.4-7 6.3-11.1 4.1Z"/>
-        <path d="M8.5 18.5 5 22"/>
-        <path d="M15.5 9.5c.8.5 1.2 1.4 1 2.2"/>
-      </svg>
-    `;
-  }
-
-  return `
-    <svg viewBox="0 0 24 24" class="pin-svg">
-      <path d="M12 21c4.5-4.6 7-8.2 7-11.2C19 5.9 15.9 3 12 3S5 5.9 5 9.8C5 12.8 7.5 16.4 12 21Z"/>
-      <circle cx="12" cy="9.5" r="2.4"/>
-    </svg>
-  `;
+  return icons[variant] || "●";
 }
 
-function getBuyerIcon(productType) {
-  if (productType === "specialty") {
-    return `
-      <svg viewBox="0 0 24 24" class="pin-svg">
-        <path d="M6 9h11v5.5A4.5 4.5 0 0 1 12.5 19h-2A4.5 4.5 0 0 1 6 14.5V9Z"/>
-        <path d="M17 10h1.5a2.5 2.5 0 0 1 0 5H17"/>
-        <path d="M8 5c0 1 .6 1.4.6 2.2"/>
-        <path d="M12 5c0 1 .6 1.4.6 2.2"/>
-      </svg>
-    `;
-  }
 
-  return `
-    <svg viewBox="0 0 24 24" class="pin-svg">
-      <path d="M6 8h12l-1.2 10H7.2L6 8Z"/>
-      <path d="M9 8a3 3 0 0 1 6 0"/>
-      <path d="M8 12h8"/>
-    </svg>
-  `;
-}
 
 function getOrganicBadge() {
   return `
@@ -199,28 +228,19 @@ function getOrganicBadge() {
   `;
 }
    
-  function createPin(profile) {
+ function createPin(profile) {
   const pinClass = profile.type === "farm" ? "farm-pin" : "buyer-pin";
-
-  const mainIcon = profile.type === "farm"
-    ? getProductIcon(profile.productType)
-    : getBuyerIcon(profile.productType);
-
+  const mainIcon = getProfileIcon(profile.iconVariant);
   const organicBadge = profile.organic ? getOrganicBadge() : "";
-
-  const productChip = profile.type === "farm"
-    ? `<div class="product-chip">${profile.productType}</div>`
-    : "";
 
   return L.divIcon({
     className: "",
     html: `
       <div class="pin-wrap">
         <div class="locality-pin ${pinClass}">
-          ${mainIcon}
+          <span class="pin-glyph">${mainIcon}</span>
           ${organicBadge}
         </div>
-        ${productChip}
       </div>
     `,
     iconSize: [68, 78],
@@ -228,7 +248,6 @@ function getOrganicBadge() {
     popupAnchor: [0, -62]
   });
 }
-
   function popupContent(profile) {
     return `
       <div class="profile-popup">
