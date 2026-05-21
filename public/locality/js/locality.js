@@ -443,6 +443,10 @@ function openProfilePanel(profile) {
 
   const profileLogo = document.getElementById("profileLogo");
 
+   document
+  .getElementById("profileCover")
+  .classList.toggle("buyer", profile.type === "buyer");
+
 if (profile.logo) {
   profileLogo.innerHTML = `
     <img
