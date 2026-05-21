@@ -1544,3 +1544,35 @@ body::after {
   background: rgba(20, 50, 92, 0.07);
   color: var(--navy);
 }
+
+.popup-logo-wrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+
+.popup-logo {
+  max-width: 150px;
+  max-height: 80px;
+  object-fit: contain;
+}
+
+.profile-logo {
+  width: 110px;
+  height: 110px;
+  border-radius: 26px;
+  margin-bottom: 22px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: rgba(20, 50, 92, 0.045);
+  overflow: hidden;
+}
+
+.profile-logo img {
+  width: 88%;
+  height: 88%;
+  object-fit: contain;
+}
