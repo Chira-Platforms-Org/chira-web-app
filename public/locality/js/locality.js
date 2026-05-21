@@ -195,8 +195,8 @@ const profiles = [
   demandNeed: "Fresh produce, herbs, citrus",
   orderFrequency: "Twice weekly",
   preferredRadius: "45 miles",
-  lat: 33.4591,
-  lng: -112.0704
+  lat: 33.4589,
+  lng: -112.0737
 },
 {
   name: "Saguaro Kitchen",
@@ -212,8 +212,8 @@ const profiles = [
   demandNeed: "Produce, eggs, dairy",
   orderFrequency: "Weekly",
   preferredRadius: "35 miles",
-  lat: 33.5028,
-  lng: -111.9871
+  lat: 33.5224,
+  lng: -111.9257
 },
 {
   name: "Grain & Garden",
@@ -229,8 +229,8 @@ const profiles = [
   demandNeed: "Grains, greens, seasonal produce",
   orderFrequency: "Weekly",
   preferredRadius: "40 miles",
-  lat: 33.4258,
-  lng: -111.9346
+  lat: 33.3474,
+  lng: -111.9093
 },
    
 {
