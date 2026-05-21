@@ -1411,14 +1411,13 @@ body::after {
 }
 
 .insight-one {
-  top: 28px;
+  top: 96px;
   right: 34px;
 }
 
 .insight-two {
-  top: 128px;
+  top: 206px;
   right: 34px;
-  animation-delay: 0.12s;
 }
 
 .floating-insight {
