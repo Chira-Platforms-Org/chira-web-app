@@ -347,6 +347,20 @@ function getOrganicBadge() {
   return `
     <div class="profile-popup">
 
+      ${
+        profile.logo
+          ? `
+            <div class="popup-logo-wrap">
+              <img
+                src="images/logos/${profile.logo}"
+                alt="${profile.name} logo"
+                class="popup-logo"
+              />
+            </div>
+          `
+          : ""
+      }
+
       <h3>${profile.name}</h3>
 
       <div class="profile-meta">
@@ -427,8 +441,19 @@ function openProfilePanel(profile) {
   const panel = document.getElementById("profilePanel");
   if (!panel) return;
 
-  document.getElementById("profileLogo").textContent =
+  const profileLogo = document.getElementById("profileLogo");
+
+if (profile.logo) {
+  profileLogo.innerHTML = `
+    <img
+      src="images/logos/${profile.logo}"
+      alt="${profile.name} logo"
+    />
+  `;
+} else {
+  profileLogo.textContent =
     profile.logoInitials || profile.name.slice(0, 2).toUpperCase();
+}
 
   document.getElementById("profileLogo").classList.toggle("buyer", profile.type === "buyer");
   document.getElementById("profileType").textContent =
