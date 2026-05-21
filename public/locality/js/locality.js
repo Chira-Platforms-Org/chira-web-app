@@ -180,6 +180,59 @@ const profiles = [
   lat: 33.4519,
   lng: -112.0735
 },
+
+   {
+  name: "Roosevelt Row",
+  type: "buyer",
+  iconVariant: "kitchen",
+  productType: "produce",
+  product: "Seasonal vegetables, herbs, citrus",
+  location: "Downtown Phoenix, AZ",
+  organic: false,
+  coalition: null,
+  logoInitials: "RR",
+  description: "A neighborhood restaurant sourcing seasonal ingredients from nearby farms for rotating menus.",
+  demandNeed: "Fresh produce, herbs, citrus",
+  orderFrequency: "Twice weekly",
+  preferredRadius: "45 miles",
+  lat: 33.4591,
+  lng: -112.0704
+},
+{
+  name: "Saguaro Kitchen",
+  type: "buyer",
+  iconVariant: "cactus",
+  productType: "mixed",
+  product: "Produce, eggs, dairy, specialty ingredients",
+  location: "Arcadia, Phoenix, AZ",
+  organic: true,
+  coalition: null,
+  logoInitials: "SK",
+  description: "A farm-to-table restaurant focused on local sourcing and long-term supplier relationships.",
+  demandNeed: "Produce, eggs, dairy",
+  orderFrequency: "Weekly",
+  preferredRadius: "35 miles",
+  lat: 33.5028,
+  lng: -111.9871
+},
+{
+  name: "Grain & Garden",
+  type: "buyer",
+  iconVariant: "restaurant",
+  productType: "mixed",
+  product: "Grains, greens, mushrooms, seasonal produce",
+  location: "Tempe, AZ",
+  organic: false,
+  coalition: null,
+  logoInitials: "GG",
+  description: "A casual dining concept looking for reliable local supply across grains, greens, and seasonal produce.",
+  demandNeed: "Grains, greens, seasonal produce",
+  orderFrequency: "Weekly",
+  preferredRadius: "40 miles",
+  lat: 33.4258,
+  lng: -111.9346
+},
+   
 {
   name: "Gilbert Community Foods",
   type: "buyer",
@@ -210,7 +263,10 @@ function getProfileIcon(variant) {
     store: "⌑",
     kitchen: "◌",
     table: "⬒",
-    hall: "◈"
+    hall: "◈",
+    restaurant: "◫",
+    chef: "◍",
+    cactus: "✦"
   };
 
   return icons[variant] || "●";
