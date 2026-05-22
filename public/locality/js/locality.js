@@ -27,11 +27,33 @@ const profiles = [
      iconVariant: "leaf",
      logo: "Queen Creek Harvest Logo.png",
      productType: "produce",
-     product: "Leafy greens, tomatoes, herbs",
+     product: "Leafy greens, tomatoes, seasonal vegetables, herbs",
      location: "Queen Creek, AZ",
      organic: true,
      lat: 33.1917,
-     lng: -111.5582
+     lng: -111.5582,
+         featuredInsight: "Above average lead time on certain products.",
+         deliveryRadius: "100 miles",
+         minimumOrder: "Fixed",
+         leadTime: "10–14 days",
+         productsAvailable: [
+           { name: "Red Cabbage", price: "$0.90/lb", note: "Available" },
+           { name: "Rainbow Carrots", price: "$2.50/lb", note: "Low inventory" },
+           { name: "Heirloom Tomatoes", price: "$4.40/lb", note: "High availability" },
+           { name: "Sugar Snap Peas", price: "$4.90/lb", note: "Limited weekly harvest" },
+           { name: "Black Tuscan Kale", price: "$4.20/lb", note: "Limited weekly harvest" },
+           { name: "Red Beets", price: "$3.00/lb", note: "Available" },
+           { name: "Golden Beets", price: "$3.10/lb", note: "Available" },
+           { name: "Broccoli", price: "$3.50/lb", note: "Available" },
+           { name: "Broccolini", price: "$5.10/lb", note: "Pre-order preferred" },
+           { name: "Eggplant", price: "$2.10/lb", note: "Longer than average lead times" },
+           { name: "Dried Rosemary", price: "$6.50/oz", note: "Limited" },
+           { name: "Basil", price: "$2.90/oz", note: "Available" },
+           { name: "Thyme", price: "$2.90/oz", note: "Longer than average lead times" },
+           { name: "Mint", price: "$3.10/oz", note: "Longer than average lead times" }
+            
+            
+         ]
    },
    {
      name: "Desert Bloom Produce",
@@ -39,11 +61,26 @@ const profiles = [
      iconVariant: "sprout",
      logo: "Desert Bloom Produce Logo.png",
      productType: "produce",
-     product: "Citrus, melons, seasonal vegetables",
+     product: "Basic produce",
      location: "East Mesa / Apache Junction, AZ",
      organic: false,
      lat: 33.3707,
-     lng: -111.5721
+     lng: -111.5721,
+         featuredInsight: "High availability of products.",
+         deliveryRadius: "60 miles",
+         minimumOrder: "Flexible",
+         leadTime: "2–4 days",
+         productsAvailable: [
+           { name: "Iceberg Lettuce", price: "$2.10/lb", note: "High availability" },
+           { name: "Carrots", price: "$0.60/lb", note: "Available" },
+           { name: "Russet Potatoes", price: "$0.90/lb", note: "High availability" },
+           { name: "Yukon Gold Potatoes", price: "$1.20/lb", note: "High availability" },
+           { name: "Yellow Onions", price: "$1.00/lb", note: "High availability" },
+           { name: "Red Onions", price: "$1.10/lb", note: "High availability" },
+           { name: "Sweet Onions", price: "$1.40/lb", note: "Available" },
+           { name: "Broccoli", price: "$3.10/lb", note: "Available" },
+           { name: "Purple Shallots", price: "$4.10/lb", note: "Pre-order preferred" }
+         ]
    },
    {
      name: "Copper Creek Dairy",
@@ -52,11 +89,31 @@ const profiles = [
      iconVariant: "barn",
      logo: "Copper Creek Dairy Logo.png",
      productType: "dairy",
-     product: "Milk, cheese, yogurt",
+     product: "Milk, cheese, butter",
      location: "Buckeye, AZ",
      organic: true,
      lat: 33.3356,
-     lng: -112.6175
+     lng: -112.6175,
+         featuredInsight: "Discounts available when purchasing larger quantities.",
+         deliveryRadius: "100 miles",
+         minimumOrder: "Fixed",
+         leadTime: "10–14 days",
+         productsAvailable: [
+           { name: "Raw Milk", price: "$7.50/gal", note: "Pre-order preferred" },
+           { name: "Pasteurized Whole Milk", price: "$3.10/lb", note: "Available" },
+           { name: "Pasteurized 2% Milk", price: "$3.10/lb", note: "Available" },
+           { name: "Pasteurized 1% Milk", price: "$3.10/lb", note: "Available" },
+           { name: "Cultured Butter", price: "$4.00/lb", note: "Available" },
+           { name: "Ricotta", price: "$6.90/lb", note: "Available" },
+           { name: "Queso Fresco", price: "$6.10/lb", note: "Available" },
+           { name: "Farmhouse Cheddar", price: "$3.90/lb", note: "Available" },
+           { name: "Gouda", price: "$4.20/lb", note: "Pre-order preferred" },
+           { name: "Sharp Manchego", price: "$12.50/lb", note: "Longer than average lead times" },
+           { name: "Parmesan", price: "$14.00/lb", note: "Longer than average lead times" },
+           { name: "Clover Honey", price: "$9.10/lb", note: "Bulk pre-orders preferred" },
+           { name: "Beeswax Blocks", price: "$11.10/lb", note: "Limited Availability" }
+            
+         ]
    },
    {
      name: "Sonoran Pastures",
@@ -65,11 +122,22 @@ const profiles = [
      iconVariant: "sun",
      logo: "Sonoran Pastures Logo.png",
      productType: "meat",
-     product: "Beef, poultry, eggs",
+     product: "Milk, butter, eggs",
      location: "Casa Grande, AZ",
      organic: false,
      lat: 32.9272,
-     lng: -111.7419
+     lng: -111.7419,
+     productsAvailable: [
+           { name: "Pasteurized Whole Milk", price: "$2.90/lb", note: "Available" },
+           { name: "Pasteurized 2% Milk", price: "$2.90/lb", note: "Available" },
+           { name: "Pasteurized Whole Milk", price: "$2.90/lb", note: "Available" },
+           { name: "Salted Butter", price: "$4.20/lb", note: "Available" },
+           { name: "European Style Butter", price: "$4.10/lb", note: "Available"},
+           { name: "Raw Butter", price: "$5.50/lb", note: "Pre-order preferred" },
+           { name: "Eggs", price: "$3.70/dozen", note: "Available" }
+            
+         ]
+
    },
    {
      name: "Verde Citrus Collective",
@@ -81,7 +149,24 @@ const profiles = [
      location: "Goodyear / Laveen, AZ",
      organic: true,
      lat: 33.3471,
-     lng: -112.2576
+     lng: -112.2576,
+         featuredInsight: "Listed citrus is 8% below the Phoenix regional average.",
+         deliveryRadius: "45 miles",
+         minimumOrder: "Flexible",
+         leadTime: "3–5 days",
+         productsAvailable: [
+           { name: "Citrus Box", price: "$34/case", note: "Seasonal" },
+           { name: "Dates", price: "$18/lb", note: "Limited" },
+           { name: "Eureka Lemons", price: "$1.90/lb", note: "High Availability" },
+           { name: "Meyer Lemons", price: "$2.30/lb", note: "Available" },
+           { name: "Persian Limes", price: "$2.30/lb", note: "Available" },
+           { name: "Cara Cara Oranges", price: "$2.40/lb", note: "Available" },
+           { name: "Blood Oranges", price: "$3.25/lb", note: "Limited" },
+           { name: "Navel Oranges", price: "$1.65/lb", note: "High Availability" },
+           { name: "Ruby Red Grapefruits", price: "$2.40/lb", note: "Seasonal" },
+           { name: "Pomelos", price: "$3.10/lb", note: "Seasonal" },
+           { name: "Clementines/Mandarins", price: "$2.55/lb", note: "Available" }
+         ]
    },
    
    {
@@ -152,11 +237,28 @@ const profiles = [
   iconVariant: "orchard",
   logo: "Sonoran Grove Co Logo.png",
   productType: "produce",
-  product: "Citrus, olives, herbs",
+  product: "Meat, Poultry, Eggs",
   location: "North Scottsdale, AZ",
   organic: true,
   lat: 33.7055,
-  lng: -111.8892
+  lng: -111.8892,
+        featuredInsight: "Pre-orders are preferred due to limited availability.",
+         deliveryRadius: "40 miles",
+         minimumOrder: "Flexible",
+         leadTime: "2–4 days",
+         productsAvailable: [
+           { name: "Grass-Fed Ribeye", price: "$15.10/lb", note: "Limited" },
+           { name: "Heritage Breed Pork Chops", price: "$8.20/lb", note: "Pre-order preferred" },
+           { name: "Heritage Breed Pork Shoulder", price: "$8.90/lb", note: "Pre-order preferred" },
+           { name: "Grass-Fed Beef Flank Steak", price: "$6.20/lb", note: "High availability" },
+           { name: "Bulk Grass-Fed Beef", price: "negotiable", note: "Please message for info" },
+           { name: "Bulk Heritage Pork", price: "negotiable", note: "Please message for info" },
+           { name: "Pastured Whole Chicken", price: "$2.80/lb", note: "Available" },
+           { name: "Whole Pasture-Raised Ducks", price: "$11.80/lb", note: "Limited" },
+           { name: "Homemade Variety Sausages", price: "$3.00/lb", note: "Pre-order preferred" },
+           { name: "Eggs", price: "$3.90/dozen", note: "Limited" }
+         ]
+   
 },
 {
   name: "Agua Fria Fields",
@@ -164,11 +266,32 @@ const profiles = [
   iconVariant: "field",
   logo: "Agua Fria Fields Logo.png",
   productType: "grains",
-  product: "Wheat, hay, feed crops",
+  product: "Grains, nuts, produce",
   location: "Buckeye, AZ",
   organic: false,
   lat: 33.2768,
-  lng: -112.8594
+  lng: -112.8594,
+   featuredInsight: "Listed goods below average market costs.",
+         deliveryRadius: "100 miles",
+         minimumOrder: "Fixed",
+         leadTime: "10–14 days",
+         productsAvailable: [
+           { name: "Red Cabbage", price: "$0.80/lb", note: "Available" },
+           { name: "Carrots", price: "$1.90/lb", note: "Available" },
+           { name: "Heirloom Tomatoes", price: "$3.50/lb", note: "High availability" },
+           { name: "Summer Squash (Multiple Types)", price: "$3.20/lb", note: "Seasonal" },
+           { name: "Winter Squash (Multiple Types)", price: "$3.90/lb", note: "Seasonal" },
+           { name: "Specialty Squash (Multiple Types)", price: "$6.00/lb", note: "Pre-order preferred" },
+           { name: "Red Beets", price: "$2.40/lb", note: "Available" },
+           { name: "Broccoli", price: "$3.10/lb", note: "Available" },
+           { name: "Wheat", price: "$2.10/lb", note: "Available" },
+           { name: "Rice", price: "$2.70/lb", note: "Available" },
+           { name: "Stone-Ground Yellow Cornmeal", price: "$2.55/lb", note: "Available" },
+           { name: "Pecans", price: "$9.10/lb", note: "Pre-order preferred" },
+           { name: "Walnuts", price: "$6.25/lb", note: "Available" },
+           { name: "Almonds", price: "$8.45/lb", note: "Available" },
+           { name: "Pistachios", price: "$9.50/lb", note: "Pre-order preferred" },
+           { name: "Cashews", price: "$8.70/lb", note: "Pre-order preferred" }
 },
 {
   name: "Mesa Verde Organics",
@@ -180,7 +303,32 @@ const profiles = [
   location: "East Mesa, AZ",
   organic: true,
   lat: 33.3558,
-  lng: -111.6285
+  lng: -111.6285,
+   featuredInsight: "Above average costs - bulk orders preferred.",
+         deliveryRadius: "100 miles",
+         minimumOrder: "Fixed",
+         leadTime: "10–14 days",
+         productsAvailable: [
+           { name: "Broccoli Microgreens", price: "$3.00/oz", note: "Pre-order preferred" },
+           { name: "Radish Microgreens (Triton)", price: "$2.00/oz", note: "Pre-order preferred" },
+           { name: "Sunflowers Shoots", price: "$1.90/oz", note: "Pre-order preferred" },
+           { name: "Pea Shoots", price: "$1.80/oz", note: "Pre-order preferred" },
+           { name: "Red Amaranth Microgreens", price: "$4.50/oz", note: "Pre-order preferred" },
+           { name: "Iceberg Lettuce", price: "2.00/lb", note: "Pre-order preferred" },
+           { name: "Green Leaf Lettuce", price: "$2.70/lb", note: "Available" },
+           { name: "Romaine Lettuce (Whole Heads)", price: "$3.50/lb", note: "Available" },
+           { name: "Little Gem Lettuce", price: "$5.10/lb", note: "Available" },
+           { name: "Butterhead (Boston/Bibb) Lettuce", price: "$5.70/lb", note: "Limited" },
+           { name: "Wild Arugula", price: "$7.55/lb", note: "Limited" },
+           { name: "Genovese Basil", price: "$3.10/oz", note: "Pre-order preferred" },
+           { name: "Thai Basil", price: "$2.20/oz", note: "Available" },
+           { name: "Italian Flat-Leaf Parsley", price: "$8.45/lb", note: "Available" },
+           { name: "Fresh Cilantro", price: "$9.50/lb", note: "Available" },
+           { name: "Fresh Dill", price: "$2.20/oz", note: "Available" },
+           { name: "Rosemary", price: "$2.00/oz", note: "Available" },
+           { name: "Thyme", price: "$2.00/oz", note: "Available" },
+           { name: "French Tarragon", price: "$3.20/oz", note: "Pre-order preferred" },
+           { name: "Lemongrass", price: "$1.80/oz", note: "Pre-order preferred" }
 },
 {
   name: "Phoenix Artisan Market",
