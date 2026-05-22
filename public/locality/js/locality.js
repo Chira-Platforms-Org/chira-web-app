@@ -292,6 +292,7 @@ const profiles = [
            { name: "Almonds", price: "$8.45/lb", note: "Available" },
            { name: "Pistachios", price: "$9.50/lb", note: "Pre-order preferred" },
            { name: "Cashews", price: "$8.70/lb", note: "Pre-order preferred" }
+            ]
 },
 {
   name: "Mesa Verde Organics",
@@ -329,6 +330,7 @@ const profiles = [
            { name: "Thyme", price: "$2.00/oz", note: "Available" },
            { name: "French Tarragon", price: "$3.20/oz", note: "Pre-order preferred" },
            { name: "Lemongrass", price: "$1.80/oz", note: "Pre-order preferred" }
+            ]
 },
 {
   name: "Phoenix Artisan Market",
