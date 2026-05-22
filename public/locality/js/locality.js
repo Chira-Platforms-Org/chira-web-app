@@ -623,41 +623,105 @@ if (profile.logo) {
   `;
 
   document.getElementById("profileStats").innerHTML =
-    profile.type === "farm"
-      ? `
-        <div class="profile-stat">
-          <small>Availability</small>
-          <strong>${profile.availability || "Seasonal"}</strong>
-        </div>
-        <div class="profile-stat">
-          <small>Products</small>
-          <strong>${profile.product}</strong>
-        </div>
-        <div class="profile-stat">
-          <small>Lead Time</small>
-          <strong>${profile.leadTime || "Contact supplier"}</strong>
-        </div>
-        <div class="profile-stat">
-          <small>Minimum Order</small>
-          <strong>${profile.minimumOrder || "Flexible"}</strong>
-        </div>
-      `
-      : `
-        <div class="profile-stat">
-          <small>Demand Need</small>
-          <strong>${profile.demandNeed || profile.product}</strong>
-        </div>
-        <div class="profile-stat">
-          <small>Order Frequency</small>
-          <strong>${profile.orderFrequency || "Recurring"}</strong>
-        </div>
-        <div class="profile-stat">
-          <small>Preferred Radius</small>
-          <strong>${profile.preferredRadius || "Regional"}</strong>
-        </div>
-      `;
+  profile.type === "farm"
+    ? `
+    
+    <div class="profile-overview-grid">
 
-  panel.classList.add("active");
+      <div class="overview-card">
+        <span>Availability</span>
+        <strong>${profile.availability || "Seasonal"}</strong>
+      </div>
+
+      <div class="overview-card">
+        <span>Lead Time</span>
+        <strong>${profile.leadTime || "Contact supplier"}</strong>
+      </div>
+
+      <div class="overview-card">
+        <span>Minimum Order</span>
+        <strong>${profile.minimumOrder || "Flexible"}</strong>
+      </div>
+
+      <div class="overview-card">
+        <span>Supply Type</span>
+        <strong>${profile.organic ? "Organic" : "Conventional"}</strong>
+      </div>
+
+    </div>
+
+    <div class="profile-section-title">
+      Available Products
+    </div>
+
+    <div class="product-scroll">
+
+      ${(profile.productsAvailable || [])
+        .map(
+          item => `
+            <div class="product-card">
+
+              ${
+                item.organic
+                  ? `<div class="product-organic-badge">Organic</div>`
+                  : ``
+              }
+
+              <h4>${item.name}</h4>
+
+              <div class="product-price">
+                ${item.price}
+              </div>
+
+              ${
+                item.marketComparison
+                  ? `
+                    <div class="market-comparison">
+                      ${item.marketComparison}
+                    </div>
+                  `
+                  : ``
+              }
+
+              <div class="product-note">
+                ${item.note || ""}
+              </div>
+
+            </div>
+          `
+        )
+        .join("")}
+
+    </div>
+    `
+    : `
+    
+    <div class="profile-overview-grid">
+
+      <div class="overview-card">
+        <span>Demand Need</span>
+        <strong>${profile.demandNeed || profile.product}</strong>
+      </div>
+
+      <div class="overview-card">
+        <span>Order Frequency</span>
+        <strong>${profile.orderFrequency || "Recurring"}</strong>
+      </div>
+
+      <div class="overview-card">
+        <span>Preferred Radius</span>
+        <strong>${profile.preferredRadius || "Regional"}</strong>
+      </div>
+
+      <div class="overview-card">
+        <span>Sourcing Style</span>
+        <strong>${profile.sourcingStyle || "Mixed suppliers"}</strong>
+      </div>
+
+    </div>
+    `;
+
+panel.classList.add("active");
 }
 
    
