@@ -1605,3 +1605,143 @@ body::after {
   border: 1px solid rgba(20, 50, 92, 0.08);
   box-shadow: 0 16px 36px rgba(20, 50, 92, 0.16);
 }
+
+.profile-overview-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+
+  margin-top: 22px;
+  margin-bottom: 26px;
+}
+
+.overview-card {
+  background: rgba(20, 50, 92, 0.045);
+
+  border-radius: 18px;
+
+  padding: 14px 16px;
+}
+
+.overview-card span {
+  display: block;
+
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+
+  color: var(--muted);
+
+  margin-bottom: 6px;
+}
+
+.overview-card strong {
+  color: var(--navy);
+
+  font-size: 0.95rem;
+  line-height: 1.35;
+}
+
+.profile-section-title {
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+
+  color: var(--green);
+
+  margin-bottom: 14px;
+}
+
+.product-scroll {
+  display: flex;
+  gap: 14px;
+
+  overflow-x: auto;
+
+  padding-bottom: 10px;
+
+  scrollbar-width: none;
+}
+
+.product-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.product-card {
+  min-width: 170px;
+
+  background: white;
+
+  border-radius: 22px;
+
+  padding: 16px;
+
+  box-shadow: 0 10px 30px rgba(20, 50, 92, 0.08);
+
+  position: relative;
+
+  flex-shrink: 0;
+}
+
+.product-card h4 {
+  margin: 0 0 10px;
+
+  color: var(--navy);
+
+  font-size: 1rem;
+}
+
+.product-price {
+  font-size: 1.2rem;
+  font-weight: 800;
+
+  color: var(--green);
+
+  margin-bottom: 10px;
+}
+
+.market-comparison {
+  display: inline-block;
+
+  background: rgba(31, 196, 108, 0.12);
+
+  color: #159957;
+
+  font-size: 0.72rem;
+  font-weight: 700;
+
+  padding: 6px 10px;
+
+  border-radius: 999px;
+
+  margin-bottom: 10px;
+}
+
+.product-note {
+  color: var(--muted);
+
+  font-size: 0.82rem;
+  line-height: 1.4;
+}
+
+.product-organic-badge {
+  position: absolute;
+
+  top: 14px;
+  right: 14px;
+
+  background: rgba(31, 196, 108, 0.14);
+
+  color: #159957;
+
+  font-size: 0.66rem;
+  font-weight: 800;
+
+  padding: 5px 8px;
+
+  border-radius: 999px;
+
+  text-transform: uppercase;
+}
