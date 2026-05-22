@@ -708,6 +708,7 @@ document.getElementById("profileStats").innerHTML =
     `;
 
 panel.classList.add("active");
+}
 
    
   renderMarkers();
