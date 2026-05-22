@@ -622,7 +622,35 @@ if (profile.logo) {
     ${profile.coalition ? `<span>Coalition</span>` : ""}
   `;
 
-  document.getElementById("profileStats").innerHTML =
+  const productCards = (profile.productsAvailable || [])
+  .map((item) => {
+    const itemIsOrganic = item.organic ?? profile.organic;
+
+    return `
+      <div class="product-card">
+        ${itemIsOrganic ? `<div class="product-organic-badge">Organic</div>` : ""}
+
+        <h4>${item.name}</h4>
+
+        <div class="product-price">
+          ${item.price}
+        </div>
+
+        ${
+          item.marketComparison
+            ? `<div class="market-comparison">${item.marketComparison}</div>`
+            : ""
+        }
+
+        <div class="product-note">
+          ${item.note || ""}
+        </div>
+      </div>
+    `;
+  })
+  .join("");
+
+document.getElementById("profileStats").innerHTML =
   profile.type === "farm"
     ? `
       <div class="profile-overview-grid">
@@ -650,31 +678,7 @@ if (profile.logo) {
       <div class="profile-section-title">Available Products</div>
 
       <div class="product-scroll">
-        ${(profile.productsAvailable || []).map(item => {
-          const itemIsOrganic = item.organic ?? profile.organic;
-
-          return `
-            <div class="product-card">
-              ${itemIsOrganic ? `<div class="product-organic-badge">Organic</div>` : ""}
-
-              <h4>${item.name}</h4>
-
-              <div class="product-price">
-                ${item.price}
-              </div>
-
-              ${
-                item.marketComparison
-                  ? `<div class="market-comparison">${item.marketComparison}</div>`
-                  : ""
-              }
-
-              <div class="product-note">
-                ${item.note || ""}
-              </div>
-            </div>
-          `;
-        }).join("")}
+        ${productCards}
       </div>
     `
     : `
@@ -702,7 +706,6 @@ if (profile.logo) {
     `;
 
 panel.classList.add("active");
-}
 
    
   renderMarkers();
