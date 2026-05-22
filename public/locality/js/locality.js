@@ -625,47 +625,37 @@ if (profile.logo) {
   document.getElementById("profileStats").innerHTML =
   profile.type === "farm"
     ? `
-    
-    <div class="profile-overview-grid">
+      <div class="profile-overview-grid">
+        <div class="overview-card">
+          <span>Availability</span>
+          <strong>${profile.availability || "Seasonal"}</strong>
+        </div>
 
-      <div class="overview-card">
-        <span>Availability</span>
-        <strong>${profile.availability || "Seasonal"}</strong>
+        <div class="overview-card">
+          <span>Lead Time</span>
+          <strong>${profile.leadTime || "Contact supplier"}</strong>
+        </div>
+
+        <div class="overview-card">
+          <span>Minimum Order</span>
+          <strong>${profile.minimumOrder || "Flexible"}</strong>
+        </div>
+
+        <div class="overview-card">
+          <span>Supply Type</span>
+          <strong>${profile.organic ? "Organic" : "Conventional"}</strong>
+        </div>
       </div>
 
-      <div class="overview-card">
-        <span>Lead Time</span>
-        <strong>${profile.leadTime || "Contact supplier"}</strong>
-      </div>
+      <div class="profile-section-title">Available Products</div>
 
-      <div class="overview-card">
-        <span>Minimum Order</span>
-        <strong>${profile.minimumOrder || "Flexible"}</strong>
-      </div>
+      <div class="product-scroll">
+        ${(profile.productsAvailable || []).map(item => {
+          const itemIsOrganic = item.organic ?? profile.organic;
 
-      <div class="overview-card">
-        <span>Supply Type</span>
-        <strong>${profile.organic ? "Organic" : "Conventional"}</strong>
-      </div>
-
-    </div>
-
-    <div class="profile-section-title">
-      Available Products
-    </div>
-
-    <div class="product-scroll">
-
-      ${(profile.productsAvailable || [])
-        .map(
-          item => `
+          return `
             <div class="product-card">
-
-              ${
-                item.organic
-                  ? `<div class="product-organic-badge">Organic</div>`
-                  : ``
-              }
+              ${itemIsOrganic ? `<div class="product-organic-badge">Organic</div>` : ""}
 
               <h4>${item.name}</h4>
 
@@ -675,50 +665,40 @@ if (profile.logo) {
 
               ${
                 item.marketComparison
-                  ? `
-                    <div class="market-comparison">
-                      ${item.marketComparison}
-                    </div>
-                  `
-                  : ``
+                  ? `<div class="market-comparison">${item.marketComparison}</div>`
+                  : ""
               }
 
               <div class="product-note">
                 ${item.note || ""}
               </div>
-
             </div>
-          `
-        )
-        .join("")}
-
-    </div>
+          `;
+        }).join("")}
+      </div>
     `
     : `
-    
-    <div class="profile-overview-grid">
+      <div class="profile-overview-grid">
+        <div class="overview-card">
+          <span>Demand Need</span>
+          <strong>${profile.demandNeed || profile.product}</strong>
+        </div>
 
-      <div class="overview-card">
-        <span>Demand Need</span>
-        <strong>${profile.demandNeed || profile.product}</strong>
+        <div class="overview-card">
+          <span>Order Frequency</span>
+          <strong>${profile.orderFrequency || "Recurring"}</strong>
+        </div>
+
+        <div class="overview-card">
+          <span>Preferred Radius</span>
+          <strong>${profile.preferredRadius || "Regional"}</strong>
+        </div>
+
+        <div class="overview-card">
+          <span>Sourcing Style</span>
+          <strong>${profile.sourcingStyle || "Mixed suppliers"}</strong>
+        </div>
       </div>
-
-      <div class="overview-card">
-        <span>Order Frequency</span>
-        <strong>${profile.orderFrequency || "Recurring"}</strong>
-      </div>
-
-      <div class="overview-card">
-        <span>Preferred Radius</span>
-        <strong>${profile.preferredRadius || "Regional"}</strong>
-      </div>
-
-      <div class="overview-card">
-        <span>Sourcing Style</span>
-        <strong>${profile.sourcingStyle || "Mixed suppliers"}</strong>
-      </div>
-
-    </div>
     `;
 
 panel.classList.add("active");
