@@ -2346,7 +2346,7 @@ body::after {
   padding: 11px 12px;
   border-radius: 18px;
 
-  background: rgba(255, 255, 255, 0.68);
+  background: rgba(255, 255, 255, 0.48);
 
   transition:
     transform 0.18s ease,
