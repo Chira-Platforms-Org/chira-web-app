@@ -1730,38 +1730,18 @@ body::after {
   position: relative;
 }
 
-.product-organic-badge {
-  position: absolute;
-
-  top: 14px;
-  right: 14px;
-
-  background: rgba(31, 196, 108, 0.14);
-
-  color: #159957;
-
-  font-size: 0.66rem;
-  font-weight: 800;
-
-  padding: 5px 8px;
-
-  border-radius: 999px;
-
-  text-transform: uppercase;
+.product-mini-organic {
+  width: 28px;
+  height: 28px;
+  transform: scale(0.55);
+  transform-origin: center;
+  flex-shrink: 0;
 }
 
-.product-card {
-  position: relative;
+.product-mini-organic .organic-badge {
+  position: static;
+  transform: none;
 }
-
-.product-organic-badge {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-
-  padding: 5px 8px;
-  border-radius: 999px;
-
 
 .product-icon {
   width: 38px;
