@@ -319,11 +319,47 @@ document.getElementById("profileStats").innerHTML =
         </div>
       </div>
 
-      <div class="profile-section-title">Available Products</div>
+      <div class="profile-mini-meta">
+        <span>
+          ${(profile.productsAvailable || []).length} listed items
+        </span>
 
-      <div class="product-scroll">
-        ${productCards}
+        <span>
+          ${profile.deliveryRadius || "Regional"} radius
+        </span>
       </div>
+
+      <div class="profile-trust-row">
+        <span>Verified Supplier</span>
+  ${
+    profile.deliveryRadius
+      ? `<span>Regional Delivery</span>`
+      : ``
+  }
+
+  ${
+    profile.coalition
+      ? `<span>Coalition Member</span>`
+      : ``
+  }
+
+  ${
+    profile.organic
+      ? `<span>Organic Certified</span>`
+      : ``
+  }
+
+</div>
+
+      <div class="profile-insight-card">
+        <span>Marketplace Insight</span>
+           <p>
+       ${
+         profile.featuredInsight ||
+         "Regional pricing and sourcing insights available."
+       }
+            </p>
+</div>
     `
     : `
       <div class="profile-overview-grid">
