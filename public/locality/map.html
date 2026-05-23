@@ -145,6 +145,40 @@
     </div>
   </aside>
 
+  <div id="messageModal" class="message-modal">
+  <div class="message-card">
+    <button class="message-close" id="messageClose">×</button>
+
+    <div class="message-header">
+      <div class="message-logo" id="messageLogo">LC</div>
+      <div>
+        <p id="messageType">Supplier conversation</p>
+        <h3 id="messageName">Profile name</h3>
+        <span id="messageStatus">Typically responds within 1 day</span>
+      </div>
+    </div>
+
+    <div class="message-thread" id="messageThread">
+      <div class="chat-bubble system">
+        Start a sourcing conversation using a quick prompt or write your own message.
+      </div>
+    </div>
+
+    <div class="message-prompts">
+      <button data-prompt="Ask about bulk pricing">Bulk pricing</button>
+      <button data-prompt="Request delivery schedule">Delivery schedule</button>
+      <button data-prompt="Check seasonal availability">Seasonal availability</button>
+      <button data-prompt="Ask for sample order">Sample order</button>
+      <button data-prompt="Discuss recurring supply">Recurring supply</button>
+    </div>
+
+    <div class="message-input-row">
+      <input id="messageInput" type="text" placeholder="Ask about availability, delivery, pricing..." />
+      <button id="messageSend">Send</button>
+    </div>
+  </div>
+</div>
+
   <div class="floating-insight insight-one">
     <span>High activity</span>
     <strong>East Valley sourcing corridor</strong>
