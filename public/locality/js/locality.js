@@ -405,11 +405,18 @@ function openMessageModal(profile) {
   document.getElementById("messageType").textContent =
     profile.type === "farm" ? "Supplier conversation" : "Buyer conversation";
 
-  if (profile.logo) {
-    logo.innerHTML = `<img src="images/${profile.logo}" alt="${profile.name} logo">`;
-  } else {
-    logo.textContent = profile.logoInitials || profile.name.slice(0, 2).toUpperCase();
-  }
+   document.getElementById("messageStatus").textContent =
+     "Most suppliers respond within 2 business days.";
+
+   if (profile.logo) {
+  const safeLogoPath = `images/${encodeURIComponent(profile.logo)}`;
+
+  logo.innerHTML = `
+    <img src="${safeLogoPath}" alt="${profile.name} logo">
+  `;
+} else {
+  logo.textContent = profile.logoInitials || profile.name.slice(0, 2).toUpperCase();
+}
 
   document.getElementById("messageThread").innerHTML = `
     <div class="chat-bubble system">
