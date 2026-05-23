@@ -2153,3 +2153,22 @@ body::after {
   z-index: 5300;
 }
 
+.draft-button {
+  border: none;
+  background: #eef1ed;
+
+  color: var(--navy);
+  font-weight: 700;
+
+  padding: 0 18px;
+  border-radius: 18px;
+
+  cursor: pointer;
+
+  transition: 0.2s ease;
+}
+
+.draft-button:hover {
+  background: #e2e7e0;
+}
+
