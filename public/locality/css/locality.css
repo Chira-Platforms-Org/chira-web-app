@@ -1508,6 +1508,14 @@ body::after {
   pointer-events: auto;
 }
 
+.profile-panel.switching {
+  opacity: 0;
+  transform: translateX(24px);
+  transition:
+    opacity 0.18s ease,
+    transform 0.18s ease;
+}
+
 .profile-close {
   position: sticky;
   top: 22px;
