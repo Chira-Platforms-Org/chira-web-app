@@ -215,34 +215,35 @@ marker.on("mouseout", function () {
     });
   }
 
-function openProfilePanel(profile) {
-  const panel = document.getElementById("profilePanel");
-  if (!panel) return;
-
+function updateProfileContent(profile) {
   const profileLogo = document.getElementById("profileLogo");
 
-   document
-  .getElementById("profileCover")
-  .classList.toggle("buyer", profile.type === "buyer");
+  document
+    .getElementById("profileCover")
+    .classList.toggle("buyer", profile.type === "buyer");
 
-if (profile.logo) {
-  profileLogo.innerHTML = `
-    <img
-      src="images/logos/${profile.logo}"
-      alt="${profile.name} logo"
-    />
-  `;
-} else {
-  profileLogo.textContent =
-    profile.logoInitials || profile.name.slice(0, 2).toUpperCase();
-}
+  if (profile.logo) {
+    profileLogo.innerHTML = `
+      <img
+        src="images/logos/${profile.logo}"
+        alt="${profile.name} logo"
+      />
+    `;
+  } else {
+    profileLogo.textContent =
+      profile.logoInitials || profile.name.slice(0, 2).toUpperCase();
+  }
 
-  document.getElementById("profileLogo").classList.toggle("buyer", profile.type === "buyer");
+  document
+    .getElementById("profileLogo")
+    .classList.toggle("buyer", profile.type === "buyer");
+
   document.getElementById("profileType").textContent =
     profile.type === "farm" ? "Supplier profile" : "Buyer profile";
 
   document.getElementById("profileName").textContent = profile.name;
   document.getElementById("profileLocation").textContent = profile.location;
+
   document.getElementById("profileDescription").textContent =
     profile.description || profile.product;
 
@@ -253,152 +254,158 @@ if (profile.logo) {
   `;
 
   const productCards = (profile.productsAvailable || [])
-  .map((item) => {
-    const itemIsOrganic = item.organic ?? profile.organic;
+    .map((item) => {
+      const itemIsOrganic = item.organic ?? profile.organic;
 
-    return `
-  <div class="product-card">
+      return `
+        <div class="product-card">
+          <div class="product-card-top">
+            <div class="product-icon">
+              ${getProductIcon(item.category)}
+            </div>
 
-    <div class="product-card-top">
+            ${
+              itemIsOrganic
+                ? `<div class="product-mini-organic">${getOrganicBadge()}</div>`
+                : ""
+            }
+          </div>
 
-      <div class="product-icon">
-        ${getProductIcon(item.category)}
-      </div>
+          <h4>${item.name}</h4>
 
-      ${
-        itemIsOrganic
-          ? `<div class="product-mini-organic">${getOrganicBadge()}</div>`
-          : ""
-      }
+          <div class="product-price">
+            ${item.price}
+          </div>
 
-    </div>
+          ${
+            item.marketComparison
+              ? `<div class="market-comparison">${item.marketComparison}</div>`
+              : ""
+          }
 
-    <h4>${item.name}</h4>
+          <div class="product-note">
+            ${item.note || ""}
+          </div>
+        </div>
+      `;
+    })
+    .join("");
 
-    <div class="product-price">
-      ${item.price}
-    </div>
+  document.getElementById("profileStats").innerHTML =
+    profile.type === "farm"
+      ? `
+        <div class="profile-overview-grid">
+          <div class="overview-card">
+            <span>Availability</span>
+            <strong>${profile.availability || "Seasonal"}</strong>
+          </div>
 
-    ${
-      item.marketComparison
-        ? `<div class="market-comparison">${item.marketComparison}</div>`
-        : ""
-    }
+          <div class="overview-card">
+            <span>Lead Time</span>
+            <strong>${profile.leadTime || "Contact supplier"}</strong>
+          </div>
 
-    <div class="product-note">
-      ${item.note || ""}
-    </div>
+          <div class="overview-card">
+            <span>Minimum Order</span>
+            <strong>${profile.minimumOrder || "Flexible"}</strong>
+          </div>
 
-  </div>
-`;
-  })
-  .join("");
-
-document.getElementById("profileStats").innerHTML =
-  profile.type === "farm"
-    ? `
-      <div class="profile-overview-grid">
-        <div class="overview-card">
-          <span>Availability</span>
-          <strong>${profile.availability || "Seasonal"}</strong>
+          <div class="overview-card">
+            <span>Supply Type</span>
+            <strong>${profile.organic ? "Organic" : "Conventional"}</strong>
+          </div>
         </div>
 
-        <div class="overview-card">
-          <span>Lead Time</span>
-          <strong>${profile.leadTime || "Contact supplier"}</strong>
+        <div class="profile-mini-meta">
+          <span>${(profile.productsAvailable || []).length} listed items</span>
+          <span>${profile.deliveryRadius || "Regional"} radius</span>
         </div>
 
-        <div class="overview-card">
-          <span>Minimum Order</span>
-          <strong>${profile.minimumOrder || "Flexible"}</strong>
+        <div class="profile-trust-row">
+          <span>Verified Supplier</span>
+
+          ${
+            profile.deliveryRadius
+              ? `<span>Regional Delivery</span>`
+              : ``
+          }
+
+          ${
+            profile.coalition
+              ? `<span>Coalition Member</span>`
+              : ``
+          }
+
+          ${
+            profile.organic
+              ? `<span>Organic Certified</span>`
+              : ``
+          }
         </div>
 
-        <div class="overview-card">
-          <span>Supply Type</span>
-          <strong>${profile.organic ? "Organic" : "Conventional"}</strong>
-        </div>
-      </div>
-
-      <div class="profile-mini-meta">
-        <span>
-          ${(profile.productsAvailable || []).length} listed items
-        </span>
-
-        <span>
-          ${profile.deliveryRadius || "Regional"} radius
-        </span>
-      </div>
-
-      <div class="profile-trust-row">
-        <span>Verified Supplier</span>
-  ${
-    profile.deliveryRadius
-      ? `<span>Regional Delivery</span>`
-      : ``
-  }
-
-  ${
-    profile.coalition
-      ? `<span>Coalition Member</span>`
-      : ``
-  }
-
-  ${
-    profile.organic
-      ? `<span>Organic Certified</span>`
-      : ``
-  }
-
-</div>
-
-      <div class="profile-insight-card">
-  <span>Marketplace Insight</span>
-  <p>
-    ${
-      profile.featuredInsight ||
-      "Regional pricing and sourcing insights available."
-    }
-  </p>
-</div>
-
-<div class="profile-section-title">
-  Available Products
-</div>
-
-<div class="product-scroll">
-  ${productCards}
-</div>
-    `
-    : `
-      <div class="profile-overview-grid">
-        <div class="overview-card">
-          <span>Demand Need</span>
-          <strong>${profile.demandNeed || profile.product}</strong>
+        <div class="profile-insight-card">
+          <span>Marketplace Insight</span>
+          <p>
+            ${
+              profile.featuredInsight ||
+              "Regional pricing and sourcing insights available."
+            }
+          </p>
         </div>
 
-        <div class="overview-card">
-          <span>Order Frequency</span>
-          <strong>${profile.orderFrequency || "Recurring"}</strong>
+        <div class="profile-section-title">
+          Available Products
         </div>
 
-        <div class="overview-card">
-          <span>Preferred Radius</span>
-          <strong>${profile.preferredRadius || "Regional"}</strong>
+        <div class="product-scroll">
+          ${productCards}
         </div>
+      `
+      : `
+        <div class="profile-overview-grid">
+          <div class="overview-card">
+            <span>Demand Need</span>
+            <strong>${profile.demandNeed || profile.product}</strong>
+          </div>
 
-        <div class="overview-card">
-          <span>Sourcing Style</span>
-          <strong>${profile.sourcingStyle || "Mixed suppliers"}</strong>
+          <div class="overview-card">
+            <span>Order Frequency</span>
+            <strong>${profile.orderFrequency || "Recurring"}</strong>
+          </div>
+
+          <div class="overview-card">
+            <span>Preferred Radius</span>
+            <strong>${profile.preferredRadius || "Regional"}</strong>
+          </div>
+
+          <div class="overview-card">
+            <span>Sourcing Style</span>
+            <strong>${profile.sourcingStyle || "Mixed suppliers"}</strong>
+          </div>
         </div>
-      </div>
-    `;
+      `;
 
-   activeProfile = profile;
-
-panel.classList.add("active");
+  activeProfile = profile;
 }
 
-   
+function openProfilePanel(profile) {
+  const panel = document.getElementById("profilePanel");
+  if (!panel) return;
+
+  const isAlreadyOpen = panel.classList.contains("active");
+
+  if (isAlreadyOpen) {
+    panel.classList.add("switching");
+
+    setTimeout(() => {
+      updateProfileContent(profile);
+      panel.classList.remove("switching");
+    }, 180);
+  } else {
+    updateProfileContent(profile);
+    panel.classList.add("active");
+  }
+}   
   renderMarkers();
 
    let activeProfile = null;
