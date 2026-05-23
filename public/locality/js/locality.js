@@ -37,22 +37,20 @@ const profiles = [
          minimumOrder: "Fixed",
          leadTime: "10–14 days",
          productsAvailable: [
-           { name: "Red Cabbage", price: "$0.90/lb", note: "Available" },
-           { name: "Rainbow Carrots", price: "$2.50/lb", note: "Low inventory" },
-           { name: "Heirloom Tomatoes", price: "$4.40/lb", note: "High availability" },
-           { name: "Sugar Snap Peas", price: "$4.90/lb", note: "Limited weekly harvest" },
-           { name: "Black Tuscan Kale", price: "$4.20/lb", note: "Limited weekly harvest" },
-           { name: "Red Beets", price: "$3.00/lb", note: "Available" },
-           { name: "Golden Beets", price: "$3.10/lb", note: "Available" },
-           { name: "Broccoli", price: "$3.50/lb", note: "Available" },
-           { name: "Broccolini", price: "$5.10/lb", note: "Pre-order preferred" },
-           { name: "Eggplant", price: "$2.10/lb", note: "Longer than average lead times" },
-           { name: "Dried Rosemary", price: "$6.50/oz", note: "Limited" },
-           { name: "Basil", price: "$2.90/oz", note: "Available" },
-           { name: "Thyme", price: "$2.90/oz", note: "Longer than average lead times" },
-           { name: "Mint", price: "$3.10/oz", note: "Longer than average lead times" }
-            
-            
+           { name: "Red Cabbage", category: "vegetables", price: "$0.90/lb", note: "Available", organic: true },
+           { name: "Rainbow Carrots", category: "root-vegetables", price: "$2.50/lb", note: "Low inventory", organic: true },
+           { name: "Heirloom Tomatoes", category: "vegetables", price: "$4.40/lb", note: "High availability", organic: true },
+           { name: "Sugar Snap Peas", category: "vegetables", price: "$4.90/lb", note: "Limited weekly harvest", organic: true },
+           { name: "Black Tuscan Kale", category: "leafy-greens", price: "$4.20/lb", note: "Limited weekly harvest", organic: true },
+           { name: "Red Beets", category: "root-vegetables", price: "$3.00/lb", note: "Available", organic: true },
+           { name: "Golden Beets", category: "root-vegetables", price: "$3.10/lb", note: "Available", organic: true },
+           { name: "Broccoli", category: "vegetables", price: "$3.50/lb", note: "Available", organic: true },
+           { name: "Broccolini", category: "vegetables", price: "$5.10/lb", note: "Pre-order preferred", organic: true },
+           { name: "Eggplant", category: "vegetables", price: "$2.10/lb", note: "Longer than average lead times", organic: true },
+           { name: "Dried Rosemary", category: "herbs", price: "$6.50/oz", note: "Limited", organic: true },
+           { name: "Basil", category: "herbs", price: "$2.90/oz", note: "Available", organic: true },
+           { name: "Thyme", category: "herbs", price: "$2.90/oz", note: "Longer than average lead times", organic: true },
+           { name: "Mint", category: "herbs", price: "$3.10/oz", note: "Longer than average lead times", organic: true }
          ]
    },
    {
@@ -71,15 +69,15 @@ const profiles = [
          minimumOrder: "Flexible",
          leadTime: "2–4 days",
          productsAvailable: [
-           { name: "Iceberg Lettuce", price: "$2.10/lb", note: "High availability" },
-           { name: "Carrots", price: "$0.60/lb", note: "Available" },
-           { name: "Russet Potatoes", price: "$0.90/lb", note: "High availability" },
-           { name: "Yukon Gold Potatoes", price: "$1.20/lb", note: "High availability" },
-           { name: "Yellow Onions", price: "$1.00/lb", note: "High availability" },
-           { name: "Red Onions", price: "$1.10/lb", note: "High availability" },
-           { name: "Sweet Onions", price: "$1.40/lb", note: "Available" },
-           { name: "Broccoli", price: "$3.10/lb", note: "Available" },
-           { name: "Purple Shallots", price: "$4.10/lb", note: "Pre-order preferred" }
+           { name: "Iceberg Lettuce", category: "leafy-greens", price: "$2.10/lb", note: "High availability", organic: false },
+           { name: "Carrots", category: "root-vegetables", price: "$0.60/lb", note: "Available", organic: false },
+           { name: "Russet Potatoes", category: "root-vegetables", price: "$0.90/lb", note: "High availability", organic: false },
+           { name: "Yukon Gold Potatoes", category: "root-vegetables", price: "$1.20/lb", note: "High availability", organic: false },
+           { name: "Yellow Onions", category: "root-vegetables", price: "$1.00/lb", note: "High availability", organic: false },
+           { name: "Red Onions", category: "root-vegetables", price: "$1.10/lb", note: "High availability", organic: false },
+           { name: "Sweet Onions", category: "root-vegetables", price: "$1.40/lb", note: "Available", organic: false },
+           { name: "Broccoli", category: "vegetables", price: "$3.10/lb", note: "Available", organic: false },
+           { name: "Purple Shallots", category: "root-vegetables", price: "$4.10/lb", note: "Pre-order preferred", organic: false }
          ]
    },
    {
@@ -99,20 +97,19 @@ const profiles = [
          minimumOrder: "Fixed",
          leadTime: "10–14 days",
          productsAvailable: [
-           { name: "Raw Milk", price: "$7.50/gal", note: "Pre-order preferred" },
-           { name: "Pasteurized Whole Milk", price: "$3.10/lb", note: "Available" },
-           { name: "Pasteurized 2% Milk", price: "$3.10/lb", note: "Available" },
-           { name: "Pasteurized 1% Milk", price: "$3.10/lb", note: "Available" },
-           { name: "Cultured Butter", price: "$4.00/lb", note: "Available" },
-           { name: "Ricotta", price: "$6.90/lb", note: "Available" },
-           { name: "Queso Fresco", price: "$6.10/lb", note: "Available" },
-           { name: "Farmhouse Cheddar", price: "$3.90/lb", note: "Available" },
-           { name: "Gouda", price: "$4.20/lb", note: "Pre-order preferred" },
-           { name: "Sharp Manchego", price: "$12.50/lb", note: "Longer than average lead times" },
-           { name: "Parmesan", price: "$14.00/lb", note: "Longer than average lead times" },
-           { name: "Clover Honey", price: "$9.10/lb", note: "Bulk pre-orders preferred" },
-           { name: "Beeswax Blocks", price: "$11.10/lb", note: "Limited Availability" }
-            
+           { name: "Raw Milk", category: "dairy", price: "$7.50/gal", note: "Pre-order preferred", organic: true },
+           { name: "Pasteurized Whole Milk", category: "dairy", price: "$3.10/gal", note: "Available", organic: true },
+           { name: "Pasteurized 2% Milk", category: "dairy", price: "$3.10/gal", note: "Available", organic: true },
+           { name: "Pasteurized 1% Milk", category: "dairy", price: "$3.10/gal", note: "Available", organic: true },
+           { name: "Cultured Butter", category: "dairy", price: "$4.00/lb", note: "Available", organic: true },
+           { name: "Ricotta", category: "dairy", price: "$6.90/lb", note: "Available", organic: true },
+           { name: "Queso Fresco", category: "dairy", price: "$6.10/lb", note: "Available", organic: true },
+           { name: "Farmhouse Cheddar", category: "dairy", price: "$3.90/lb", note: "Available", organic: true },
+           { name: "Gouda", category: "dairy", price: "$4.20/lb", note: "Pre-order preferred", organic: true },
+           { name: "Sharp Manchego", category: "dairy", price: "$12.50/lb", note: "Extended lead time", organic: true },
+           { name: "Parmesan", category: "dairy", price: "$14.00/lb", note: "Extended lead time", organic: true },
+           { name: "Clover Honey", category: "specialty", price: "$9.10/lb", note: "Bulk pre-orders preferred", organic: true },
+           { name: "Beeswax Blocks", category: "specialty", price: "$11.10/lb", note: "Limited availability", organic: false }
          ]
    },
    {
@@ -438,6 +435,27 @@ function getProfileIcon(variant) {
   };
 
   return icons[variant] || "●";
+}
+
+   function getProductIcon(category) {
+  const icons = {
+    "leafy-greens": "🥬",
+    "root-vegetables": "🥕",
+    "fruit": "🍎",
+    "citrus": "🍊",
+    "dairy": "🥛",
+    "eggs": "🥚",
+    "meat": "🥩",
+    "poultry": "🍗",
+    "grains": "🌾",
+    "rice": "🍚",
+    "nuts": "🌰",
+    "herbs": "🌿",
+    "honey": "🍯",
+    "specialty": "✦"
+  };
+
+  return icons[category] || "•";
 }
 
 
