@@ -542,6 +542,18 @@ document.querySelectorAll(".message-prompts button").forEach((button) => {
 
    setTimeout(hideMapLoader, 3500);
 
+function scrollActivityFeedToBottom() {
+  const activityList = document.querySelector(".activity-list");
+     if (!activityList) return;
+
+     activityList.scrollTop = activityList.scrollHeight;
+}
+window.addEventListener("load", () => {
+  setTimeout(scrollActivityFeedToBottom, 450);
+});
+
+
+
   /* Soft regional demand zones */
 
   L.circle([33.4152, -111.8315], {
