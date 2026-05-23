@@ -1775,3 +1775,54 @@ body::after {
   min-height: 40px;
   margin-bottom: 18px;
 }
+
+/* Product slider polish */
+
+.product-scroll {
+  padding: 12px 0 18px;
+  margin-top: 4px;
+  position: relative;
+
+  scroll-snap-type: x proximity;
+}
+
+.product-card {
+  scroll-snap-align: start;
+}
+
+.product-mini-organic {
+  width: 34px;
+  height: 34px;
+
+  transform: scale(0.72);
+  transform-origin: center;
+
+  flex-shrink: 0;
+}
+
+.product-mini-organic .organic-badge {
+  position: static;
+  transform: none;
+}
+
+/* subtle scroll hint */
+.product-scroll::after {
+  content: "Scroll →";
+  position: sticky;
+  right: 8px;
+
+  align-self: center;
+
+  height: fit-content;
+  padding: 7px 11px;
+  border-radius: 999px;
+
+  background: rgba(20, 50, 92, 0.08);
+  color: var(--navy);
+
+  font-size: 0.68rem;
+  font-weight: 900;
+  white-space: nowrap;
+
+  box-shadow: 0 8px 20px rgba(20, 50, 92, 0.08);
+}
