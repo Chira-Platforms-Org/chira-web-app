@@ -430,7 +430,19 @@ function openMessageModal(profile) {
       Start a sourcing conversation with ${profile.name}.
     </div>
   `;
+   
+const savedDraft = localStorage.getItem(
+  `localityDraft-${profile.name}`
+);
 
+if (savedDraft) {
+  document.getElementById("messageInput").value = savedDraft;
+
+  addMessage(
+    "Unsaved draft restored.",
+    "system"
+  );
+}
   modal.classList.add("active");
 }
 
@@ -473,8 +485,26 @@ document.getElementById("messageSend")?.addEventListener("click", () => {
   addMessage(text, "user");
   input.value = "";
   fakeSupplierReply(text);
+   localStorage.removeItem(
+  `localityDraft-${activeProfile.name}`
+);
 });
 
+document.getElementById("saveDraftButton")?.addEventListener("click", () => {
+  const input = document.getElementById("messageInput");
+
+  if (!input || !activeProfile) return;
+
+  const text = input.value.trim();
+
+  localStorage.setItem(
+    `localityDraft-${activeProfile.name}`,
+    text
+  );
+
+  addMessage("Draft saved locally.", "system");
+});
+   
 document.getElementById("messageInput")?.addEventListener("keydown", (e) => {
   if (e.key === "Enter") {
     document.getElementById("messageSend")?.click();
