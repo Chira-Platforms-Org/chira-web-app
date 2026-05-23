@@ -352,13 +352,21 @@ document.getElementById("profileStats").innerHTML =
 </div>
 
       <div class="profile-insight-card">
-        <span>Marketplace Insight</span>
-           <p>
-       ${
-         profile.featuredInsight ||
-         "Regional pricing and sourcing insights available."
-       }
-            </p>
+  <span>Marketplace Insight</span>
+  <p>
+    ${
+      profile.featuredInsight ||
+      "Regional pricing and sourcing insights available."
+    }
+  </p>
+</div>
+
+<div class="profile-section-title">
+  Available Products
+</div>
+
+<div class="product-scroll">
+  ${productCards}
 </div>
     `
     : `
