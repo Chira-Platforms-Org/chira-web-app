@@ -2259,3 +2259,133 @@ body::after {
     transform: translateY(-6px);
   }
 }
+
+.activity-feed {
+  position: absolute;
+  top: 28px;
+  right: 28px;
+  z-index: 900;
+
+  width: 300px;
+  max-height: 310px;
+
+  padding: 16px;
+  border-radius: 28px;
+
+  background: rgba(255, 255, 255, 0.68);
+  backdrop-filter: blur(18px);
+
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  box-shadow: 0 24px 70px rgba(20, 50, 92, 0.14);
+}
+
+.activity-feed-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 12px;
+}
+
+.activity-feed-header span {
+  display: block;
+
+  color: var(--green);
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.activity-feed-header strong {
+  display: block;
+
+  margin-top: 2px;
+
+  color: var(--navy);
+  font-size: 1rem;
+  font-weight: 900;
+}
+
+.activity-live-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: var(--green);
+  box-shadow: 0 0 0 6px rgba(8, 196, 100, 0.12);
+}
+
+.activity-list {
+  max-height: 220px;
+  overflow-y: auto;
+
+  display: grid;
+  gap: 10px;
+
+  padding-right: 4px;
+
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    black 18%,
+    black 82%,
+    black 100%
+  );
+}
+
+.activity-list::-webkit-scrollbar {
+  width: 5px;
+}
+
+.activity-list::-webkit-scrollbar-thumb {
+  background: rgba(20, 50, 92, 0.18);
+  border-radius: 999px;
+}
+
+.activity-item {
+  padding: 11px 12px;
+  border-radius: 18px;
+
+  background: rgba(255, 255, 255, 0.68);
+
+  transition:
+    transform 0.18s ease,
+    background 0.18s ease,
+    opacity 0.18s ease;
+}
+
+.activity-item:hover {
+  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.activity-item span {
+  display: block;
+  margin-bottom: 4px;
+
+  color: var(--green);
+  font-size: 0.68rem;
+  font-weight: 900;
+}
+
+.activity-item p {
+  margin: 0;
+
+  color: var(--navy);
+  font-size: 0.82rem;
+  line-height: 1.35;
+  font-weight: 800;
+}
+
+.activity-item.faint {
+  opacity: 0.42;
+}
+
+.activity-item.soft {
+  opacity: 0.68;
+}
+
+.activity-item.newest {
+  background: rgba(8, 196, 100, 0.10);
+  border: 1px solid rgba(8, 196, 100, 0.12);
+}
