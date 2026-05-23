@@ -522,6 +522,18 @@ document.querySelectorAll(".message-prompts button").forEach((button) => {
   document.getElementById("typeFilter")?.addEventListener("change", renderMarkers);
   document.getElementById("productFilter")?.addEventListener("change", renderMarkers);
   document.getElementById("organicFilter")?.addEventListener("change", renderMarkers);
+   
+   const mapLoader = document.getElementById("mapLoader");
+
+      function hideMapLoader() {
+        mapLoader?.classList.add("hidden");
+      }
+
+      map.whenReady(() => {
+        setTimeout(hideMapLoader, 700);
+      });
+
+   setTimeout(hideMapLoader, 3500);
 
   /* Soft regional demand zones */
 
