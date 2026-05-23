@@ -2272,11 +2272,11 @@ body::after {
   padding: 16px;
   border-radius: 28px;
 
-  background: rgba(255, 255, 255, 0.68);
-  backdrop-filter: blur(18px);
+  background: rgba(255, 255, 255, 0.48);
+  backdrop-filter: blur(12px);
 
   border: 1px solid rgba(255, 255, 255, 0.55);
-  box-shadow: 0 24px 70px rgba(20, 50, 92, 0.14);
+  box-shadow: 0 16px 40px rgba(20, 50, 92, 0.08);
 }
 
 .activity-feed-header {
