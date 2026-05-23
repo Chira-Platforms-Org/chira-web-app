@@ -1509,7 +1509,7 @@ body::after {
 }
 
 .profile-close {
-  position: absolute;
+  position: sticky;
   top: 22px;
   right: 22px;
   width: 34px;
