@@ -104,15 +104,14 @@ const profiles = [
      lat: 32.9272,
      lng: -111.7419,
      productsAvailable: [
-           { name: "Pasteurized Whole Milk", price: "$2.90/lb", note: "Available" },
-           { name: "Pasteurized 2% Milk", price: "$2.90/lb", note: "Available" },
-           { name: "Pasteurized Whole Milk", price: "$2.90/lb", note: "Available" },
-           { name: "Salted Butter", price: "$4.20/lb", note: "Available" },
-           { name: "European Style Butter", price: "$4.10/lb", note: "Available"},
-           { name: "Raw Butter", price: "$5.50/lb", note: "Pre-order preferred" },
-           { name: "Eggs", price: "$3.70/dozen", note: "Available" }
-            
-         ]
+        { name: "Pasteurized Whole Milk", category: "dairy", price: "$2.90/gal", note: "Available", organic: false },
+        { name: "Pasteurized 2% Milk", category: "dairy", price: "$2.90/gal", note: "Available", organic: false },
+        { name: "Pasteurized 1% Milk", category: "dairy", price: "$2.90/gal", note: "Available", organic: false },
+        { name: "Salted Butter", category: "dairy", price: "$4.20/lb", note: "Available", organic: false },
+        { name: "European Style Butter", category: "dairy", price: "$4.10/lb", note: "Available", organic: false },
+        { name: "Raw Butter", category: "dairy", price: "$5.50/lb", note: "Pre-order preferred", organic: false },
+        { name: "Eggs", category: "eggs", price: "$3.70/dozen", note: "Available", organic: false }
+   ]
 
    },
    {
@@ -131,17 +130,17 @@ const profiles = [
          minimumOrder: "Flexible",
          leadTime: "3–5 days",
          productsAvailable: [
-           { name: "Citrus Box", price: "$34/case", note: "Seasonal" },
-           { name: "Dates", price: "$18/lb", note: "Limited" },
-           { name: "Eureka Lemons", price: "$1.90/lb", note: "High Availability" },
-           { name: "Meyer Lemons", price: "$2.30/lb", note: "Available" },
-           { name: "Persian Limes", price: "$2.30/lb", note: "Available" },
-           { name: "Cara Cara Oranges", price: "$2.40/lb", note: "Available" },
-           { name: "Blood Oranges", price: "$3.25/lb", note: "Limited" },
-           { name: "Navel Oranges", price: "$1.65/lb", note: "High Availability" },
-           { name: "Ruby Red Grapefruits", price: "$2.40/lb", note: "Seasonal" },
-           { name: "Pomelos", price: "$3.10/lb", note: "Seasonal" },
-           { name: "Clementines/Mandarins", price: "$2.55/lb", note: "Available" }
+           { name: "Citrus Box", category: "citrus", price: "$34/case", note: "Seasonal", organic: true },
+           { name: "Dates", category: "fruit", price: "$18/lb", note: "Limited", organic: true },
+           { name: "Eureka Lemons", category: "citrus", price: "$1.90/lb", note: "High availability", organic: true },
+           { name: "Meyer Lemons", category: "citrus", price: "$2.30/lb", note: "Available", organic: true },
+           { name: "Persian Limes", category: "citrus", price: "$2.30/lb", note: "Available", organic: true },
+           { name: "Cara Cara Oranges", category: "citrus", price: "$2.40/lb", note: "Available", organic: false },
+           { name: "Blood Oranges", category: "citrus", price: "$3.25/lb", note: "Limited", organic: true },
+           { name: "Navel Oranges", category: "citrus", price: "$1.65/lb", note: "High availability", organic: true },
+           { name: "Ruby Red Grapefruits", category: "citrus", price: "$2.40/lb", note: "Seasonal", organic: true },
+           { name: "Pomelos", category: "citrus", price: "$3.10/lb", note: "Seasonal", organic: true },
+           { name: "Clementines/Mandarins", category: "citrus", price: "$2.55/lb", note: "Available", organic: true }
          ]
    },
    
@@ -223,16 +222,16 @@ const profiles = [
          minimumOrder: "Flexible",
          leadTime: "2–4 days",
          productsAvailable: [
-           { name: "Grass-Fed Ribeye", price: "$15.10/lb", note: "Limited" },
-           { name: "Heritage Breed Pork Chops", price: "$8.20/lb", note: "Pre-order preferred" },
-           { name: "Heritage Breed Pork Shoulder", price: "$8.90/lb", note: "Pre-order preferred" },
-           { name: "Grass-Fed Beef Flank Steak", price: "$6.20/lb", note: "High availability" },
-           { name: "Bulk Grass-Fed Beef", price: "negotiable", note: "Please message for info" },
-           { name: "Bulk Heritage Pork", price: "negotiable", note: "Please message for info" },
-           { name: "Pastured Whole Chicken", price: "$2.80/lb", note: "Available" },
-           { name: "Whole Pasture-Raised Ducks", price: "$11.80/lb", note: "Limited" },
-           { name: "Homemade Variety Sausages", price: "$3.00/lb", note: "Pre-order preferred" },
-           { name: "Eggs", price: "$3.90/dozen", note: "Limited" }
+           { name: "Grass-Fed Ribeye", category: "beef", price: "$15.10/lb", note: "Limited", organic: true },
+           { name: "Heritage Breed Pork Chops", category: "pork", price: "$8.20/lb", note: "Pre-order preferred", organic: true },
+           { name: "Heritage Breed Pork Shoulder", category: "pork", price: "$8.90/lb", note: "Pre-order preferred", organic: true },
+           { name: "Grass-Fed Beef Flank Steak", category: "beef", price: "$6.20/lb", note: "High availability", organic: true },
+           { name: "Bulk Grass-Fed Beef", category: "beef", price: "Negotiable", note: "Message supplier for pricing", organic: true },
+           { name: "Bulk Heritage Pork", category: "pork", price: "Negotiable", note: "Message supplier for pricing", organic: true },
+           { name: "Pastured Whole Chicken", category: "poultry", price: "$2.80/lb", note: "Available", organic: true },
+           { name: "Whole Pasture-Raised Ducks", category: "poultry", price: "$11.80/lb", note: "Limited", organic: true },
+           { name: "Homemade Variety Sausages", category: "pork", price: "$3.00/lb", note: "Pre-order preferred", organic: true },
+           { name: "Eggs", category: "eggs", price: "$3.90/dozen", note: "Limited", organic: true }
          ]
    
 },
@@ -252,23 +251,23 @@ const profiles = [
          minimumOrder: "Fixed",
          leadTime: "10–14 days",
          productsAvailable: [
-           { name: "Red Cabbage", price: "$0.80/lb", note: "Available" },
-           { name: "Carrots", price: "$1.90/lb", note: "Available" },
-           { name: "Heirloom Tomatoes", price: "$3.50/lb", note: "High availability" },
-           { name: "Summer Squash (Multiple Types)", price: "$3.20/lb", note: "Seasonal" },
-           { name: "Winter Squash (Multiple Types)", price: "$3.90/lb", note: "Seasonal" },
-           { name: "Specialty Squash (Multiple Types)", price: "$6.00/lb", note: "Pre-order preferred" },
-           { name: "Red Beets", price: "$2.40/lb", note: "Available" },
-           { name: "Broccoli", price: "$3.10/lb", note: "Available" },
-           { name: "Wheat", price: "$2.10/lb", note: "Available" },
-           { name: "Rice", price: "$2.70/lb", note: "Available" },
-           { name: "Stone-Ground Yellow Cornmeal", price: "$2.55/lb", note: "Available" },
-           { name: "Pecans", price: "$9.10/lb", note: "Pre-order preferred" },
-           { name: "Walnuts", price: "$6.25/lb", note: "Available" },
-           { name: "Almonds", price: "$8.45/lb", note: "Available" },
-           { name: "Pistachios", price: "$9.50/lb", note: "Pre-order preferred" },
-           { name: "Cashews", price: "$8.70/lb", note: "Pre-order preferred" }
-            ]
+           { name: "Red Cabbage", category: "vegetables", price: "$0.80/lb", note: "Available", organic: false },
+           { name: "Carrots", category: "root-vegetables", price: "$1.90/lb", note: "Available", organic: false },
+           { name: "Heirloom Tomatoes", category: "vegetables", price: "$3.50/lb", note: "High availability", organic: false },
+           { name: "Summer Squash (Multiple Types)", category: "vegetables", price: "$3.20/lb", note: "Seasonal", organic: false },
+           { name: "Winter Squash (Multiple Types)", category: "vegetables", price: "$3.90/lb", note: "Seasonal", organic: false },
+           { name: "Specialty Squash (Multiple Types)", category: "vegetables", price: "$6.00/lb", note: "Pre-order preferred", organic: false },
+           { name: "Red Beets", category: "root-vegetables", price: "$2.40/lb", note: "Available", organic: false },
+           { name: "Broccoli", category: "vegetables", price: "$3.10/lb", note: "Available", organic: false },
+           { name: "Wheat", category: "grains", price: "$2.10/lb", note: "Available", organic: false },
+           { name: "Rice", category: "grains", price: "$2.70/lb", note: "Available", organic: false },
+           { name: "Stone-Ground Yellow Cornmeal", category: "grains", price: "$2.55/lb", note: "Available", organic: false },
+           { name: "Pecans", category: "nuts", price: "$9.10/lb", note: "Pre-order preferred", organic: false },
+           { name: "Walnuts", category: "nuts", price: "$6.25/lb", note: "Available", organic: false },
+           { name: "Almonds", category: "nuts", price: "$8.45/lb", note: "Available", organic: false },
+           { name: "Pistachios", category: "nuts", price: "$9.50/lb", note: "Pre-order preferred", organic: false },
+           { name: "Cashews", category: "nuts", price: "$8.70/lb", note: "Pre-order preferred", organic: false }
+         ]
 },
 {
   name: "Mesa Verde Organics",
@@ -286,27 +285,27 @@ const profiles = [
          minimumOrder: "Fixed",
          leadTime: "10–14 days",
          productsAvailable: [
-           { name: "Broccoli Microgreens", price: "$3.00/oz", note: "Pre-order preferred" },
-           { name: "Radish Microgreens (Triton)", price: "$2.00/oz", note: "Pre-order preferred" },
-           { name: "Sunflowers Shoots", price: "$1.90/oz", note: "Pre-order preferred" },
-           { name: "Pea Shoots", price: "$1.80/oz", note: "Pre-order preferred" },
-           { name: "Red Amaranth Microgreens", price: "$4.50/oz", note: "Pre-order preferred" },
-           { name: "Iceberg Lettuce", price: "2.00/lb", note: "Pre-order preferred" },
-           { name: "Green Leaf Lettuce", price: "$2.70/lb", note: "Available" },
-           { name: "Romaine Lettuce (Whole Heads)", price: "$3.50/lb", note: "Available" },
-           { name: "Little Gem Lettuce", price: "$5.10/lb", note: "Available" },
-           { name: "Butterhead (Boston/Bibb) Lettuce", price: "$5.70/lb", note: "Limited" },
-           { name: "Wild Arugula", price: "$7.55/lb", note: "Limited" },
-           { name: "Genovese Basil", price: "$3.10/oz", note: "Pre-order preferred" },
-           { name: "Thai Basil", price: "$2.20/oz", note: "Available" },
-           { name: "Italian Flat-Leaf Parsley", price: "$8.45/lb", note: "Available" },
-           { name: "Fresh Cilantro", price: "$9.50/lb", note: "Available" },
-           { name: "Fresh Dill", price: "$2.20/oz", note: "Available" },
-           { name: "Rosemary", price: "$2.00/oz", note: "Available" },
-           { name: "Thyme", price: "$2.00/oz", note: "Available" },
-           { name: "French Tarragon", price: "$3.20/oz", note: "Pre-order preferred" },
-           { name: "Lemongrass", price: "$1.80/oz", note: "Pre-order preferred" }
-            ]
+           { name: "Broccoli Microgreens", category: "leafy-greens", price: "$3.00/oz", note: "Pre-order preferred", organic: true },
+           { name: "Radish Microgreens (Triton)", category: "leafy-greens", price: "$2.00/oz", note: "Pre-order preferred", organic: true },
+           { name: "Sunflower Shoots", category: "leafy-greens", price: "$1.90/oz", note: "Pre-order preferred", organic: true },
+           { name: "Pea Shoots", category: "leafy-greens", price: "$1.80/oz", note: "Pre-order preferred", organic: true },
+           { name: "Red Amaranth Microgreens", category: "leafy-greens", price: "$4.50/oz", note: "Pre-order preferred", organic: true },
+           { name: "Iceberg Lettuce", category: "leafy-greens", price: "$2.00/lb", note: "Pre-order preferred", organic: true },
+           { name: "Green Leaf Lettuce", category: "leafy-greens", price: "$2.70/lb", note: "Available", organic: true },
+           { name: "Romaine Lettuce (Whole Heads)", category: "leafy-greens", price: "$3.50/lb", note: "Available", organic: true },
+           { name: "Little Gem Lettuce", category: "leafy-greens", price: "$5.10/lb", note: "Available", organic: true },
+           { name: "Butterhead (Boston/Bibb) Lettuce", category: "leafy-greens", price: "$5.70/lb", note: "Limited", organic: true },
+           { name: "Wild Arugula", category: "leafy-greens", price: "$7.55/lb", note: "Limited", organic: true },
+           { name: "Genovese Basil", category: "herbs", price: "$3.10/oz", note: "Pre-order preferred", organic: true },
+           { name: "Thai Basil", category: "herbs", price: "$2.20/oz", note: "Available", organic: true },
+           { name: "Italian Flat-Leaf Parsley", category: "herbs", price: "$8.45/lb", note: "Available", organic: true },
+           { name: "Fresh Cilantro", category: "herbs", price: "$9.50/lb", note: "Available", organic: true },
+           { name: "Fresh Dill", category: "herbs", price: "$2.20/oz", note: "Available", organic: true },
+           { name: "Rosemary", category: "herbs", price: "$2.00/oz", note: "Available", organic: true },
+           { name: "Thyme", category: "herbs", price: "$2.00/oz", note: "Available", organic: true },
+           { name: "French Tarragon", category: "herbs", price: "$3.20/oz", note: "Pre-order preferred", organic: true },
+           { name: "Lemongrass", category: "herbs", price: "$1.80/oz", note: "Pre-order preferred", organic: true }
+         ]
 },
 {
   name: "Phoenix Artisan Market",
