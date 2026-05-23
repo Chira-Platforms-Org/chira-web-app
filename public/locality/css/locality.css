@@ -2140,3 +2140,16 @@ body::after {
   cursor: pointer;
 }
 
+.message-modal {
+  right: 390px;
+  z-index: 2500;
+}
+
+.profile-panel.active {
+  z-index: 5200;
+}
+
+.message-card {
+  z-index: 5300;
+}
+
