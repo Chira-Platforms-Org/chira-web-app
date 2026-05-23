@@ -385,11 +385,95 @@ document.getElementById("profileStats").innerHTML =
       </div>
     `;
 
+   activeProfile = profile;
+
 panel.classList.add("active");
 }
 
    
   renderMarkers();
+
+   let activeProfile = null;
+
+function openMessageModal(profile) {
+  activeProfile = profile;
+
+  const modal = document.getElementById("messageModal");
+  const logo = document.getElementById("messageLogo");
+
+  document.getElementById("messageName").textContent = profile.name;
+  document.getElementById("messageType").textContent =
+    profile.type === "farm" ? "Supplier conversation" : "Buyer conversation";
+
+  if (profile.logo) {
+    logo.innerHTML = `<img src="images/${profile.logo}" alt="${profile.name} logo">`;
+  } else {
+    logo.textContent = profile.logoInitials || profile.name.slice(0, 2).toUpperCase();
+  }
+
+  document.getElementById("messageThread").innerHTML = `
+    <div class="chat-bubble system">
+      Start a sourcing conversation with ${profile.name}.
+    </div>
+  `;
+
+  modal.classList.add("active");
+}
+
+function addMessage(text, sender = "user") {
+  const thread = document.getElementById("messageThread");
+
+  thread.insertAdjacentHTML(
+    "beforeend",
+    `<div class="chat-bubble ${sender}">${text}</div>`
+  );
+
+  thread.scrollTop = thread.scrollHeight;
+}
+
+function fakeSupplierReply(promptText) {
+  const name = activeProfile?.name || "this profile";
+
+  setTimeout(() => {
+    addMessage(
+      `Thanks for reaching out. ${name} can share availability, pricing, and delivery options based on your sourcing needs.`,
+      "reply"
+    );
+  }, 700);
+}
+
+document.querySelector(".profile-actions .secondary")?.addEventListener("click", () => {
+  if (activeProfile) openMessageModal(activeProfile);
+});
+
+document.getElementById("messageClose")?.addEventListener("click", () => {
+  document.getElementById("messageModal")?.classList.remove("active");
+});
+
+document.getElementById("messageSend")?.addEventListener("click", () => {
+  const input = document.getElementById("messageInput");
+  const text = input.value.trim();
+
+  if (!text) return;
+
+  addMessage(text, "user");
+  input.value = "";
+  fakeSupplierReply(text);
+});
+
+document.getElementById("messageInput")?.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") {
+    document.getElementById("messageSend")?.click();
+  }
+});
+
+document.querySelectorAll(".message-prompts button").forEach((button) => {
+  button.addEventListener("click", () => {
+    const text = button.dataset.prompt;
+    addMessage(text, "user");
+    fakeSupplierReply(text);
+  });
+});
 
   document.getElementById("typeFilter")?.addEventListener("change", renderMarkers);
   document.getElementById("productFilter")?.addEventListener("change", renderMarkers);
