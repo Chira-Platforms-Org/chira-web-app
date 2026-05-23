@@ -45,25 +45,27 @@ function getProfileIcon(variant) {
   return icons[variant] || "●";
 }
 
-   function getProductIcon(category) {
+ function getProductIcon(category) {
   const icons = {
-    "leafy-greens": "🥬",
-    "root-vegetables": "🥕",
-    "fruit": "🍎",
-    "citrus": "🍊",
-    "dairy": "🥛",
-    "eggs": "🥚",
-    "meat": "🥩",
-    "poultry": "🍗",
-    "grains": "🌾",
-    "rice": "🍚",
-    "nuts": "🌰",
-    "herbs": "🌿",
-    "honey": "🍯",
-    "specialty": "✦"
+    "leafy-greens": `<svg viewBox="0 0 24 24"><path d="M5 14c5-7 10-8 15-7-1 6-5 10-12 11"/><path d="M5 14c4-1 8-3 12-7"/></svg>`,
+    "root-vegetables": `<svg viewBox="0 0 24 24"><path d="M12 6c4 3 5 8 0 14-5-6-4-11 0-14Z"/><path d="M12 6c-1-2-3-3-5-3"/><path d="M12 6c1-2 3-3 5-3"/></svg>`,
+    vegetables: `<svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="6"/><path d="M12 7c1-3 3-4 6-4"/></svg>`,
+    citrus: `<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="7"/><path d="M12 5v14M5 12h14M7 7l10 10M17 7 7 17"/></svg>`,
+    fruit: `<svg viewBox="0 0 24 24"><path d="M12 7c5 0 7 4 6 8-1 4-4 6-6 6s-5-2-6-6c-1-4 1-8 6-8Z"/><path d="M12 7c0-3 2-5 5-5"/></svg>`,
+    dairy: `<svg viewBox="0 0 24 24"><path d="M8 9h8l1 11H7L8 9Z"/><path d="M9 4h6l1 5H8l1-5Z"/></svg>`,
+    eggs: `<svg viewBox="0 0 24 24"><path d="M12 3c4 4 6 8 6 12a6 6 0 0 1-12 0c0-4 2-8 6-12Z"/></svg>`,
+    beef: `<svg viewBox="0 0 24 24"><path d="M5 12c2-5 8-7 13-4 3 2 2 7-1 9-4 3-10 1-12-5Z"/><circle cx="15" cy="12" r="2"/></svg>`,
+    pork: `<svg viewBox="0 0 24 24"><path d="M6 13c0-4 3-7 7-7s7 3 7 7-3 7-7 7-7-3-7-7Z"/><path d="M6 13H3v-3"/><circle cx="11" cy="13" r=".7"/><circle cx="15" cy="13" r=".7"/></svg>`,
+    poultry: `<svg viewBox="0 0 24 24"><path d="M6 18c3-8 9-11 14-8-2 6-7 9-14 8Z"/><path d="M6 18l-2 3"/><path d="M10 16l-2 4"/></svg>`,
+    grains: `<svg viewBox="0 0 24 24"><path d="M12 21V3"/><path d="M12 6c-3 0-5 2-5 4 3 0 5-2 5-4Z"/><path d="M12 10c3 0 5 2 5 4-3 0-5-2-5-4Z"/><path d="M12 14c-3 0-5 2-5 4 3 0 5-2 5-4Z"/></svg>`,
+    rice: `<svg viewBox="0 0 24 24"><path d="M5 13h14l-2 7H7l-2-7Z"/><path d="M8 10c1-3 3-5 4-7 1 2 3 4 4 7"/></svg>`,
+    nuts: `<svg viewBox="0 0 24 24"><path d="M12 4c5 3 7 7 5 12-2 5-8 5-10 0-2-5 0-9 5-12Z"/></svg>`,
+    herbs: `<svg viewBox="0 0 24 24"><path d="M12 21V5"/><path d="M12 9c-4 0-6 2-7 5 4 0 6-2 7-5Z"/><path d="M12 13c4 0 6 2 7 5-4 0-6-2-7-5Z"/></svg>`,
+    honey: `<svg viewBox="0 0 24 24"><path d="M8 8h8l2 4-2 8H8l-2-8 2-4Z"/><path d="M9 4h6v4H9z"/></svg>`,
+    specialty: `<svg viewBox="0 0 24 24"><path d="M12 3l2.5 6.5L21 12l-6.5 2.5L12 21l-2.5-6.5L3 12l6.5-2.5L12 3Z"/></svg>`
   };
 
-  return icons[category] || "•";
+  return icons[category] || icons.specialty;
 }
 
 
@@ -255,26 +257,40 @@ if (profile.logo) {
     const itemIsOrganic = item.organic ?? profile.organic;
 
     return `
-      <div class="product-card">
-        ${itemIsOrganic ? `<div class="product-organic-badge">Organic</div>` : ""}
+  <div class="product-card">
 
-        <h4>${item.name}</h4>
+    <div class="product-card-top">
 
-        <div class="product-price">
-          ${item.price}
-        </div>
-
-        ${
-          item.marketComparison
-            ? `<div class="market-comparison">${item.marketComparison}</div>`
-            : ""
-        }
-
-        <div class="product-note">
-          ${item.note || ""}
-        </div>
+      <div class="product-icon">
+        ${getProductIcon(item.category)}
       </div>
-    `;
+
+      ${
+        itemIsOrganic
+          ? `<div class="product-mini-organic">${getOrganicBadge()}</div>`
+          : ""
+      }
+
+    </div>
+
+    <h4>${item.name}</h4>
+
+    <div class="product-price">
+      ${item.price}
+    </div>
+
+    ${
+      item.marketComparison
+        ? `<div class="market-comparison">${item.marketComparison}</div>`
+        : ""
+    }
+
+    <div class="product-note">
+      ${item.note || ""}
+    </div>
+
+  </div>
+`;
   })
   .join("");
 
