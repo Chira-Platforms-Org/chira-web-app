@@ -2325,12 +2325,11 @@ body::after {
   padding-right: 4px;
 
   mask-image: linear-gradient(
-    to bottom,
-    transparent 0%,
-    black 18%,
-    black 82%,
-    black 100%
-  );
+  to bottom,
+  transparent 0%,
+  black 7%,
+  black 100%
+);
 }
 
 .activity-list::-webkit-scrollbar {
