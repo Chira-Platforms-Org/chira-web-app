@@ -2388,3 +2388,55 @@ body::after {
   background: rgba(8, 196, 100, 0.10);
   border: 1px solid rgba(8, 196, 100, 0.12);
 }
+
+/* Quick polish animations */
+
+.locality-pin,
+.product-card,
+.overview-card,
+.profile-trust-row span,
+.message-prompts button,
+.activity-item,
+.profile-actions button,
+.message-input-row button {
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease,
+    background 0.18s ease;
+}
+
+.locality-pin:hover {
+  transform: translateY(-4px) scale(1.04);
+}
+
+.product-card:hover,
+.overview-card:hover,
+.activity-item:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 18px 34px rgba(20, 50, 92, 0.11);
+}
+
+.profile-actions button:hover,
+.message-input-row button:hover,
+.message-prompts button:hover {
+  transform: translateY(-2px);
+}
+
+.profile-trust-row span:hover {
+  transform: translateY(-1px);
+  background: rgba(20, 50, 92, 0.08);
+}
+
+.activity-live-dot {
+  animation: livePulse 1.8s ease-in-out infinite;
+}
+
+@keyframes livePulse {
+  0%, 100% {
+    box-shadow: 0 0 0 6px rgba(8, 196, 100, 0.12);
+  }
+
+  50% {
+    box-shadow: 0 0 0 10px rgba(8, 196, 100, 0.04);
+  }
+}
