@@ -34,7 +34,7 @@
           <p>
             View regional farms, buyers, profiles, supply activity, and local sourcing opportunities.
           </p>
-          <a href="map.html">Continue as Guest</a>
+          <a href="map.html" class="guest-access-link">Continue as Guest</a>
         </article>
 
         <article class="access-card supplier">
@@ -43,7 +43,9 @@
           <p>
             Update listings, review buyer requests, manage contracts, and coordinate fulfillment.
           </p>
-          <a href="supplier.html">Enter Supplier Hub</a>
+          <button class="login-gate-btn" data-destination="supplier.html">
+            Enter Supplier Hub
+          </button>
         </article>
 
         <article class="access-card buyer">
@@ -52,7 +54,9 @@
           <p>
             Discover suppliers, post demand, manage relationships, and track sourcing activity.
           </p>
-          <a href="buyer.html">Enter Sourcing Hub</a>
+          <button class="login-gate-btn" data-destination="buyer.html">
+            Enter Sourcing Hub
+          </button>
         </article>
       </div>
 
@@ -63,5 +67,38 @@
     </section>
   </main>
 
+  <div id="hubSignInModal" class="hub-signin-modal">
+    <div class="hub-signin-card">
+      <button class="hub-signin-close" id="hubSignInClose">×</button>
+
+      <p class="login-eyebrow">Workspace sign in</p>
+      <h2>Sign in to enter your Locality workspace.</h2>
+      <p>
+        This prototype sign-in preview will eventually connect to secure account access,
+        role permissions, and workspace data.
+      </p>
+
+      <input type="email" placeholder="Email address" />
+      <input type="password" placeholder="Password" />
+
+      <button id="fakeSignInSubmit" class="hub-signin-submit">
+        Continue to workspace
+      </button>
+
+      <button id="demoAccessSubmit" class="hub-demo-submit">
+        Use demo workspace
+      </button>
+    </div>
+  </div>
+
+  <div id="pageLoader" class="page-loader">
+    <div class="loader-card">
+      <img src="images/LOCALITY LOGO.png" alt="Locality loading" />
+      <div class="loader-pulse"></div>
+      <p>Opening Locality workspace...</p>
+    </div>
+  </div>
+
+  <script src="js/locality.js"></script>
 </body>
 </html>
