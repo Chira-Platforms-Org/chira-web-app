@@ -3199,3 +3199,241 @@ body::after {
     radial-gradient(circle at 88% 20%, rgba(138,106,74,0.10), transparent 30%),
     rgba(245,247,242,0.82);
 }
+
+/* =========================
+   SUPPLIER HUB FULFILLMENT PANEL
+========================= */
+
+.fulfillment-panel {
+  margin-bottom: 22px;
+  padding: 26px;
+  border-radius: 34px;
+  background:
+    radial-gradient(circle at top right, rgba(8,196,100,0.10), transparent 34%),
+    linear-gradient(180deg, rgba(255,255,255,0.84), rgba(255,252,245,0.78));
+  border: 1px solid rgba(20,50,92,0.07);
+  box-shadow: 0 22px 58px rgba(20,50,92,0.07);
+}
+
+.fulfillment-header {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 22px;
+  margin-bottom: 20px;
+}
+
+.fulfillment-header h2 {
+  color: var(--navy);
+  font-size: 1.8rem;
+  line-height: 1.05;
+  margin-bottom: 8px;
+}
+
+.fulfillment-header p {
+  color: var(--muted);
+}
+
+.fulfillment-view-all {
+  white-space: nowrap;
+  text-decoration: none;
+  color: white;
+  background: var(--green);
+  padding: 12px 18px;
+  border-radius: 999px;
+  font-weight: 900;
+  box-shadow: 0 12px 30px rgba(8,196,100,0.18);
+}
+
+.fulfillment-list {
+  display: grid;
+  gap: 12px;
+}
+
+.fulfillment-row {
+  display: grid;
+  grid-template-columns: 130px 1.5fr 1fr 130px;
+  align-items: center;
+  gap: 18px;
+  padding: 16px;
+  border-radius: 22px;
+  text-decoration: none;
+  background: rgba(245,247,242,0.78);
+  border: 1px solid rgba(20,50,92,0.05);
+  transition: all 0.22s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.fulfillment-row:hover {
+  transform: translateY(-2px);
+  background: rgba(255,255,255,0.9);
+  box-shadow: 0 16px 38px rgba(20,50,92,0.08);
+}
+
+.fulfillment-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--navy);
+  font-size: 0.78rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+
+.fulfillment-status span {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: var(--green);
+  box-shadow: 0 0 0 6px rgba(8,196,100,0.10);
+}
+
+.fulfillment-main strong {
+  display: block;
+  color: var(--navy);
+  font-size: 1rem;
+  margin-bottom: 2px;
+}
+
+.fulfillment-main p {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.progress-track {
+  height: 9px;
+  border-radius: 999px;
+  background: rgba(20,50,92,0.08);
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+
+.progress-track span {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: var(--green);
+}
+
+.progress-track.empty span {
+  background: rgba(20,50,92,0.18);
+}
+
+.fulfillment-progress small {
+  color: var(--muted);
+  font-weight: 800;
+  font-size: 0.76rem;
+}
+
+.fulfillment-deadline {
+  justify-self: end;
+  color: var(--navy);
+  font-weight: 900;
+  font-size: 0.9rem;
+  padding: 9px 12px;
+  border-radius: 999px;
+  background: rgba(20,50,92,0.06);
+}
+
+.fulfillment-deadline.urgent {
+  color: #9f2f1f;
+  background: rgba(159,47,31,0.10);
+}
+
+.fulfillment-deadline.warning {
+  color: #8a6a4a;
+  background: rgba(138,106,74,0.13);
+}
+
+.fulfillment-deadline.new {
+  color: var(--green);
+  background: rgba(8,196,100,0.12);
+}
+
+.fulfillment-row.delayed {
+  background:
+    linear-gradient(90deg, rgba(159,47,31,0.08), rgba(255,255,255,0.82));
+}
+
+.fulfillment-row.delayed .fulfillment-status span {
+  background: #b6402d;
+  box-shadow: 0 0 0 6px rgba(182,64,45,0.12);
+  animation: urgentPulse 1.8s ease-in-out infinite;
+}
+
+.fulfillment-row.due-soon .fulfillment-status span {
+  background: #b68942;
+  box-shadow: 0 0 0 6px rgba(182,137,66,0.13);
+}
+
+.fulfillment-row.new-request {
+  background:
+    linear-gradient(90deg, rgba(8,196,100,0.10), rgba(255,255,255,0.82));
+}
+
+.fulfillment-row.new-request::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    100deg,
+    transparent 0%,
+    rgba(8,196,100,0.10) 45%,
+    transparent 70%
+  );
+  transform: translateX(-100%);
+  animation: newRequestSweep 3.2s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.fulfillment-row.on-track .fulfillment-status span {
+  background: var(--green);
+}
+
+@keyframes urgentPulse {
+  0%, 100% {
+    box-shadow: 0 0 0 6px rgba(182,64,45,0.12);
+  }
+
+  50% {
+    box-shadow: 0 0 0 11px rgba(182,64,45,0.04);
+  }
+}
+
+@keyframes newRequestSweep {
+  0% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+
+  30% {
+    opacity: 1;
+  }
+
+  65% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+
+  100% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+@media (max-width: 1100px) {
+  .fulfillment-header {
+    flex-direction: column;
+  }
+
+  .fulfillment-row {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .fulfillment-deadline {
+    justify-self: start;
+  }
+}
