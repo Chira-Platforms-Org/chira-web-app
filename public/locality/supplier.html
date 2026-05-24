@@ -1,1 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+  <title>Supplier Hub | Locality</title>
+
+  <link rel="stylesheet" href="css/locality.css" />
+</head>
+
+<body class="hub-page supplier-hub-page">
+
+  <header class="hub-topbar">
+    <a href="index.html" class="hub-brand">
+      <img src="images/LOCALITY LOGO.png" alt="Locality" />
+    </a>
+
+    <div class="hub-search">
+      <input type="text" placeholder="Search requests, buyers, products..." />
+    </div>
+
+    <nav class="hub-nav">
+      <a href="map.html">Marketplace</a>
+      <a href="supplier.html" class="active">Supplier Hub</a>
+      <a href="buyer.html">Sourcing Hub</a>
+      <a href="analytics.html">Analytics</a>
+    </nav>
+  </header>
+
+  <main class="hub-shell">
+
+    <aside class="hub-sidebar">
+      <div class="hub-profile-card">
+        <div class="hub-avatar">
+          <img src="images/logos/Queen Creek Harvest Logo.png" alt="Queen Creek Harvest" />
+        </div>
+
+        <p class="hub-eyebrow">Supplier workspace</p>
+        <h2>Queen Creek Harvest</h2>
+        <span>Queen Creek, AZ</span>
+      </div>
+
+      <nav class="hub-side-nav">
+        <a class="active" href="#">Overview</a>
+        <a href="#">Listings</a>
+        <a href="#">Buyer Requests</a>
+        <a href="#">Messages</a>
+        <a href="#">Deliveries</a>
+        <a href="#">Coalitions</a>
+        <a href="#">Data Hub</a>
+        <a href="#">Settings</a>
+      </nav>
+    </aside>
+
+    <section class="hub-main">
+
+      <section class="hub-hero-card">
+        <div>
+          <p class="hub-eyebrow">Good morning</p>
+          <h1>Your regional supply workspace is active.</h1>
+          <p>
+            Manage listings, respond to nearby buyer demand, coordinate deliveries,
+            and review Locality insights from one warm operational hub.
+          </p>
+
+          <div class="hub-hero-actions">
+            <button class="hub-primary-btn">Add available product</button>
+            <button class="hub-secondary-btn">View marketplace profile</button>
+          </div>
+        </div>
+
+        <div class="hub-pulse-card">
+          <span class="pulse-dot"></span>
+          <p>Live Network</p>
+          <strong>6 nearby buyer requests</strong>
+          <small>2 match your current listed products</small>
+        </div>
+      </section>
+
+      <section class="hub-metrics-grid">
+        <article class="hub-metric-card green">
+          <span>Active listings</span>
+          <strong>14</strong>
+          <p>3 products marked low inventory</p>
+        </article>
+
+        <article class="hub-metric-card beige">
+          <span>Weekly demand fit</span>
+          <strong>82%</strong>
+          <p>Strong match in East Valley produce</p>
+        </article>
+
+        <article class="hub-metric-card brown">
+          <span>Lead time</span>
+          <strong>10–14d</strong>
+          <p>Above regional average on herbs</p>
+        </article>
+
+        <article class="hub-metric-card navy">
+          <span>Open messages</span>
+          <strong>4</strong>
+          <p>2 buyer conversations need reply</p>
+        </article>
+      </section>
+
+      <section class="hub-grid">
+
+        <article class="hub-card large">
+          <div class="card-heading">
+            <div>
+              <p class="hub-eyebrow">Buyer demand</p>
+              <h3>Nearby requests</h3>
+            </div>
+            <button>View all</button>
+          </div>
+
+          <div class="request-list">
+            <div class="request-row">
+              <span class="request-icon">🥕</span>
+              <div>
+                <strong>Roosevelt Row Market</strong>
+                <p>100 lbs rainbow carrots · weekly · Phoenix</p>
+              </div>
+              <em>High fit</em>
+            </div>
+
+            <div class="request-row">
+              <span class="request-icon">🥬</span>
+              <div>
+                <strong>Tempe Kitchen Co.</strong>
+                <p>Leafy greens bundle · recurring · Tempe</p>
+              </div>
+              <em>Match</em>
+            </div>
+
+            <div class="request-row">
+              <span class="request-icon">🌿</span>
+              <div>
+                <strong>Arcadia Table</strong>
+                <p>Fresh herbs · sample order · Phoenix</p>
+              </div>
+              <em>New</em>
+            </div>
+          </div>
+        </article>
+
+        <article class="hub-card">
+          <div class="card-heading">
+            <div>
+              <p class="hub-eyebrow">Listings</p>
+              <h3>Product status</h3>
+            </div>
+          </div>
+
+          <div class="supply-stack">
+            <div>
+              <span>Red Cabbage</span>
+              <strong>Available</strong>
+            </div>
+            <div>
+              <span>Rainbow Carrots</span>
+              <strong class="warning">Low inventory</strong>
+            </div>
+            <div>
+              <span>Heirloom Tomatoes</span>
+              <strong>High availability</strong>
+            </div>
+          </div>
+        </article>
+
+        <article class="hub-card gradient-card">
+          <p class="hub-eyebrow">Locality insight</p>
+          <h3>Demand for organic leafy greens is rising in nearby buyer clusters.</h3>
+          <p>
+            Consider updating available quantities before this week’s marketplace activity window.
+          </p>
+        </article>
+
+        <article class="hub-card">
+          <div class="card-heading">
+            <div>
+              <p class="hub-eyebrow">Messages</p>
+              <h3>Recent conversations</h3>
+            </div>
+          </div>
+
+          <div class="message-preview-list">
+            <div>
+              <strong>Mesa Fresh Market</strong>
+              <p>Asked about recurring produce availability.</p>
+            </div>
+            <div>
+              <strong>Scottsdale Grocer</strong>
+              <p>Requested delivery radius confirmation.</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="hub-card large map-preview-card">
+          <div>
+            <p class="hub-eyebrow">Regional position</p>
+            <h3>East Valley supplier activity</h3>
+            <p>
+              Your farm sits near several active buyer clusters with current demand for seasonal vegetables.
+            </p>
+          </div>
+
+          <div class="mini-region-map">
+            <span class="farm-orbit"></span>
+            <span class="buyer-dot one"></span>
+            <span class="buyer-dot two"></span>
+            <span class="buyer-dot three"></span>
+            <span class="route-line one"></span>
+            <span class="route-line two"></span>
+          </div>
+        </article>
+
+        <article class="hub-card data-hub-card">
+          <p class="hub-eyebrow">Locality Data Hub</p>
+          <h3>Autodata preview</h3>
+          <p>
+            Supply trends, lead-time patterns, and buyer demand signals will connect here as the data layer expands.
+          </p>
+          <button class="hub-secondary-btn">Open Data Hub</button>
+        </article>
+
+      </section>
+    </section>
+  </main>
+
+</body>
+</html>
