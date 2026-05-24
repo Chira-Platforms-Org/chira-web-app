@@ -2454,7 +2454,7 @@ body::after {
   color: var(--navy);
 }
 
-.hub-layout {
+.hub-topbar {
   padding-top: 82px;
   min-height: 100vh;
   display: grid;
