@@ -589,3 +589,54 @@ window.addEventListener("load", () => {
   `);
 }
 
+/* =========================
+   LOGIN GATE FLOW
+========================= */
+
+const hubGateButtons = document.querySelectorAll(".login-gate-btn");
+const hubSignInModal = document.getElementById("hubSignInModal");
+const hubSignInClose = document.getElementById("hubSignInClose");
+const fakeSignInSubmit = document.getElementById("fakeSignInSubmit");
+const demoAccessSubmit = document.getElementById("demoAccessSubmit");
+const pageLoader = document.getElementById("pageLoader");
+
+let selectedWorkspaceDestination = null;
+
+function openHubSignIn(destination) {
+  selectedWorkspaceDestination = destination;
+
+  if (hubSignInModal) {
+    hubSignInModal.classList.add("active");
+  }
+}
+
+function closeHubSignIn() {
+  if (hubSignInModal) {
+    hubSignInModal.classList.remove("active");
+  }
+}
+
+function enterWorkspaceWithLoader() {
+  if (!selectedWorkspaceDestination) return;
+
+  closeHubSignIn();
+
+  if (pageLoader) {
+    pageLoader.classList.add("active");
+  }
+
+  setTimeout(() => {
+    window.location.href = selectedWorkspaceDestination;
+  }, 900);
+}
+
+hubGateButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    openHubSignIn(button.dataset.destination);
+  });
+});
+
+hubSignInClose?.addEventListener("click", closeHubSignIn);
+fakeSignInSubmit?.addEventListener("click", enterWorkspaceWithLoader);
+demoAccessSubmit?.addEventListener("click", enterWorkspaceWithLoader);
+
