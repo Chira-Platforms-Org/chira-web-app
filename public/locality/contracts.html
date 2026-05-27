@@ -4,13 +4,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>Contracts & Fulfillment | Locality</title>
+  <title>Contract Studio | Locality</title>
 
   <link rel="stylesheet" href="css/locality.css" />
   <link rel="stylesheet" href="css/contracts.css" />
 </head>
 
-<body class="contracts-page">
+<body class="contract-studio-page">
 
   <header class="hub-topbar">
     <a href="index.html" class="hub-brand">
@@ -18,7 +18,7 @@
     </a>
 
     <div class="hub-search">
-      <input type="text" placeholder="Search orders, buyers, products..." />
+      <input type="text" placeholder="Search contracts, buyers, products..." />
     </div>
 
     <nav class="hub-nav">
@@ -29,202 +29,304 @@
     </nav>
   </header>
 
-  <main class="contracts-shell">
+  <main class="studio-shell">
 
-    <section class="contracts-intro">
+    <section class="studio-hero">
       <div>
-        <p class="hub-eyebrow">Contracts & Fulfillment</p>
-        <h1>Plan, review, and evaluate regional supply commitments.</h1>
+        <p class="studio-eyebrow">Locality Contract Studio</p>
+        <h1>Build, review, and negotiate supply agreements.</h1>
         <p>
-          Compare proposals, test counteroffers, and review the operational impact before making a commitment.
+          Create structured proposals, review incoming changes, compare terms, and preview business impact before committing.
         </p>
       </div>
 
-      <a href="supplier.html" class="back-hub-btn">Back to Supplier Hub</a>
+      <a href="supplier.html" class="studio-back-btn">Back to Supplier Hub</a>
     </section>
 
-    <section class="contract-workspace" id="contractWorkspace">
+    <section class="studio-workspace">
 
-      <!-- LEFT PANEL -->
-      <aside class="contract-panel orders-panel" data-panel="orders">
-        <div class="panel-header">
-          <p class="hub-eyebrow">Order Queue</p>
-          <h2>Active items</h2>
+      <!-- LEFT STREAM -->
+      <aside class="studio-stream">
+        <div class="stream-header">
+          <div>
+            <p class="studio-eyebrow">Agreement Stream</p>
+            <h2>Contracts</h2>
+          </div>
+          <button id="newContractBtn">+ New</button>
         </div>
 
-        <div class="order-list">
-          <button class="order-card active" data-order="arcadia">
-            <span class="status-dot delayed"></span>
-            <div>
-              <strong>Arcadia Table</strong>
-              <p>Rainbow carrots · 100 lbs · delayed</p>
-            </div>
-            <em>Overdue</em>
-          </button>
+        <div class="stream-tools">
+          <button class="active">Needs attention</button>
+          <button>Drafts</button>
+          <button>Pending</button>
+        </div>
 
-          <button class="order-card" data-order="mesa">
-            <span class="status-dot soon"></span>
+        <div class="contract-list">
+          <button class="contract-item active" data-contract="roosevelt">
+            <span class="marker review"></span>
             <div>
-              <strong>Mesa Fresh Market</strong>
-              <p>Leafy greens · recurring order</p>
-            </div>
-            <em>2 days</em>
-          </button>
-
-          <button class="order-card" data-order="roosevelt">
-            <span class="status-dot new"></span>
-            <div>
-              <strong>Roosevelt Row</strong>
-              <p>New request · carrots weekly</p>
+              <strong>Roosevelt Row Market</strong>
+              <p>Counteroffer received · carrots weekly</p>
+              <small>2 changed terms · 1 message reference</small>
             </div>
             <em>Review</em>
           </button>
 
-          <button class="order-card" data-order="scottsdale">
-            <span class="status-dot ok"></span>
+          <button class="contract-item" data-contract="arcadia">
+            <span class="marker pending"></span>
+            <div>
+              <strong>Arcadia Table</strong>
+              <p>Proposal sent · herbs sample order</p>
+              <small>Waiting for buyer response</small>
+            </div>
+            <em class="typing-dots"><i></i><i></i><i></i></em>
+          </button>
+
+          <button class="contract-item" data-contract="mesa">
+            <span class="marker draft"></span>
+            <div>
+              <strong>Mesa Fresh Market</strong>
+              <p>Draft contract · leafy greens</p>
+              <small>Last edited today</small>
+            </div>
+            <em>Draft</em>
+          </button>
+
+          <button class="contract-item" data-contract="scottsdale">
+            <span class="marker accepted"></span>
             <div>
               <strong>Scottsdale Grocer</strong>
-              <p>Tomatoes · delivery scheduled</p>
+              <p>Accepted agreement · tomatoes</p>
+              <small>Ready for fulfillment setup</small>
             </div>
-            <em>On track</em>
+            <em>Accepted</em>
+          </button>
+
+          <button class="contract-item" data-contract="cancelled">
+            <span class="marker cancelled"></span>
+            <div>
+              <strong>Arcadia Table</strong>
+              <p>Cancelled proposal · basil order</p>
+              <small>Archived contract history</small>
+            </div>
+            <em>Closed</em>
           </button>
         </div>
       </aside>
 
-      <!-- CENTER PANEL -->
-      <section class="contract-panel builder-panel active-focus" data-panel="builder">
-        <div class="panel-header split">
+      <!-- CENTER CANVAS -->
+      <section class="studio-canvas">
+        <div class="canvas-top">
           <div>
-            <p class="hub-eyebrow">Contract Workspace</p>
-            <h2 id="contractTitle">Arcadia Table proposal</h2>
+            <p class="studio-eyebrow" id="canvasMode">Needs review</p>
+            <h2 id="canvasTitle">Roosevelt Row Market counteroffer</h2>
+            <p id="canvasSubtitle">
+              Review changed terms, adjust your response, or message the buyer with a contract reference.
+            </p>
           </div>
 
-          <span class="contract-mode">Counteroffer draft</span>
-        </div>
-
-        <div class="proposal-compare">
-          <div class="proposal-card original">
-            <span>Original Request</span>
-            <strong>100 lbs rainbow carrots</strong>
-            <p>$2.20/lb · weekly · 12 weeks</p>
-          </div>
-
-          <div class="proposal-card counter">
-            <span>Your Draft</span>
-            <strong>100 lbs rainbow carrots</strong>
-            <p>$2.45/lb · weekly · 10 weeks</p>
+          <div class="canvas-actions">
+            <button class="soft-btn">Message</button>
+            <button class="soft-btn">View history</button>
           </div>
         </div>
 
-        <div class="contract-form-grid">
-          <label>
-            Product
-            <input value="Rainbow Carrots" />
-          </label>
-
-          <label>
-            Units per delivery
-            <input value="100 lbs" />
-          </label>
-
-          <label>
-            Price per unit
-            <input value="$2.45/lb" />
-          </label>
-
-          <label>
-            Cadence
-            <select>
-              <option>Weekly</option>
-              <option>Bi-weekly</option>
-              <option>Monthly</option>
-            </select>
-          </label>
-
-          <label>
-            Contract length
-            <input value="10 weeks" />
-          </label>
-
-          <label>
-            Delivery terms
-            <select>
-              <option>Supplier delivery</option>
-              <option>Buyer pickup</option>
-              <option>Third-party delivery</option>
-            </select>
-          </label>
+        <div class="change-summary">
+          <div>
+            <span>Changed terms</span>
+            <strong>2</strong>
+          </div>
+          <div>
+            <span>Referenced messages</span>
+            <strong>1</strong>
+          </div>
+          <div>
+            <span>Review priority</span>
+            <strong>High</strong>
+          </div>
         </div>
 
-        <div class="builder-actions">
-          <button class="secondary-action">Save draft</button>
-          <button class="primary-action" id="openReviewModal">Review before sending</button>
+        <section class="proposal-compare">
+          <article>
+            <span>Previous terms</span>
+            <h3>100 lbs Rainbow Carrots</h3>
+            <p>$2.40/lb · weekly · 10 weeks</p>
+          </article>
+
+          <article class="changed">
+            <span>Buyer counteroffer</span>
+            <h3>120 lbs Rainbow Carrots</h3>
+            <p>$2.35/lb · weekly · 12 weeks</p>
+          </article>
+        </section>
+
+        <section class="structured-builder">
+          <div class="builder-section-header">
+            <div>
+              <p class="studio-eyebrow">Structured agreement</p>
+              <h3>Products and terms</h3>
+            </div>
+            <button id="addProductBtn">+ Add product</button>
+          </div>
+
+          <div id="productRows" class="product-rows">
+            <div class="product-contract-row">
+              <label>
+                Product
+                <select>
+                  <option>Rainbow Carrots</option>
+                  <option>Red Cabbage</option>
+                  <option>Heirloom Tomatoes</option>
+                  <option>Black Tuscan Kale</option>
+                </select>
+              </label>
+
+              <label>
+                Quantity
+                <div class="split-input">
+                  <input value="120" />
+                  <select>
+                    <option>lb</option>
+                    <option>oz</option>
+                    <option>kg</option>
+                    <option>g</option>
+                    <option>crate</option>
+                    <option>case</option>
+                    <option>custom</option>
+                  </select>
+                </div>
+              </label>
+
+              <label>
+                Price
+                <div class="price-input">
+                  <span>$</span>
+                  <input value="2.35" />
+                  <small>per</small>
+                  <select>
+                    <option>lb</option>
+                    <option>crate</option>
+                    <option>case</option>
+                    <option>unit</option>
+                  </select>
+                </div>
+              </label>
+
+              <label>
+                Cadence
+                <select>
+                  <option>Weekly</option>
+                  <option>Bi-weekly</option>
+                  <option>Monthly</option>
+                  <option>One-time</option>
+                </select>
+              </label>
+            </div>
+          </div>
+
+          <div class="terms-grid">
+            <label>
+              Contract length
+              <div class="split-input">
+                <input value="12" />
+                <select>
+                  <option>weeks</option>
+                  <option>months</option>
+                  <option>deliveries</option>
+                </select>
+              </div>
+            </label>
+
+            <label>
+              Delivery responsibility
+              <select>
+                <option>Supplier delivery</option>
+                <option>Buyer pickup</option>
+                <option>Third-party delivery</option>
+              </select>
+            </label>
+
+            <label>
+              Payment timing
+              <select>
+                <option>Net 15</option>
+                <option>Net 30</option>
+                <option>On delivery</option>
+                <option>Upfront deposit</option>
+              </select>
+            </label>
+          </div>
+        </section>
+
+        <div class="studio-footer-actions">
+          <button class="soft-btn">Save draft</button>
+          <button class="primary-studio-btn" id="openReviewModal">Review before sending</button>
         </div>
       </section>
 
-      <!-- RIGHT PANEL -->
-      <aside class="contract-panel intelligence-panel" data-panel="intelligence">
-        <div class="panel-header">
-          <p class="hub-eyebrow">Deal Intelligence</p>
-          <h2>Fit preview</h2>
-        </div>
+      <!-- RIGHT INTELLIGENCE -->
+      <aside class="studio-intel">
+        <p class="studio-eyebrow">Deal Fit Preview</p>
+        <h2>Operational impact</h2>
 
-        <div class="intel-score">
+        <div class="confidence-card">
           <span>Fulfillment confidence</span>
-          <strong>Strong</strong>
-          <p>Projected supply coverage supports this contract with moderate buffer.</p>
+          <strong>Moderate</strong>
+          <p>Higher volume and longer term reduces buffer against projected carrot supply.</p>
         </div>
 
-        <div class="intel-metrics">
+        <div class="intel-grid">
           <div>
             <span>Total value</span>
-            <strong>$2,450</strong>
+            <strong>$3,384</strong>
           </div>
           <div>
-            <span>Estimated margin</span>
-            <strong>24%</strong>
+            <span>Projected margin</span>
+            <strong>21%</strong>
           </div>
           <div>
             <span>Supply committed</span>
-            <strong>64%</strong>
+            <strong>78%</strong>
           </div>
           <div>
-            <span>Benchmark</span>
-            <strong>+8%</strong>
+            <span>Price benchmark</span>
+            <strong>+3%</strong>
           </div>
         </div>
 
-        <div class="intel-note">
-          <strong>Locality note</strong>
+        <div class="intel-alert">
+          <strong>Review note</strong>
           <p>
-            This draft improves price against recent carrot contracts while keeping expected fulfillment risk manageable.
+            The buyer increased quantity and duration while lowering unit price. Consider countering at $2.45/lb or shortening the term.
           </p>
+        </div>
+
+        <div class="message-reference">
+          <span>Referenced message</span>
+          <p>“Could we extend this to 12 weeks if the price comes down slightly?”</p>
         </div>
       </aside>
 
     </section>
   </main>
 
-  <div class="contract-review-modal" id="contractReviewModal">
-    <div class="review-card">
-      <button class="review-close" id="closeReviewModal">×</button>
+  <div class="final-review-modal" id="finalReviewModal">
+    <div class="final-review-card">
+      <button id="closeReviewModal" class="modal-close">×</button>
+      <p class="studio-eyebrow">Final Review</p>
+      <h2>Review before sending.</h2>
+      <p>This step prevents accidental commitments and summarizes the structured agreement.</p>
 
-      <p class="hub-eyebrow">Final Review</p>
-      <h2>Review this counteroffer before sending.</h2>
-      <p>
-        This static review step prevents accidental commitments and gives you one final look at contract terms.
-      </p>
-
-      <div class="review-summary">
-        <div><span>Buyer</span><strong>Arcadia Table</strong></div>
+      <div class="final-summary">
+        <div><span>Buyer</span><strong>Roosevelt Row Market</strong></div>
         <div><span>Product</span><strong>Rainbow Carrots</strong></div>
-        <div><span>Total contract value</span><strong>$2,450</strong></div>
-        <div><span>Fulfillment confidence</span><strong>Strong</strong></div>
+        <div><span>Total value</span><strong>$3,384</strong></div>
+        <div><span>Fulfillment confidence</span><strong>Moderate</strong></div>
       </div>
 
       <div class="review-actions">
-        <button class="secondary-action" id="closeReviewModalAlt">Keep editing</button>
-        <button class="primary-action">Send counteroffer</button>
+        <button class="soft-btn" id="keepEditingBtn">Keep editing</button>
+        <button class="primary-studio-btn">Send proposal</button>
       </div>
     </div>
   </div>
