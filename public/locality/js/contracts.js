@@ -31,51 +31,135 @@ const workPanelMode = document.getElementById("workPanelMode");
 const dealFitTab = document.getElementById("dealFitTab");
 const productsTab = document.getElementById("productsTab");
 
-const businessRows = document.querySelectorAll(".business-row");
+let businessRows = [];
 const networkSearchInput = document.getElementById("networkSearchInput");
 const startDraftFromBusiness = document.getElementById("startDraftFromBusiness");
 const networkListView = document.getElementById("networkListView");
 const businessProfileView = document.getElementById("businessProfileView");
 const backToNetwork = document.getElementById("backToNetwork");
 
-const businessData = {
-  roosevelt: {
-    logo: "RR",
-    type: "Buyer profile",
-    name: "Roosevelt Row Market",
-    meta: "Phoenix, AZ · recurring produce buyer",
-    activity: "Weekly sourcing",
-    focus: "Restaurants",
-    note: "Often requests carrots, leafy greens, herbs, and seasonal vegetables."
-  },
-  mesaVerde: {
-    logo: "MV",
-    type: "Supplier profile",
-    name: "Mesa Verde Organics",
-    meta: "East Mesa, AZ · microgreens, lettuce, herbs",
-    activity: "20 listed items",
-    focus: "Organic produce",
-    note: "Known for microgreens, lettuce, herbs, and reliable weekly availability."
-  },
-  arcadia: {
-    logo: "AT",
-    type: "Buyer profile",
-    name: "Arcadia Table",
-    meta: "Phoenix, AZ · restaurant group",
-    activity: "Sample orders",
-    focus: "Fresh herbs",
-    note: "Frequently tests smaller seasonal orders before recurring agreements."
-  },
-  queenCreek: {
-    logo: "QC",
-    type: "Supplier profile",
-    name: "Queen Creek Harvest",
-    meta: "Queen Creek, AZ · carrots, cabbage, herbs",
-    activity: "14 listed items",
-    focus: "Seasonal supply",
-    note: "Strong fit for carrots, cabbage, fresh herbs, and regional delivery."
+const profileData = Array.isArray(profiles) ? profiles : [];
+
+function renderBusinessList(filter = "all", searchTerm = "") {
+  const businessList = document.getElementById("businessList");
+  if (!businessList) return;
+
+  const normalizedSearch = searchTerm.toLowerCase();
+
+  const visibleProfiles = profileData.filter((profile) => {
+    const role = profile.type === "farm" ? "supplier" : "buyer";
+    const matchesFilter = filter === "all" || filter === role;
+
+    const searchableText = [
+      profile.name,
+      profile.type,
+      profile.product,
+      profile.location,
+      profile.productType,
+      profile.description,
+      profile.demandNeed
+    ]
+      .filter(Boolean)
+      .join(" ")
+      .toLowerCase();
+
+    return matchesFilter && searchableText.includes(normalizedSearch);
+  });
+
+  businessList.innerHTML = visibleProfiles
+    .map((profile, index) => {
+      const key = slugifyProfileName(profile.name);
+      const role = getProfileRole(profile);
+      const logoClass = profile.type === "farm" ? "green-logo" : "";
+
+      return `
+        <button class="business-row ${index === 0 ? "selected" : ""}" 
+                data-business="${key}" 
+                data-type="${profile.type === "farm" ? "supplier" : "buyer"}">
+          <span class="business-logo small-logo ${logoClass}">
+            ${getProfileInitials(profile)}
+          </span>
+          <div>
+            <strong>${profile.name}</strong>
+            <small>${role} · ${profile.location || "Phoenix region"} · ${profile.product || "Local network profile"}</small>
+          </div>
+        </button>
+      `;
+    })
+    .join("");
+
+  businessRows = document.querySelectorAll(".business-row");
+
+  businessRows.forEach((row) => {
+    row.addEventListener("click", () => {
+      businessRows.forEach((item) => item.classList.remove("selected"));
+      row.classList.add("selected");
+      updateBusinessPreview(row.dataset.business);
+    });
+  });
+}
+
+function slugifyProfileName(name) {
+  return name
+    .toLowerCase()
+    .replace(/&/g, "and")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
+}
+
+function getProfileInitials(profile) {
+  if (profile.logoInitials) return profile.logoInitials;
+
+  return profile.name
+    .split(" ")
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((word) => word[0])
+    .join("")
+    .toUpperCase();
+}
+
+function getProfileRole(profile) {
+  return profile.type === "farm" ? "Supplier" : "Buyer";
+}
+
+function getProfileFocus(profile) {
+  if (profile.type === "farm") {
+    return profile.product || profile.productType || "Local supply";
   }
-};
+
+  return profile.demandNeed || profile.product || "Local sourcing";
+}
+
+function getProfileActivity(profile) {
+  if (profile.type === "farm") {
+    const count = profile.productsAvailable?.length || 0;
+    return count > 0 ? `${count} listed items` : "Supplier profile";
+  }
+
+  return profile.orderFrequency || "Buyer profile";
+}
+
+function getProfileNote(profile) {
+  return (
+    profile.featuredInsight ||
+    profile.description ||
+    `${profile.name} is active in the Locality regional network.`
+  );
+}
+
+function getProfileByKey(key) {
+  return profileData.find((profile) => slugifyProfileName(profile.name) === key);
+}
+
+function parsePrice(priceString = "") {
+  const match = priceString.match(/\$?([\d.]+)\s*\/?\s*([a-zA-Z]+)?/);
+
+  return {
+    amount: match?.[1] || "",
+    unit: match?.[2] || "unit"
+  };
+}
 
 function hideAllCanvasModes() {
   emptyMode?.classList.add("hidden");
@@ -214,16 +298,21 @@ document.querySelectorAll("[data-recipient]").forEach((button) => {
 });
 
 function updateBusinessPreview(key) {
-  const business = businessData[key];
-  if (!business) return;
+  const profile = getProfileByKey(key);
+  if (!profile) return;
 
-  document.getElementById("previewLogo").textContent = business.logo;
-  document.getElementById("previewType").textContent = business.type;
-  document.getElementById("previewName").textContent = business.name;
-  document.getElementById("previewMeta").textContent = business.meta;
-  document.getElementById("previewActivity").textContent = business.activity;
-  document.getElementById("previewFocus").textContent = business.focus;
-  document.getElementById("previewNote").textContent = business.note;
+  const role = getProfileRole(profile);
+  const initials = getProfileInitials(profile);
+
+  document.getElementById("previewLogo").textContent = initials;
+  document.getElementById("previewType").textContent = `${role} profile`;
+  document.getElementById("previewName").textContent = profile.name;
+  document.getElementById("previewMeta").textContent = `${profile.location || "Phoenix region"} · ${profile.product || "Local network profile"}`;
+  document.getElementById("previewActivity").textContent = getProfileActivity(profile);
+  document.getElementById("previewFocus").textContent = getProfileFocus(profile);
+  document.getElementById("previewNote").textContent = getProfileNote(profile);
+
+  renderProfileProducts(profile);
 
   networkListView?.classList.add("hidden");
   businessProfileView?.classList.remove("hidden");
@@ -242,6 +331,8 @@ backToNetwork?.addEventListener("click", () => {
   networkListView?.classList.remove("hidden");
 });
 
+let activeNetworkFilter = "all";
+
 document.querySelectorAll("[data-network-filter]").forEach((button) => {
   button.addEventListener("click", () => {
     document.querySelectorAll("[data-network-filter]").forEach((item) => {
@@ -249,24 +340,69 @@ document.querySelectorAll("[data-network-filter]").forEach((button) => {
     });
 
     button.classList.add("active");
+    activeNetworkFilter = button.dataset.networkFilter;
 
-    const filter = button.dataset.networkFilter;
-
-    businessRows.forEach((row) => {
-      const visible = filter === "all" || row.dataset.type === filter;
-      row.style.display = visible ? "grid" : "none";
-    });
+    renderBusinessList(activeNetworkFilter, networkSearchInput?.value || "");
   });
 });
 
 networkSearchInput?.addEventListener("input", () => {
-  const searchTerm = networkSearchInput.value.toLowerCase();
-
-  businessRows.forEach((row) => {
-    const text = row.textContent.toLowerCase();
-    row.style.display = text.includes(searchTerm) ? "grid" : "none";
-  });
+  renderBusinessList(activeNetworkFilter, networkSearchInput.value);
 });
+
+function renderProfileProducts(profile) {
+  const productList = businessProfileView?.querySelector(".profile-product-list");
+  if (!productList) return;
+
+  const products = profile.productsAvailable || [];
+
+  if (!products.length) {
+    productList.innerHTML = `
+      <div class="empty-products-note">
+        <strong>No listed products yet</strong>
+        <span>This profile does not currently include listed product pricing.</span>
+      </div>
+    `;
+    return;
+  }
+
+  productList.innerHTML = products
+    .slice(0, 8)
+    .map((product) => {
+      const parsed = parsePrice(product.price);
+
+      return `
+        <button class="profile-product"
+                data-product="${product.name}"
+                data-price="${parsed.amount}"
+                data-unit="${parsed.unit}">
+          <div>
+            <strong>${product.name}</strong>
+            <span>${product.price} · ${product.note || "Available"}</span>
+          </div>
+          <em>Add</em>
+        </button>
+      `;
+    })
+    .join("");
+
+  attachProfileProductListeners();
+}
+
+function attachProfileProductListeners() {
+  document.querySelectorAll(".profile-product").forEach((button) => {
+    button.addEventListener("click", () => {
+      createProductRow(
+        button.dataset.product,
+        button.dataset.price,
+        button.dataset.unit
+      );
+
+      setWorkspaceState("new");
+      showRightTab("products");
+    });
+  });
+}
 
 function createProductRow(product = "Red Cabbage", price = "1.90", unit = "lb") {
   const row = document.createElement("div");
@@ -390,6 +526,7 @@ reviewModal?.addEventListener("click", (event) => {
   if (event.target === reviewModal) closeReview();
 });
 
+renderBusinessList();
 activateProductRows();
 setWorkspaceState("stream");
 networkListView?.classList.remove("hidden");
