@@ -365,6 +365,9 @@
 
   <!-- STREAM MODE: NETWORK FINDER -->
   <div class="right-mode network-mode" id="networkMode">
+
+  <!-- NETWORK SEARCH VIEW -->
+  <div class="network-subview network-list-view" id="networkListView">
     <p class="studio-eyebrow">Locality Network</p>
     <h2>Find a business</h2>
     <p class="right-subtitle">
@@ -416,40 +419,105 @@
       </button>
     </div>
 
-    <div class="business-preview" id="businessPreview">
-      <div class="business-preview-head">
-        <span class="business-logo large-logo" id="previewLogo">RR</span>
-        <div>
-          <span id="previewType">Buyer profile</span>
-          <h3 id="previewName">Roosevelt Row Market</h3>
-          <p id="previewMeta">Phoenix, AZ · recurring produce buyer</p>
-        </div>
-      </div>
+    <p class="network-helper">
+      Select a business to open its Locality profile and begin a draft.
+    </p>
+  </div>
 
-      <div class="preview-stats">
-        <div>
-          <span>Activity</span>
-          <strong id="previewActivity">Weekly sourcing</strong>
-        </div>
-        <div>
-          <span>Focus</span>
-          <strong id="previewFocus">Restaurants</strong>
-        </div>
-      </div>
+  <!-- BUSINESS PROFILE VIEW -->
+  <div class="network-subview business-profile-view hidden" id="businessProfileView">
+    <button class="back-to-network" id="backToNetwork">← Back to network</button>
 
-      <p class="preview-note" id="previewNote">
-        Often requests carrots, leafy greens, herbs, and seasonal vegetables.
-      </p>
+    <div class="profile-mini-hero">
+      <span class="business-logo large-logo" id="previewLogo">MV</span>
 
-      <div class="preview-actions">
-        <button class="primary-studio-btn" id="startDraftFromBusiness">
-          Create contract draft
-        </button>
-        <button class="soft-btn">Message</button>
-        <button class="soft-btn">View profile</button>
+      <div>
+        <span id="previewType">Supplier profile</span>
+        <h3 id="previewName">Mesa Verde Organics</h3>
+        <p id="previewMeta">East Mesa, AZ · microgreens, lettuce, herbs</p>
       </div>
     </div>
+
+    <div class="profile-stat-grid">
+      <div>
+        <span>Activity</span>
+        <strong id="previewActivity">20 listed items</strong>
+      </div>
+
+      <div>
+        <span>Focus</span>
+        <strong id="previewFocus">Organic produce</strong>
+      </div>
+
+      <div>
+        <span>Availability</span>
+        <strong>Seasonal</strong>
+      </div>
+
+      <div>
+        <span>Lead time</span>
+        <strong>10–14 days</strong>
+      </div>
+    </div>
+
+    <div class="profile-insight">
+      <span>Marketplace insight</span>
+      <strong id="previewNote">
+        Known for microgreens, lettuce, herbs, and reliable weekly availability.
+      </strong>
+    </div>
+
+    <div class="profile-products-section">
+      <div class="profile-products-head">
+        <p class="studio-eyebrow">Available products</p>
+        <small>Listed prices can prefill draft terms.</small>
+      </div>
+
+      <div class="profile-product-list compact">
+        <button class="profile-product" data-product="Broccoli Microgreens" data-price="3.00" data-unit="oz">
+          <div>
+            <strong>Broccoli Microgreens</strong>
+            <span>$3.00/oz · pre-order preferred</span>
+          </div>
+          <em>Add</em>
+        </button>
+
+        <button class="profile-product" data-product="Radish Microgreens" data-price="2.00" data-unit="oz">
+          <div>
+            <strong>Radish Microgreens</strong>
+            <span>$2.00/oz · weekly availability</span>
+          </div>
+          <em>Add</em>
+        </button>
+
+        <button class="profile-product" data-product="Butter Lettuce" data-price="2.40" data-unit="head">
+          <div>
+            <strong>Butter Lettuce</strong>
+            <span>$2.40/head · seasonal</span>
+          </div>
+          <em>Add</em>
+        </button>
+
+        <button class="profile-product" data-product="Fresh Herbs" data-price="3.75" data-unit="bundle">
+          <div>
+            <strong>Fresh Herbs</strong>
+            <span>$3.75/bundle · recurring supply</span>
+          </div>
+          <em>Add</em>
+        </button>
+      </div>
+    </div>
+
+    <div class="preview-actions sticky-profile-actions">
+      <button class="primary-studio-btn" id="startDraftFromBusiness">
+        Create contract draft
+      </button>
+      <button class="soft-btn">Message</button>
+      <button class="soft-btn">View full profile</button>
+    </div>
   </div>
+
+</div>
 
   <!-- VIEW MODE: AGREEMENT SNAPSHOT -->
   <div class="right-mode snapshot-mode hidden" id="snapshotMode">
