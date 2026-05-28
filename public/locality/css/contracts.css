@@ -1479,3 +1479,22 @@
     max-height: none;
   }
 }
+
+.finder-pulse {
+  animation: finderPulse 0.95s ease;
+}
+
+/* Mini Animation */
+@keyframes finderPulse {
+  0% {
+    box-shadow: 0 0 0 rgba(8,196,100,0);
+  }
+
+  35% {
+    box-shadow: 0 0 0 8px rgba(8,196,100,0.10);
+  }
+
+  100% {
+    box-shadow: 0 0 0 rgba(8,196,100,0);
+  }
+}
