@@ -34,6 +34,9 @@ const productsTab = document.getElementById("productsTab");
 const businessRows = document.querySelectorAll(".business-row");
 const networkSearchInput = document.getElementById("networkSearchInput");
 const startDraftFromBusiness = document.getElementById("startDraftFromBusiness");
+const networkListView = document.getElementById("networkListView");
+const businessProfileView = document.getElementById("businessProfileView");
+const backToNetwork = document.getElementById("backToNetwork");
 
 const businessData = {
   roosevelt: {
@@ -221,6 +224,9 @@ function updateBusinessPreview(key) {
   document.getElementById("previewActivity").textContent = business.activity;
   document.getElementById("previewFocus").textContent = business.focus;
   document.getElementById("previewNote").textContent = business.note;
+
+  networkListView?.classList.add("hidden");
+  businessProfileView?.classList.remove("hidden");
 }
 
 businessRows.forEach((row) => {
@@ -229,6 +235,11 @@ businessRows.forEach((row) => {
     row.classList.add("selected");
     updateBusinessPreview(row.dataset.business);
   });
+});
+
+backToNetwork?.addEventListener("click", () => {
+  businessProfileView?.classList.add("hidden");
+  networkListView?.classList.remove("hidden");
 });
 
 document.querySelectorAll("[data-network-filter]").forEach((button) => {
@@ -381,4 +392,5 @@ reviewModal?.addEventListener("click", (event) => {
 
 activateProductRows();
 setWorkspaceState("stream");
-updateBusinessPreview("roosevelt");
+networkListView?.classList.remove("hidden");
+businessProfileView?.classList.add("hidden");
