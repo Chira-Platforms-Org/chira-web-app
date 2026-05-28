@@ -361,7 +361,128 @@
     </section>
 
     <!-- RIGHT PANEL -->
-    <aside class="studio-panel fit-preview">
+<aside class="studio-panel right-panel" id="rightPanel">
+
+  <!-- STREAM MODE: NETWORK FINDER -->
+  <div class="right-mode network-mode" id="networkMode">
+    <p class="studio-eyebrow">Locality Network</p>
+    <h2>Find a business</h2>
+    <p class="right-subtitle">
+      Search buyers and suppliers, preview their profile, then start a contract draft.
+    </p>
+
+    <div class="network-search">
+      <input type="text" id="networkSearchInput" placeholder="Search businesses..." />
+      <button>Filter</button>
+    </div>
+
+    <div class="network-tabs">
+      <button class="active" data-network-filter="all">All</button>
+      <button data-network-filter="buyer">Buyers</button>
+      <button data-network-filter="supplier">Suppliers</button>
+    </div>
+
+    <div class="business-list" id="businessList">
+      <button class="business-row selected" data-business="roosevelt" data-type="buyer">
+        <span class="business-logo small-logo">RR</span>
+        <div>
+          <strong>Roosevelt Row Market</strong>
+          <small>Buyer · Phoenix · weekly produce sourcing</small>
+        </div>
+      </button>
+
+      <button class="business-row" data-business="mesaVerde" data-type="supplier">
+        <span class="business-logo small-logo green-logo">MV</span>
+        <div>
+          <strong>Mesa Verde Organics</strong>
+          <small>Supplier · East Mesa · microgreens, lettuce, herbs</small>
+        </div>
+      </button>
+
+      <button class="business-row" data-business="arcadia" data-type="buyer">
+        <span class="business-logo small-logo">AT</span>
+        <div>
+          <strong>Arcadia Table</strong>
+          <small>Buyer · Phoenix · restaurant group</small>
+        </div>
+      </button>
+
+      <button class="business-row" data-business="queenCreek" data-type="supplier">
+        <span class="business-logo small-logo green-logo">QC</span>
+        <div>
+          <strong>Queen Creek Harvest</strong>
+          <small>Supplier · Queen Creek · carrots, cabbage, herbs</small>
+        </div>
+      </button>
+    </div>
+
+    <div class="business-preview" id="businessPreview">
+      <div class="business-preview-head">
+        <span class="business-logo large-logo" id="previewLogo">RR</span>
+        <div>
+          <span id="previewType">Buyer profile</span>
+          <h3 id="previewName">Roosevelt Row Market</h3>
+          <p id="previewMeta">Phoenix, AZ · recurring produce buyer</p>
+        </div>
+      </div>
+
+      <div class="preview-stats">
+        <div>
+          <span>Activity</span>
+          <strong id="previewActivity">Weekly sourcing</strong>
+        </div>
+        <div>
+          <span>Focus</span>
+          <strong id="previewFocus">Restaurants</strong>
+        </div>
+      </div>
+
+      <p class="preview-note" id="previewNote">
+        Often requests carrots, leafy greens, herbs, and seasonal vegetables.
+      </p>
+
+      <div class="preview-actions">
+        <button class="primary-studio-btn" id="startDraftFromBusiness">
+          Create contract draft
+        </button>
+        <button class="soft-btn">Message</button>
+        <button class="soft-btn">View profile</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- VIEW MODE: AGREEMENT SNAPSHOT -->
+  <div class="right-mode snapshot-mode hidden" id="snapshotMode">
+    <p class="studio-eyebrow">Agreement Snapshot</p>
+    <h2>Review summary</h2>
+
+    <div class="snapshot-alert">
+      <span>Needs review</span>
+      <strong>2 changed terms</strong>
+      <p>The buyer changed quantity and contract length.</p>
+    </div>
+
+    <div class="snapshot-grid">
+      <div><span>Buyer</span><strong>Roosevelt Row</strong></div>
+      <div><span>Status</span><strong>Countered</strong></div>
+      <div><span>Messages</span><strong>1 reference</strong></div>
+      <div><span>Priority</span><strong>High</strong></div>
+    </div>
+
+    <div class="snapshot-actions">
+      <button class="primary-studio-btn" data-open-edit>Make counteroffer</button>
+      <button class="soft-btn">Message buyer</button>
+    </div>
+  </div>
+
+  <!-- EDIT / NEW MODE: SWITCHABLE DEAL FIT + PRODUCTS -->
+  <div class="right-mode work-panel-mode hidden" id="workPanelMode">
+    <div class="right-toggle">
+      <button class="active" data-right-tab="fit">Deal Fit</button>
+      <button data-right-tab="products">Products</button>
+    </div>
+
+    <div class="right-tab-panel" id="dealFitTab">
       <p class="studio-eyebrow">Deal Fit Preview</p>
       <h2>Operational impact</h2>
 
@@ -380,9 +501,56 @@
 
       <div class="fit-note">
         <strong>Locality note</strong>
-        <p>Countering at $2.45/lb improves margin while keeping the proposal within recent buyer benchmarks.</p>
+        <p>
+          Countering at $2.45/lb improves margin while keeping the proposal within recent buyer benchmarks.
+        </p>
       </div>
-    </aside>
+    </div>
+
+    <div class="right-tab-panel hidden" id="productsTab">
+      <p class="studio-eyebrow">Available Products</p>
+      <h2>Add from profile</h2>
+      <p class="right-subtitle">
+        Add listed products directly into the agreement with suggested pricing.
+      </p>
+
+      <div class="profile-product-list">
+        <button class="profile-product" data-product="Rainbow Carrots" data-price="2.45" data-unit="lb">
+          <div>
+            <strong>Rainbow Carrots</strong>
+            <span>Suggested: $2.45/lb</span>
+          </div>
+          <em>Add</em>
+        </button>
+
+        <button class="profile-product" data-product="Red Cabbage" data-price="1.90" data-unit="lb">
+          <div>
+            <strong>Red Cabbage</strong>
+            <span>Suggested: $1.90/lb</span>
+          </div>
+          <em>Add</em>
+        </button>
+
+        <button class="profile-product" data-product="Fresh Herbs" data-price="3.75" data-unit="bundle">
+          <div>
+            <strong>Fresh Herbs</strong>
+            <span>Suggested: $3.75/bundle</span>
+          </div>
+          <em>Add</em>
+        </button>
+
+        <button class="profile-product" data-product="Heirloom Tomatoes" data-price="2.85" data-unit="lb">
+          <div>
+            <strong>Heirloom Tomatoes</strong>
+            <span>Suggested: $2.85/lb</span>
+          </div>
+          <em>Add</em>
+        </button>
+      </div>
+    </div>
+  </div>
+
+</aside>
 
   </section>
 </main>
