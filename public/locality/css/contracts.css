@@ -1498,3 +1498,391 @@
     box-shadow: 0 0 0 rgba(8,196,100,0);
   }
 }
+
+/* =========================
+   CONTRACT STUDIO V5 POLISH
+========================= */
+
+/* Give the app room and prevent hero/workspace collision */
+.studio-shell {
+  padding: 92px 34px 28px;
+}
+
+.studio-hero {
+  margin-bottom: 18px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: end;
+}
+
+.studio-hero h1 {
+  font-size: 2.15rem;
+  line-height: 1.05;
+  max-width: 720px;
+}
+
+.studio-hero p {
+  max-width: 680px;
+  line-height: 1.45;
+}
+
+.studio-workspace {
+  height: calc(100vh - 215px);
+  min-height: 660px;
+}
+
+/* Make panels breathe more */
+.left-panel,
+.studio-canvas,
+.right-panel {
+  padding-top: 28px;
+}
+
+.stream-head {
+  padding: 0 2px 4px;
+  margin-bottom: 4px;
+}
+
+.stream-head .studio-eyebrow {
+  color: var(--green);
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+}
+
+.stream-head h2 {
+  font-size: 1.55rem;
+  line-height: 1.12;
+  margin-top: 6px;
+}
+
+/* Prevent panel title/borders from visually colliding */
+.agreement-stream,
+.left-panel {
+  position: relative;
+}
+
+.agreement-stream::before,
+.left-panel::before {
+  content: "";
+  position: sticky;
+  top: 0;
+  display: block;
+  height: 1px;
+  margin-bottom: 8px;
+}
+
+/* Cleaner contract stream cards */
+.contract-feed {
+  padding-top: 8px;
+}
+
+.contract-card {
+  min-height: unset;
+  padding: 20px;
+  border-radius: 28px;
+}
+
+.contract-card-main h3 {
+  font-size: 1.15rem;
+  line-height: 1.15;
+  margin-bottom: 3px;
+}
+
+.contract-card-main p {
+  line-height: 1.35;
+}
+
+.contract-actions {
+  padding-top: 4px;
+}
+
+.contract-actions button {
+  min-width: 76px;
+}
+
+/* Stronger left panel title area */
+.stream-filters {
+  padding-bottom: 4px;
+}
+
+.stream-filters button {
+  padding: 10px 15px;
+}
+
+/* When collapsed, don't cram long text */
+.state-view .left-panel,
+.state-edit .left-panel,
+.state-new .left-panel {
+  padding: 22px 14px;
+}
+
+.state-view .context-mode h2,
+.state-edit .context-mode h2,
+.state-new .context-mode h2 {
+  font-size: 1.15rem;
+  line-height: 1.16;
+}
+
+.state-view .context-subtitle,
+.state-edit .context-subtitle,
+.state-new .context-subtitle {
+  font-size: 0.82rem;
+  line-height: 1.35;
+}
+
+.state-view .context-card,
+.state-edit .context-card,
+.state-new .context-card {
+  padding: 13px;
+  border-radius: 18px;
+}
+
+.state-view .context-products button,
+.state-edit .context-products button,
+.state-new .context-products button {
+  white-space: normal;
+  line-height: 1.15;
+}
+
+/* Right network profile subviews */
+.network-subview.hidden {
+  display: none !important;
+}
+
+.network-helper {
+  margin-top: 14px;
+  padding: 14px;
+  border-radius: 18px;
+  background: rgba(8,196,100,0.08);
+  color: var(--muted);
+  font-weight: 800;
+  line-height: 1.4;
+}
+
+.back-to-network {
+  border: none;
+  border-radius: 999px;
+  padding: 11px 14px;
+  background: rgba(20,50,92,0.08);
+  color: var(--navy);
+  font-weight: 900;
+  cursor: pointer;
+  margin-bottom: 18px;
+}
+
+.profile-mini-hero {
+  padding: 18px;
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at top right, rgba(8,196,100,0.16), transparent 42%),
+    rgba(255,255,255,0.82);
+  border: 1px solid rgba(20,50,92,0.08);
+  display: grid;
+  grid-template-columns: 70px 1fr;
+  gap: 15px;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.profile-mini-hero .large-logo {
+  width: 70px;
+  height: 70px;
+}
+
+.profile-mini-hero span:not(.business-logo) {
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+
+.profile-mini-hero h3 {
+  color: var(--navy);
+  font-size: 1.45rem;
+  line-height: 1.08;
+  margin: 4px 0;
+}
+
+.profile-mini-hero p {
+  color: var(--muted);
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.profile-stat-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.profile-stat-grid div {
+  padding: 14px;
+  border-radius: 20px;
+  background: rgba(245,247,242,0.86);
+}
+
+.profile-stat-grid span {
+  display: block;
+  color: var(--muted);
+  font-size: 0.7rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 5px;
+}
+
+.profile-stat-grid strong {
+  color: var(--navy);
+  font-size: 0.92rem;
+}
+
+.profile-insight {
+  padding: 16px;
+  border-radius: 22px;
+  background: rgba(8,196,100,0.09);
+  border: 1px solid rgba(8,196,100,0.10);
+  margin-bottom: 16px;
+}
+
+.profile-insight span {
+  display: block;
+  color: var(--green);
+  font-size: 0.72rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 8px;
+}
+
+.profile-insight strong {
+  color: var(--navy);
+  font-size: 1rem;
+  line-height: 1.35;
+}
+
+.profile-products-section {
+  margin-top: 12px;
+}
+
+.profile-products-head {
+  margin-bottom: 10px;
+}
+
+.profile-products-head .studio-eyebrow {
+  margin-bottom: 2px;
+}
+
+.profile-products-head small {
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.profile-product-list.compact {
+  max-height: 275px;
+  overflow-y: auto;
+  display: grid;
+  gap: 10px;
+  padding-right: 4px;
+}
+
+.profile-product-list.compact .profile-product {
+  border-radius: 20px;
+  padding: 14px;
+  min-height: 72px;
+}
+
+.profile-product-list.compact .profile-product strong {
+  font-size: 0.95rem;
+  line-height: 1.15;
+}
+
+.profile-product-list.compact .profile-product span {
+  font-size: 0.82rem;
+  line-height: 1.25;
+}
+
+.sticky-profile-actions {
+  position: sticky;
+  bottom: 0;
+  padding-top: 14px;
+  margin-top: 14px;
+  background: linear-gradient(
+    to top,
+    rgba(255,255,255,0.96),
+    rgba(255,255,255,0.74),
+    transparent
+  );
+}
+
+/* Right panel should feel like a self-contained tab */
+.right-panel {
+  padding: 28px;
+}
+
+.right-panel h2 {
+  font-size: 1.55rem;
+  line-height: 1.12;
+}
+
+/* Improve business rows */
+.business-list {
+  max-height: 330px;
+}
+
+.business-row {
+  min-height: 70px;
+}
+
+.business-row strong {
+  font-size: 0.95rem;
+}
+
+.business-row small {
+  font-size: 0.78rem;
+}
+
+/* Product editor fields should not hide text */
+.product-fields {
+  grid-template-columns:
+    minmax(210px, 1.35fr)
+    minmax(160px, 0.9fr)
+    minmax(250px, 1.25fr)
+    minmax(160px, 0.9fr);
+}
+
+.product-fields label {
+  min-width: 0;
+}
+
+.product-fields select,
+.product-fields input {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.product-summary {
+  gap: 16px;
+}
+
+/* Make final-review overlay feel less empty */
+.final-review-card {
+  transform: translateY(-2vh);
+}
+
+/* Mobile/tablet safety */
+@media (max-width: 1200px) {
+  .studio-hero {
+    grid-template-columns: 1fr;
+    align-items: start;
+  }
+
+  .studio-workspace {
+    height: auto;
+  }
+
+  .profile-product-list.compact {
+    max-height: none;
+  }
+}
