@@ -219,6 +219,75 @@ function setEmptyProductState(isEmpty = true) {
   }
 }
 
+function setWorkspaceState(state) {
+  workspace?.classList.remove("state-stream", "state-view", "state-edit", "state-new");
+  workspace?.classList.add(`state-${state}`);
+
+  hideAllCanvasModes();
+
+  if (state === "stream") {
+    emptyMode?.classList.remove("hidden");
+    streamMode?.classList.remove("hidden");
+    contextMode?.classList.add("hidden");
+    showRightMode("network");
+    return;
+  }
+
+  if (state === "view") {
+    viewMode?.classList.remove("hidden");
+    streamMode?.classList.add("hidden");
+    contextMode?.classList.remove("hidden");
+    showRightMode("snapshot");
+
+    contextTitle.textContent = "Roosevelt Row Market";
+    contextSubtitle.textContent = "Buyer counteroffer under review.";
+    return;
+  }
+
+  if (state === "edit") {
+    editMode?.classList.remove("hidden");
+    streamMode?.classList.add("hidden");
+    contextMode?.classList.remove("hidden");
+    showRightMode("work");
+    showRightTab("fit");
+
+    editorEyebrow.textContent = "Counteroffer Workspace";
+    editorTitle.textContent = "Edit structured terms";
+    editorSubtitle.textContent = "Use listed products and structured fields to keep the agreement clean.";
+
+    blankContractGuidance?.classList.add("hidden");
+    setEmptyProductState(false);
+
+    contextTitle.textContent = "Roosevelt Row Market";
+    contextSubtitle.textContent = "Buyer counteroffer under review.";
+    return;
+  }
+
+  if (state === "new") {
+    editMode?.classList.remove("hidden");
+    streamMode?.classList.add("hidden");
+    contextMode?.classList.remove("hidden");
+
+    editorEyebrow.textContent = "New Contract";
+    editorTitle.textContent = selectedBusinessName
+      ? `Draft agreement for ${selectedBusinessName}`
+      : "Draft a new supply agreement";
+
+    editorSubtitle.textContent = selectedBusinessName
+      ? "Add listed products and structured terms before review."
+      : "Start by finding a business in the Locality Network.";
+
+    blankContractGuidance?.classList.toggle("hidden", Boolean(selectedBusinessName));
+
+    contextTitle.textContent = selectedBusinessName || "Select recipient";
+    contextSubtitle.textContent = selectedBusinessName
+      ? "Recipient selected for this draft agreement."
+      : "Use the Locality Network to select the buyer this agreement will be sent to.";
+
+    return;
+  }
+}
+
 function beginBlankContractFlow() {
   selectedBusinessKey = null;
   selectedBusinessName = null;
@@ -249,80 +318,21 @@ function beginContractForSelectedBusiness() {
   clearProductRows();
   setEmptyProductState(true);
 
+  if (profile) {
+    selectedBusinessName = profile.name;
+  }
+
   setWorkspaceState("new");
   showRightMode("work");
   showRightTab("products");
 
   if (profile) {
-    selectedBusinessName = profile.name;
     contextTitle.textContent = profile.name;
     contextSubtitle.textContent = "Recipient selected for this draft agreement.";
     renderProfileProducts(profile);
   }
 }
 
-function setWorkspaceState(state) {
-  workspace.classList.remove("state-stream", "state-view", "state-edit", "state-new");
-  workspace.classList.add(`state-${state}`);
-
-  hideAllCanvasModes();
-
-  if (state === "stream") {
-    emptyMode?.classList.remove("hidden");
-    streamMode?.classList.remove("hidden");
-    contextMode?.classList.add("hidden");
-    showRightMode("network");
-  }
-
-  if (state === "view") {
-    viewMode?.classList.remove("hidden");
-    streamMode?.classList.add("hidden");
-    contextMode?.classList.remove("hidden");
-    showRightMode("snapshot");
-
-    contextTitle.textContent = "Roosevelt Row Market";
-    contextSubtitle.textContent = "Buyer counteroffer under review.";
-  }
-
-  if (state === "edit") {
-  editorEyebrow.textContent = "Counteroffer Workspace";
-  editorTitle.textContent = "Edit structured terms";
-  editorSubtitle.textContent = "Use listed products and structured fields to keep the agreement clean.";
-  blankContractGuidance?.classList.add("hidden");
-  setEmptyProductState(false);
-
-  contextTitle.textContent = "Roosevelt Row Market";
-  contextSubtitle.textContent = "Buyer counteroffer under review.";
-}
-
-  if (state === "new") {
-  editorEyebrow.textContent = "New Contract";
-  editorTitle.textContent = selectedBusinessName
-    ? `Draft agreement for ${selectedBusinessName}`
-    : "Draft a new supply agreement";
-
-  editorSubtitle.textContent = selectedBusinessName
-    ? "Add listed products and structured terms before review."
-    : "Start by finding a business in the Locality Network.";
-
-  blankContractGuidance?.classList.toggle("hidden", Boolean(selectedBusinessName));
-
-  contextTitle.textContent = selectedBusinessName || "Select recipient";
-  contextSubtitle.textContent = selectedBusinessName
-    ? "Recipient selected for this draft agreement."
-    : "Use the Locality Network to select the buyer this agreement will be sent to.";
-}
-
-  if (state === "edit") {
-    editorEyebrow.textContent = "Counteroffer Workspace";
-    editorTitle.textContent = "Edit structured terms";
-    editorSubtitle.textContent = "Use listed products and structured fields to keep the agreement clean.";
-    recipientSelect?.classList.add("hidden");
-
-    contextTitle.textContent = "Roosevelt Row Market";
-    contextSubtitle.textContent = "Buyer counteroffer under review.";
-  }
-}
 
 function showRightTab(tab) {
   document.querySelectorAll("[data-right-tab]").forEach((button) => {
@@ -423,7 +433,7 @@ backToNetwork?.addEventListener("click", () => {
   networkListView?.classList.remove("hidden");
 });
 
- activeNetworkFilter = "all";
+ let activeNetworkFilter = "all";
 
 document.querySelectorAll("[data-network-filter]").forEach((button) => {
   button.addEventListener("click", () => {
