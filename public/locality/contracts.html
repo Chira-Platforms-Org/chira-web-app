@@ -691,14 +691,23 @@
     <button class="back-to-network" id="backToNetwork">← Back to network</button>
 
     <div class="profile-mini-hero">
-      <span class="business-logo large-logo" id="previewLogo">MV</span>
+  <span class="business-logo large-logo" id="previewLogo">--</span>
 
-      <div>
-        <span id="previewType">Supplier profile</span>
-        <h3 id="previewName">Mesa Verde Organics</h3>
-        <p id="previewMeta">East Mesa, AZ · microgreens, lettuce, herbs</p>
-      </div>
-    </div>
+  <div>
+    <span id="previewType">Business profile</span>
+    <h3 id="previewName">Select a business</h3>
+    <p id="previewMeta">Choose a buyer or supplier from the Locality Network.</p>
+  </div>
+
+  <div class="profile-top-actions">
+    <button class="profile-select-btn" type="button" data-start-draft>
+      Select recipient
+    </button>
+    <button class="profile-secondary-btn" type="button">
+      Message
+    </button>
+  </div>
+</div>
 
     <div class="profile-stat-grid">
       <div>
@@ -771,8 +780,8 @@
     </div>
 
     <div class="preview-actions sticky-profile-actions">
-      <button class="primary-studio-btn" id="startDraftFromBusiness">
-        Create contract draft
+      <button class="primary-studio-btn" id="startDraftFromBusiness" data-start-draft>
+        Select recipient
       </button>
       <button class="soft-btn">Message</button>
       <button class="soft-btn">View full profile</button>
