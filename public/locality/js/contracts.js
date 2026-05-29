@@ -267,6 +267,7 @@ function setEmptyProductState(isEmpty = true) {
 function setWorkspaceState(state) {
   workspace?.classList.remove("state-stream", "state-view", "state-edit", "state-new");
   workspace?.classList.add(`state-${state}`);
+  updateDraftButtonLanguage(state);
 
   hideAllCanvasModes();
 
@@ -439,7 +440,7 @@ newContractBtn?.addEventListener("click", () => {
 });
 
 document.addEventListener("click", (event) => {
-  if (event.target.closest("#startDraftFromBusiness")) {
+  if (event.target.closest("[data-start-draft]")) {
     cards.forEach((item) => item.classList.remove("selected"));
     beginContractForSelectedBusiness();
   }
@@ -451,6 +452,16 @@ document.querySelectorAll("[data-recipient]").forEach((button) => {
     contextSubtitle.textContent = "Recipient selected for this draft agreement.";
   });
 });
+
+function updateDraftButtonLanguage(state = "stream") {
+  const isSelectingRecipient = state === "new" || state === "edit";
+
+  document.querySelectorAll("[data-start-draft]").forEach((button) => {
+    button.textContent = isSelectingRecipient
+      ? "Select recipient"
+      : "Create contract draft";
+  });
+}
 
 function updateBusinessPreview(key) {
   const profile = getProfileByKey(key);
