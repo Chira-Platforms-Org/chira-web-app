@@ -155,7 +155,9 @@ function getProfileByKey(key) {
 }
 
 function parsePrice(priceString = "") {
-  const match = priceString.match(/\$?([\d.]+)\s*\/?\s*([a-zA-Z]+)?/);
+  const clean = String(priceString).replace("Suggested:", "").trim();
+
+  const match = clean.match(/\$?\s*([\d.]+)\s*\/\s*([a-zA-Z]+)?/);
 
   return {
     amount: match?.[1] || "",
@@ -320,6 +322,7 @@ function beginContractForSelectedBusiness() {
 
   if (profile) {
     selectedBusinessName = profile.name;
+    renderProfileProducts(profile);
   }
 
   setWorkspaceState("new");
@@ -329,7 +332,6 @@ function beginContractForSelectedBusiness() {
   if (profile) {
     contextTitle.textContent = profile.name;
     contextSubtitle.textContent = "Recipient selected for this draft agreement.";
-    renderProfileProducts(profile);
   }
 }
 
@@ -545,11 +547,11 @@ function renderProfileProducts(profile) {
 function attachProfileProductListeners() {
   document.querySelectorAll(".profile-product").forEach((button) => {
     button.addEventListener("click", () => {
-      createProductRow(
-        button.dataset.product,
-        button.dataset.price,
-        button.dataset.unit
-      );
+      const product = button.dataset.product || "Listed product";
+      const price = button.dataset.price || "";
+      const unit = button.dataset.unit || "unit";
+
+      createProductRow(product, price, unit);
 
       if (!selectedBusinessName && selectedBusinessKey) {
         const profile = getProfileByKey(selectedBusinessKey);
