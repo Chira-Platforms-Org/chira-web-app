@@ -34,6 +34,43 @@ const productsTab = document.getElementById("productsTab");
 let businessRows = [];
 let selectedBusinessKey = null;
 let selectedBusinessName = null;
+let selectedAgreementTemplate = "flexible";
+
+const agreementTemplateLabels = {
+  fixed: "Fixed quantity",
+  flexible: "Flexible ordering",
+  seasonal: "Seasonal availability"
+};
+
+function setAgreementTemplate(template = "flexible") {
+  selectedAgreementTemplate = template;
+
+  document.querySelectorAll("[data-template-card]").forEach((card) => {
+    card.classList.toggle("active", card.dataset.templateCard === template);
+  });
+
+  const label = document.getElementById("builderTemplateLabel");
+  if (label) {
+    label.textContent = agreementTemplateLabels[template] || "Flexible ordering";
+  }
+
+  if (editorSubtitle) {
+    if (template === "fixed") {
+      editorSubtitle.textContent =
+        "Build a fixed quantity agreement with set recurring purchase commitments.";
+    }
+
+    if (template === "flexible") {
+      editorSubtitle.textContent =
+        "Build a flexible ordering agreement where buyers order changing quantities under agreed prices, minimums, and rules.";
+    }
+
+    if (template === "seasonal") {
+      editorSubtitle.textContent =
+        "Build an availability-based agreement for seasonal products and harvest-dependent supply.";
+    }
+  }
+}
 const networkSearchInput = document.getElementById("networkSearchInput");
 const startDraftFromBusiness = document.getElementById("startDraftFromBusiness");
 const networkListView = document.getElementById("networkListView");
@@ -292,6 +329,8 @@ function setWorkspaceState(state) {
       ? "Recipient selected for this draft agreement."
       : "Use the Locality Network to select the buyer this agreement will be sent to.";
 
+    setAgreementTemplate(selectedAgreementTemplate || "flexible");
+
     return;
   }
 }
@@ -355,6 +394,13 @@ document.querySelectorAll("[data-right-tab]").forEach((button) => {
   button.addEventListener("click", () => {
     showRightTab(button.dataset.rightTab);
   });
+});
+
+document.addEventListener("click", (event) => {
+  const templateCard = event.target.closest("[data-template-card]");
+  if (!templateCard) return;
+
+  setAgreementTemplate(templateCard.dataset.templateCard);
 });
 
 cards.forEach((card) => {
@@ -493,13 +539,19 @@ function renderProfileProducts(profile) {
             product.availability ||
             "Available";
 
+          const isOrganic = Boolean(product.organic);
+          const badge = isOrganic
+            ? `<span class="organic-badge">Organic</span>`
+            : `<span class="conventional-badge">Conventional</span>`;
+
           return `
             <button class="profile-product"
                     data-product="${productName}"
                     data-price="${parsed.amount}"
-                    data-unit="${parsed.unit}">
+                    data-unit="${parsed.unit}"
+                    data-organic="${isOrganic}">
               <div>
-                <strong>${productName}</strong>
+                <strong>${productName} ${badge}</strong>
                 <span>${productPrice} · ${productNote}</span>
               </div>
               <em>Add</em>
@@ -528,35 +580,46 @@ function attachProfileProductListeners() {
 
 
 
-function createProductRow(product = "Red Cabbage", price = "1.90", unit = "lb") {
+function createProductRow(product = "Listed product", price = "0.00", unit = "lb", organic = false) {
   setEmptyProductState(false);
+
   const row = document.createElement("div");
   row.className = "product-row active";
+  row.dataset.organic = organic ? "true" : "false";
 
-  document.querySelectorAll(".product-row").forEach((item) => item.classList.remove("active"));
+  document.querySelectorAll(".product-row").forEach((item) => {
+    item.classList.remove("active");
+  });
+
+  const badge = organic
+    ? `<span class="organic-badge">Organic</span>`
+    : `<span class="conventional-badge">Conventional</span>`;
 
   row.innerHTML = `
     <div class="product-summary">
-      <strong>${product}</strong>
-      <span>50 ${unit} · $${price}/${unit} · Weekly</span>
+      <div>
+        <strong>${product} ${badge}</strong>
+        <span>Min 25 ${unit}/order · $${price}/${unit} · Buyer-selected quantities</span>
+      </div>
       <button class="remove-row-btn" type="button">Remove</button>
     </div>
 
-    <div class="product-fields">
+    <div class="product-fields flexible-product-fields">
       <label>
         Product
         <select>
-          <option ${product === "Rainbow Carrots" ? "selected" : ""}>Rainbow Carrots</option>
-          <option ${product === "Red Cabbage" ? "selected" : ""}>Red Cabbage</option>
-          <option ${product === "Fresh Herbs" ? "selected" : ""}>Fresh Herbs</option>
-          <option ${product === "Heirloom Tomatoes" ? "selected" : ""}>Heirloom Tomatoes</option>
+          <option selected>${product}</option>
+          <option>Rainbow Carrots</option>
+          <option>Red Cabbage</option>
+          <option>Fresh Herbs</option>
+          <option>Heirloom Tomatoes</option>
         </select>
       </label>
 
       <label>
-        Quantity
+        Minimum order
         <div class="split-field">
-          <input type="number" value="50" />
+          <input type="number" value="25" />
           <select>
             <option ${unit === "lb" ? "selected" : ""}>lb</option>
             <option ${unit === "oz" ? "selected" : ""}>oz</option>
@@ -564,6 +627,7 @@ function createProductRow(product = "Red Cabbage", price = "1.90", unit = "lb") 
             <option ${unit === "crate" ? "selected" : ""}>crate</option>
             <option ${unit === "case" ? "selected" : ""}>case</option>
             <option ${unit === "bundle" ? "selected" : ""}>bundle</option>
+            <option ${unit === "each" ? "selected" : ""}>each</option>
           </select>
         </div>
       </label>
@@ -576,21 +640,28 @@ function createProductRow(product = "Red Cabbage", price = "1.90", unit = "lb") 
           <small>per</small>
           <select>
             <option ${unit === "lb" ? "selected" : ""}>lb</option>
+            <option ${unit === "oz" ? "selected" : ""}>oz</option>
+            <option ${unit === "kg" ? "selected" : ""}>kg</option>
             <option ${unit === "crate" ? "selected" : ""}>crate</option>
             <option ${unit === "case" ? "selected" : ""}>case</option>
             <option ${unit === "bundle" ? "selected" : ""}>bundle</option>
+            <option ${unit === "each" ? "selected" : ""}>each</option>
           </select>
         </div>
       </label>
 
       <label>
-        Cadence
+        Ordering model
         <select>
-          <option>Weekly</option>
-          <option>Bi-weekly</option>
-          <option>Monthly</option>
-          <option>One-time</option>
+          <option>Buyer selects quantity per order</option>
+          <option>Fixed recurring quantity</option>
+          <option>Seller availability-based</option>
         </select>
+      </label>
+
+      <label class="wide-field">
+        Product specifications
+        <textarea placeholder="Example: Fresh, market-grade, washed, packed in reusable crates.">Fresh, market-grade, packed for local delivery.</textarea>
       </label>
     </div>
   `;
@@ -621,7 +692,7 @@ function activateProductRows() {
 }
 
 addProductRow?.addEventListener("click", () => {
-  createProductRow();
+  createProductRow("New product", "0.00", "lb", false);
 });
 
 
@@ -636,16 +707,18 @@ document.addEventListener("click", (event) => {
   if (!button) return;
 
   const product = button.dataset.product || "Listed product";
-  const price = button.dataset.price || "";
+  const price = button.dataset.price || "0.00";
   const unit = button.dataset.unit || "unit";
+  const organic = button.dataset.organic === "true";
 
-  createProductRow(product, price, unit);
+  createProductRow(product, price, unit, organic);
 
   if (!selectedBusinessName && selectedBusinessKey) {
     const profile = getProfileByKey(selectedBusinessKey);
     selectedBusinessName = profile?.name || null;
   }
 
+  setAgreementTemplate("flexible");
   setWorkspaceState("new");
   showRightMode("work");
   showRightTab("products");
