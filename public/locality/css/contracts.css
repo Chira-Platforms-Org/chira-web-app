@@ -80,7 +80,7 @@
 }
 
 .agreement-stream {
-  padding: 24px;
+  padding: 0 32px 28px;
 }
 
 .studio-canvas {
@@ -1542,10 +1542,11 @@
   padding-top: 0;
 }
 
-.stream-head {
+/* Older compact stream title styling disabled for Agreement Stream banner */
+/* .stream-head {
   padding: 0 2px 4px;
   margin-bottom: 4px;
-}
+} */
 
 .stream-head .studio-eyebrow {
   color: var(--green);
