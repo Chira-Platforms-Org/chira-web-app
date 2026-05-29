@@ -2176,11 +2176,11 @@
 
 /* Pull Agreement Stream banner flush to top of panel */
 .agreement-stream {
-  padding-top: 0;
+  padding: 0 22px 24px;
   overflow: hidden;
 }
 
 .agreement-stream .stream-head {
-  margin: 0 -6px 24px;
+  margin: 0 -22px 24px;
   border-radius: 30px 30px 18px 18px;
 }
