@@ -2174,13 +2174,21 @@
   margin: 0;
 }
 
-/* Pull Agreement Stream banner flush to top of panel */
-.agreement-stream {
-  padding: 0 22px 24px;
-  overflow: hidden;
+/* =========================
+   AGREEMENT STREAM — FLUSH BANNER FIX
+========================= */
+
+.contract-studio-page .agreement-stream {
+  padding: 0 32px 24px !important;
+  overflow: hidden !important;
 }
 
-.agreement-stream .stream-head {
-  margin: 0 -22px 24px;
-  border-radius: 30px 30px 18px 18px;
+.contract-studio-page .agreement-stream .stream-head {
+  margin-top: -32px !important;
+  margin-left: -32px !important;
+  margin-right: -32px !important;
+  margin-bottom: 28px !important;
+
+  padding: 42px 38px 34px !important;
+  border-radius: 34px 34px 18px 18px !important;
 }
