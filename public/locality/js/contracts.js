@@ -452,21 +452,72 @@ networkSearchInput?.addEventListener("input", () => {
   renderBusinessList(activeNetworkFilter, networkSearchInput.value);
 });
 
+function getProfileProducts(profile) {
+  return (
+    profile.productsAvailable ||
+    profile.availableProducts ||
+    profile.products ||
+    profile.listings ||
+    []
+  );
+}
+
 function renderProfileProducts(profile) {
-  const productList = businessProfileView?.querySelector(".profile-product-list");
-  if (!productList) return;
+  const productLists = document.querySelectorAll(".profile-product-list");
+  if (!productLists.length || !profile) return;
 
-  const products = profile.productsAvailable || [];
+  const products = getProfileProducts(profile);
 
-  if (!products.length) {
-    productList.innerHTML = `
+  const productHTML = products.length
+    ? products
+        .map((product) => {
+          const parsed = parsePrice(product.price || product.listedPrice || product.unitPrice || "");
+
+          const productName =
+            product.name ||
+            product.product ||
+            product.label ||
+            "Listed product";
+
+          const productPrice =
+            product.price ||
+            product.listedPrice ||
+            product.unitPrice ||
+            "Price not listed";
+
+          const productNote =
+            product.note ||
+            product.status ||
+            product.availability ||
+            "Available";
+
+          return `
+            <button class="profile-product"
+                    data-product="${productName}"
+                    data-price="${parsed.amount}"
+                    data-unit="${parsed.unit}">
+              <div>
+                <strong>${productName}</strong>
+                <span>${productPrice} · ${productNote}</span>
+              </div>
+              <em>Add</em>
+            </button>
+          `;
+        })
+        .join("")
+    : `
       <div class="empty-products-note">
         <strong>No listed products yet</strong>
         <span>This profile does not currently include listed product pricing.</span>
       </div>
     `;
-    return;
-  }
+
+  productLists.forEach((list) => {
+    list.innerHTML = productHTML;
+  });
+
+  attachProfileProductListeners();
+}
 
   productList.innerHTML = products
     .slice(0, 8)
