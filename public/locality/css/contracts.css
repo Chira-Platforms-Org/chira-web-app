@@ -1566,16 +1566,6 @@
   position: relative;
 }
 
-.agreement-stream::before,
-.left-panel::before {
-  content: "";
-  position: sticky;
-  top: 0;
-  display: block;
-  height: 1px;
-  margin-bottom: 8px;
-}
-
 /* Cleaner contract stream cards */
 .contract-feed {
   padding-top: 8px;
@@ -1895,17 +1885,6 @@
 /* =========================
    CONTRACT STUDIO V6 — STREAM HEADER + NEW FLOW
 ========================= */
-
-/* Give Agreement Stream a more intentional app-panel header */
-.stream-head {
-  margin: -6px -6px 18px;
-  padding: 22px 22px 18px;
-  border-radius: 28px;
-  background:
-    linear-gradient(135deg, rgba(8,196,100,0.12), rgba(255,252,245,0.84)),
-    rgba(255,255,255,0.8);
-  border: 1px solid rgba(8,196,100,0.10);
-}
 
 .stream-head .studio-eyebrow {
   color: var(--green);
