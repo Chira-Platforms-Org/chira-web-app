@@ -91,10 +91,11 @@ function renderBusinessList(filter = "all", searchTerm = "") {
     .join("");
 
   businessRows = document.querySelectorAll(".business-row");
+}
 
-  const businessList = document.getElementById("businessList");
+const businessListEl = document.getElementById("businessList");
 
-  businessList?.addEventListener("click", (event) => {
+businessListEl?.addEventListener("click", (event) => {
   const row = event.target.closest(".business-row");
   if (!row) return;
 
@@ -105,7 +106,6 @@ function renderBusinessList(filter = "all", searchTerm = "") {
   row.classList.add("selected");
   updateBusinessPreview(row.dataset.business);
 });
-
   
 function slugifyProfileName(name) {
   return name
@@ -521,29 +521,6 @@ function renderProfileProducts(profile) {
   attachProfileProductListeners();
 }
 
-  productList.innerHTML = products
-    .slice(0, 8)
-    .map((product) => {
-      const parsed = parsePrice(product.price);
-
-      return `
-        <button class="profile-product"
-                data-product="${product.name}"
-                data-price="${parsed.amount}"
-                data-unit="${parsed.unit}">
-          <div>
-            <strong>${product.name}</strong>
-            <span>${product.price} · ${product.note || "Available"}</span>
-          </div>
-          <em>Add</em>
-        </button>
-      `;
-    })
-    .join("");
-
-  attachProfileProductListeners();
-}
-
 function attachProfileProductListeners() {
   // Product buttons are rendered dynamically from profiles.js.
   // Their clicks are handled by the delegated listener below.
@@ -647,15 +624,6 @@ addProductRow?.addEventListener("click", () => {
   createProductRow();
 });
 
-document.querySelectorAll(".profile-product").forEach((button) => {
-  button.addEventListener("click", () => {
-    createProductRow(
-      button.dataset.product,
-      button.dataset.price,
-      button.dataset.unit
-    );
-  });
-});
 
 document.addEventListener("click", (event) => {
   if (event.target?.id === "openReviewModal") {
