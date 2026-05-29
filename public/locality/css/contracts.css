@@ -2117,13 +2117,19 @@
 }
 
 /* =========================
-   CONTRACT STUDIO — AGREEMENT STREAM BANNER
+   CONTRACT STUDIO — AGREEMENT STREAM HEADER CLEANUP
 ========================= */
 
-.stream-head {
-  margin: -6px -6px 24px;
-  padding: 34px 32px 30px;
-  border-radius: 28px 28px 18px 18px;
+.contract-studio-page .studio-panel.left-panel.agreement-stream {
+  padding: 0 32px 28px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.contract-studio-page .agreement-stream .stream-head {
+  margin: 0 -32px 28px;
+  padding: 42px 38px 36px;
+  border-radius: 34px 34px 18px 18px;
   background: linear-gradient(135deg, #0f5f43 0%, #14945b 100%);
   border: 1px solid rgba(18, 114, 77, 0.22);
   box-shadow:
@@ -2133,7 +2139,7 @@
   overflow: hidden;
 }
 
-.stream-head::after {
+.contract-studio-page .agreement-stream .stream-head::after {
   content: "";
   position: absolute;
   inset: 0;
@@ -2143,12 +2149,12 @@
   pointer-events: none;
 }
 
-.stream-head > div {
+.contract-studio-page .agreement-stream .stream-head > div {
   position: relative;
   z-index: 1;
 }
 
-.stream-head .studio-eyebrow {
+.contract-studio-page .agreement-stream .stream-head .studio-eyebrow {
   color: #c8f7d8;
   font-size: 0.78rem;
   font-weight: 900;
@@ -2157,7 +2163,7 @@
   margin-bottom: 12px;
 }
 
-.stream-head h2 {
+.contract-studio-page .agreement-stream .stream-head h2 {
   color: #f8fff9;
   font-size: 2rem;
   line-height: 1.08;
@@ -2165,90 +2171,11 @@
   margin: 0 0 12px;
 }
 
-.stream-intro-note {
+.contract-studio-page .agreement-stream .stream-intro-note {
   color: rgba(248, 255, 249, 0.84);
   font-size: 0.98rem;
   line-height: 1.5;
   font-weight: 750;
   max-width: 760px;
   margin: 0;
-}
-
-/* =========================
-   AGREEMENT STREAM — TRUE FLUSH BANNER FIX
-========================= */
-
-/* Kill the invisible spacer that was forcing the banner down */
-.contract-studio-page .agreement-stream::before,
-.contract-studio-page .left-panel::before {
-  content: none !important;
-  display: none !important;
-  height: 0 !important;
-  margin: 0 !important;
-}
-
-/* Remove internal top padding from the Agreement Stream panel */
-.contract-studio-page .studio-panel.left-panel.agreement-stream {
-  padding: 0 32px 28px !important;
-  overflow-y: auto !important;
-  overflow-x: hidden !important;
-}
-
-/* Make the green banner attach to the top edge of the panel */
-.contract-studio-page .studio-panel.left-panel.agreement-stream .stream-head {
-  margin: 0 -32px 28px !important;
-  padding: 42px 38px 36px !important;
-
-  border-radius: 34px 34px 18px 18px !important;
-  background: linear-gradient(135deg, #0f5f43 0%, #14945b 100%) !important;
-  border: 1px solid rgba(18, 114, 77, 0.22) !important;
-
-  box-shadow:
-    0 18px 34px rgba(18, 114, 77, 0.14),
-    inset 0 1px 0 rgba(255,255,255,0.13) !important;
-
-  position: relative;
-  overflow: hidden;
-}
-
-/* Keep the overlay effect */
-.contract-studio-page .studio-panel.left-panel.agreement-stream .stream-head::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(circle at top right, rgba(255,255,255,0.16), transparent 34%),
-    linear-gradient(135deg, rgba(255,255,255,0.08), transparent 42%);
-  pointer-events: none;
-}
-
-.contract-studio-page .studio-panel.left-panel.agreement-stream .stream-head > div {
-  position: relative;
-  z-index: 1;
-}
-
-.contract-studio-page .studio-panel.left-panel.agreement-stream .stream-head .studio-eyebrow {
-  color: #c8f7d8 !important;
-  font-size: 0.78rem !important;
-  font-weight: 900 !important;
-  letter-spacing: 0.16em !important;
-  text-transform: uppercase !important;
-  margin-bottom: 12px !important;
-}
-
-.contract-studio-page .studio-panel.left-panel.agreement-stream .stream-head h2 {
-  color: #f8fff9 !important;
-  font-size: 2rem !important;
-  line-height: 1.08 !important;
-  font-weight: 900 !important;
-  margin: 0 0 12px !important;
-}
-
-.contract-studio-page .studio-panel.left-panel.agreement-stream .stream-intro-note {
-  color: rgba(248, 255, 249, 0.84) !important;
-  font-size: 0.98rem !important;
-  line-height: 1.5 !important;
-  font-weight: 750 !important;
-  max-width: 760px !important;
-  margin: 0 !important;
 }
