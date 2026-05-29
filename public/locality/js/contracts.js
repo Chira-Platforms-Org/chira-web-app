@@ -92,15 +92,21 @@ function renderBusinessList(filter = "all", searchTerm = "") {
 
   businessRows = document.querySelectorAll(".business-row");
 
-  businessRows.forEach((row) => {
-    row.addEventListener("click", () => {
-      businessRows.forEach((item) => item.classList.remove("selected"));
-      row.classList.add("selected");
-      updateBusinessPreview(row.dataset.business);
-    });
-  });
-}
+  const businessList = document.getElementById("businessList");
 
+  businessList?.addEventListener("click", (event) => {
+  const row = event.target.closest(".business-row");
+  if (!row) return;
+
+  document.querySelectorAll(".business-row").forEach((item) => {
+    item.classList.remove("selected");
+  });
+
+  row.classList.add("selected");
+  updateBusinessPreview(row.dataset.business);
+});
+
+  
 function slugifyProfileName(name) {
   return name
     .toLowerCase()
@@ -386,9 +392,11 @@ newContractBtn?.addEventListener("click", () => {
   beginBlankContractFlow();
 });
 
-startDraftFromBusiness?.addEventListener("click", () => {
-  cards.forEach((item) => item.classList.remove("selected"));
-  beginContractForSelectedBusiness();
+document.addEventListener("click", (event) => {
+  if (event.target.closest("#startDraftFromBusiness")) {
+    cards.forEach((item) => item.classList.remove("selected"));
+    beginContractForSelectedBusiness();
+  }
 });
 
 document.querySelectorAll("[data-recipient]").forEach((button) => {
@@ -421,14 +429,6 @@ function updateBusinessPreview(key) {
   networkListView?.classList.add("hidden");
   businessProfileView?.classList.remove("hidden");
 }
-
-businessRows.forEach((row) => {
-  row.addEventListener("click", () => {
-    businessRows.forEach((item) => item.classList.remove("selected"));
-    row.classList.add("selected");
-    updateBusinessPreview(row.dataset.business);
-  });
-});
 
 backToNetwork?.addEventListener("click", () => {
   businessProfileView?.classList.add("hidden");
@@ -545,25 +545,11 @@ function renderProfileProducts(profile) {
 }
 
 function attachProfileProductListeners() {
-  document.querySelectorAll(".profile-product").forEach((button) => {
-    button.addEventListener("click", () => {
-      const product = button.dataset.product || "Listed product";
-      const price = button.dataset.price || "";
-      const unit = button.dataset.unit || "unit";
-
-      createProductRow(product, price, unit);
-
-      if (!selectedBusinessName && selectedBusinessKey) {
-        const profile = getProfileByKey(selectedBusinessKey);
-        selectedBusinessName = profile?.name || null;
-      }
-
-      setWorkspaceState("new");
-      showRightMode("work");
-      showRightTab("products");
-    });
-  });
+  // Product buttons are rendered dynamically from profiles.js.
+  // Their clicks are handled by the delegated listener below.
 }
+
+
 
 function createProductRow(product = "Red Cabbage", price = "1.90", unit = "lb") {
   setEmptyProductState(false);
@@ -675,6 +661,26 @@ document.addEventListener("click", (event) => {
   if (event.target?.id === "openReviewModal") {
     reviewModal?.classList.add("active");
   }
+});
+
+document.addEventListener("click", (event) => {
+  const button = event.target.closest(".profile-product");
+  if (!button) return;
+
+  const product = button.dataset.product || "Listed product";
+  const price = button.dataset.price || "";
+  const unit = button.dataset.unit || "unit";
+
+  createProductRow(product, price, unit);
+
+  if (!selectedBusinessName && selectedBusinessKey) {
+    const profile = getProfileByKey(selectedBusinessKey);
+    selectedBusinessName = profile?.name || null;
+  }
+
+  setWorkspaceState("new");
+  showRightMode("work");
+  showRightTab("products");
 });
 
 function closeReview() {
