@@ -1531,11 +1531,15 @@
   min-height: 660px;
 }
 
-/* Make panels breathe more */
-.left-panel,
+/* Make main workspace panels breathe more */
 .studio-canvas,
 .right-panel {
   padding-top: 28px;
+}
+
+/* Keep the Agreement Stream banner attached to the top of its panel */
+.left-panel.agreement-stream {
+  padding-top: 0;
 }
 
 .stream-head {
