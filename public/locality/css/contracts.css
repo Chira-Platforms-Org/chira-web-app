@@ -1886,3 +1886,181 @@
     max-height: none;
   }
 }
+
+/* =========================
+   CONTRACT STUDIO V6 — STREAM HEADER + NEW FLOW
+========================= */
+
+/* Give Agreement Stream a more intentional app-panel header */
+.stream-head {
+  margin: -6px -6px 18px;
+  padding: 22px 22px 18px;
+  border-radius: 28px;
+  background:
+    linear-gradient(135deg, rgba(8,196,100,0.12), rgba(255,252,245,0.84)),
+    rgba(255,255,255,0.8);
+  border: 1px solid rgba(8,196,100,0.10);
+}
+
+.stream-head .studio-eyebrow {
+  color: var(--green);
+  font-size: 0.74rem;
+  letter-spacing: 0.14em;
+  margin-bottom: 8px;
+}
+
+.stream-head h2 {
+  color: var(--navy);
+  font-size: 1.6rem;
+  line-height: 1.08;
+  margin: 0;
+}
+
+.stream-intro-note {
+  margin-top: 10px;
+  color: var(--muted);
+  font-weight: 750;
+  line-height: 1.35;
+  font-size: 0.9rem;
+}
+
+/* The new-contract row should feel like a guided action, not a random bar */
+.new-contract-row {
+  justify-content: flex-start;
+  min-height: 54px;
+  padding: 14px 18px;
+  margin: 0 0 18px;
+  box-shadow: 0 14px 28px rgba(8,196,100,0.08);
+}
+
+.new-contract-row strong {
+  font-size: 0.95rem;
+}
+
+.new-contract-row small {
+  display: block;
+  color: var(--muted);
+  font-size: 0.76rem;
+  font-weight: 800;
+  margin-top: 2px;
+}
+
+.new-contract-row:hover small {
+  color: rgba(255,255,255,0.84);
+}
+
+/* Prevent top content from feeling hidden behind panel borders */
+.studio-workspace {
+  padding-top: 0;
+}
+
+.left-panel,
+.studio-canvas,
+.right-panel {
+  scroll-padding-top: 24px;
+}
+
+/* Editor guidance state */
+.blank-contract-guidance {
+  padding: 24px;
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at top right, rgba(8,196,100,0.13), transparent 38%),
+    rgba(255,255,255,0.82);
+  border: 1px dashed rgba(8,196,100,0.26);
+  margin-bottom: 18px;
+}
+
+.blank-contract-guidance h3 {
+  color: var(--navy);
+  font-size: 1.25rem;
+  margin-bottom: 6px;
+}
+
+.blank-contract-guidance p {
+  color: var(--muted);
+  font-weight: 750;
+  line-height: 1.4;
+}
+
+/* Blank editor state */
+.product-editor.is-empty {
+  display: grid;
+  place-items: center;
+  min-height: 220px;
+  border-style: dashed;
+  border-color: rgba(8,196,100,0.22);
+  background: rgba(8,196,100,0.045);
+}
+
+.product-editor.is-empty .empty-product-message {
+  text-align: center;
+  max-width: 420px;
+}
+
+.empty-product-message strong {
+  display: block;
+  color: var(--navy);
+  font-size: 1.2rem;
+  margin-bottom: 6px;
+}
+
+.empty-product-message span {
+  color: var(--muted);
+  font-weight: 750;
+  line-height: 1.4;
+}
+
+/* Right-side business finder highlight */
+.network-mode.finder-focus {
+  animation: finderFocus 1.2s ease;
+}
+
+@keyframes finderFocus {
+  0% {
+    box-shadow: 0 0 0 0 rgba(8,196,100,0);
+  }
+
+  35% {
+    box-shadow: 0 0 0 10px rgba(8,196,100,0.12);
+  }
+
+  100% {
+    box-shadow: 0 0 0 0 rgba(8,196,100,0);
+  }
+}
+
+/* Make right panel product list show more items without feeling cramped */
+.profile-product-list.compact,
+.profile-product-list {
+  max-height: 420px;
+}
+
+.work-panel-mode .profile-product-list {
+  max-height: 520px;
+}
+
+/* Product row polish */
+.product-editor {
+  overflow-x: hidden;
+}
+
+.product-row {
+  width: 100%;
+}
+
+.product-row:not(.active) .product-fields {
+  display: none;
+}
+
+.product-row:not(.active) {
+  cursor: pointer;
+}
+
+.product-row:not(.active):hover {
+  background: rgba(8,196,100,0.035);
+}
+
+.product-summary {
+  min-height: 48px;
+}
