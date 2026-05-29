@@ -2626,7 +2626,7 @@
 
 .studio-shell {
   height: 100vh;
-  padding: 74px 30px 20px;
+  padding: 88px 30px 20px;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -2646,8 +2646,9 @@
 }
 
 .studio-title-lockup .studio-eyebrow {
-  color: var(--muted);
+  color: var(--green);
   font-size: 0.72rem;
+  font-weight: 950;
   letter-spacing: 0.16em;
   margin-bottom: 5px;
 }
