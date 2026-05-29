@@ -2208,3 +2208,367 @@
 .contract-studio-page .studio-workspace.state-new .right-panel {
   padding: 30px;
 }
+
+/* =========================
+   CONTRACT BUILDER — FLEXIBLE AGREEMENT TEMPLATE
+========================= */
+
+.agreement-builder-hero {
+  margin-bottom: 22px;
+  padding: 30px;
+  border-radius: 32px;
+  background: linear-gradient(135deg, #0f5f43 0%, #14945b 100%);
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  gap: 22px;
+  align-items: flex-start;
+  box-shadow:
+    0 18px 34px rgba(18, 114, 77, 0.14),
+    inset 0 1px 0 rgba(255,255,255,0.13);
+  position: relative;
+  overflow: hidden;
+}
+
+.agreement-builder-hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at top right, rgba(255,255,255,0.16), transparent 34%),
+    linear-gradient(135deg, rgba(255,255,255,0.08), transparent 42%);
+  pointer-events: none;
+}
+
+.agreement-builder-hero > * {
+  position: relative;
+  z-index: 1;
+}
+
+.agreement-builder-hero .studio-eyebrow {
+  color: #c8f7d8;
+}
+
+.agreement-builder-hero h2 {
+  color: #f8fff9;
+  font-size: 2rem;
+  line-height: 1.08;
+  margin-bottom: 10px;
+}
+
+.agreement-builder-hero .canvas-subtitle {
+  color: rgba(248,255,249,0.82);
+  margin: 0;
+}
+
+.builder-status-pill {
+  min-width: 170px;
+  padding: 14px 16px;
+  border-radius: 22px;
+  background: rgba(255,255,255,0.13);
+  border: 1px solid rgba(255,255,255,0.16);
+}
+
+.builder-status-pill span {
+  display: block;
+  color: rgba(248,255,249,0.72);
+  font-size: 0.72rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 4px;
+}
+
+.builder-status-pill strong {
+  color: white;
+  font-size: 0.95rem;
+}
+
+.builder-section {
+  padding: 24px;
+  border-radius: 30px;
+  background: rgba(255,255,255,0.76);
+  border: 1px solid rgba(20,50,92,0.07);
+  margin-bottom: 18px;
+}
+
+.builder-section-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  align-items: flex-start;
+  margin-bottom: 18px;
+}
+
+.builder-section-head h3 {
+  color: var(--navy);
+  font-size: 1.35rem;
+  line-height: 1.12;
+  margin-bottom: 5px;
+}
+
+.builder-section-head p {
+  color: var(--muted);
+  font-weight: 750;
+  line-height: 1.42;
+  max-width: 720px;
+}
+
+.section-status {
+  white-space: nowrap;
+  border-radius: 999px;
+  padding: 8px 12px;
+  font-size: 0.72rem;
+  font-weight: 900;
+}
+
+.section-status.complete {
+  background: rgba(8,196,100,0.12);
+  color: var(--green);
+}
+
+.section-status.needs-input {
+  background: rgba(213,161,61,0.14);
+  color: #9b762f;
+}
+
+.section-status.optional {
+  background: rgba(20,50,92,0.08);
+  color: var(--muted);
+}
+
+.agreement-type-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+.agreement-type-card {
+  border: 1px solid rgba(20,50,92,0.08);
+  border-radius: 24px;
+  background: rgba(255,252,245,0.86);
+  padding: 18px;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.22s ease;
+}
+
+.agreement-type-card:hover {
+  transform: translateY(-2px);
+  background: rgba(8,196,100,0.08);
+  border-color: rgba(8,196,100,0.18);
+}
+
+.agreement-type-card.active {
+  background:
+    radial-gradient(circle at top right, rgba(8,196,100,0.14), transparent 40%),
+    rgba(232,248,235,0.92);
+  border-color: rgba(8,196,100,0.30);
+  box-shadow: 0 16px 32px rgba(8,196,100,0.10);
+}
+
+.agreement-type-card span {
+  display: inline-flex;
+  color: var(--green);
+  font-size: 0.7rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 10px;
+}
+
+.agreement-type-card strong {
+  display: block;
+  color: var(--navy);
+  font-size: 1.05rem;
+  margin-bottom: 8px;
+}
+
+.agreement-type-card p {
+  color: var(--muted);
+  font-weight: 750;
+  line-height: 1.35;
+}
+
+.builder-field-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(170px, 1fr));
+  gap: 14px;
+}
+
+.builder-field-grid label,
+.custom-terms-box,
+.flexible-product-fields label {
+  color: var(--navy);
+  font-weight: 900;
+  font-size: 0.83rem;
+}
+
+.builder-field-grid input,
+.builder-field-grid select,
+.builder-field-grid textarea,
+.custom-terms-box textarea,
+.flexible-product-fields textarea {
+  width: 100%;
+  margin-top: 7px;
+  padding: 13px 14px;
+  border-radius: 17px;
+  border: 1px solid rgba(20,50,92,0.11);
+  background: #fffbf0;
+  color: var(--navy);
+  font-weight: 850;
+  outline: none;
+}
+
+.builder-field-grid textarea,
+.custom-terms-box textarea,
+.flexible-product-fields textarea {
+  min-height: 96px;
+  resize: vertical;
+  line-height: 1.4;
+}
+
+.wide-field {
+  grid-column: 1 / -1;
+}
+
+.product-summary {
+  grid-template-columns: 1fr auto;
+}
+
+.product-summary strong {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.organic-badge,
+.conventional-badge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 5px 8px;
+  font-size: 0.64rem;
+  font-weight: 950;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.organic-badge {
+  color: #0f7a48;
+  background: rgba(8,196,100,0.14);
+  border: 1px solid rgba(8,196,100,0.18);
+}
+
+.conventional-badge {
+  color: var(--muted);
+  background: rgba(20,50,92,0.08);
+  border: 1px solid rgba(20,50,92,0.08);
+}
+
+.flexible-product-fields {
+  grid-template-columns:
+    minmax(210px, 1.15fr)
+    minmax(160px, 0.8fr)
+    minmax(230px, 1fr)
+    minmax(220px, 1fr);
+}
+
+.standard-terms-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(220px, 1fr));
+  gap: 14px;
+}
+
+.standard-term-card {
+  padding: 18px;
+  border-radius: 22px;
+  background: rgba(245,247,242,0.82);
+  border: 1px solid rgba(20,50,92,0.06);
+}
+
+.standard-term-card span {
+  display: block;
+  color: var(--green);
+  font-size: 0.72rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 8px;
+}
+
+.standard-term-card strong {
+  display: block;
+  color: var(--navy);
+  margin-bottom: 6px;
+}
+
+.standard-term-card p {
+  color: var(--muted);
+  font-weight: 750;
+  line-height: 1.4;
+  margin-bottom: 12px;
+}
+
+.standard-term-card button {
+  border: none;
+  border-radius: 999px;
+  padding: 9px 12px;
+  background: rgba(20,50,92,0.08);
+  color: var(--navy);
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.custom-terms-box {
+  display: block;
+}
+
+.sticky-builder-actions {
+  position: sticky;
+  bottom: 0;
+  padding: 16px 0 4px;
+  background: linear-gradient(
+    to top,
+    rgba(255,255,255,0.96),
+    rgba(255,255,255,0.74),
+    transparent
+  );
+  z-index: 5;
+}
+
+/* Focus mode: contract editor gets full breathing room */
+.contract-studio-page .studio-workspace.state-view,
+.contract-studio-page .studio-workspace.state-edit,
+.contract-studio-page .studio-workspace.state-new {
+  grid-template-columns: minmax(0, 1.45fr) minmax(360px, 0.55fr);
+}
+
+.contract-studio-page .studio-workspace.state-view .left-panel,
+.contract-studio-page .studio-workspace.state-edit .left-panel,
+.contract-studio-page .studio-workspace.state-new .left-panel {
+  display: none;
+}
+
+@media (max-width: 1200px) {
+  .agreement-builder-hero,
+  .builder-section-head {
+    display: block;
+  }
+
+  .builder-status-pill {
+    margin-top: 16px;
+  }
+
+  .agreement-type-grid,
+  .builder-field-grid,
+  .standard-terms-grid,
+  .flexible-product-fields {
+    grid-template-columns: 1fr;
+  }
+
+  .wide-field {
+    grid-column: auto;
+  }
+}
