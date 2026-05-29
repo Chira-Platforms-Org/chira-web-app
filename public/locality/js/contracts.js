@@ -10,7 +10,7 @@ const editMode = document.getElementById("editMode");
 const editorEyebrow = document.getElementById("editorEyebrow");
 const editorTitle = document.getElementById("editorTitle");
 const editorSubtitle = document.getElementById("editorSubtitle");
-const recipientSelect = document.getElementById("recipientSelect");
+const blankContractGuidance = document.getElementById("blankContractGuidance");
 
 const contextTitle = document.getElementById("contextTitle");
 const contextSubtitle = document.getElementById("contextSubtitle");
@@ -32,6 +32,8 @@ const dealFitTab = document.getElementById("dealFitTab");
 const productsTab = document.getElementById("productsTab");
 
 let businessRows = [];
+let selectedBusinessKey = null;
+let selectedBusinessName = null;
 const networkSearchInput = document.getElementById("networkSearchInput");
 const startDraftFromBusiness = document.getElementById("startDraftFromBusiness");
 const networkListView = document.getElementById("networkListView");
@@ -177,6 +179,71 @@ function showRightMode(mode) {
   if (mode === "work") workPanelMode?.classList.remove("hidden");
 }
 
+function clearProductRows() {
+  const rows = productEditor?.querySelectorAll(".product-row") || [];
+  rows.forEach((row) => row.remove());
+}
+
+function setEmptyProductState(isEmpty = true) {
+  if (!productEditor) return;
+
+  productEditor.classList.toggle("is-empty", isEmpty);
+
+  let emptyMessage = productEditor.querySelector(".empty-product-message");
+
+  if (isEmpty && !emptyMessage) {
+    emptyMessage = document.createElement("div");
+    emptyMessage.className = "empty-product-message";
+    emptyMessage.innerHTML = `
+      <strong>No products added yet</strong>
+      <span>Select products from the right panel to populate this agreement with structured pricing.</span>
+    `;
+    productEditor.insertBefore(emptyMessage, addProductRow);
+  }
+
+  if (!isEmpty && emptyMessage) {
+    emptyMessage.remove();
+  }
+}
+
+function beginBlankContractFlow() {
+  selectedBusinessKey = null;
+  selectedBusinessName = null;
+
+  clearProductRows();
+  setEmptyProductState(true);
+
+  setWorkspaceState("new");
+  showRightMode("network");
+
+  networkListView?.classList.remove("hidden");
+  businessProfileView?.classList.add("hidden");
+
+  networkSearchInput?.focus();
+
+  networkMode?.classList.remove("finder-focus");
+  void networkMode?.offsetWidth;
+  networkMode?.classList.add("finder-focus");
+}
+
+function beginContractForSelectedBusiness() {
+  const profile = selectedBusinessKey ? getProfileByKey(selectedBusinessKey) : null;
+
+  clearProductRows();
+  setEmptyProductState(true);
+
+  setWorkspaceState("new");
+  showRightMode("work");
+  showRightTab("products");
+
+  if (profile) {
+    selectedBusinessName = profile.name;
+    contextTitle.textContent = profile.name;
+    contextSubtitle.textContent = "Recipient selected for this draft agreement.";
+    renderProfileProducts(profile);
+  }
+}
+
 function setWorkspaceState(state) {
   workspace.classList.remove("state-stream", "state-view", "state-edit", "state-new");
   workspace.classList.add(`state-${state}`);
@@ -200,24 +267,34 @@ function setWorkspaceState(state) {
     contextSubtitle.textContent = "Buyer counteroffer under review.";
   }
 
-  if (state === "edit" || state === "new") {
-    editMode?.classList.remove("hidden");
-    streamMode?.classList.add("hidden");
-    contextMode?.classList.remove("hidden");
-    showRightMode("work");
+  if (state === "edit") {
+  editorEyebrow.textContent = "Counteroffer Workspace";
+  editorTitle.textContent = "Edit structured terms";
+  editorSubtitle.textContent = "Use listed products and structured fields to keep the agreement clean.";
+  blankContractGuidance?.classList.add("hidden");
+  setEmptyProductState(false);
 
-    showRightTab("fit");
-  }
+  contextTitle.textContent = "Roosevelt Row Market";
+  contextSubtitle.textContent = "Buyer counteroffer under review.";
+}
 
   if (state === "new") {
-    editorEyebrow.textContent = "New Contract";
-    editorTitle.textContent = "Draft a new supply agreement";
-    editorSubtitle.textContent = "Select a recipient, then add listed products and structured terms.";
-    recipientSelect?.classList.remove("hidden");
+  editorEyebrow.textContent = "New Contract";
+  editorTitle.textContent = selectedBusinessName
+    ? `Draft agreement for ${selectedBusinessName}`
+    : "Draft a new supply agreement";
 
-    contextTitle.textContent = "Select recipient";
-    contextSubtitle.textContent = "Choose the buyer this agreement will be sent to.";
-  }
+  editorSubtitle.textContent = selectedBusinessName
+    ? "Add listed products and structured terms before review."
+    : "Start by finding a business in the Locality Network.";
+
+  blankContractGuidance?.classList.toggle("hidden", Boolean(selectedBusinessName));
+
+  contextTitle.textContent = selectedBusinessName || "Select recipient";
+  contextSubtitle.textContent = selectedBusinessName
+    ? "Recipient selected for this draft agreement."
+    : "Use the Locality Network to select the buyer this agreement will be sent to.";
+}
 
   if (state === "edit") {
     editorEyebrow.textContent = "Counteroffer Workspace";
@@ -277,17 +354,12 @@ document.querySelectorAll("[data-back-stream]").forEach((button) => {
 
 newContractBtn?.addEventListener("click", () => {
   cards.forEach((item) => item.classList.remove("selected"));
-  setWorkspaceState("stream");
-
-  networkMode?.classList.remove("finder-pulse");
-  void networkMode?.offsetWidth;
-  networkMode?.classList.add("finder-pulse");
+  beginBlankContractFlow();
 });
 
 startDraftFromBusiness?.addEventListener("click", () => {
   cards.forEach((item) => item.classList.remove("selected"));
-  setWorkspaceState("new");
-  showRightTab("products");
+  beginContractForSelectedBusiness();
 });
 
 document.querySelectorAll("[data-recipient]").forEach((button) => {
@@ -300,6 +372,9 @@ document.querySelectorAll("[data-recipient]").forEach((button) => {
 function updateBusinessPreview(key) {
   const profile = getProfileByKey(key);
   if (!profile) return;
+
+  selectedBusinessKey = key;
+  selectedBusinessName = profile.name;
 
   const role = getProfileRole(profile);
   const initials = getProfileInitials(profile);
@@ -331,7 +406,7 @@ backToNetwork?.addEventListener("click", () => {
   networkListView?.classList.remove("hidden");
 });
 
-let activeNetworkFilter = "all";
+ activeNetworkFilter = "all";
 
 document.querySelectorAll("[data-network-filter]").forEach((button) => {
   button.addEventListener("click", () => {
@@ -398,13 +473,20 @@ function attachProfileProductListeners() {
         button.dataset.unit
       );
 
+      if (!selectedBusinessName && selectedBusinessKey) {
+        const profile = getProfileByKey(selectedBusinessKey);
+        selectedBusinessName = profile?.name || null;
+      }
+
       setWorkspaceState("new");
+      showRightMode("work");
       showRightTab("products");
     });
   });
 }
 
 function createProductRow(product = "Red Cabbage", price = "1.90", unit = "lb") {
+  setEmptyProductState(false);
   const row = document.createElement("div");
   row.className = "product-row active";
 
