@@ -191,18 +191,31 @@ function setEmptyProductState(isEmpty = true) {
 
   let emptyMessage = productEditor.querySelector(".empty-product-message");
 
-  if (isEmpty && !emptyMessage) {
-    emptyMessage = document.createElement("div");
-    emptyMessage.className = "empty-product-message";
-    emptyMessage.innerHTML = `
-      <strong>No products added yet</strong>
-      <span>Select products from the right panel to populate this agreement with structured pricing.</span>
-    `;
-    productEditor.insertBefore(emptyMessage, addProductRow);
+  if (isEmpty) {
+    if (!emptyMessage) {
+      emptyMessage = document.createElement("div");
+      emptyMessage.className = "empty-product-message";
+      emptyMessage.innerHTML = `
+        <strong>No products added yet</strong>
+        <span>
+          Select a business from the Locality Network, then add listed products into this agreement.
+        </span>
+      `;
+    }
+
+    productEditor.prepend(emptyMessage);
+
+    if (addProductRow) {
+      addProductRow.style.display = "inline-flex";
+    }
   }
 
   if (!isEmpty && emptyMessage) {
     emptyMessage.remove();
+
+    if (addProductRow) {
+      addProductRow.style.display = "inline-flex";
+    }
   }
 }
 
@@ -210,14 +223,18 @@ function beginBlankContractFlow() {
   selectedBusinessKey = null;
   selectedBusinessName = null;
 
+  setWorkspaceState("new");
+
   clearProductRows();
   setEmptyProductState(true);
 
-  setWorkspaceState("new");
   showRightMode("network");
 
   networkListView?.classList.remove("hidden");
   businessProfileView?.classList.add("hidden");
+
+  contextTitle.textContent = "Select recipient";
+  contextSubtitle.textContent = "Search the Locality Network to choose who this agreement will be sent to.";
 
   networkSearchInput?.focus();
 
