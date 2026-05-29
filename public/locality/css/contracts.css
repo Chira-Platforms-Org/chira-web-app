@@ -1561,6 +1561,16 @@
   position: relative;
 }
 
+.agreement-stream::before,
+.left-panel::before {
+  content: "";
+  position: sticky;
+  top: 0;
+  display: block;
+  height: 1px;
+  margin-bottom: 8px;
+}
+
 /* Cleaner contract stream cards */
 .contract-feed {
   padding-top: 8px;
@@ -1881,6 +1891,39 @@
    CONTRACT STUDIO V6 — STREAM HEADER + NEW FLOW
 ========================= */
 
+/* Give Agreement Stream a more intentional app-panel header */
+.stream-head {
+  margin: -6px -6px 18px;
+  padding: 22px 22px 18px;
+  border-radius: 28px;
+  background:
+    linear-gradient(135deg, rgba(8,196,100,0.12), rgba(255,252,245,0.84)),
+    rgba(255,255,255,0.8);
+  border: 1px solid rgba(8,196,100,0.10);
+}
+
+.stream-head .studio-eyebrow {
+  color: var(--green);
+  font-size: 0.74rem;
+  letter-spacing: 0.14em;
+  margin-bottom: 8px;
+}
+
+.stream-head h2 {
+  color: var(--navy);
+  font-size: 1.6rem;
+  line-height: 1.08;
+  margin: 0;
+}
+
+.stream-intro-note {
+  margin-top: 10px;
+  color: var(--muted);
+  font-weight: 750;
+  line-height: 1.35;
+  font-size: 0.9rem;
+}
+
 /* The new-contract row should feel like a guided action, not a random bar */
 .new-contract-row {
   justify-content: flex-start;
@@ -2077,20 +2120,10 @@
    CONTRACT STUDIO — AGREEMENT STREAM BANNER
 ========================= */
 
-.contract-studio-page .studio-panel.left-panel.agreement-stream {
-  padding: 0 32px 28px;
-  overflow-y: auto;
-  overflow-x: hidden;
-}
-
-.contract-studio-page .agreement-stream .stream-mode {
-  margin: 0 -32px 0;
-}
-
-.contract-studio-page .agreement-stream .stream-head {
-  margin: 0 0 28px;
-  padding: 42px 38px 36px;
-  border-radius: 34px 34px 18px 18px;
+.stream-head {
+  margin: -6px -6px 24px;
+  padding: 34px 32px 30px;
+  border-radius: 28px 28px 18px 18px;
   background: linear-gradient(135deg, #0f5f43 0%, #14945b 100%);
   border: 1px solid rgba(18, 114, 77, 0.22);
   box-shadow:
@@ -2100,7 +2133,7 @@
   overflow: hidden;
 }
 
-.contract-studio-page .agreement-stream .stream-head::after {
+.stream-head::after {
   content: "";
   position: absolute;
   inset: 0;
@@ -2110,12 +2143,12 @@
   pointer-events: none;
 }
 
-.contract-studio-page .agreement-stream .stream-head > div {
+.stream-head > div {
   position: relative;
   z-index: 1;
 }
 
-.contract-studio-page .agreement-stream .stream-head .studio-eyebrow {
+.stream-head .studio-eyebrow {
   color: #c8f7d8;
   font-size: 0.78rem;
   font-weight: 900;
@@ -2124,7 +2157,7 @@
   margin-bottom: 12px;
 }
 
-.contract-studio-page .agreement-stream .stream-head h2 {
+.stream-head h2 {
   color: #f8fff9;
   font-size: 2rem;
   line-height: 1.08;
@@ -2132,7 +2165,7 @@
   margin: 0 0 12px;
 }
 
-.contract-studio-page .agreement-stream .stream-intro-note {
+.stream-intro-note {
   color: rgba(248, 255, 249, 0.84);
   font-size: 0.98rem;
   line-height: 1.5;
@@ -2141,3 +2174,81 @@
   margin: 0;
 }
 
+/* =========================
+   AGREEMENT STREAM — TRUE FLUSH BANNER FIX
+========================= */
+
+/* Kill the invisible spacer that was forcing the banner down */
+.contract-studio-page .agreement-stream::before,
+.contract-studio-page .left-panel::before {
+  content: none !important;
+  display: none !important;
+  height: 0 !important;
+  margin: 0 !important;
+}
+
+/* Remove internal top padding from the Agreement Stream panel */
+.contract-studio-page .studio-panel.left-panel.agreement-stream {
+  padding: 0 32px 28px !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+}
+
+/* Make the green banner attach to the top edge of the panel */
+.contract-studio-page .studio-panel.left-panel.agreement-stream .stream-head {
+  margin: 0 -32px 28px !important;
+  padding: 42px 38px 36px !important;
+
+  border-radius: 34px 34px 18px 18px !important;
+  background: linear-gradient(135deg, #0f5f43 0%, #14945b 100%) !important;
+  border: 1px solid rgba(18, 114, 77, 0.22) !important;
+
+  box-shadow:
+    0 18px 34px rgba(18, 114, 77, 0.14),
+    inset 0 1px 0 rgba(255,255,255,0.13) !important;
+
+  position: relative;
+  overflow: hidden;
+}
+
+/* Keep the overlay effect */
+.contract-studio-page .studio-panel.left-panel.agreement-stream .stream-head::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at top right, rgba(255,255,255,0.16), transparent 34%),
+    linear-gradient(135deg, rgba(255,255,255,0.08), transparent 42%);
+  pointer-events: none;
+}
+
+.contract-studio-page .studio-panel.left-panel.agreement-stream .stream-head > div {
+  position: relative;
+  z-index: 1;
+}
+
+.contract-studio-page .studio-panel.left-panel.agreement-stream .stream-head .studio-eyebrow {
+  color: #c8f7d8 !important;
+  font-size: 0.78rem !important;
+  font-weight: 900 !important;
+  letter-spacing: 0.16em !important;
+  text-transform: uppercase !important;
+  margin-bottom: 12px !important;
+}
+
+.contract-studio-page .studio-panel.left-panel.agreement-stream .stream-head h2 {
+  color: #f8fff9 !important;
+  font-size: 2rem !important;
+  line-height: 1.08 !important;
+  font-weight: 900 !important;
+  margin: 0 0 12px !important;
+}
+
+.contract-studio-page .studio-panel.left-panel.agreement-stream .stream-intro-note {
+  color: rgba(248, 255, 249, 0.84) !important;
+  font-size: 0.98rem !important;
+  line-height: 1.5 !important;
+  font-weight: 750 !important;
+  max-width: 760px !important;
+  margin: 0 !important;
+}
