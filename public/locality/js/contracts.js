@@ -751,3 +751,12 @@ activateProductRows();
 setWorkspaceState("stream");
 networkListView?.classList.remove("hidden");
 businessProfileView?.classList.add("hidden");
+
+window.addEventListener("load", () => {
+  const loadingScreen = document.getElementById("contractLoadingScreen");
+
+  setTimeout(() => {
+    loadingScreen?.classList.add("hidden");
+    document.body.classList.add("studio-loaded");
+  }, 2400);
+});
