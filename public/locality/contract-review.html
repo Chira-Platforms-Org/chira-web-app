@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Review Contract | Locality Contract Studio</title>
+
+  <link rel="stylesheet" href="css/locality.css" />
+
+  <style>
+    :root {
+      --review-green: #0f5f43;
+      --review-green-bright: #14945b;
+      --review-navy: #17324f;
+      --review-muted: #6f7d8f;
+      --review-cream: #f8f3e8;
+      --review-paper: #fffdf8;
+      --review-border: rgba(20, 50, 92, 0.11);
+    }
+
+    body.contract-review-page {
+      min-height: 100vh;
+      margin: 0;
+      color: var(--review-navy);
+      background:
+        radial-gradient(circle at 15% 12%, rgba(8,196,100,0.10), transparent 30%),
+        radial-gradient(circle at 88% 18%, rgba(195,143,72,0.10), transparent 34%),
+        linear-gradient(135deg, #f7f1e5 0%, #f6f3ea 48%, #edf8ec 100%);
+      font-family: inherit;
+    }
+
+    .review-topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      min-height: 76px;
+      padding: 14px 34px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 22px;
+      background: rgba(255, 252, 245, 0.88);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid rgba(20,50,92,0.08);
+    }
+
+    .review-brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .review-brand img {
+      width: 150px;
+      height: auto;
+      display: block;
+    }
+
+    .review-status {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(8,196,100,0.12);
+      color: var(--review-green);
+      font-weight: 950;
+      font-size: 0.82rem;
+    }
+
+    .status-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 999px;
+      background: var(--review-green-bright);
+      box-shadow: 0 0 0 6px rgba(8,196,100,0.12);
+    }
+
+    .review-action-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .review-btn {
+      border: none;
+      border-radius: 999px;
+      padding: 12px 16px;
+      font-weight: 950;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-family: inherit;
+    }
+
+    .review-btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .review-btn.primary {
+      color: white;
+      background: var(--review-green-bright);
+      box-shadow: 0 14px 28px rgba(8,196,100,0.18);
+    }
+
+    .review-btn.secondary {
+      color: var(--review-navy);
+      background: rgba(20,50,92,0.08);
+    }
+
+    .review-shell {
+      width: min(1180px, calc(100% - 44px));
+      margin: 30px auto 54px;
+    }
+
+    .review-intro {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 22px;
+      align-items: end;
+      margin-bottom: 22px;
+    }
+
+    .review-eyebrow {
+      color: var(--review-green);
+      font-size: 0.78rem;
+      font-weight: 950;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      margin: 0 0 8px;
+    }
+
+    .review-intro h1 {
+      color: var(--review-navy);
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      line-height: 0.98;
+      margin: 0 0 10px;
+    }
+
+    .review-intro p {
+      color: var(--review-muted);
+      font-weight: 800;
+      line-height: 1.45;
+      max-width: 760px;
+      margin: 0;
+    }
+
+    .review-meta-card {
+      min-width: 250px;
+      padding: 18px;
+      border-radius: 26px;
+      background: rgba(255,255,255,0.72);
+      border: 1px solid var(--review-border);
+      box-shadow: 0 18px 40px rgba(20,50,92,0.07);
+    }
+
+    .review-meta-card span {
+      display: block;
+      color: var(--review-muted);
+      font-size: 0.72rem;
+      font-weight: 950;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 6px;
+    }
+
+    .review-meta-card strong {
+      display: block;
+      color: var(--review-navy);
+      font-size: 1.05rem;
+      line-height: 1.25;
+    }
+
+    .document-frame {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 320px;
+      gap: 22px;
+      align-items: start;
+    }
+
+    .contract-paper {
+      background: var(--review-paper);
+      border: 1px solid rgba(20,50,92,0.10);
+      border-radius: 18px;
+      box-shadow: 0 30px 80px rgba(20,50,92,0.10);
+      padding: 58px 64px;
+    }
+
+    .paper-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 24px;
+      align-items: flex-start;
+      margin-bottom: 52px;
+    }
+
+    .paper-logo-lockup strong {
+      display: block;
+      color: var(--review-navy);
+      font-size: 1.45rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .paper-logo-lockup span {
+      color: var(--review-green);
+      font-weight: 950;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      font-size: 0.7rem;
+    }
+
+    .paper-contact {
+      text-align: right;
+      color: #222;
+      line-height: 1.55;
+      font-weight: 650;
+    }
+
+    .contract-paper h2 {
+      text-align: center;
+      font-size: 2rem;
+      color: #111;
+      margin: 0 0 28px;
+      letter-spacing: 0.02em;
+    }
+
+    .contract-paper p,
+    .contract-paper li {
+      color: #272727;
+      font-size: 1rem;
+      line-height: 1.8;
+    }
+
+    .contract-paper section {
+      margin-top: 30px;
+    }
+
+    .contract-paper h3 {
+      color: #151515;
+      font-size: 1.05rem;
+      margin: 0 0 8px;
+    }
+
+    .contract-paper ol {
+      padding-left: 22px;
+      margin: 0;
+    }
+
+    .contract-paper li {
+      margin-bottom: 18px;
+      padding-left: 4px;
+    }
+
+    .fill {
+      font-weight: 800;
+      color: #111;
+      background: rgba(8,196,100,0.08);
+      border-bottom: 1px solid rgba(8,196,100,0.28);
+      padding: 0 4px;
+    }
+
+    .exhibit-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 18px;
+      font-size: 0.93rem;
+    }
+
+    .exhibit-table th,
+    .exhibit-table td {
+      border: 1px solid #d5d5d5;
+      padding: 14px 12px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    .exhibit-table th {
+      color: #6d7780;
+      font-weight: 900;
+      background: #fafafa;
+    }
+
+    .signature-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 36px;
+      margin-top: 28px;
+    }
+
+    .signature-box {
+      min-height: 160px;
+      padding-top: 18px;
+      border-top: 1px solid #202020;
+    }
+
+    .signature-box strong {
+      display: block;
+      margin-bottom: 38px;
+      color: #111;
+    }
+
+    .signature-line {
+      color: #333;
+      line-height: 2;
+    }
+
+    .review-side-panel {
+      position: sticky;
+      top: 98px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .side-card {
+      padding: 20px;
+      border-radius: 28px;
+      background: rgba(255,255,255,0.78);
+      border: 1px solid var(--review-border);
+      box-shadow: 0 18px 42px rgba(20,50,92,0.07);
+    }
+
+    .side-card.dark {
+      background: linear-gradient(135deg, var(--review-green) 0%, var(--review-green-bright) 100%);
+      color: white;
+    }
+
+    .side-card span {
+      display: block;
+      color: var(--review-green);
+      font-size: 0.72rem;
+      font-weight: 950;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 8px;
+    }
+
+    .side-card.dark span {
+      color: #c8f7d8;
+    }
+
+    .side-card strong {
+      display: block;
+      color: var(--review-navy);
+      font-size: 1.2rem;
+      line-height: 1.2;
+      margin-bottom: 8px;
+    }
+
+    .side-card.dark strong {
+      color: white;
+    }
+
+    .side-card p {
+      color: var(--review-muted);
+      font-weight: 750;
+      line-height: 1.45;
+      margin: 0;
+    }
+
+    .side-card.dark p {
+      color: rgba(255,255,255,0.78);
+    }
+
+    .check-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .check-list div {
+      display: flex;
+      gap: 9px;
+      color: var(--review-navy);
+      font-weight: 850;
+      line-height: 1.3;
+    }
+
+    .check-list i {
+      width: 20px;
+      height: 20px;
+      flex: 0 0 20px;
+      border-radius: 999px;
+      background: rgba(8,196,100,0.14);
+      color: var(--review-green);
+      display: grid;
+      place-items: center;
+      font-style: normal;
+      font-size: 0.75rem;
+      font-weight: 950;
+    }
+
+    .success-view {
+      display: none;
+    }
+
+    body.submitted .review-view {
+      display: none;
+    }
+
+    body.submitted .success-view {
+      display: block;
+    }
+
+    .success-card {
+      width: min(920px, calc(100% - 44px));
+      margin: 54px auto;
+      padding: 42px;
+      border-radius: 38px;
+      background: rgba(255,255,255,0.86);
+      border: 1px solid var(--review-border);
+      box-shadow: 0 30px 90px rgba(20,50,92,0.12);
+      text-align: center;
+    }
+
+    .success-icon {
+      width: 76px;
+      height: 76px;
+      margin: 0 auto 18px;
+      border-radius: 999px;
+      background: rgba(8,196,100,0.14);
+      color: var(--review-green);
+      display: grid;
+      place-items: center;
+      font-size: 2.2rem;
+      font-weight: 950;
+      animation: successPop 0.55s ease both;
+    }
+
+    @keyframes successPop {
+      from {
+        transform: scale(0.8);
+        opacity: 0;
+      }
+
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    .success-card h1 {
+      color: var(--review-navy);
+      font-size: 2.4rem;
+      margin: 0 0 10px;
+    }
+
+    .success-card > p {
+      color: var(--review-muted);
+      font-weight: 800;
+      margin: 0 auto 26px;
+      max-width: 680px;
+      line-height: 1.45;
+    }
+
+    .receipt-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin: 24px 0;
+      text-align: left;
+    }
+
+    .receipt-item {
+      padding: 16px;
+      border-radius: 22px;
+      background: rgba(245,247,242,0.88);
+    }
+
+    .receipt-item span {
+      display: block;
+      color: var(--review-muted);
+      font-size: 0.72rem;
+      font-weight: 950;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .receipt-item strong {
+      color: var(--review-navy);
+      line-height: 1.2;
+    }
+
+    .download-panel {
+      text-align: left;
+      margin-top: 20px;
+      padding: 22px;
+      border-radius: 28px;
+      background: rgba(255,252,245,0.88);
+      border: 1px solid rgba(20,50,92,0.09);
+    }
+
+    .download-panel h3 {
+      margin: 0 0 12px;
+      color: var(--review-navy);
+    }
+
+    .email-row,
+    .filename-row {
+      display: grid;
+      grid-template-columns: 160px 1fr;
+      gap: 12px;
+      align-items: center;
+      margin-top: 12px;
+    }
+
+    .email-row label,
+    .filename-row label {
+      color: var(--review-muted);
+      font-weight: 950;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .email-row input,
+    .filename-row input {
+      width: 100%;
+      border-radius: 16px;
+      border: 1px solid rgba(20,50,92,0.12);
+      background: white;
+      padding: 13px 14px;
+      color: var(--review-navy);
+      font-weight: 850;
+      outline: none;
+    }
+
+    .success-actions {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 22px;
+    }
+
+    @media (max-width: 1050px) {
+      .document-frame {
+        grid-template-columns: 1fr;
+      }
+
+      .review-side-panel {
+        position: static;
+      }
+
+      .receipt-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .review-topbar,
+      .review-intro,
+      .paper-head,
+      .signature-grid,
+      .email-row,
+      .filename-row {
+        display: block;
+      }
+
+      .review-action-row {
+        margin-top: 12px;
+      }
+
+      .contract-paper {
+        padding: 34px 24px;
+      }
+
+      .paper-contact {
+        text-align: left;
+        margin-top: 16px;
+      }
+
+      .receipt-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body class="contract-review-page">
+
+  <header class="review-topbar">
+    <div class="review-brand">
+      <img src="images/LOCALITY LOGO.png" alt="Locality" />
+      <div>
+        <p class="review-eyebrow">Contract Studio</p>
+        <strong>Official agreement review</strong>
+      </div>
+    </div>
+
+    <div class="review-status">
+      <span class="status-pill"><i class="status-dot"></i> Draft preview</span>
+
+      <div class="review-action-row">
+        <button class="review-btn secondary" id="returnToEditBtn">Return to edit</button>
+        <button class="review-btn primary" id="submitProposalBtn">Submit proposal</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="review-view">
+    <section class="review-shell">
+      <div class="review-intro">
+        <div>
+          <p class="review-eyebrow">Flexible Ordering Agreement</p>
+          <h1>Review before sending</h1>
+          <p>
+            This agreement is generated from the structured fields in Locality Contract Studio.
+            Review the terms below before submitting it to the recipient.
+          </p>
+        </div>
+
+        <aside class="review-meta-card">
+          <span>Contract ID</span>
+          <strong>LOC-2026-0041</strong>
+        </aside>
+      </div>
+
+      <div class="document-frame">
+        <article class="contract-paper">
+          <div class="paper-head">
+            <div class="paper-logo-lockup">
+              <strong>Locality</strong>
+              <span>Contract Studio</span>
+            </div>
+
+            <div class="paper-contact">
+              Locality Generated Agreement<br />
+              Phoenix Regional Network<br />
+              Contract ID: LOC-2026-0041
+            </div>
+          </div>
+
+          <h2>Flexible Ordering Supply Agreement</h2>
+
+          <p>
+            This Flexible Ordering Supply Agreement (the “Agreement”) is made and entered into as of
+            <span class="fill">May 30, 2026</span>, by and between
+            <span class="fill">Queen Creek Harvest</span> (“Seller”) and
+            <span class="fill">Roosevelt Row Market</span> (“Buyer”).
+          </p>
+
+          <section>
+            <ol>
+              <li>
+                <strong>Agreement Type.</strong>
+                This Agreement establishes flexible ordering terms under which Buyer may place orders
+                for approved products during the agreement term. Buyer is not required to purchase a fixed
+                quantity of each product unless specifically stated in Exhibit A.
+              </li>
+
+              <li>
+                <strong>Approved Products and Pricing.</strong>
+                Seller agrees to make the approved products listed in Exhibit A available to Buyer subject
+                to availability, minimum order requirements, product specifications, and the pricing terms
+                stated in this Agreement.
+              </li>
+
+              <li>
+                <strong>Ordering Rules.</strong>
+                Buyer may select quantities for each order, provided each order satisfies the agreed minimum
+                order requirements. Buyer shall provide at least
+                <span class="fill">48 hours</span> of notice before the requested delivery or pickup window.
+              </li>
+
+              <li>
+                <strong>Delivery and Fulfillment.</strong>
+                Orders accepted under this Agreement shall be fulfilled by
+                <span class="fill">Supplier delivery</span>. The standard delivery window shall be
+                <span class="fill">Tuesday / Thursday, 8 AM – 11 AM</span>, unless otherwise agreed by both parties.
+              </li>
+
+              <li>
+                <strong>Payment Terms.</strong>
+                Buyer agrees to pay Seller according to
+                <span class="fill">Net 15</span> payment terms. Payment shall be processed
+                <span class="fill">through Locality</span>, unless otherwise agreed by the parties.
+              </li>
+
+              <li>
+                <strong>Inspection and Acceptance.</strong>
+                Buyer shall inspect products promptly upon delivery. Buyer must notify Seller of quality,
+                defect, or discrepancy issues within
+                <span class="fill">48 hours</span> of delivery.
+              </li>
+
+              <li>
+                <strong>Shortages and Substitutions.</strong>
+                If Seller cannot fully fulfill an order due to product availability, Seller shall notify Buyer
+                as soon as reasonably possible. Product substitutions require
+                <span class="fill">Buyer approval</span> before fulfillment.
+              </li>
+
+              <li>
+                <strong>Cancellation and Termination.</strong>
+                Either party may request cancellation of this Agreement with
+                <span class="fill">14 days written notice</span>, unless otherwise agreed in writing.
+              </li>
+
+              <li>
+                <strong>Custom Terms.</strong>
+                The following custom terms shall apply if provided:
+                <span class="fill">Buyer may request crop substitutions only if approved in writing by Seller before fulfillment.</span>
+              </li>
+
+              <li>
+                <strong>Platform Record.</strong>
+                This Agreement was generated through Locality Contract Studio as a structured agreement
+                preview. Submission records, message references, version history, and fulfillment activity
+                may be maintained in Locality.
+              </li>
+            </ol>
+          </section>
+
+          <section>
+            <h3>Signatures</h3>
+            <p>
+              This preview does not collect final signatures. If both parties accept the same version,
+              the agreement may proceed to the signature process.
+            </p>
+
+            <div class="signature-grid">
+              <div class="signature-box">
+                <strong>Buyer</strong>
+                <div class="signature-line">Signature: _________________________</div>
+                <div class="signature-line">Name: _____________________________</div>
+                <div class="signature-line">Date: ______________________________</div>
+              </div>
+
+              <div class="signature-box">
+                <strong>Seller</strong>
+                <div class="signature-line">Signature: _________________________</div>
+                <div class="signature-line">Name: _____________________________</div>
+                <div class="signature-line">Date: ______________________________</div>
+              </div>
+            </div>
+          </section>
+
+          <section>
+            <h3>Exhibit A — Approved Products</h3>
+
+            <table class="exhibit-table">
+              <thead>
+                <tr>
+                  <th>Product</th>
+                  <th>Status</th>
+                  <th>Unit Price</th>
+                  <th>Minimum Order</th>
+                  <th>Ordering Model</th>
+                  <th>Specifications</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr>
+                  <td>Rainbow Carrots</td>
+                  <td>Organic</td>
+                  <td>$2.45 / lb</td>
+                  <td>25 lb / order</td>
+                  <td>Buyer-selected quantity</td>
+                  <td>Fresh, market-grade, packed for local delivery.</td>
+                </tr>
+
+                <tr>
+                  <td>Red Cabbage</td>
+                  <td>Conventional</td>
+                  <td>$1.90 / lb</td>
+                  <td>20 lb / order</td>
+                  <td>Buyer-selected quantity</td>
+                  <td>Fresh, market-grade heads suitable for retail display.</td>
+                </tr>
+              </tbody>
+            </table>
+          </section>
+        </article>
+
+        <aside class="review-side-panel">
+          <div class="side-card dark">
+            <span>Ready to send</span>
+            <strong>Flexible ordering proposal</strong>
+            <p>
+              This draft will be sent to the recipient for review. It is not final until both parties accept
+              the same version and complete any required signature process.
+            </p>
+          </div>
+
+          <div class="side-card">
+            <span>Review checklist</span>
+            <strong>Before submitting</strong>
+
+            <div class="check-list">
+              <div><i>✓</i> Parties and recipient look correct</div>
+              <div><i>✓</i> Products and prices match your draft</div>
+              <div><i>✓</i> Ordering rules are clear</div>
+              <div><i>✓</i> Payment and delivery terms are acceptable</div>
+            </div>
+          </div>
+
+          <div class="side-card">
+            <span>Next status</span>
+            <strong>Sent for review</strong>
+            <p>
+              After submission, the agreement will appear in Contract Studio as pending recipient response.
+            </p>
+          </div>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <main class="success-view">
+    <section class="success-card">
+      <div class="success-icon">✓</div>
+
+      <p class="review-eyebrow">Submitted successfully</p>
+      <h1>Agreement sent for review</h1>
+      <p>
+        Your flexible ordering proposal has been sent to Queen Creek Harvest.
+        The agreement will now appear in Contract Studio as pending recipient response.
+      </p>
+
+      <div class="receipt-grid">
+        <div class="receipt-item">
+          <span>Contract ID</span>
+          <strong>LOC-2026-0041</strong>
+        </div>
+
+        <div class="receipt-item">
+          <span>Agreement type</span>
+          <strong>Flexible Ordering</strong>
+        </div>
+
+        <div class="receipt-item">
+          <span>Status</span>
+          <strong>Sent for review</strong>
+        </div>
+
+        <div class="receipt-item">
+          <span>Recipient</span>
+          <strong>Queen Creek Harvest</strong>
+        </div>
+      </div>
+
+      <div class="download-panel">
+        <h3>Confirmation files</h3>
+
+        <div class="filename-row">
+          <label>Contract PDF</label>
+          <input value="Locality_Agreement_LOC-2026-0041_Queen-Creek-Harvest_Roosevelt-Row-Market.pdf" />
+        </div>
+
+        <div class="filename-row">
+          <label>Receipt PDF</label>
+          <input value="Locality_Receipt_LOC-2026-0041.pdf" />
+        </div>
+
+        <div class="email-row">
+          <label>Email copy to</label>
+          <input value="lukas@example.com" />
+        </div>
+
+        <div class="success-actions">
+          <button class="review-btn secondary" type="button">Download contract PDF</button>
+          <button class="review-btn secondary" type="button">Download receipt PDF</button>
+          <button class="review-btn primary" type="button">Send confirmation email</button>
+        </div>
+      </div>
+
+      <div class="success-actions">
+        <button class="review-btn secondary" id="closeTabBtn">Close tab</button>
+        <button class="review-btn primary" id="backToStudioBtn">Back to Contract Studio</button>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const returnToEditBtn = document.getElementById("returnToEditBtn");
+    const submitProposalBtn = document.getElementById("submitProposalBtn");
+    const closeTabBtn = document.getElementById("closeTabBtn");
+    const backToStudioBtn = document.getElementById("backToStudioBtn");
+
+    function notifyOpener(type) {
+      if (window.opener) {
+        window.opener.postMessage({ type }, window.location.origin);
+      }
+    }
+
+    returnToEditBtn?.addEventListener("click", () => {
+      notifyOpener("locality-review-return-edit");
+      window.close();
+    });
+
+    submitProposalBtn?.addEventListener("click", () => {
+      document.body.classList.add("submitted");
+      notifyOpener("locality-contract-submitted");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+
+    closeTabBtn?.addEventListener("click", () => {
+      notifyOpener("locality-review-closed");
+      window.close();
+    });
+
+    backToStudioBtn?.addEventListener("click", () => {
+      notifyOpener("locality-contract-back-to-studio");
+      window.location.href = "contracts.html?submitted=1";
+    });
+  </script>
+
+</body>
+</html>
