@@ -708,8 +708,14 @@ addProductRow?.addEventListener("click", () => {
 
 
 document.addEventListener("click", (event) => {
-  if (event.target?.id === "openReviewModal") {
-    reviewModal?.classList.add("active");
+  if (event.target.id === "openReviewModal") {
+    const reviewWindow = window.open("contract-review.html", "_blank");
+
+    document.body.classList.add("review-tab-open");
+
+    if (reviewWindow) {
+      reviewWindow.focus();
+    }
   }
 });
 
