@@ -2827,3 +2827,104 @@
     transform: translateY(0);
   }
 }
+
+/* =========================
+   CONTRACT STUDIO — REVIEW WAITING OVERLAY
+========================= */
+
+.review-waiting-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 7000;
+  display: none;
+  place-items: center;
+  padding: 28px;
+  background: rgba(15, 35, 30, 0.28);
+  backdrop-filter: blur(8px);
+}
+
+body.review-tab-open .review-waiting-overlay {
+  display: grid;
+}
+
+.review-waiting-card {
+  width: min(520px, 100%);
+  padding: 34px;
+  border-radius: 34px;
+  background:
+    radial-gradient(circle at top right, rgba(8,196,100,0.12), transparent 36%),
+    rgba(255, 252, 245, 0.96);
+  border: 1px solid rgba(20,50,92,0.10);
+  box-shadow: 0 28px 90px rgba(20,50,92,0.18);
+  text-align: center;
+}
+
+.review-waiting-card h2 {
+  color: var(--navy);
+  font-size: 1.7rem;
+  line-height: 1.08;
+  margin: 8px 0 10px;
+}
+
+.review-waiting-card p {
+  color: var(--muted);
+  font-weight: 750;
+  line-height: 1.45;
+}
+
+.review-waiting-actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 22px;
+  flex-wrap: wrap;
+}
+
+/* =========================
+   CONTRACT STUDIO — SUBMITTED CARD SWEEP
+========================= */
+
+.contract-card.submitted-highlight {
+  position: relative;
+  overflow: hidden;
+  border-color: rgba(8,196,100,0.34);
+  box-shadow:
+    0 0 0 1px rgba(8,196,100,0.16),
+    0 24px 54px rgba(8,196,100,0.13);
+  animation: submittedCardEnter 0.65s ease both;
+}
+
+.contract-card.submitted-highlight::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 0%,
+    rgba(8,196,100,0.10) 38%,
+    rgba(255,255,255,0.34) 50%,
+    rgba(8,196,100,0.10) 62%,
+    transparent 100%
+  );
+  transform: translateX(-110%);
+  animation: submittedSweep 1.15s ease 0.25s forwards;
+  pointer-events: none;
+}
+
+@keyframes submittedCardEnter {
+  from {
+    opacity: 0;
+    transform: translateY(-12px) scale(0.985);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes submittedSweep {
+  to {
+    transform: translateX(110%);
+  }
+}
