@@ -912,6 +912,57 @@ body.contract-review-page .review-status .review-action-row {
 body.contract-review-page.submitted .review-status {
   display: none !important;
 }
+
+/* =========================
+   REVIEW PAGE — FORCE ACTION DOCK TO BOTTOM
+========================= */
+
+body.contract-review-page .review-topbar .review-status,
+body.contract-review-page .review-status {
+  position: fixed !important;
+  top: auto !important;
+  right: 32px !important;
+  bottom: 32px !important;
+  left: auto !important;
+  z-index: 9999 !important;
+
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 10px !important;
+
+  width: auto !important;
+  max-width: calc(100vw - 64px) !important;
+  padding: 10px !important;
+  margin: 0 !important;
+
+  border-radius: 999px !important;
+  background: rgba(255, 252, 245, 0.94) !important;
+  backdrop-filter: blur(18px) !important;
+  border: 1px solid rgba(20, 50, 92, 0.12) !important;
+  box-shadow: 0 24px 70px rgba(20, 50, 92, 0.22) !important;
+}
+
+body.contract-review-page .review-status .status-pill {
+  white-space: nowrap !important;
+  margin: 0 !important;
+}
+
+body.contract-review-page .review-status .review-action-row {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  margin: 0 !important;
+}
+
+body.contract-review-page .review-status .review-btn {
+  white-space: nowrap !important;
+}
+
+/* Hide the floating review controls after submission */
+body.contract-review-page.submitted .review-status {
+  display: none !important;
+}
     
   </style>
 </head>
