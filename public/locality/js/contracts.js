@@ -709,13 +709,7 @@ addProductRow?.addEventListener("click", () => {
 
 document.addEventListener("click", (event) => {
   if (event.target.id === "openReviewModal") {
-    const reviewWindow = window.open("contract-review.html", "_blank");
-
-    document.body.classList.add("review-tab-open");
-
-    if (reviewWindow) {
-      reviewWindow.focus();
-    }
+    openContractReviewTab();
   }
 });
 
@@ -765,4 +759,96 @@ window.addEventListener("load", () => {
     loadingScreen?.classList.add("hidden");
     document.body.classList.add("studio-loaded");
   }, 2400);
+});
+
+const reviewWaitingOverlay = document.getElementById("reviewWaitingOverlay");
+const dismissReviewWaiting = document.getElementById("dismissReviewWaiting");
+const reopenReviewTab = document.getElementById("reopenReviewTab");
+
+function openContractReviewTab() {
+  const reviewWindow = window.open("contract-review.html", "_blank");
+
+  document.body.classList.add("review-tab-open");
+
+  if (reviewWindow) {
+    reviewWindow.focus();
+  }
+}
+
+function addSubmittedAgreementCard() {
+  const feed = document.querySelector(".contract-feed");
+  if (!feed) return;
+
+  const existing = document.getElementById("submittedAgreementCard");
+  existing?.remove();
+
+  const card = document.createElement("article");
+  card.className = "contract-card submitted-highlight";
+  card.id = "submittedAgreementCard";
+
+  card.innerHTML = `
+    <div class="contract-card-main">
+      <span class="status-dot green"></span>
+      <div>
+        <p class="card-status">SENT FOR REVIEW</p>
+        <h3>Queen Creek Harvest</h3>
+        <p>Flexible ordering agreement submitted.</p>
+        <small>2 products · Net 15 · Supplier delivery</small>
+      </div>
+    </div>
+    <strong class="priority-level">Sent</strong>
+  `;
+
+  feed.prepend(card);
+
+  setTimeout(() => {
+    card.classList.remove("submitted-highlight");
+  }, 3400);
+}
+
+dismissReviewWaiting?.addEventListener("click", () => {
+  document.body.classList.remove("review-tab-open");
+});
+
+reopenReviewTab?.addEventListener("click", () => {
+  openContractReviewTab();
+});
+
+window.addEventListener("message", (event) => {
+  if (event.origin !== window.location.origin) return;
+
+  const messageType = event.data?.type;
+
+  if (messageType === "locality-review-return-edit") {
+    document.body.classList.remove("review-tab-open");
+  }
+
+  if (messageType === "locality-contract-submitted") {
+    document.body.classList.remove("review-tab-open");
+  }
+
+  if (messageType === "locality-contract-close-after-submit") {
+    document.body.classList.remove("review-tab-open");
+    sessionStorage.setItem("localitySubmittedAgreement", "true");
+    window.location.href = "contracts.html?submitted=1";
+  }
+});
+
+window.addEventListener("load", () => {
+  const submitted =
+    new URLSearchParams(window.location.search).get("submitted") === "1" ||
+    sessionStorage.getItem("localitySubmittedAgreement") === "true";
+
+  if (!submitted) return;
+
+  sessionStorage.removeItem("localitySubmittedAgreement");
+
+  setWorkspaceState("stream");
+
+  setTimeout(() => {
+    addSubmittedAgreementCard();
+
+    const cleanUrl = window.location.pathname;
+    window.history.replaceState({}, "", cleanUrl);
+  }, 450);
 });
