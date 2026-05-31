@@ -840,6 +840,35 @@
   font-weight: 900;
   white-space: nowrap;
 }
+
+    /* =========================
+   REVIEW PAGE — ACTION DOCK FINAL FIX
+========================= */
+
+body.contract-review-page .review-status {
+  position: fixed !important;
+  right: 28px !important;
+  bottom: 28px !important;
+  top: auto !important;
+  z-index: 9000 !important;
+
+  display: flex !important;
+  align-items: center;
+  gap: 10px;
+
+  padding: 10px;
+  border-radius: 999px;
+  background: rgba(255, 252, 245, 0.92);
+  backdrop-filter: blur(18px);
+  border: 1px solid rgba(20, 50, 92, 0.1);
+  box-shadow: 0 22px 70px rgba(20, 50, 92, 0.18);
+}
+
+/* Do not show review controls after the proposal has already been submitted */
+body.contract-review-page.submitted .review-status {
+  display: none !important;
+}
+    
   </style>
 </head>
 
