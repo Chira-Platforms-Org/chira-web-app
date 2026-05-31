@@ -783,23 +783,27 @@ function addSubmittedAgreementCard() {
   existing?.remove();
 
   const card = document.createElement("article");
-  card.className = "contract-card submitted-highlight";
+  card.className = "contract-card submitted-agreement-card submitted-highlight";
   card.id = "submittedAgreementCard";
 
   card.innerHTML = `
-    <div class="contract-card-top">
-      <div class="contract-status">
-        <span class="status-dot green"></span>
+    <div class="submitted-card-header">
+      <div class="submitted-card-status">
+        <span class="submitted-card-dot"></span>
         <span>Sent for review</span>
       </div>
-      <strong class="priority-level">Sent</strong>
+      <strong>Sent</strong>
     </div>
 
-    <h3>Queen Creek Harvest</h3>
-    <p>Flexible ordering agreement submitted.</p>
-    <small>2 products · Net 15 · Supplier delivery</small>
+    <div class="submitted-card-body">
+      <div>
+        <h3>Queen Creek Harvest</h3>
+        <p>Flexible ordering agreement submitted.</p>
+        <small>2 products · Net 15 · Supplier delivery</small>
+      </div>
+    </div>
 
-    <div class="contract-actions">
+    <div class="submitted-card-actions">
       <button type="button">View</button>
       <button type="button">Message</button>
     </div>
@@ -809,7 +813,7 @@ function addSubmittedAgreementCard() {
 
   setTimeout(() => {
     card.classList.remove("submitted-highlight");
-  }, 4200);
+  }, 5200);
 }
 
 dismissReviewWaiting?.addEventListener("click", () => {
