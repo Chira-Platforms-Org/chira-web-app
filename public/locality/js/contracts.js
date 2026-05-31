@@ -852,12 +852,11 @@ window.addEventListener("load", () => {
   setWorkspaceState("stream");
 
   setTimeout(() => {
-    addSubmittedAgreementCard();
+  addSubmittedAgreementCard();
 
-    const cleanUrl = window.location.pathname;
-    window.history.replaceState({}, "", cleanUrl);
-  }, 450);
-});
+  const cleanUrl = window.location.pathname;
+  window.history.replaceState({}, "", cleanUrl);
+}, 2850);
 
 document.addEventListener("click", (event) => {
   if (event.target.closest("#dismissReviewWaiting")) {
