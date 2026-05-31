@@ -852,3 +852,13 @@ window.addEventListener("load", () => {
     window.history.replaceState({}, "", cleanUrl);
   }, 450);
 });
+
+document.addEventListener("click", (event) => {
+  if (event.target.closest("#dismissReviewWaiting")) {
+    document.body.classList.remove("review-tab-open");
+  }
+
+  if (event.target.closest("#reopenReviewTab")) {
+    openContractReviewTab();
+  }
+});
