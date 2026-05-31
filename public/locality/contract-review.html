@@ -868,6 +868,50 @@ body.contract-review-page .review-status {
 body.contract-review-page.submitted .review-status {
   display: none !important;
 }
+
+/* =========================
+   REVIEW PAGE — FLOATING ACTION DOCK FINAL OVERRIDE
+========================= */
+
+body.contract-review-page .review-status {
+  position: fixed !important;
+  top: auto !important;
+  left: auto !important;
+  right: 30px !important;
+  bottom: 30px !important;
+  z-index: 9500 !important;
+
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 10px !important;
+
+  width: auto !important;
+  max-width: calc(100vw - 60px) !important;
+  padding: 10px !important;
+  border-radius: 999px !important;
+
+  background: rgba(255, 252, 245, 0.94) !important;
+  backdrop-filter: blur(18px) !important;
+  border: 1px solid rgba(20, 50, 92, 0.1) !important;
+  box-shadow: 0 24px 70px rgba(20, 50, 92, 0.20) !important;
+}
+
+body.contract-review-page .review-status .status-pill {
+  margin: 0 !important;
+  white-space: nowrap !important;
+}
+
+body.contract-review-page .review-status .review-action-row {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  margin: 0 !important;
+}
+
+body.contract-review-page.submitted .review-status {
+  display: none !important;
+}
     
   </style>
 </head>
