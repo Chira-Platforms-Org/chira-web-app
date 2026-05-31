@@ -2928,3 +2928,8 @@ body.review-tab-open .review-waiting-overlay {
     transform: translateX(110%);
   }
 }
+
+.status-dot.green {
+  background: var(--green);
+  box-shadow: 0 0 0 8px rgba(8, 196, 100, 0.12);
+}
