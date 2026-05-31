@@ -787,23 +787,29 @@ function addSubmittedAgreementCard() {
   card.id = "submittedAgreementCard";
 
   card.innerHTML = `
-    <div class="contract-card-main">
-      <span class="status-dot green"></span>
-      <div>
-        <p class="card-status">SENT FOR REVIEW</p>
-        <h3>Queen Creek Harvest</h3>
-        <p>Flexible ordering agreement submitted.</p>
-        <small>2 products · Net 15 · Supplier delivery</small>
+    <div class="contract-card-top">
+      <div class="contract-status">
+        <span class="status-dot green"></span>
+        <span>Sent for review</span>
       </div>
+      <strong class="priority-level">Sent</strong>
     </div>
-    <strong class="priority-level">Sent</strong>
+
+    <h3>Queen Creek Harvest</h3>
+    <p>Flexible ordering agreement submitted.</p>
+    <small>2 products · Net 15 · Supplier delivery</small>
+
+    <div class="contract-actions">
+      <button type="button">View</button>
+      <button type="button">Message</button>
+    </div>
   `;
 
   feed.prepend(card);
 
   setTimeout(() => {
     card.classList.remove("submitted-highlight");
-  }, 3400);
+  }, 4200);
 }
 
 dismissReviewWaiting?.addEventListener("click", () => {
