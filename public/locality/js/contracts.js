@@ -804,6 +804,29 @@ document.addEventListener("click", (event) => {
 
   createProductRow(product, price, unit, organic);
 
+  const addLabel = button.querySelector("em");
+  const originalLabel = addLabel?.textContent || "Add";
+
+  button.classList.remove("just-added", "add-click-pop");
+  void button.offsetWidth;
+  button.classList.add("just-added", "add-click-pop");
+
+  if (addLabel) {
+    addLabel.textContent = "✓ Added";
+  }
+
+  window.setTimeout(() => {
+    button.classList.remove("add-click-pop");
+  }, 320);
+
+  window.setTimeout(() => {
+    button.classList.remove("just-added");
+
+    if (addLabel) {
+      addLabel.textContent = originalLabel;
+    }
+  }, 1300);
+
   if (!selectedBusinessName && selectedBusinessKey) {
     const profile = getProfileByKey(selectedBusinessKey);
     selectedBusinessName = profile?.name || null;
@@ -897,24 +920,145 @@ function getBuilderProducts() {
     });
 }
 
+function getFieldValue(selector, fallback = "") {
+  const field = document.querySelector(selector);
+  const value = field?.value?.trim();
+
+  return value || fallback;
+}
+
+function simplifyNotice(value = "48 hours before delivery") {
+  return String(value)
+    .replace(" before delivery", "")
+    .trim();
+}
+
+function simplifyPaymentMethod(value = "Paid through Locality") {
+  if (value === "Paid through Locality") return "through Locality";
+  if (value === "Invoice outside platform") return "outside the Locality platform";
+  return `by ${value}`;
+}
+
+function getOrderingRules() {
+  const orderNoticeRaw = getFieldValue(
+    ".order-notice-select",
+    "48 hours before delivery"
+  );
+
+  const substitutionRaw = getFieldValue(
+    ".substitution-rule-select",
+    "Require buyer approval"
+  );
+
+  const substitutionMap = {
+    "Require buyer approval": "Buyer approval",
+    "Allow similar substitutions": "similar substitutions",
+    "No substitutions allowed": "no substitutions"
+  };
+
+  return {
+    buyerQuantityControl: getFieldValue(
+      ".buyer-quantity-control-select",
+      "Buyer chooses quantities per order"
+    ),
+    minimumTotalOrder: `$${getFieldValue(".minimum-total-order-input", "100")} minimum order`,
+    orderNotice: simplifyNotice(orderNoticeRaw),
+    orderingFrequency: getFieldValue(
+      ".ordering-frequency-select",
+      "Weekly ordering allowed"
+    ),
+    substitutionRule: substitutionMap[substitutionRaw] || substitutionRaw,
+    partialFulfillment: getFieldValue(
+      ".partial-fulfillment-select",
+      "Allowed with notice"
+    )
+  };
+}
+
+function getFulfillmentTerms() {
+  const deliveryDays = getFieldValue(".delivery-days-select", "Tuesday / Thursday");
+  const deliveryWindow = getFieldValue(".delivery-window-select", "8 AM – 11 AM");
+
+  return {
+    fulfillmentMethod: getFieldValue(
+      ".fulfillment-method-select",
+      "Supplier delivery"
+    ),
+    deliveryDays,
+    deliveryWindow,
+    combinedDeliveryWindow: `${deliveryDays}, ${deliveryWindow}`,
+    receivingLocation: getFieldValue(
+      ".receiving-location-input",
+      "Buyer receiving location"
+    ),
+    fulfillmentNotes: getFieldValue(".fulfillment-notes-input", "")
+  };
+}
+
+function getPaymentTerms() {
+  return {
+    paymentTerms: getFieldValue(".payment-terms-select", "Net 15"),
+    paymentMethodRaw: getFieldValue(".payment-method-select", "Paid through Locality"),
+    paymentMethod: simplifyPaymentMethod(
+      getFieldValue(".payment-method-select", "Paid through Locality")
+    ),
+    latePaymentRule: getFieldValue(
+      ".late-payment-rule-select",
+      "Future deliveries may pause until payment is resolved"
+    )
+  };
+}
+
+function getStandardTerms() {
+  return {
+    inspectionWindow: "48 hours",
+    cancellationNotice: "14 days written notice",
+    governingLaw: "Arizona",
+    localityFeeNote:
+      "Seller-paid Locality platform fees are governed by the applicable Locality seller agreement, platform terms, or fee schedule. Locality is not a party to this Buyer-Seller Agreement unless expressly stated in a separate written agreement."
+  };
+}
+
 function openContractReviewTab() {
   const customClauses = getCustomClauses();
   const products = getBuilderProducts();
 
+  const orderingRules = getOrderingRules();
+  const fulfillmentTerms = getFulfillmentTerms();
+  const paymentTerms = getPaymentTerms();
+  const standardTerms = getStandardTerms();
+
   const reviewPayload = {
     contractId: "LOC-2026-0041",
     agreementType: selectedAgreementTemplate || "flexible",
+
     sellerName: selectedBusinessName || "Queen Creek Harvest",
     buyerName: "Roosevelt Row Market",
-    paymentTerms: "Net 15",
-    fulfillmentMethod: "Supplier delivery",
-    orderNotice: "48 hours",
-    inspectionWindow: "48 hours",
-    cancellationNotice: "14 days written notice",
-    substitutionRule: "Buyer approval",
-    governingLaw: "Arizona",
-    localityFeeNote:
-      "Seller-paid Locality platform fees are governed by the applicable Locality seller agreement, platform terms, or fee schedule. Locality is not a party to this Buyer-Seller Agreement unless expressly stated in a separate written agreement.",
+
+    buyerQuantityControl: orderingRules.buyerQuantityControl,
+    minimumTotalOrder: orderingRules.minimumTotalOrder,
+    orderNotice: orderingRules.orderNotice,
+    orderingFrequency: orderingRules.orderingFrequency,
+    substitutionRule: orderingRules.substitutionRule,
+    partialFulfillment: orderingRules.partialFulfillment,
+
+    fulfillmentMethod: fulfillmentTerms.fulfillmentMethod,
+    deliveryDays: fulfillmentTerms.deliveryDays,
+    deliveryWindow: fulfillmentTerms.combinedDeliveryWindow,
+    deliveryWindowOnly: fulfillmentTerms.deliveryWindow,
+    receivingLocation: fulfillmentTerms.receivingLocation,
+    fulfillmentNotes: fulfillmentTerms.fulfillmentNotes,
+
+    paymentTerms: paymentTerms.paymentTerms,
+    paymentMethod: paymentTerms.paymentMethod,
+    paymentMethodRaw: paymentTerms.paymentMethodRaw,
+    latePaymentRule: paymentTerms.latePaymentRule,
+
+    inspectionWindow: standardTerms.inspectionWindow,
+    cancellationNotice: standardTerms.cancellationNotice,
+    governingLaw: standardTerms.governingLaw,
+    localityFeeNote: standardTerms.localityFeeNote,
+
     customClauses,
     products
   };
