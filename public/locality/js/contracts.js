@@ -843,6 +843,48 @@ const dismissReviewWaiting = document.getElementById("dismissReviewWaiting");
 const reopenReviewTab = document.getElementById("reopenReviewTab");
 
 function openContractReviewTab() {
+  const customClauses = getCustomClauses();
+
+  const reviewPayload = {
+    contractId: "LOC-2026-0041",
+    agreementType: selectedAgreementTemplate || "flexible",
+    sellerName: selectedBusinessName || "Queen Creek Harvest",
+    buyerName: "Roosevelt Row Market",
+    paymentTerms: "Net 15",
+    fulfillmentMethod: "Supplier delivery",
+    orderNotice: "48 hours",
+    inspectionWindow: "48 hours",
+    cancellationNotice: "14 days written notice",
+    substitutionRule: "Buyer approval",
+    governingLaw: "Arizona",
+    localityFeeNote:
+      "Seller-paid Locality platform fees are governed by the applicable Locality seller agreement, platform terms, or fee schedule. Locality is not a party to this Buyer-Seller Agreement unless expressly stated in a separate written agreement.",
+    customClauses,
+    products: [
+      {
+        name: "Rainbow Carrots",
+        status: "Organic",
+        unitPrice: "$2.45 / lb",
+        minimumOrder: "25 lb / order",
+        orderingModel: "Buyer-selected quantity",
+        specifications: "Fresh, market-grade, packed for local delivery."
+      },
+      {
+        name: "Red Cabbage",
+        status: "Conventional",
+        unitPrice: "$1.90 / lb",
+        minimumOrder: "20 lb / order",
+        orderingModel: "Buyer-selected quantity",
+        specifications: "Fresh, market-grade heads suitable for retail display."
+      }
+    ]
+  };
+
+  sessionStorage.setItem(
+    "localityContractReviewPayload",
+    JSON.stringify(reviewPayload)
+  );
+
   const reviewWindow = window.open("contract-review.html", "_blank");
 
   document.body.classList.add("review-tab-open");
