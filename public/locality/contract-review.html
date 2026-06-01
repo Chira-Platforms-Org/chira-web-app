@@ -1051,8 +1051,14 @@ body.contract-review-page.submitted .review-action-dock {
 
 .contract-product-grid {
   display: grid;
-  grid-template-columns: 1.45fr 0.7fr 1fr 1.1fr 1.25fr 1.65fr;
-  align-items: start;
+  grid-template-columns: 1.45fr 0.95fr 1.05fr 1.25fr 2fr;
+  align-items: stretch;
+  box-sizing: border-box;
+}
+
+.contract-product-grid > * {
+  box-sizing: border-box;
+  min-width: 0;
 }
 
 .contract-product-header {
@@ -1060,16 +1066,18 @@ body.contract-review-page.submitted .review-action-dock {
   border-bottom: 2px solid rgba(20, 50, 92, 0.22);
   border-radius: 10px 10px 0 0;
   background: rgba(20, 50, 92, 0.035);
+  overflow: hidden;
 }
 
 .contract-product-header span {
-  padding: 12px 12px;
+  padding: 12px 16px;
   color: rgba(20, 50, 92, 0.62);
   font-size: 0.72rem;
   font-weight: 900;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   border-right: 1px solid rgba(20, 50, 92, 0.12);
+  white-space: nowrap;
 }
 
 .contract-product-header span:last-child {
@@ -1081,14 +1089,14 @@ body.contract-review-page.submitted .review-action-dock {
   border-right: 1px solid rgba(20, 50, 92, 0.16);
   border-bottom: 2px solid rgba(20, 50, 92, 0.18);
   background: rgba(255, 255, 255, 0.62);
+  overflow: hidden;
 }
 
 .contract-product-row > * {
-  padding: 13px 12px;
-  min-width: 0;
+  padding: 15px 16px;
   border-right: 1px solid rgba(20, 50, 92, 0.10);
   color: var(--navy);
-  font-size: 0.86rem;
+  font-size: 0.9rem;
   line-height: 1.32;
 }
 
@@ -1096,12 +1104,23 @@ body.contract-review-page.submitted .review-action-dock {
   border-right: none;
 }
 
-.contract-product-row strong {
+.contract-product-name strong {
+  display: block;
   font-weight: 900;
+  margin-bottom: 5px;
+}
+
+.contract-product-name small {
+  display: block;
+  color: rgba(20, 50, 92, 0.58);
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .contract-product-row span {
-  font-weight: 750;
+  font-weight: 800;
 }
 
 .contract-product-row span:last-child {
@@ -1535,33 +1554,35 @@ function renderContractProducts() {
   }
 
   receipt.innerHTML = `
-    <div class="contract-product-grid contract-product-header">
-      <span>Product</span>
-      <span>Organic?</span>
-      <span>Unit Price</span>
-      <span>Minimum</span>
-      <span>Ordering</span>
-      <span>Specifications</span>
-    </div>
+  <div class="contract-product-grid contract-product-header">
+    <span>Product</span>
+    <span>Unit Price</span>
+    <span>Minimum</span>
+    <span>Ordering</span>
+    <span>Specifications</span>
+  </div>
 
-    ${products
-      .map((product) => {
-        const organicText =
-          product.status?.toLowerCase().includes("organic") ? "Yes" : "No";
+  ${products
+    .map((product) => {
+      const organicText =
+        product.status?.toLowerCase().includes("organic") ? "Yes" : "No";
 
-        return `
-          <div class="contract-product-grid contract-product-row">
+      return `
+        <div class="contract-product-grid contract-product-row">
+          <div class="contract-product-name">
             <strong>${product.name || "Product"}</strong>
-            <span>${organicText}</span>
-            <span>${product.unitPrice || "$0.00 / lb"}</span>
-            <span>${product.minimumOrder || "25 lb / order"}</span>
-            <span>${product.orderingModel || "Buyer-selected quantity"}</span>
-            <span>${product.specifications || "Fresh, market-grade product covered by this agreement."}</span>
+            <small>Organic: ${organicText}</small>
           </div>
-        `;
-      })
-      .join("")}
-  `;
+
+          <span>${product.unitPrice || "$0.00 / lb"}</span>
+          <span>${product.minimumOrder || "25 lb / order"}</span>
+          <span>${product.orderingModel || "Buyer-selected quantity"}</span>
+          <span>${product.specifications || "Fresh, market-grade product covered by this agreement."}</span>
+        </div>
+      `;
+    })
+    .join("")}
+`;
 }
 
     function fillContractDocument() {
