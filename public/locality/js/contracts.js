@@ -21,6 +21,9 @@ const newContractBtn = document.getElementById("newContractBtn");
 const addProductRow = document.getElementById("addProductRow");
 const productEditor = document.getElementById("productEditor");
 
+const customClauseList = document.getElementById("customClauseList");
+const addCustomClauseBtn = document.getElementById("addCustomClauseBtn");
+
 const reviewModal = document.getElementById("finalReviewModal");
 const closeReviewModal = document.getElementById("closeReviewModal");
 const keepEditingBtn = document.getElementById("keepEditingBtn");
@@ -588,6 +591,80 @@ function attachProfileProductListeners() {
   // Product buttons are rendered dynamically from profiles.js.
   // Their clicks are handled by the delegated listener below.
 }
+
+function renumberCustomClauses() {
+  const cards = document.querySelectorAll(".custom-clause-card");
+
+  cards.forEach((card, index) => {
+    const label = card.querySelector(".custom-clause-head strong");
+    const removeBtn = card.querySelector(".remove-custom-clause");
+
+    if (label) label.textContent = `Custom clause ${index + 1}`;
+
+    if (removeBtn) {
+      removeBtn.classList.toggle("hidden", cards.length === 1);
+    }
+  });
+}
+
+function createCustomClauseCard() {
+  if (!customClauseList) return;
+
+  const card = document.createElement("div");
+  card.className = "custom-clause-card";
+
+  card.innerHTML = `
+    <div class="custom-clause-head">
+      <strong>Custom clause</strong>
+      <button type="button" class="remove-custom-clause">Remove</button>
+    </div>
+
+    <label>
+      Clause title
+      <input
+        class="custom-clause-title"
+        type="text"
+        placeholder="Example: Packaging return"
+      />
+    </label>
+
+    <label>
+      Clause text
+      <textarea
+        class="custom-clause-text"
+        placeholder="Example: Buyer shall return reusable crates within seven days of delivery."
+      ></textarea>
+    </label>
+  `;
+
+  customClauseList.appendChild(card);
+  renumberCustomClauses();
+}
+
+function getCustomClauses() {
+  return Array.from(document.querySelectorAll(".custom-clause-card"))
+    .map((card) => {
+      const title = card.querySelector(".custom-clause-title")?.value.trim() || "";
+      const text = card.querySelector(".custom-clause-text")?.value.trim() || "";
+
+      return { title, text };
+    })
+    .filter((clause) => clause.title || clause.text);
+}
+
+addCustomClauseBtn?.addEventListener("click", createCustomClauseCard);
+
+customClauseList?.addEventListener("click", (event) => {
+  const removeBtn = event.target.closest(".remove-custom-clause");
+  if (!removeBtn) return;
+
+  const card = removeBtn.closest(".custom-clause-card");
+  card?.remove();
+
+  renumberCustomClauses();
+});
+
+renumberCustomClauses();
 
 
 
