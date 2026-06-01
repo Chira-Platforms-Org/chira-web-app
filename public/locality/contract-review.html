@@ -1646,34 +1646,34 @@ function renderContractProducts() {
 }
 
 function renderSupplementalClauses() {
-  const wrapper = document.getElementById("supplementalClauses");
-  const list = document.getElementById("supplementalClauseList");
+  const section = document.getElementById("customClausesSection");
+  const output = document.getElementById("customClausesOutput");
 
-  if (!wrapper || !list) return;
+  if (!section || !output) return;
 
-  if (!contractData.customClauses.length) {
-    wrapper.classList.add("hidden");
-    list.innerHTML = "";
+  const clauses = contractData.customClauses || [];
+
+  if (!clauses.length) {
+    output.innerHTML = `
+      <p class="empty-additional-terms">No additional terms were added.</p>
+    `;
     return;
   }
 
-  wrapper.classList.remove("hidden");
-
-  list.innerHTML = contractData.customClauses
+  output.innerHTML = clauses
     .map((clause, index) => {
-      const title = clause.title || `Supplemental Clause ${index + 1}`;
-      const text = clause.text || "";
+      const title = clause.title?.trim() || `Additional Term ${index + 1}`;
+      const text = clause.text?.trim() || "";
 
       return `
         <div class="supplemental-clause">
           <h4>${index + 1}. ${title}</h4>
-          <p>${text}</p>
+          ${text ? `<p>${text}</p>` : ""}
         </div>
       `;
     })
     .join("");
 }
-
 fillContractDocument();
 
   window.addEventListener("load", () => {
