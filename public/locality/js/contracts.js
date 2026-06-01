@@ -860,25 +860,48 @@ function openContractReviewTab() {
     localityFeeNote:
       "Seller-paid Locality platform fees are governed by the applicable Locality seller agreement, platform terms, or fee schedule. Locality is not a party to this Buyer-Seller Agreement unless expressly stated in a separate written agreement.",
     customClauses,
-    products: [
-      {
-        name: "Rainbow Carrots",
-        status: "Organic",
-        unitPrice: "$2.45 / lb",
-        minimumOrder: "25 lb / order",
-        orderingModel: "Buyer-selected quantity",
-        specifications: "Fresh, market-grade, packed for local delivery."
-      },
-      {
-        name: "Red Cabbage",
-        status: "Conventional",
-        unitPrice: "$1.90 / lb",
-        minimumOrder: "20 lb / order",
-        orderingModel: "Buyer-selected quantity",
-        specifications: "Fresh, market-grade heads suitable for retail display."
-      }
-    ]
+    products: getBuilderProducts()
   };
+
+  function getBuilderProducts() {
+  const rows = document.querySelectorAll(".product-row");
+
+  return Array.from(rows)
+    .map((row) => {
+      const productSelect = row.querySelector(".product-select");
+      const quantityInput = row.querySelector(".quantity-input");
+      const unitSelect = row.querySelector(".unit-select");
+      const priceInput = row.querySelector(".price-input");
+      const priceUnitSelect = row.querySelector(".price-unit-select");
+      const cadenceSelect = row.querySelector(".cadence-select");
+
+      const productName =
+        productSelect?.value ||
+        row.dataset.product ||
+        "Selected product";
+
+      const quantity = quantityInput?.value || "25";
+      const unit = unitSelect?.value || "lb";
+      const price = priceInput?.value || "0.00";
+      const priceUnit = priceUnitSelect?.value || unit;
+      const cadence = cadenceSelect?.value || "order";
+
+      const isOrganic =
+        row.dataset.organic === "true" ||
+        row.querySelector(".organic-badge") ||
+        productName.toLowerCase().includes("organic");
+
+      return {
+        name: productName,
+        status: isOrganic ? "Organic" : "Conventional",
+        unitPrice: `$${price} / ${priceUnit}`,
+        minimumOrder: `${quantity} ${unit} / ${cadence}`,
+        orderingModel: "Buyer-selected quantity",
+        specifications: "Fresh, market-grade product covered by this agreement."
+      };
+    })
+    .filter((product) => product.name && product.name !== "New product");
+}
 
   sessionStorage.setItem(
     "localityContractReviewPayload",
