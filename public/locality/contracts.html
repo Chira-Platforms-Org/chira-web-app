@@ -622,10 +622,35 @@
       <span class="section-status optional">Optional</span>
     </div>
 
-    <label class="custom-terms-box">
-      Additional contract-visible terms
-      <textarea placeholder="Example: Buyer may request crop substitutions only if approved in writing by seller before fulfillment."></textarea>
+    <div class="custom-clause-list" id="customClauseList">
+  <div class="custom-clause-card">
+    <div class="custom-clause-head">
+      <strong>Custom clause 1</strong>
+      <button type="button" class="remove-custom-clause hidden">Remove</button>
+    </div>
+
+    <label>
+      Clause title
+      <input
+        class="custom-clause-title"
+        type="text"
+        placeholder="Example: Crop substitutions"
+      />
     </label>
+
+    <label>
+      Clause text
+      <textarea
+        class="custom-clause-text"
+        placeholder="Example: Buyer may request crop substitutions only if approved in writing by Seller before fulfillment."
+      ></textarea>
+    </label>
+  </div>
+</div>
+
+<button class="add-custom-clause-btn" id="addCustomClauseBtn" type="button">
+  + Add another custom clause
+</button>
   </section>
 
   <div class="studio-actions sticky-builder-actions">
