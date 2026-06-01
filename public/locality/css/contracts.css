@@ -3152,3 +3152,37 @@ body.review-tab-open .review-waiting-overlay {
     transform: translateX(115%);
   }
 }
+
+/* =========================
+   PRODUCT ADD FEEDBACK
+========================= */
+
+.profile-product.just-added {
+  background: rgba(8, 196, 100, 0.14);
+  border-color: rgba(8, 196, 100, 0.34);
+  transform: translateY(-2px) scale(1.01);
+  box-shadow: 0 14px 28px rgba(8, 196, 100, 0.13);
+}
+
+.profile-product.just-added em {
+  color: var(--green);
+  font-weight: 950;
+}
+
+.profile-product.add-click-pop {
+  animation: productAddPop 0.28s ease;
+}
+
+@keyframes productAddPop {
+  0% {
+    transform: scale(1);
+  }
+
+  45% {
+    transform: scale(0.975);
+  }
+
+  100% {
+    transform: scale(1.01);
+  }
+}
