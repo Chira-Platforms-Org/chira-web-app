@@ -1119,25 +1119,7 @@ body.contract-review-page.submitted .review-action-dock {
       </tr>
     </thead>
 
-    <tbody id="contractProductsBody">
-      <tr>
-        <td>Rainbow Carrots</td>
-        <td>Organic</td>
-        <td>$2.45 / lb</td>
-        <td>25 lb / order</td>
-        <td>Buyer-selected quantity</td>
-        <td>Fresh, market-grade, packed for local delivery.</td>
-      </tr>
-
-      <tr>
-        <td>Red Cabbage</td>
-        <td>Conventional</td>
-        <td>$1.90 / lb</td>
-        <td>20 lb / order</td>
-        <td>Buyer-selected quantity</td>
-        <td>Fresh, market-grade heads suitable for retail display.</td>
-      </tr>
-    </tbody>
+    <tbody id="contractProductsBody"></tbody>
   </table>
 </section>
         </article>
@@ -1339,6 +1321,41 @@ const contractData = {
   products: reviewPayload.products || []
 };
 
+    const contractProductsBody = document.getElementById("contractProductsBody");
+
+function renderContractProducts() {
+  if (!contractProductsBody) return;
+
+  const products = contractData.products || [];
+
+  if (!products.length) {
+    contractProductsBody.innerHTML = `
+      <tr>
+        <td colspan="6">No products were added to this agreement.</td>
+      </tr>
+    `;
+    return;
+  }
+
+  contractProductsBody.innerHTML = products
+    .map((product) => {
+      const organicText =
+        product.status?.toLowerCase().includes("organic") ? "Yes" : "No";
+
+      return `
+        <tr>
+          <td>${product.name || "Product"}</td>
+          <td>${organicText}</td>
+          <td>${product.unitPrice || "—"}</td>
+          <td>${product.minimumOrder || "—"}</td>
+          <td>${product.orderingModel || "Buyer-selected quantity"}</td>
+          <td>${product.specifications || "Fresh, market-grade product."}</td>
+        </tr>
+      `;
+    })
+    .join("");
+}
+
     function fillContractDocument() {
   document.querySelectorAll("[data-contract-id]").forEach((el) => {
     el.textContent = contractData.contractId;
@@ -1497,6 +1514,8 @@ fillContractDocument();
   closeTabBtn?.addEventListener("click", () => {
     focusOpenerAndClose("locality-contract-close-after-submit");
   });
+
+  renderContractProducts();
 </script>
 
 </body>
