@@ -1244,28 +1244,36 @@ body.contract-review-page.submitted .review-action-dock {
 
     <li>
       <strong>Ordering Rules.</strong>
-      Buyer may select quantities for each order, provided each order satisfies the agreed minimum order
-      requirements. Buyer shall provide at least
+        Buyer may place orders under the following quantity rule:
+      <span class="fill" id="buyerQuantityControl">Buyer chooses quantities per order</span>.
+        Each order must satisfy the agreed minimum order requirement of
+      <span class="fill" id="minimumTotalOrder">$100 minimum order</span>.
+        Buyer shall provide at least
       <span class="fill" id="orderNotice">48 hours</span>
-      of notice before the requested delivery or pickup window.
+        of notice before the requested delivery or pickup window. The ordering frequency shall be
+      <span class="fill" id="orderingFrequency">Weekly ordering allowed</span>,
+        unless otherwise agreed by both parties.
     </li>
 
     <li>
       <strong>Delivery and Fulfillment.</strong>
-      Orders accepted under this Agreement shall be fulfilled by
+        Orders accepted under this Agreement shall be fulfilled by
       <span class="fill" id="fulfillmentMethod">Supplier delivery</span>.
-      The standard delivery or pickup window shall be
+        The standard delivery or pickup window shall be
       <span class="fill" id="deliveryWindow">Tuesday / Thursday, 8 AM – 11 AM</span>,
-      unless otherwise agreed by both parties.
+        unless otherwise agreed by both parties. The receiving location shall be
+      <span class="fill" id="receivingLocation">Buyer receiving location</span>.
+      <span id="fulfillmentNotesSentence"></span>
     </li>
 
     <li>
       <strong>Payment Terms.</strong>
-      Buyer agrees to pay Seller according to
+        Buyer agrees to pay Seller according to
       <span class="fill" id="paymentTerms">Net 15</span>
-      payment terms. Payment shall be processed
+        payment terms. Payment shall be processed
       <span class="fill" id="paymentMethod">through Locality</span>,
-      unless otherwise agreed by the parties.
+        unless otherwise agreed by the parties. If payment is late,
+      <span class="fill" id="latePaymentRule">future deliveries may pause until payment is resolved</span>.
     </li>
 
     <li>
@@ -1277,11 +1285,12 @@ body.contract-review-page.submitted .review-action-dock {
     </li>
 
     <li>
-      <strong>Shortages and Substitutions.</strong>
-      If Seller cannot fully fulfill an order due to product availability, weather, harvest conditions, or other
-      operational constraints, Seller shall notify Buyer as soon as reasonably possible. Product substitutions require
+      <strong>Shortages, Substitutions, and Partial Fulfillment.</strong>
+        If Seller cannot fully fulfill an order due to product availability, weather, harvest conditions, or other
+        operational constraints, Seller shall notify Buyer as soon as reasonably possible. Product substitutions require
       <span class="fill" id="substitutionRule">Buyer approval</span>
-      before fulfillment unless otherwise agreed in writing.
+        before fulfillment unless otherwise agreed in writing. Partial fulfillment is
+      <span class="fill" id="partialFulfillment">Allowed with notice</span>.
     </li>
 
     <li>
@@ -1537,18 +1546,39 @@ body.contract-review-page.submitted .review-action-dock {
 const contractData = {
   contractId: reviewPayload.contractId || "LOC-2026-0041",
   agreementType: reviewPayload.agreementType || "flexible",
+
   sellerName: reviewPayload.sellerName || "Queen Creek Harvest",
   buyerName: reviewPayload.buyerName || "Roosevelt Row Market",
-  paymentTerms: reviewPayload.paymentTerms || "Net 15",
-  fulfillmentMethod: reviewPayload.fulfillmentMethod || "Supplier delivery",
+
+  buyerQuantityControl:
+    reviewPayload.buyerQuantityControl || "Buyer chooses quantities per order",
+  minimumTotalOrder: reviewPayload.minimumTotalOrder || "$100 minimum order",
   orderNotice: reviewPayload.orderNotice || "48 hours",
+  orderingFrequency: reviewPayload.orderingFrequency || "Weekly ordering allowed",
+  substitutionRule: reviewPayload.substitutionRule || "Buyer approval",
+  partialFulfillment: reviewPayload.partialFulfillment || "Allowed with notice",
+
+  fulfillmentMethod: reviewPayload.fulfillmentMethod || "Supplier delivery",
+  deliveryDays: reviewPayload.deliveryDays || "Tuesday / Thursday",
+  deliveryWindow: reviewPayload.deliveryWindow || "Tuesday / Thursday, 8 AM – 11 AM",
+  deliveryWindowOnly: reviewPayload.deliveryWindowOnly || "8 AM – 11 AM",
+  receivingLocation: reviewPayload.receivingLocation || "Buyer receiving location",
+  fulfillmentNotes: reviewPayload.fulfillmentNotes || "",
+
+  paymentTerms: reviewPayload.paymentTerms || "Net 15",
+  paymentMethod: reviewPayload.paymentMethod || "through Locality",
+  paymentMethodRaw: reviewPayload.paymentMethodRaw || "Paid through Locality",
+  latePaymentRule:
+    reviewPayload.latePaymentRule ||
+    "Future deliveries may pause until payment is resolved",
+
   inspectionWindow: reviewPayload.inspectionWindow || "48 hours",
   cancellationNotice: reviewPayload.cancellationNotice || "14 days written notice",
-  substitutionRule: reviewPayload.substitutionRule || "Buyer approval",
   governingLaw: reviewPayload.governingLaw || "Arizona",
   localityFeeNote:
     reviewPayload.localityFeeNote ||
     "Seller-paid Locality platform fees are governed by the applicable Locality seller agreement, platform terms, or fee schedule. Locality is not a party to this Buyer-Seller Agreement unless expressly stated in a separate written agreement.",
+
   customClauses: reviewPayload.customClauses || [],
   products: reviewPayload.products || []
 };
@@ -1600,51 +1630,58 @@ function renderContractProducts() {
 `;
 }
 
-    function fillContractDocument() {
-  document.querySelectorAll("[data-contract-id]").forEach((el) => {
-    el.textContent = contractData.contractId;
+    function setText(selector, value) {
+  document.querySelectorAll(selector).forEach((el) => {
+    el.textContent = value;
   });
+}
 
-  document.querySelectorAll("[data-seller-name]").forEach((el) => {
-    el.textContent = contractData.sellerName;
-  });
+function setTextById(id, value) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = value;
+}
 
-  document.querySelectorAll("[data-buyer-name]").forEach((el) => {
-    el.textContent = contractData.buyerName;
-  });
+function fillContractDocument() {
+  setText("[data-contract-id]", contractData.contractId);
+  setText("[data-seller-name]", contractData.sellerName);
+  setText("[data-buyer-name]", contractData.buyerName);
+  setText("[data-payment-terms]", contractData.paymentTerms);
+  setText("[data-fulfillment-method]", contractData.fulfillmentMethod);
+  setText("[data-order-notice]", contractData.orderNotice);
+  setText("[data-inspection-window]", contractData.inspectionWindow);
+  setText("[data-cancellation-notice]", contractData.cancellationNotice);
+  setText("[data-substitution-rule]", contractData.substitutionRule);
+  setText("[data-governing-law]", contractData.governingLaw);
 
-  document.querySelectorAll("[data-payment-terms]").forEach((el) => {
-    el.textContent = contractData.paymentTerms;
-  });
+  setTextById("sellerName", contractData.sellerName);
+  setTextById("buyerName", contractData.buyerName);
+  setTextById("orderNotice", contractData.orderNotice);
+  setTextById("fulfillmentMethod", contractData.fulfillmentMethod);
+  setTextById("deliveryWindow", contractData.deliveryWindow);
+  setTextById("paymentTerms", contractData.paymentTerms);
+  setTextById("paymentMethod", contractData.paymentMethod);
+  setTextById("inspectionWindow", contractData.inspectionWindow);
+  setTextById("substitutionRule", contractData.substitutionRule);
+  setTextById("cancellationNotice", contractData.cancellationNotice);
+  setTextById("governingLaw", contractData.governingLaw);
 
-  document.querySelectorAll("[data-fulfillment-method]").forEach((el) => {
-    el.textContent = contractData.fulfillmentMethod;
-  });
+  setTextById("buyerQuantityControl", contractData.buyerQuantityControl);
+  setTextById("minimumTotalOrder", contractData.minimumTotalOrder);
+  setTextById("orderingFrequency", contractData.orderingFrequency);
+  setTextById("receivingLocation", contractData.receivingLocation);
+  setTextById("partialFulfillment", contractData.partialFulfillment);
+  setTextById("latePaymentRule", contractData.latePaymentRule);
 
-  document.querySelectorAll("[data-order-notice]").forEach((el) => {
-    el.textContent = contractData.orderNotice;
-  });
-
-  document.querySelectorAll("[data-inspection-window]").forEach((el) => {
-    el.textContent = contractData.inspectionWindow;
-  });
-
-  document.querySelectorAll("[data-cancellation-notice]").forEach((el) => {
-    el.textContent = contractData.cancellationNotice;
-  });
-
-  document.querySelectorAll("[data-substitution-rule]").forEach((el) => {
-    el.textContent = contractData.substitutionRule;
-  });
-
-  document.querySelectorAll("[data-governing-law]").forEach((el) => {
-    el.textContent = contractData.governingLaw;
-  });
+  const fulfillmentNotesSentence = document.getElementById("fulfillmentNotesSentence");
+  if (fulfillmentNotesSentence) {
+    fulfillmentNotesSentence.textContent = contractData.fulfillmentNotes
+      ? ` Additional fulfillment notes: ${contractData.fulfillmentNotes}`
+      : "";
+  }
 
   renderSupplementalClauses();
   renderContractProducts();
 }
-
 function renderSupplementalClauses() {
   const section = document.getElementById("customClausesSection");
   const output = document.getElementById("customClausesOutput");
