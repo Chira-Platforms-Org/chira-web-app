@@ -863,13 +863,43 @@ body.contract-review-page.submitted .review-action-dock {
     border-radius: 26px;
   }
 }
+
+/* =========================
+   Add a little CSS for supplemental clauses
+========================= */
+
+    .supplemental-clauses {
+  margin-top: 34px;
+}
+
+.supplemental-clauses.hidden {
+  display: none;
+}
+
+.supplemental-clauses h3,
+.signature-section h3,
+.exhibit-section h3 {
+  font-family: "Times New Roman", Times, serif;
+  font-size: 1.25rem;
+  margin-bottom: 14px;
+}
+
+.supplemental-clause {
+  margin-bottom: 18px;
+}
+
+.supplemental-clause h4 {
+  font-family: "Times New Roman", Times, serif;
+  font-size: 1.05rem;
+  margin-bottom: 6px;
+}
+
+.supplemental-clause p {
+  margin: 0;
+}
     
   </style>
 </head>
-
-  /* =========================
-   CSS ENDS HERE — HTML BEGINS HERE
-========================= */
 
 <body class="contract-review-page">
 
@@ -935,147 +965,179 @@ body.contract-review-page.submitted .review-action-dock {
             </div>
           </div>
 
-          <h2>Flexible Ordering Supply Agreement</h2>
+         <h2 id="agreementTitle">Flexible Ordering Supply Agreement</h2>
 
-          <p>
-            This Flexible Ordering Supply Agreement (the “Agreement”) is made and entered into as of
-            <span class="fill">May 30, 2026</span>, by and between
-            <span class="fill">Queen Creek Harvest</span> (“Seller”) and
-            <span class="fill">Roosevelt Row Market</span> (“Buyer”).
-          </p>
+<p>
+  This Flexible Ordering Supply Agreement (the “Agreement”) is made and entered into as of
+  <span class="fill" id="agreementDate">May 30, 2026</span>, by and between
+  <span class="fill" id="sellerName">Queen Creek Harvest</span> (“Seller”) and
+  <span class="fill" id="buyerName">Roosevelt Row Market</span> (“Buyer”).
+</p>
 
-          <section>
-            <ol>
-              <li>
-                <strong>Agreement Type.</strong>
-                This Agreement establishes flexible ordering terms under which Buyer may place orders
-                for approved products during the agreement term. Buyer is not required to purchase a fixed
-                quantity of each product unless specifically stated in Exhibit A.
-              </li>
+<section>
+  <ol>
+    <li>
+      <strong>Agreement Type.</strong>
+      This Agreement establishes flexible ordering terms under which Buyer may place orders for approved
+      products during the agreement term. Buyer is not required to purchase a fixed quantity of each product
+      unless specifically stated in Exhibit A.
+    </li>
 
-              <li>
-                <strong>Approved Products and Pricing.</strong>
-                Seller agrees to make the approved products listed in Exhibit A available to Buyer subject
-                to availability, minimum order requirements, product specifications, and the pricing terms
-                stated in this Agreement.
-              </li>
+    <li>
+      <strong>Approved Products and Pricing.</strong>
+      Seller agrees to make the approved products listed in Exhibit A available to Buyer, subject to availability,
+      minimum order requirements, product specifications, and the pricing terms stated in this Agreement.
+    </li>
 
-              <li>
-                <strong>Ordering Rules.</strong>
-                Buyer may select quantities for each order, provided each order satisfies the agreed minimum
-                order requirements. Buyer shall provide at least
-                <span class="fill">48 hours</span> of notice before the requested delivery or pickup window.
-              </li>
+    <li>
+      <strong>Ordering Rules.</strong>
+      Buyer may select quantities for each order, provided each order satisfies the agreed minimum order
+      requirements. Buyer shall provide at least
+      <span class="fill" id="orderNotice">48 hours</span>
+      of notice before the requested delivery or pickup window.
+    </li>
 
-              <li>
-                <strong>Delivery and Fulfillment.</strong>
-                Orders accepted under this Agreement shall be fulfilled by
-                <span class="fill">Supplier delivery</span>. The standard delivery window shall be
-                <span class="fill">Tuesday / Thursday, 8 AM – 11 AM</span>, unless otherwise agreed by both parties.
-              </li>
+    <li>
+      <strong>Delivery and Fulfillment.</strong>
+      Orders accepted under this Agreement shall be fulfilled by
+      <span class="fill" id="fulfillmentMethod">Supplier delivery</span>.
+      The standard delivery or pickup window shall be
+      <span class="fill" id="deliveryWindow">Tuesday / Thursday, 8 AM – 11 AM</span>,
+      unless otherwise agreed by both parties.
+    </li>
 
-              <li>
-                <strong>Payment Terms.</strong>
-                Buyer agrees to pay Seller according to
-                <span class="fill">Net 15</span> payment terms. Payment shall be processed
-                <span class="fill">through Locality</span>, unless otherwise agreed by the parties.
-              </li>
+    <li>
+      <strong>Payment Terms.</strong>
+      Buyer agrees to pay Seller according to
+      <span class="fill" id="paymentTerms">Net 15</span>
+      payment terms. Payment shall be processed
+      <span class="fill" id="paymentMethod">through Locality</span>,
+      unless otherwise agreed by the parties.
+    </li>
 
-              <li>
-                <strong>Inspection and Acceptance.</strong>
-                Buyer shall inspect products promptly upon delivery. Buyer must notify Seller of quality,
-                defect, or discrepancy issues within
-                <span class="fill">48 hours</span> of delivery.
-              </li>
+    <li>
+      <strong>Inspection and Acceptance.</strong>
+      Buyer shall inspect products promptly upon delivery. Buyer must notify Seller of any quality, defect,
+      shortage, or discrepancy issue within
+      <span class="fill" id="inspectionWindow">48 hours</span>
+      of delivery. Products not disputed within that window may be treated as accepted.
+    </li>
 
-              <li>
-                <strong>Shortages and Substitutions.</strong>
-                If Seller cannot fully fulfill an order due to product availability, Seller shall notify Buyer
-                as soon as reasonably possible. Product substitutions require
-                <span class="fill">Buyer approval</span> before fulfillment.
-              </li>
+    <li>
+      <strong>Shortages and Substitutions.</strong>
+      If Seller cannot fully fulfill an order due to product availability, weather, harvest conditions, or other
+      operational constraints, Seller shall notify Buyer as soon as reasonably possible. Product substitutions require
+      <span class="fill" id="substitutionRule">Buyer approval</span>
+      before fulfillment unless otherwise agreed in writing.
+    </li>
 
-              <li>
-                <strong>Cancellation and Termination.</strong>
-                Either party may request cancellation of this Agreement with
-                <span class="fill">14 days written notice</span>, unless otherwise agreed in writing.
-              </li>
+    <li>
+      <strong>Product Quality, Warranty, and Food Safety.</strong>
+      Seller represents that products delivered under this Agreement will be market-grade, reasonably consistent
+      with the specifications in Exhibit A, and handled in accordance with applicable food safety and handling
+      requirements. Except as expressly stated in this Agreement, no additional warranties are made.
+    </li>
 
-              <li>
-                <strong>Custom Terms.</strong>
-                The following custom terms shall apply if provided:
-                <span class="fill">Buyer may request crop substitutions only if approved in writing by Seller before fulfillment.</span>
-              </li>
+    <li>
+      <strong>Liability Limitation.</strong>
+      Each party is responsible for its own acts, omissions, and compliance obligations. To the fullest extent
+      permitted by applicable law, Seller’s liability for defective, nonconforming, or undelivered products is limited
+      to replacement of the affected products, credit, refund, or another remedy agreed by the parties.
+    </li>
 
-              <li>
-                <strong>Platform Record.</strong>
-                This Agreement was generated through Locality Contract Studio as a structured agreement
-                preview. Submission records, message references, version history, and fulfillment activity
-                may be maintained in Locality.
-              </li>
-            </ol>
-          </section>
+    <li>
+      <strong>Cancellation and Termination.</strong>
+      Either party may request cancellation or termination of this Agreement with
+      <span class="fill" id="cancellationNotice">14 days written notice</span>,
+      unless otherwise agreed in writing. Open orders already accepted before cancellation may remain subject to
+      the fulfillment and payment terms of this Agreement unless both parties agree otherwise.
+    </li>
 
-          <section>
-            <h3>Signatures</h3>
-            <p>
-              This preview does not collect final signatures. If both parties accept the same version,
-              the agreement may proceed to the signature process.
-            </p>
+    <li>
+      <strong>Governing Law.</strong>
+      This Agreement shall be governed by and interpreted in accordance with the laws of
+      <span class="fill" id="governingLaw">Arizona</span>,
+      unless another governing jurisdiction is agreed in writing by both parties.
+    </li>
 
-            <div class="signature-grid">
-              <div class="signature-box">
-                <strong>Buyer</strong>
-                <div class="signature-line">Signature: _________________________</div>
-                <div class="signature-line">Name: _____________________________</div>
-                <div class="signature-line">Date: ______________________________</div>
-              </div>
+    <li>
+      <strong>Locality Platform Record and Fees.</strong>
+      This Agreement was generated through Locality Contract Studio as a structured agreement preview.
+      Submission records, message references, version history, and fulfillment activity may be maintained in
+      Locality. Seller-paid Locality platform fees are governed by the applicable Locality seller agreement,
+      platform terms, or fee schedule. Locality is not a party to this Buyer-Seller Agreement unless expressly
+      stated in a separate written agreement.
+    </li>
+  </ol>
+</section>
 
-              <div class="signature-box">
-                <strong>Seller</strong>
-                <div class="signature-line">Signature: _________________________</div>
-                <div class="signature-line">Name: _____________________________</div>
-                <div class="signature-line">Date: ______________________________</div>
-              </div>
-            </div>
-          </section>
+<section id="customClausesSection" class="hidden">
+  <h3>Additional Terms</h3>
+  <ol id="customClausesList"></ol>
+</section>
 
-          <section>
-            <h3>Exhibit A — Approved Products</h3>
+<section>
+  <h3>Signatures</h3>
+  <p>
+    This preview does not collect final signatures. If both parties accept the same version, the agreement may
+    proceed to the signature process.
+  </p>
 
-            <table class="exhibit-table">
-              <thead>
-                <tr>
-                  <th>Product</th>
-                  <th>Status</th>
-                  <th>Unit Price</th>
-                  <th>Minimum Order</th>
-                  <th>Ordering Model</th>
-                  <th>Specifications</th>
-                </tr>
-              </thead>
+  <div class="signature-grid">
+    <div>
+      <div class="signature-line"></div>
+      <strong>Buyer</strong>
+      <p>Signature: ____________________________</p>
+      <p>Name: ________________________________</p>
+      <p>Date: ________________________________</p>
+    </div>
 
-              <tbody>
-                <tr>
-                  <td>Rainbow Carrots</td>
-                  <td>Organic</td>
-                  <td>$2.45 / lb</td>
-                  <td>25 lb / order</td>
-                  <td>Buyer-selected quantity</td>
-                  <td>Fresh, market-grade, packed for local delivery.</td>
-                </tr>
+    <div>
+      <div class="signature-line"></div>
+      <strong>Seller</strong>
+      <p>Signature: ____________________________</p>
+      <p>Name: ________________________________</p>
+      <p>Date: ________________________________</p>
+    </div>
+  </div>
+</section>
 
-                <tr>
-                  <td>Red Cabbage</td>
-                  <td>Conventional</td>
-                  <td>$1.90 / lb</td>
-                  <td>20 lb / order</td>
-                  <td>Buyer-selected quantity</td>
-                  <td>Fresh, market-grade heads suitable for retail display.</td>
-                </tr>
-              </tbody>
-            </table>
-          </section>
+<section>
+  <h3>Exhibit A — Approved Products</h3>
+
+  <table class="contract-product-table">
+    <thead>
+      <tr>
+        <th>Product</th>
+        <th>Status</th>
+        <th>Unit Price</th>
+        <th>Minimum Order</th>
+        <th>Ordering Model</th>
+        <th>Specifications</th>
+      </tr>
+    </thead>
+
+    <tbody id="contractProductsBody">
+      <tr>
+        <td>Rainbow Carrots</td>
+        <td>Organic</td>
+        <td>$2.45 / lb</td>
+        <td>25 lb / order</td>
+        <td>Buyer-selected quantity</td>
+        <td>Fresh, market-grade, packed for local delivery.</td>
+      </tr>
+
+      <tr>
+        <td>Red Cabbage</td>
+        <td>Conventional</td>
+        <td>$1.90 / lb</td>
+        <td>20 lb / order</td>
+        <td>Buyer-selected quantity</td>
+        <td>Fresh, market-grade heads suitable for retail display.</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
         </article>
 
         <aside class="review-side-panel">
@@ -1251,6 +1313,138 @@ body.contract-review-page.submitted .review-action-dock {
       window.close();
     }, 120);
   }
+
+ const reviewPayload = JSON.parse(
+  sessionStorage.getItem("localityContractReviewPayload") || "{}"
+);
+
+const contractData = {
+  contractId: reviewPayload.contractId || "LOC-2026-0041",
+  agreementType: reviewPayload.agreementType || "flexible",
+  sellerName: reviewPayload.sellerName || "Queen Creek Harvest",
+  buyerName: reviewPayload.buyerName || "Roosevelt Row Market",
+  paymentTerms: reviewPayload.paymentTerms || "Net 15",
+  fulfillmentMethod: reviewPayload.fulfillmentMethod || "Supplier delivery",
+  orderNotice: reviewPayload.orderNotice || "48 hours",
+  inspectionWindow: reviewPayload.inspectionWindow || "48 hours",
+  cancellationNotice: reviewPayload.cancellationNotice || "14 days written notice",
+  substitutionRule: reviewPayload.substitutionRule || "Buyer approval",
+  governingLaw: reviewPayload.governingLaw || "Arizona",
+  localityFeeNote:
+    reviewPayload.localityFeeNote ||
+    "Seller-paid Locality platform fees are governed by the applicable Locality seller agreement, platform terms, or fee schedule. Locality is not a party to this Buyer-Seller Agreement unless expressly stated in a separate written agreement.",
+  customClauses: reviewPayload.customClauses || [],
+  products: reviewPayload.products || []
+};
+
+    function fillContractDocument() {
+  document.querySelectorAll("[data-contract-id]").forEach((el) => {
+    el.textContent = contractData.contractId;
+  });
+
+  document.querySelectorAll("[data-seller-name]").forEach((el) => {
+    el.textContent = contractData.sellerName;
+  });
+
+  document.querySelectorAll("[data-buyer-name]").forEach((el) => {
+    el.textContent = contractData.buyerName;
+  });
+
+  document.querySelectorAll("[data-payment-terms]").forEach((el) => {
+    el.textContent = contractData.paymentTerms;
+  });
+
+  document.querySelectorAll("[data-fulfillment-method]").forEach((el) => {
+    el.textContent = contractData.fulfillmentMethod;
+  });
+
+  document.querySelectorAll("[data-order-notice]").forEach((el) => {
+    el.textContent = contractData.orderNotice;
+  });
+
+  document.querySelectorAll("[data-inspection-window]").forEach((el) => {
+    el.textContent = contractData.inspectionWindow;
+  });
+
+  document.querySelectorAll("[data-cancellation-notice]").forEach((el) => {
+    el.textContent = contractData.cancellationNotice;
+  });
+
+  document.querySelectorAll("[data-substitution-rule]").forEach((el) => {
+    el.textContent = contractData.substitutionRule;
+  });
+
+  document.querySelectorAll("[data-governing-law]").forEach((el) => {
+    el.textContent = contractData.governingLaw;
+  });
+
+  renderSupplementalClauses();
+  renderReviewProductTable();
+}
+
+function renderSupplementalClauses() {
+  const wrapper = document.getElementById("supplementalClauses");
+  const list = document.getElementById("supplementalClauseList");
+
+  if (!wrapper || !list) return;
+
+  if (!contractData.customClauses.length) {
+    wrapper.classList.add("hidden");
+    list.innerHTML = "";
+    return;
+  }
+
+  wrapper.classList.remove("hidden");
+
+  list.innerHTML = contractData.customClauses
+    .map((clause, index) => {
+      const title = clause.title || `Supplemental Clause ${index + 1}`;
+      const text = clause.text || "";
+
+      return `
+        <div class="supplemental-clause">
+          <h4>${index + 1}. ${title}</h4>
+          <p>${text}</p>
+        </div>
+      `;
+    })
+    .join("");
+}
+
+function renderReviewProductTable() {
+  const tableBody = document.getElementById("reviewProductTableBody");
+  if (!tableBody) return;
+
+  const products = contractData.products.length
+    ? contractData.products
+    : [
+        {
+          name: "Rainbow Carrots",
+          status: "Organic",
+          unitPrice: "$2.45 / lb",
+          minimumOrder: "25 lb / order",
+          orderingModel: "Buyer-selected quantity",
+          specifications: "Fresh, market-grade, packed for local delivery."
+        }
+      ];
+
+  tableBody.innerHTML = products
+    .map(
+      (product) => `
+        <tr>
+          <td>${product.name}</td>
+          <td>${product.status}</td>
+          <td>${product.unitPrice}</td>
+          <td>${product.minimumOrder}</td>
+          <td>${product.orderingModel}</td>
+          <td>${product.specifications}</td>
+        </tr>
+      `
+    )
+    .join("");
+}
+
+fillContractDocument();
 
   window.addEventListener("load", () => {
     setTimeout(() => {
