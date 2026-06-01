@@ -267,25 +267,95 @@
     }
 
     .exhibit-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 18px;
-      font-size: 0.93rem;
-    }
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  margin-top: 18px;
+  border: 1px solid rgba(20, 32, 54, 0.16);
+  border-radius: 10px;
+  overflow: hidden;
+  font-family: "Times New Roman", Times, serif;
+}
 
-    .exhibit-table th,
-    .exhibit-table td {
-      border: 1px solid #d5d5d5;
-      padding: 14px 12px;
-      text-align: left;
-      vertical-align: top;
-    }
+.exhibit-table thead th {
+  padding: 12px 14px;
+  background: rgba(20, 32, 54, 0.035);
+  color: rgba(20, 32, 54, 0.58);
+  font-size: 0.76rem;
+  line-height: 1.15;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  text-align: left;
+  border-bottom: 2px solid rgba(20, 32, 54, 0.16);
+  border-right: 1px solid rgba(20, 32, 54, 0.12);
+  white-space: nowrap;
+}
 
-    .exhibit-table th {
-      color: #6d7780;
-      font-weight: 900;
-      background: #fafafa;
-    }
+.exhibit-table thead th:last-child {
+  border-right: none;
+}
+
+.exhibit-table tbody td {
+  padding: 14px 14px;
+  color: var(--navy);
+  font-size: 0.92rem;
+  line-height: 1.28;
+  vertical-align: top;
+  border-bottom: 2px solid rgba(20, 32, 54, 0.13);
+  border-right: 1px solid rgba(20, 32, 54, 0.10);
+}
+
+.exhibit-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.exhibit-table tbody td:last-child {
+  border-right: none;
+}
+
+.exhibit-table th:nth-child(1),
+.exhibit-table td:nth-child(1) {
+  width: 19%;
+}
+
+.exhibit-table th:nth-child(2),
+.exhibit-table td:nth-child(2) {
+  width: 9%;
+  text-align: center;
+}
+
+.exhibit-table th:nth-child(3),
+.exhibit-table td:nth-child(3) {
+  width: 14%;
+}
+
+.exhibit-table th:nth-child(4),
+.exhibit-table td:nth-child(4) {
+  width: 15%;
+}
+
+.exhibit-table th:nth-child(5),
+.exhibit-table td:nth-child(5) {
+  width: 18%;
+}
+
+.exhibit-table th:nth-child(6),
+.exhibit-table td:nth-child(6) {
+  width: 25%;
+  padding-right: 20px;
+}
+
+.exhibit-table td:nth-child(2),
+.exhibit-table td:nth-child(3),
+.exhibit-table td:nth-child(4) {
+  white-space: nowrap;
+}
+
+.exhibit-table td:nth-child(1),
+.exhibit-table td:nth-child(5),
+.exhibit-table td:nth-child(6) {
+  overflow-wrap: anywhere;
+}
 
     .signature-grid {
       display: grid;
