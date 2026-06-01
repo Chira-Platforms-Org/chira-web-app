@@ -1048,6 +1048,74 @@ body.contract-review-page.submitted .review-action-dock {
     border-top: 1px solid rgba(20, 50, 92, 0.1);
   }
 }
+
+.contract-product-grid {
+  display: grid;
+  grid-template-columns: 1.45fr 0.7fr 1fr 1.1fr 1.25fr 1.65fr;
+  align-items: start;
+}
+
+.contract-product-header {
+  border: 1px solid rgba(20, 50, 92, 0.18);
+  border-bottom: 2px solid rgba(20, 50, 92, 0.22);
+  border-radius: 10px 10px 0 0;
+  background: rgba(20, 50, 92, 0.035);
+}
+
+.contract-product-header span {
+  padding: 12px 12px;
+  color: rgba(20, 50, 92, 0.62);
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  border-right: 1px solid rgba(20, 50, 92, 0.12);
+}
+
+.contract-product-header span:last-child {
+  border-right: none;
+}
+
+.contract-product-row {
+  border-left: 1px solid rgba(20, 50, 92, 0.16);
+  border-right: 1px solid rgba(20, 50, 92, 0.16);
+  border-bottom: 2px solid rgba(20, 50, 92, 0.18);
+  background: rgba(255, 255, 255, 0.62);
+}
+
+.contract-product-row > * {
+  padding: 13px 12px;
+  min-width: 0;
+  border-right: 1px solid rgba(20, 50, 92, 0.10);
+  color: var(--navy);
+  font-size: 0.86rem;
+  line-height: 1.32;
+}
+
+.contract-product-row > *:last-child {
+  border-right: none;
+}
+
+.contract-product-row strong {
+  font-weight: 900;
+}
+
+.contract-product-row span {
+  font-weight: 750;
+}
+
+.contract-product-row span:last-child {
+  font-weight: 650;
+  line-height: 1.35;
+}
+
+.empty-product-note {
+  padding: 18px;
+  border: 1px dashed rgba(20, 50, 92, 0.18);
+  border-radius: 14px;
+  color: var(--muted);
+  font-weight: 750;
+}
     
   </style>
 </head>
@@ -1454,59 +1522,46 @@ const contractData = {
 const contractProductsReceipt = document.getElementById("contractProductsReceipt");
 
 function renderContractProducts() {
-  if (!contractProductsReceipt) return;
+  const receipt = document.getElementById("contractProductsReceipt");
+  if (!receipt) return;
 
   const products = contractData.products || [];
 
   if (!products.length) {
-    contractProductsReceipt.innerHTML = `
-      <div class="receipt-empty-row">
-        No products were added to this agreement.
-      </div>
+    receipt.innerHTML = `
+      <p class="empty-product-note">No products were added to this agreement.</p>
     `;
     return;
   }
 
-  contractProductsReceipt.innerHTML = products
-    .map((product) => {
-      const organicText =
-        product.status?.toLowerCase().includes("organic") ? "Yes" : "No";
+  receipt.innerHTML = `
+    <div class="contract-product-grid contract-product-header">
+      <span>Product</span>
+      <span>Organic?</span>
+      <span>Unit Price</span>
+      <span>Minimum</span>
+      <span>Ordering</span>
+      <span>Specifications</span>
+    </div>
 
-      return `
-        <article class="receipt-product-row">
-          <div class="receipt-product-main">
-            <span class="receipt-label">Product</span>
+    ${products
+      .map((product) => {
+        const organicText =
+          product.status?.toLowerCase().includes("organic") ? "Yes" : "No";
+
+        return `
+          <div class="contract-product-grid contract-product-row">
             <strong>${product.name || "Product"}</strong>
+            <span>${organicText}</span>
+            <span>${product.unitPrice || "$0.00 / lb"}</span>
+            <span>${product.minimumOrder || "25 lb / order"}</span>
+            <span>${product.orderingModel || "Buyer-selected quantity"}</span>
+            <span>${product.specifications || "Fresh, market-grade product covered by this agreement."}</span>
           </div>
-
-          <div class="receipt-product-cell small">
-            <span class="receipt-label">Organic?</span>
-            <strong>${organicText}</strong>
-          </div>
-
-          <div class="receipt-product-cell">
-            <span class="receipt-label">Unit Price</span>
-            <strong>${product.unitPrice || "—"}</strong>
-          </div>
-
-          <div class="receipt-product-cell">
-            <span class="receipt-label">Minimum</span>
-            <strong>${product.minimumOrder || "—"}</strong>
-          </div>
-
-          <div class="receipt-product-cell model">
-            <span class="receipt-label">Ordering</span>
-            <strong>${product.orderingModel || "Buyer-selected"}</strong>
-          </div>
-
-          <div class="receipt-product-specs">
-            <span class="receipt-label">Specifications</span>
-            <p>${product.specifications || "Fresh, market-grade product covered by this agreement."}</p>
-          </div>
-        </article>
-      `;
-    })
-    .join("");
+        `;
+      })
+      .join("")}
+  `;
 }
 
     function fillContractDocument() {
