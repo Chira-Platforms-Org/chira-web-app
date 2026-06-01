@@ -673,6 +673,9 @@ function createProductRow(product = "Listed product", price = "0.00", unit = "lb
 
   const row = document.createElement("div");
   row.className = "product-row active";
+  row.dataset.product = product;
+  row.dataset.price = price;
+  row.dataset.unit = unit;
   row.dataset.organic = organic ? "true" : "false";
 
   document.querySelectorAll(".product-row").forEach((item) => {
@@ -695,7 +698,7 @@ function createProductRow(product = "Listed product", price = "0.00", unit = "lb
     <div class="product-fields flexible-product-fields">
       <label>
         Product
-        <select>
+        <select class="product-select">
           <option selected>${product}</option>
           <option>Rainbow Carrots</option>
           <option>Red Cabbage</option>
@@ -707,8 +710,8 @@ function createProductRow(product = "Listed product", price = "0.00", unit = "lb
       <label>
         Minimum order
         <div class="split-field">
-          <input type="number" value="25" />
-          <select>
+          <input class="quantity-input" type="number" value="25" />
+          <select class="unit-select">
             <option ${unit === "lb" ? "selected" : ""}>lb</option>
             <option ${unit === "oz" ? "selected" : ""}>oz</option>
             <option ${unit === "kg" ? "selected" : ""}>kg</option>
@@ -724,9 +727,9 @@ function createProductRow(product = "Listed product", price = "0.00", unit = "lb
         Price
         <div class="price-field">
           <span>$</span>
-          <input type="number" step="0.01" value="${price}" />
+          <input class="price-input" type="number" step="0.01" value="${price}" />
           <small>per</small>
-          <select>
+          <select class="price-unit-select">
             <option ${unit === "lb" ? "selected" : ""}>lb</option>
             <option ${unit === "oz" ? "selected" : ""}>oz</option>
             <option ${unit === "kg" ? "selected" : ""}>kg</option>
@@ -740,8 +743,8 @@ function createProductRow(product = "Listed product", price = "0.00", unit = "lb
 
       <label>
         Ordering model
-        <select>
-          <option>Buyer selects quantity per order</option>
+        <select class="ordering-model-select">
+          <option selected>Buyer-selected quantity</option>
           <option>Fixed recurring quantity</option>
           <option>Seller availability-based</option>
         </select>
@@ -749,7 +752,7 @@ function createProductRow(product = "Listed product", price = "0.00", unit = "lb
 
       <label class="wide-field">
         Product specifications
-        <textarea placeholder="Example: Fresh, market-grade, washed, packed in reusable crates.">Fresh, market-grade, packed for local delivery.</textarea>
+        <textarea class="specifications-input" placeholder="Example: Fresh, market-grade, washed, packed in reusable crates.">Fresh, market-grade, packed for local delivery.</textarea>
       </label>
     </div>
   `;
@@ -842,8 +845,61 @@ const reviewWaitingOverlay = document.getElementById("reviewWaitingOverlay");
 const dismissReviewWaiting = document.getElementById("dismissReviewWaiting");
 const reopenReviewTab = document.getElementById("reopenReviewTab");
 
+function getBuilderProducts() {
+  const rows = document.querySelectorAll(".product-row");
+
+  return Array.from(rows)
+    .map((row) => {
+      const productSelect = row.querySelector(".product-select");
+      const quantityInput = row.querySelector(".quantity-input");
+      const unitSelect = row.querySelector(".unit-select");
+      const priceInput = row.querySelector(".price-input");
+      const priceUnitSelect = row.querySelector(".price-unit-select");
+      const orderingModelSelect = row.querySelector(".ordering-model-select");
+      const specificationsInput = row.querySelector(".specifications-input");
+
+      const productName =
+        productSelect?.value?.trim() ||
+        row.dataset.product ||
+        "Selected product";
+
+      const quantity = quantityInput?.value || "25";
+      const unit = unitSelect?.value || row.dataset.unit || "lb";
+      const price = priceInput?.value || row.dataset.price || "0.00";
+      const priceUnit = priceUnitSelect?.value || unit;
+
+      const orderingModel =
+        orderingModelSelect?.value || "Buyer-selected quantity";
+
+      const specifications =
+        specificationsInput?.value?.trim() ||
+        "Fresh, market-grade product covered by this agreement.";
+
+      const isOrganic =
+        row.dataset.organic === "true" ||
+        Boolean(row.querySelector(".organic-badge"));
+
+      return {
+        name: productName,
+        status: isOrganic ? "Organic" : "Conventional",
+        unitPrice: `$${price} / ${priceUnit}`,
+        minimumOrder: `${quantity} ${unit} / order`,
+        orderingModel,
+        specifications
+      };
+    })
+    .filter((product) => {
+      return (
+        product.name &&
+        product.name !== "New product" &&
+        product.name !== "Selected product"
+      );
+    });
+}
+
 function openContractReviewTab() {
   const customClauses = getCustomClauses();
+  const products = getBuilderProducts();
 
   const reviewPayload = {
     contractId: "LOC-2026-0041",
@@ -860,48 +916,8 @@ function openContractReviewTab() {
     localityFeeNote:
       "Seller-paid Locality platform fees are governed by the applicable Locality seller agreement, platform terms, or fee schedule. Locality is not a party to this Buyer-Seller Agreement unless expressly stated in a separate written agreement.",
     customClauses,
-    products: getBuilderProducts()
+    products
   };
-
-  function getBuilderProducts() {
-  const rows = document.querySelectorAll(".product-row");
-
-  return Array.from(rows)
-    .map((row) => {
-      const productSelect = row.querySelector(".product-select");
-      const quantityInput = row.querySelector(".quantity-input");
-      const unitSelect = row.querySelector(".unit-select");
-      const priceInput = row.querySelector(".price-input");
-      const priceUnitSelect = row.querySelector(".price-unit-select");
-      const cadenceSelect = row.querySelector(".cadence-select");
-
-      const productName =
-        productSelect?.value ||
-        row.dataset.product ||
-        "Selected product";
-
-      const quantity = quantityInput?.value || "25";
-      const unit = unitSelect?.value || "lb";
-      const price = priceInput?.value || "0.00";
-      const priceUnit = priceUnitSelect?.value || unit;
-      const cadence = cadenceSelect?.value || "order";
-
-      const isOrganic =
-        row.dataset.organic === "true" ||
-        row.querySelector(".organic-badge") ||
-        productName.toLowerCase().includes("organic");
-
-      return {
-        name: productName,
-        status: isOrganic ? "Organic" : "Conventional",
-        unitPrice: `$${price} / ${priceUnit}`,
-        minimumOrder: `${quantity} ${unit} / ${cadence}`,
-        orderingModel: "Buyer-selected quantity",
-        specifications: "Fresh, market-grade product covered by this agreement."
-      };
-    })
-    .filter((product) => product.name && product.name !== "New product");
-}
 
   sessionStorage.setItem(
     "localityContractReviewPayload",
