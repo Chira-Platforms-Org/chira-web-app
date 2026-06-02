@@ -1153,6 +1153,14 @@ body.contract-review-page.submitted .review-action-dock {
   padding-left: 10px;
   padding-right: 10px;
 }
+
+.review-meta-card small {
+  display: block;
+  margin-top: 6px;
+  color: rgba(20, 50, 92, 0.62);
+  font-size: 0.78rem;
+  font-weight: 800;
+}
     
   </style>
 </head>
@@ -1202,7 +1210,12 @@ body.contract-review-page.submitted .review-action-dock {
 
         <aside class="review-meta-card">
           <span>Contract ID</span>
-          <strong>LOC-2026-0041</strong>
+          <strong data-contract-id>LOC-2026-0041</strong>
+        </aside>
+
+        <aside class="review-meta-card">
+          <span>Draft activity</span>
+          <strong id="reviewLastEdited">Last edited just now</strong>
         </aside>
       </div>
 
@@ -1548,8 +1561,16 @@ body.contract-review-page.submitted .review-action-dock {
 
 const contractData = {
   contractId: reviewPayload.contractId || "LOC-2026-0041",
+  agreementDate: reviewPayload.agreementDate || new Date().toLocaleDateString(undefined, {
+  month: "long",
+  day: "numeric",
+  year: "numeric"
+  }),
+  lastEdited: reviewPayload.lastEdited || "",
+  createdAt: reviewPayload.createdAt || "",
+  updatedAt: reviewPayload.updatedAt || "",
+  
   agreementType: reviewPayload.agreementType || "flexible",
-
   sellerName: reviewPayload.sellerName || "Queen Creek Harvest",
   buyerName: reviewPayload.buyerName || "Roosevelt Row Market",
 
@@ -1656,6 +1677,7 @@ function fillContractDocument() {
   setText("[data-substitution-rule]", contractData.substitutionRule);
   setText("[data-governing-law]", contractData.governingLaw);
 
+  setTextById("agreementDate", contractData.agreementDate);
   setTextById("sellerName", contractData.sellerName);
   setTextById("buyerName", contractData.buyerName);
   setTextById("orderNotice", contractData.orderNotice);
