@@ -1210,6 +1210,186 @@ function addSavedDraftCard(draft) {
   feed.prepend(card);
 }
 
+function setFieldValue(selector, value) {
+  const field = document.querySelector(selector);
+  if (!field || value === undefined || value === null) return;
+
+  field.value = value;
+}
+
+function clearProductRows() {
+  const productEditor = document.getElementById("productEditor");
+  if (!productEditor) return;
+
+  productEditor.querySelectorAll(".product-row").forEach((row) => {
+    row.remove();
+  });
+}
+
+function loadDraftIntoBuilder(draft) {
+  if (!draft) return;
+
+  activeDraftId = draft.id;
+
+  selectedAgreementTemplate = draft.agreementType || "flexible";
+  selectedBusinessName = draft.parties?.sellerName || null;
+
+  setAgreementTemplate(selectedAgreementTemplate || "flexible");
+
+  // Ordering rules
+  setFieldValue(
+    ".buyer-quantity-control-select",
+    draft.orderingRules?.buyerQuantityControl
+  );
+
+  const minimumOrderValue =
+    draft.orderingRules?.minimumTotalOrder?.match(/\d+/)?.[0] || "";
+
+  setFieldValue(".minimum-total-order-input", minimumOrderValue);
+  setFieldValue(".ordering-frequency-select", draft.orderingRules?.orderingFrequency);
+  setFieldValue(".partial-fulfillment-select", draft.orderingRules?.partialFulfillment);
+
+  // These need conversion because the saved/review version is simplified.
+  const noticeValue = draft.orderingRules?.orderNotice
+    ? `${draft.orderingRules.orderNotice} before delivery`
+    : "";
+
+  setFieldValue(".order-notice-select", noticeValue);
+
+  const substitutionReverseMap = {
+    "Buyer approval": "Require buyer approval",
+    "similar substitutions": "Allow similar substitutions",
+    "no substitutions": "No substitutions allowed"
+  };
+
+  setFieldValue(
+    ".substitution-rule-select",
+    substitutionReverseMap[draft.orderingRules?.substitutionRule] ||
+      draft.orderingRules?.substitutionRule
+  );
+
+  // Fulfillment
+  setFieldValue(".fulfillment-method-select", draft.fulfillment?.fulfillmentMethod);
+  setFieldValue(".delivery-days-select", draft.fulfillment?.deliveryDays);
+  setFieldValue(".delivery-window-select", draft.fulfillment?.deliveryWindow);
+  setFieldValue(".receiving-location-input", draft.fulfillment?.receivingLocation);
+  setFieldValue(".fulfillment-notes-input", draft.fulfillment?.fulfillmentNotes);
+
+  // Payment
+  setFieldValue(".payment-terms-select", draft.payment?.paymentTerms);
+  setFieldValue(".payment-method-select", draft.payment?.paymentMethodRaw);
+  setFieldValue(".late-payment-rule-select", draft.payment?.latePaymentRule);
+
+  // Products
+  clearProductRows();
+
+  if (Array.isArray(draft.products) && draft.products.length) {
+    draft.products.forEach((product) => {
+      const name = product.name || "Listed product";
+
+      const price =
+        product.price ||
+        product.unitPrice?.replace("$", "")?.split("/")[0]?.trim() ||
+        "0.00";
+
+      const unit =
+        product.unit ||
+        product.unitPrice?.split("/")?.[1]?.trim() ||
+        "lb";
+
+      const organic =
+        product.status?.toLowerCase?.().includes("organic") ||
+        product.organic === true;
+
+      createProductRow(name, price, unit, organic);
+
+      const lastRow = document.querySelector(".product-row:last-of-type");
+
+      if (lastRow) {
+        const quantityValue =
+          product.minimumOrder?.match(/\d+/)?.[0] ||
+          product.quantity ||
+          "25";
+
+        const minimumUnit =
+          product.minimumOrder?.split(" ")?.[1] ||
+          product.unit ||
+          unit;
+
+        lastRow.querySelector(".quantity-input").value = quantityValue;
+        lastRow.querySelector(".unit-select").value = minimumUnit;
+        lastRow.querySelector(".price-unit-select").value = unit;
+
+        if (product.orderingModel) {
+          lastRow.querySelector(".ordering-model-select").value =
+            product.orderingModel;
+        }
+
+        if (product.specifications) {
+          lastRow.querySelector(".specifications-input").value =
+            product.specifications;
+        }
+      }
+    });
+  }
+
+  // Custom clauses
+  const customClauseList = document.getElementById("customClauseList");
+
+  if (customClauseList) {
+    customClauseList.innerHTML = "";
+
+    const clauses = Array.isArray(draft.customClauses)
+      ? draft.customClauses
+      : [];
+
+    if (clauses.length) {
+      clauses.forEach((clause, index) => {
+        const card = document.createElement("div");
+        card.className = "custom-clause-card";
+
+        card.innerHTML = `
+          <div class="custom-clause-head">
+            <strong>Custom clause ${index + 1}</strong>
+            <button type="button" class="remove-custom-clause ${
+              index === 0 ? "hidden" : ""
+            }">Remove</button>
+          </div>
+
+          <label>
+            Clause title
+            <input
+              class="custom-clause-title"
+              type="text"
+              placeholder="Example: Crop substitutions"
+              value="${clause.title || ""}"
+            />
+          </label>
+
+          <label>
+            Clause text
+            <textarea
+              class="custom-clause-text"
+              placeholder="Example: Buyer may request crop substitutions only if approved in writing by Seller before fulfillment."
+            >${clause.text || ""}</textarea>
+          </label>
+        `;
+
+        customClauseList.appendChild(card);
+      });
+    }
+  }
+
+  setWorkspaceState("new");
+  showRightMode("work");
+  showRightTab("products");
+
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
+}
+
 
 function openContractReviewTab() {
   const draft = buildContractDraft();
@@ -1306,10 +1486,9 @@ document.addEventListener("click", (event) => {
   window.LocalityDataService?.setCurrentContractDraftId?.(draft.id);
 
   if (actionButton.dataset.action === "edit-saved-draft") {
-    alert("Draft found. Full form reloading is the next step.");
-    setWorkspaceState("new");
-    return;
-  }
+  loadDraftIntoBuilder(draft);
+  return;
+}
 
   if (actionButton.dataset.action === "review-saved-draft") {
     const reviewPayload = createReviewPayloadFromDraft(draft);
