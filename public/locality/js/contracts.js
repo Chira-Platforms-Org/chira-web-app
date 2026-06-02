@@ -28,6 +28,10 @@ const reviewModal = document.getElementById("finalReviewModal");
 const closeReviewModal = document.getElementById("closeReviewModal");
 const keepEditingBtn = document.getElementById("keepEditingBtn");
 
+const saveDraftBtn = document.getElementById("saveDraftBtn");
+
+let activeDraftId = null;
+
 const networkMode = document.getElementById("networkMode");
 const snapshotMode = document.getElementById("snapshotMode");
 const workPanelMode = document.getElementById("workPanelMode");
@@ -864,6 +868,16 @@ window.addEventListener("load", () => {
   }, 2400);
 });
 
+function renderSavedDraftCards() {
+  const drafts = window.LocalityDataService?.getContractDrafts?.() || [];
+
+  drafts.forEach((draft) => {
+    addSavedDraftCard(draft);
+  });
+}
+
+renderSavedDraftCards();
+
 const reviewWaitingOverlay = document.getElementById("reviewWaitingOverlay");
 const dismissReviewWaiting = document.getElementById("dismissReviewWaiting");
 const reopenReviewTab = document.getElementById("reopenReviewTab");
@@ -1019,49 +1033,179 @@ function getStandardTerms() {
   };
 }
 
-function openContractReviewTab() {
-  const customClauses = getCustomClauses();
-  const products = getBuilderProducts();
+// Build Contract Draft content for backend
 
+function buildContractDraft() {
   const orderingRules = getOrderingRules();
   const fulfillmentTerms = getFulfillmentTerms();
   const paymentTerms = getPaymentTerms();
   const standardTerms = getStandardTerms();
 
-  const reviewPayload = {
+  return {
+    id:
+      activeDraftId ||
+      window.LocalityDataService?.createId?.("LOC-DRAFT") ||
+      `LOC-DRAFT-${Date.now()}`,
+
     contractId: "LOC-2026-0041",
+    status: "draft",
     agreementType: selectedAgreementTemplate || "flexible",
 
-    sellerName: selectedBusinessName || "Queen Creek Harvest",
-    buyerName: "Roosevelt Row Market",
+    parties: {
+      sellerName: selectedBusinessName || "Queen Creek Harvest",
+      buyerName: "Roosevelt Row Market"
+    },
 
-    buyerQuantityControl: orderingRules.buyerQuantityControl,
-    minimumTotalOrder: orderingRules.minimumTotalOrder,
-    orderNotice: orderingRules.orderNotice,
-    orderingFrequency: orderingRules.orderingFrequency,
-    substitutionRule: orderingRules.substitutionRule,
-    partialFulfillment: orderingRules.partialFulfillment,
+    products: getBuilderProducts(),
 
-    fulfillmentMethod: fulfillmentTerms.fulfillmentMethod,
-    deliveryDays: fulfillmentTerms.deliveryDays,
-    deliveryWindow: fulfillmentTerms.combinedDeliveryWindow,
-    deliveryWindowOnly: fulfillmentTerms.deliveryWindow,
-    receivingLocation: fulfillmentTerms.receivingLocation,
-    fulfillmentNotes: fulfillmentTerms.fulfillmentNotes,
+    orderingRules: {
+      buyerQuantityControl: orderingRules.buyerQuantityControl,
+      minimumTotalOrder: orderingRules.minimumTotalOrder,
+      orderNotice: orderingRules.orderNotice,
+      orderingFrequency: orderingRules.orderingFrequency,
+      substitutionRule: orderingRules.substitutionRule,
+      partialFulfillment: orderingRules.partialFulfillment
+    },
 
-    paymentTerms: paymentTerms.paymentTerms,
-    paymentMethod: paymentTerms.paymentMethod,
-    paymentMethodRaw: paymentTerms.paymentMethodRaw,
-    latePaymentRule: paymentTerms.latePaymentRule,
+    fulfillment: {
+      fulfillmentMethod: fulfillmentTerms.fulfillmentMethod,
+      deliveryDays: fulfillmentTerms.deliveryDays,
+      deliveryWindow: fulfillmentTerms.deliveryWindow,
+      combinedDeliveryWindow: fulfillmentTerms.combinedDeliveryWindow,
+      receivingLocation: fulfillmentTerms.receivingLocation,
+      fulfillmentNotes: fulfillmentTerms.fulfillmentNotes
+    },
 
-    inspectionWindow: standardTerms.inspectionWindow,
-    cancellationNotice: standardTerms.cancellationNotice,
-    governingLaw: standardTerms.governingLaw,
-    localityFeeNote: standardTerms.localityFeeNote,
+    payment: {
+      paymentTerms: paymentTerms.paymentTerms,
+      paymentMethod: paymentTerms.paymentMethod,
+      paymentMethodRaw: paymentTerms.paymentMethodRaw,
+      latePaymentRule: paymentTerms.latePaymentRule
+    },
 
-    customClauses,
-    products
+    standardTerms: {
+      inspectionWindow: standardTerms.inspectionWindow,
+      cancellationNotice: standardTerms.cancellationNotice,
+      governingLaw: standardTerms.governingLaw,
+      localityFeeNote: standardTerms.localityFeeNote
+    },
+
+    customClauses: getCustomClauses(),
+
+    metadata: {
+      source: "contract-studio",
+      version: 1
+    },
+
+    timestamps: {
+      createdAt: "",
+      updatedAt: ""
+    }
   };
+}
+
+function createReviewPayloadFromDraft(draft) {
+  return {
+    contractId: draft.contractId || "LOC-2026-0041",
+    agreementType: draft.agreementType || "flexible",
+
+    sellerName: draft.parties?.sellerName || "Queen Creek Harvest",
+    buyerName: draft.parties?.buyerName || "Roosevelt Row Market",
+
+    buyerQuantityControl:
+      draft.orderingRules?.buyerQuantityControl ||
+      "Buyer chooses quantities per order",
+    minimumTotalOrder:
+      draft.orderingRules?.minimumTotalOrder || "$100 minimum order",
+    orderNotice: draft.orderingRules?.orderNotice || "48 hours",
+    orderingFrequency:
+      draft.orderingRules?.orderingFrequency || "Weekly ordering allowed",
+    substitutionRule: draft.orderingRules?.substitutionRule || "Buyer approval",
+    partialFulfillment:
+      draft.orderingRules?.partialFulfillment || "Allowed with notice",
+
+    fulfillmentMethod:
+      draft.fulfillment?.fulfillmentMethod || "Supplier delivery",
+    deliveryDays: draft.fulfillment?.deliveryDays || "Tuesday / Thursday",
+    deliveryWindow:
+      draft.fulfillment?.combinedDeliveryWindow ||
+      "Tuesday / Thursday, 8 AM – 11 AM",
+    deliveryWindowOnly:
+      draft.fulfillment?.deliveryWindow || "8 AM – 11 AM",
+    receivingLocation:
+      draft.fulfillment?.receivingLocation || "Buyer receiving location",
+    fulfillmentNotes: draft.fulfillment?.fulfillmentNotes || "",
+
+    paymentTerms: draft.payment?.paymentTerms || "Net 15",
+    paymentMethod: draft.payment?.paymentMethod || "through Locality",
+    paymentMethodRaw: draft.payment?.paymentMethodRaw || "Paid through Locality",
+    latePaymentRule:
+      draft.payment?.latePaymentRule ||
+      "Future deliveries may pause until payment is resolved",
+
+    inspectionWindow: draft.standardTerms?.inspectionWindow || "48 hours",
+    cancellationNotice:
+      draft.standardTerms?.cancellationNotice || "14 days written notice",
+    governingLaw: draft.standardTerms?.governingLaw || "Arizona",
+    localityFeeNote:
+      draft.standardTerms?.localityFeeNote ||
+      "Seller-paid Locality platform fees are governed by the applicable Locality seller agreement, platform terms, or fee schedule. Locality is not a party to this Buyer-Seller Agreement unless expressly stated in a separate written agreement.",
+
+    customClauses: draft.customClauses || [],
+    products: draft.products || []
+  };
+}
+
+function addSavedDraftCard(draft) {
+  const feed = document.querySelector(".contract-feed");
+  if (!feed || !draft) return;
+
+  const existing = document.getElementById(`savedDraftCard-${draft.id}`);
+  existing?.remove();
+
+  const sellerName = draft.parties?.sellerName || "Selected business";
+  const productCount = draft.products?.length || 0;
+  const paymentTerms = draft.payment?.paymentTerms || "Payment terms pending";
+  const fulfillmentMethod =
+    draft.fulfillment?.fulfillmentMethod || "Fulfillment pending";
+
+  const card = document.createElement("article");
+  card.className = "contract-card";
+  card.id = `savedDraftCard-${draft.id}`;
+  card.dataset.savedDraftId = draft.id;
+
+  card.innerHTML = `
+    <div class="status-marker draft"></div>
+
+    <div class="contract-card-main">
+      <span class="status-label draft">Saved draft</span>
+      <h3>${sellerName}</h3>
+      <p>Draft agreement saved locally.</p>
+      <small>${productCount} product${productCount === 1 ? "" : "s"} · ${paymentTerms} · ${fulfillmentMethod}</small>
+    </div>
+
+    <div class="contract-card-meta">Draft</div>
+
+    <div class="contract-actions">
+      <button data-action="edit-saved-draft" type="button">Edit</button>
+      <button data-action="review-saved-draft" type="button">Review</button>
+    </div>
+  `;
+
+  feed.prepend(card);
+}
+
+
+function openContractReviewTab() {
+  const draft = buildContractDraft();
+
+  const savedDraft = window.LocalityDataService?.saveContractDraft
+    ? window.LocalityDataService.saveContractDraft(draft)
+    : draft;
+
+  activeDraftId = savedDraft.id;
+
+  const reviewPayload = createReviewPayloadFromDraft(savedDraft);
 
   sessionStorage.setItem(
     "localityContractReviewPayload",
@@ -1126,6 +1270,42 @@ reopenReviewTab?.addEventListener("click", () => {
   openContractReviewTab();
 });
 
+document.addEventListener("click", (event) => {
+  const actionButton = event.target.closest("[data-action]");
+  if (!actionButton) return;
+
+  const savedDraftCard = actionButton.closest("[data-saved-draft-id]");
+  if (!savedDraftCard) return;
+
+  const draftId = savedDraftCard.dataset.savedDraftId;
+  const draft = window.LocalityDataService?.getContractDraft?.(draftId);
+
+  if (!draft) {
+    alert("Saved draft could not be found.");
+    return;
+  }
+
+  activeDraftId = draft.id;
+  window.LocalityDataService?.setCurrentContractDraftId?.(draft.id);
+
+  if (actionButton.dataset.action === "edit-saved-draft") {
+    alert("Draft found. Full form reloading is the next step.");
+    setWorkspaceState("new");
+    return;
+  }
+
+  if (actionButton.dataset.action === "review-saved-draft") {
+    const reviewPayload = createReviewPayloadFromDraft(draft);
+
+    sessionStorage.setItem(
+      "localityContractReviewPayload",
+      JSON.stringify(reviewPayload)
+    );
+
+    window.open("contract-review.html", "_blank");
+  }
+});
+
 window.addEventListener("message", (event) => {
   if (event.origin !== window.location.origin) return;
 
@@ -1144,6 +1324,17 @@ window.addEventListener("message", (event) => {
     sessionStorage.setItem("localitySubmittedAgreement", "true");
     window.location.href = "contracts.html?submitted=1";
   }
+});
+
+saveDraftBtn?.addEventListener("click", () => {
+  const draft = buildContractDraft();
+
+  const savedDraft = window.LocalityDataService.saveContractDraft(draft);
+  activeDraftId = savedDraft.id;
+
+  addSavedDraftCard(savedDraft);
+
+  alert("Draft saved locally. It will stay after refresh.");
 });
 
 window.addEventListener("load", () => {
