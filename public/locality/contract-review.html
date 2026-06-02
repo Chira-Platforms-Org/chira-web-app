@@ -1658,6 +1658,8 @@ function setTextById(id, value) {
 }
 
 function fillContractDocument() {
+
+  setTextById("reviewLastEdited", contractData.lastEdited);
   setText("[data-contract-id]", contractData.contractId);
   setText("[data-seller-name]", contractData.sellerName);
   setText("[data-buyer-name]", contractData.buyerName);
