@@ -1120,6 +1120,13 @@ function buildContractDraft() {
 
 function createReviewPayloadFromDraft(draft) {
   return {
+
+    draftId: draft.id,
+    createdAt: draft.timestamps?.createdAt || new Date().toISOString(),
+    updatedAt: draft.timestamps?.updatedAt || new Date().toISOString(),
+    agreementDate: formatContractDate(draft.timestamps?.createdAt || draft.timestamps?.updatedAt),
+    lastEdited: formatLastEdited(draft.timestamps?.updatedAt),
+    
     contractId: draft.contractId || "LOC-2026-0041",
     agreementType: draft.agreementType || "flexible",
 
@@ -1170,6 +1177,57 @@ function createReviewPayloadFromDraft(draft) {
   };
 }
 
+function formatLastEdited(timestamp) {
+  if (!timestamp) return "Last edited just now";
+
+  const date = new Date(timestamp);
+
+  if (Number.isNaN(date.getTime())) {
+    return "Last edited just now";
+  }
+
+  const now = new Date();
+  const diffMs = now - date;
+  const diffMinutes = Math.floor(diffMs / 60000);
+  const diffHours = Math.floor(diffMinutes / 60);
+  const diffDays = Math.floor(diffHours / 24);
+
+  if (diffMinutes < 1) return "Last edited just now";
+  if (diffMinutes < 60) {
+    return `Last edited ${diffMinutes} min ago`;
+  }
+  if (diffHours < 24) {
+    return `Last edited ${diffHours} hr${diffHours === 1 ? "" : "s"} ago`;
+  }
+  if (diffDays < 7) {
+    return `Last edited ${diffDays} day${diffDays === 1 ? "" : "s"} ago`;
+  }
+
+  return `Last edited ${date.toLocaleDateString(undefined, {
+    month: "short",
+    day: "numeric",
+    year: "numeric"
+  })}`;
+}
+
+function formatContractDate(timestamp) {
+  const date = timestamp ? new Date(timestamp) : new Date();
+
+  if (Number.isNaN(date.getTime())) {
+    return new Date().toLocaleDateString(undefined, {
+      month: "long",
+      day: "numeric",
+      year: "numeric"
+    });
+  }
+
+  return date.toLocaleDateString(undefined, {
+    month: "long",
+    day: "numeric",
+    year: "numeric"
+  });
+}
+
 function addSavedDraftCard(draft) {
   const feed = document.querySelector(".contract-feed");
   if (!feed || !draft) return;
@@ -1177,6 +1235,7 @@ function addSavedDraftCard(draft) {
   const existing = document.getElementById(`savedDraftCard-${draft.id}`);
   existing?.remove();
 
+  const lastEditedText = formatLastEdited(draft.timestamps?.updatedAt);
   const sellerName = draft.parties?.sellerName || "Selected business";
   const productCount = draft.products?.length || 0;
   const paymentTerms = draft.payment?.paymentTerms || "Payment terms pending";
@@ -1195,7 +1254,7 @@ function addSavedDraftCard(draft) {
       <span class="status-label draft">Saved draft</span>
       <h3>${sellerName}</h3>
       <p>Draft agreement saved locally.</p>
-      <small>${productCount} product${productCount === 1 ? "" : "s"} · ${paymentTerms} · ${fulfillmentMethod}</small>
+      <small>${productCount} product${productCount === 1 ? "" : "s"} · ${paymentTerms} · ${fulfillmentMethod} · ${lastEditedText}</small>
     </div>
 
     <div class="contract-card-meta">Draft</div>
