@@ -411,6 +411,20 @@ document.addEventListener("click", (event) => {
   setAgreementTemplate(templateCard.dataset.templateCard);
 });
 
+document.addEventListener("click", (event) => {
+  const card = event.target.closest(".contract-card");
+  if (!card) return;
+
+  // Do not override button clicks inside the card
+  if (event.target.closest("button")) return;
+
+  document.querySelectorAll(".contract-card").forEach((item) => {
+    item.classList.remove("selected");
+  });
+
+  card.classList.add("selected");
+});
+
 cards.forEach((card) => {
   card.addEventListener("click", () => {
     cards.forEach((item) => item.classList.remove("selected"));
@@ -1189,6 +1203,7 @@ function addSavedDraftCard(draft) {
     <div class="contract-actions">
       <button data-action="edit-saved-draft" type="button">Edit</button>
       <button data-action="review-saved-draft" type="button">Review</button>
+      <button data-action="delete-saved-draft" type="button">Delete</button>
     </div>
   `;
 
@@ -1277,6 +1292,8 @@ document.addEventListener("click", (event) => {
   const savedDraftCard = actionButton.closest("[data-saved-draft-id]");
   if (!savedDraftCard) return;
 
+  event.stopPropagation();
+
   const draftId = savedDraftCard.dataset.savedDraftId;
   const draft = window.LocalityDataService?.getContractDraft?.(draftId);
 
@@ -1303,6 +1320,25 @@ document.addEventListener("click", (event) => {
     );
 
     window.open("contract-review.html", "_blank");
+    return;
+  }
+
+  if (actionButton.dataset.action === "delete-saved-draft") {
+    const shouldDelete = window.confirm(
+      `Delete saved draft for ${draft.parties?.sellerName || "this business"}?`
+    );
+
+    if (!shouldDelete) return;
+
+    window.LocalityDataService?.deleteContractDraft?.(draft.id);
+
+    if (activeDraftId === draft.id) {
+      activeDraftId = null;
+    }
+
+    savedDraftCard.remove();
+
+    alert("Draft deleted.");
   }
 });
 
