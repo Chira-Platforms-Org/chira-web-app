@@ -6,6 +6,7 @@ const contextMode = document.getElementById("contextMode");
 const emptyMode = document.getElementById("emptyMode");
 const viewMode = document.getElementById("viewMode");
 const editMode = document.getElementById("editMode");
+const demoSessionName = document.getElementById("demoSessionName");
 
 const editorEyebrow = document.getElementById("editorEyebrow");
 const editorTitle = document.getElementById("editorTitle");
@@ -611,6 +612,28 @@ function getProfileProducts(profile) {
   );
 }
 
+function renderDemoSessionBadge() {
+  const currentUser = window.LocalityDataService?.getCurrentDemoUser?.();
+
+  if (demoSessionName) {
+    demoSessionName.textContent =
+      currentUser?.businessName ||
+      currentUser?.fullName ||
+      "Demo profile";
+  }
+}
+
+document.addEventListener("click", (event) => {
+  const logoutButton = event.target.closest("[data-demo-logout]");
+  if (!logoutButton) return;
+
+  window.LocalityDataService?.clearCurrentDemoUser?.();
+  window.location.href = "login.html";
+});
+
+renderDemoSessionBadge();
+
+
 function renderProfileProducts(profile) {
   const productLists = document.querySelectorAll(".profile-product-list");
   if (!productLists.length || !profile) return;
@@ -1126,6 +1149,8 @@ function getStandardTerms() {
       "Seller-paid Locality platform fees are governed by the applicable Locality seller agreement, platform terms, or fee schedule. Locality is not a party to this Buyer-Seller Agreement unless expressly stated in a separate written agreement."
   };
 }
+
+
 
 // Build Contract Draft content for backend
 
