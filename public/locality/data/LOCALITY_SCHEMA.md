@@ -27,19 +27,45 @@ UserAccount = {
 ***
 
 ##  2. Business Profile 
+### Required onboarding fields
+
+Every business profile must choose:
+
+1. Marketplace role:
+   - Buyer
+   - Seller
+   - Buyer and Seller
+
+2. Business category:
+   - Farm / Ranch
+   - Processor
+   - Distributor
+   - Restaurant / Food Service
+   - Store / Market
+   - Institution
+   - Food Hub / Coalition
+   - Other
+
+Specialties are optional and can provide more detail, such as butcher, bakery, creamery, coffee roaster, grain mill, or produce packer.
 
 ```js
 
 BusinessProfile = {
   id: "business_123",
-
   ownerUserId: "user_123",
 
   name: "Queen Creek Harvest",
 
-  type: "supplier" | "buyer",
+   marketplaceRoles: ["seller"],
+  // required: "buyer", "seller", or both
 
-  businessSubtype: "farm" | "restaurant" | "grocer" | "institution" | "market" | "other",
+  businessCategories: ["farm"],
+  // required: "farm", "processor", "distributor", "restaurant", "store", "institution", "food-hub", or "other"
+
+  specialties: ["organic-produce"],
+  // optional: butcher, bakery, creamery, grain-milling, coffee-roaster, etc.
+
+  locationLabel: "Queen Creek, AZ",
 
   logo: "Queen Creek Harvest Logo.png",
   logoInitials: "QCH",
@@ -83,7 +109,6 @@ BusinessProfile = {
   updatedAt: "2026-06-02T00:00:00.000Z"
 }
 ```
-
 ***
 
 ## 3. Product Listing
