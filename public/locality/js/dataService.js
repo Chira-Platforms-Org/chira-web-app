@@ -26,6 +26,175 @@
     }
   }
 
+   function slugify(value = "") {
+  return String(value)
+    .toLowerCase()
+    .replace(/&/g, "and")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
+}
+
+function parsePriceDisplay(priceString = "") {
+  const clean = String(priceString).replace("Suggested:", "").trim();
+
+  const match = clean.match(/\$?\s*([\d.]+)\s*\/\s*([a-zA-Z]+)?/);
+
+  return {
+    priceAmount: match?.[1] ? Number(match[1]) : null,
+    priceUnit: match?.[2] || null,
+    priceDisplay: clean || "Price not listed"
+  };
+}
+
+function getMockProfiles() {
+  if (typeof profiles !== "undefined" && Array.isArray(profiles)) {
+    return profiles;
+  }
+
+  return [];
+}
+
+function normalizeProductListing(product = {}, businessId = "") {
+  const parsedPrice = parsePriceDisplay(
+    product.price || product.listedPrice || product.unitPrice || ""
+  );
+
+  return {
+    id:
+      product.id ||
+      `${businessId}-product-${slugify(
+        product.name || product.product || "listed-product"
+      )}`,
+
+    businessId,
+
+    name: product.name || product.product || product.label || "Listed product",
+    category: product.category || "specialty",
+
+    priceAmount: parsedPrice.priceAmount,
+    priceUnit: parsedPrice.priceUnit,
+    priceDisplay: parsedPrice.priceDisplay,
+
+    availabilityNote:
+      product.note ||
+      product.status ||
+      product.availability ||
+      "Available",
+
+    organic: Boolean(product.organic),
+
+    minimumOrderQuantity: product.minimumOrderQuantity || null,
+    minimumOrderUnit: product.minimumOrderUnit || parsedPrice.priceUnit || null,
+
+    leadTime: product.leadTime || "",
+
+    status: product.status || "active",
+
+    raw: product
+  };
+}
+
+function normalizeBusinessProfile(profile = {}) {
+  const id = profile.id || `business-${slugify(profile.name || "profile")}`;
+
+  const isSupplier =
+    profile.type === "farm" ||
+    profile.type === "supplier";
+
+  const type = isSupplier ? "supplier" : "buyer";
+
+  const products = (
+    profile.productsAvailable ||
+    profile.availableProducts ||
+    profile.products ||
+    profile.listings ||
+    []
+  ).map((product) => normalizeProductListing(product, id));
+
+  return {
+    id,
+    ownerUserId: profile.ownerUserId || null,
+
+    name: profile.name || "Unnamed business",
+
+    type,
+    businessSubtype:
+      profile.businessSubtype || (profile.type === "farm" ? "farm" : "business"),
+
+    iconVariant: profile.iconVariant || "",
+    logo: profile.logo || "",
+    logoInitials:
+      profile.logoInitials ||
+      String(profile.name || "LC")
+        .split(" ")
+        .filter(Boolean)
+        .slice(0, 2)
+        .map((word) => word[0])
+        .join("")
+        .toUpperCase(),
+
+    description: profile.description || profile.product || "",
+
+    locationLabel: profile.location || "Phoenix region",
+
+    address: profile.address || {
+      line1: "",
+      line2: "",
+      city: "",
+      state: "AZ",
+      postalCode: "",
+      country: "US"
+    },
+
+    coordinates: {
+      lat: profile.lat ?? null,
+      lng: profile.lng ?? null
+    },
+
+    productFocus: profile.product || profile.demandNeed || "",
+    productCategories: profile.productType ? [profile.productType] : [],
+
+    organic: Boolean(profile.organic),
+    coalitionId: profile.coalition || null,
+
+    deliveryRadius: profile.deliveryRadius || "",
+    leadTime: profile.leadTime || "",
+    minimumOrder: profile.minimumOrder || "",
+
+    preferredRadius: profile.preferredRadius || "",
+    orderFrequency: profile.orderFrequency || "",
+
+    featuredInsight: profile.featuredInsight || "",
+
+    status: profile.status || "active",
+
+    productListings: products,
+
+    raw: profile
+  };
+}
+
+function getMarketplaceProfiles() {
+  return getMockProfiles().map(normalizeBusinessProfile);
+}
+
+function getMarketplaceProfile(idOrSlug) {
+  if (!idOrSlug) return null;
+
+  return (
+    getMarketplaceProfiles().find((profile) => {
+      return profile.id === idOrSlug || slugify(profile.name) === idOrSlug;
+    }) || null
+  );
+}
+
+function getProductListingsForBusiness(idOrSlug) {
+  const profile = getMarketplaceProfile(idOrSlug);
+  return profile?.productListings || [];
+}
+
+   
+
   function getStoredDrafts() {
     return safeParse(localStorage.getItem(DRAFTS_KEY), []);
   }
@@ -99,13 +268,23 @@
   }
 
   window.LocalityDataService = {
-    createId,
-    saveContractDraft,
-    getContractDraft,
-    getContractDrafts,
-    getMostRecentContractDraft,
-    deleteContractDraft,
-    setCurrentContractDraftId,
-    getCurrentContractDraftId
-  };
+  createId,
+
+  slugify,
+  parsePriceDisplay,
+
+  normalizeBusinessProfile,
+  normalizeProductListing,
+  getMarketplaceProfiles,
+  getMarketplaceProfile,
+  getProductListingsForBusiness,
+
+  saveContractDraft,
+  getContractDraft,
+  getContractDrafts,
+  getMostRecentContractDraft,
+  deleteContractDraft,
+  setCurrentContractDraftId,
+  getCurrentContractDraftId
+};
 })();
