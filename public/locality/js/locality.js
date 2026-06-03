@@ -620,7 +620,7 @@ function getSelectedDemoButton() {
   );
 }
 
-function getSelectedDemoDestination(fallbackDestination = "contracts.html") {
+function getSelectedDemoDestination(fallbackDestination = "supplier.html") {
   const selectedButton = getSelectedDemoButton();
 
   return selectedButton?.dataset.demoDestination || fallbackDestination;
@@ -653,14 +653,14 @@ function enterWorkspaceWithLoader(destinationOverride = null) {
   const selectedUser =
     window.LocalityDataService?.setCurrentDemoUser?.(selectedDemoUserId);
 
-  const selectedButtonDestination = getSelectedDemoDestination();
+  const selectedButtonDestination = getSelectedDemoDestination("supplier.html");
 
   const destination =
     destinationOverride ||
+    selectedWorkspaceDestination ||
     selectedButtonDestination ||
     selectedUser?.defaultDestination ||
-    selectedWorkspaceDestination ||
-    "contracts.html";
+    "supplier.html";
 
   closeHubSignIn();
 
@@ -684,7 +684,7 @@ demoAccountButtons.forEach((button) => {
     selectDemoUser(button.dataset.demoUser);
 
     selectedWorkspaceDestination =
-      button.dataset.demoDestination || "contracts.html";
+      button.dataset.demoDestination || "supplier.html";
   });
 });
 
