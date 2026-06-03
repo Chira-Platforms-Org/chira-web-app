@@ -7,7 +7,8 @@
 (function () {
   const DRAFTS_KEY = "localityContractDrafts";
   const CURRENT_DRAFT_KEY = "localityCurrentContractDraftId";
-
+  const CURRENT_DEMO_USER_KEY = "localityCurrentDemoUserId";
+   
   function createId(prefix = "LOC-DRAFT") {
     const randomPart =
       typeof crypto !== "undefined" && crypto.randomUUID
@@ -26,7 +27,24 @@
     }
   }
 
-   function slugify(value = "") {
+const DEMO_USERS = [
+  {
+    id: "user-qch-owner",
+    fullName: "Queen Creek Harvest Owner",
+    email: "queencreek@example.com",
+    businessId: "business-queen-creek-harvest",
+    defaultRole: "seller"
+  },
+  {
+    id: "user-rrm-owner",
+    fullName: "Roosevelt Row Market Owner",
+    email: "roosevelt@example.com",
+    businessId: "business-roosevelt-row-market",
+    defaultRole: "buyer"
+  }
+];
+   
+function slugify(value = "") {
   return String(value)
     .toLowerCase()
     .replace(/&/g, "and")
@@ -221,7 +239,45 @@ function getProductListingsForBusiness(idOrSlug) {
   return profile?.productListings || [];
 }
 
-   
+   function getDemoUsers() {
+  return DEMO_USERS;
+}
+
+function getCurrentDemoUser() {
+  const savedUserId = localStorage.getItem(CURRENT_DEMO_USER_KEY);
+  const fallbackUser = DEMO_USERS[0];
+
+  return (
+    DEMO_USERS.find((user) => user.id === savedUserId) ||
+    fallbackUser
+  );
+}
+
+function setCurrentDemoUser(userId) {
+  const user = DEMO_USERS.find((item) => item.id === userId);
+
+  if (!user) {
+    console.warn(`Demo user not found: ${userId}`);
+    return null;
+  }
+
+  localStorage.setItem(CURRENT_DEMO_USER_KEY, user.id);
+  return user;
+}
+
+function getCurrentBusinessProfile() {
+  const currentUser = getCurrentDemoUser();
+
+  if (!currentUser?.businessId) {
+    return null;
+  }
+
+  return getMarketplaceProfile(currentUser.businessId);
+}
+
+function getCurrentBusinessId() {
+  return getCurrentDemoUser()?.businessId || null;
+}
 
   function getStoredDrafts() {
     return safeParse(localStorage.getItem(DRAFTS_KEY), []);
@@ -288,8 +344,9 @@ function updateContractDraft(id, updates = {}) {
   const existingIndex = drafts.findIndex((draft) => draft.id === id);
 
   if (existingIndex < 0) {
-    return null;
-  }
+  console.warn(`Contract draft not found: ${id}`);
+  return null;
+}
 
   const existingDraft = drafts[existingIndex];
 
@@ -364,6 +421,12 @@ function archiveContractDraft(id) {
   getMarketplaceProfiles,
   getMarketplaceProfile,
   getProductListingsForBusiness,
+
+   getDemoUsers,
+   getCurrentDemoUser,
+   setCurrentDemoUser,
+   getCurrentBusinessProfile,
+   getCurrentBusinessId,
 
    saveContractDraft,
    getContractDraft,
