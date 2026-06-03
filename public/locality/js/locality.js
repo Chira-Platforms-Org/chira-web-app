@@ -648,18 +648,19 @@ function closeHubSignIn() {
   }
 }
 
+// ONLY LOCAL LOG-IN FUNCTION — Needs to be changed later
 function enterWorkspaceWithLoader(destinationOverride = null) {
   const selectedUser =
     window.LocalityDataService?.setCurrentDemoUser?.(selectedDemoUserId);
 
-  const fallbackDestination =
-    selectedUser?.defaultDestination ||
-    getSelectedDemoDestination(selectedWorkspaceDestination || "contracts.html");
+  const selectedButtonDestination = getSelectedDemoDestination();
 
   const destination =
     destinationOverride ||
+    selectedButtonDestination ||
+    selectedUser?.defaultDestination ||
     selectedWorkspaceDestination ||
-    fallbackDestination;
+    "contracts.html";
 
   closeHubSignIn();
 
@@ -682,10 +683,8 @@ demoAccountButtons.forEach((button) => {
   button.addEventListener("click", () => {
     selectDemoUser(button.dataset.demoUser);
 
-    if (!selectedWorkspaceDestination) {
-      selectedWorkspaceDestination =
-        button.dataset.demoDestination || "contracts.html";
-    }
+    selectedWorkspaceDestination =
+      button.dataset.demoDestination || "contracts.html";
   });
 });
 
