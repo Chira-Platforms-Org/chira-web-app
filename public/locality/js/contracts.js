@@ -84,7 +84,9 @@ const networkListView = document.getElementById("networkListView");
 const businessProfileView = document.getElementById("businessProfileView");
 const backToNetwork = document.getElementById("backToNetwork");
 
-const profileData = Array.isArray(profiles) ? profiles : [];
+const profileData =
+  window.LocalityDataService?.getMarketplaceProfiles?.() ||
+  (Array.isArray(profiles) ? profiles : []);
 
 function renderBusinessList(filter = "all", searchTerm = "") {
   const businessList = document.getElementById("businessList");
@@ -172,24 +174,26 @@ function getProfileInitials(profile) {
 }
 
 function getProfileRole(profile) {
-  return profile.type === "farm" ? "Supplier" : "Buyer";
+  return profile.type === "supplier" || profile.raw?.type === "farm"
+    ? "Supplier"
+    : "Buyer";
 }
 
 function getProfileFocus(profile) {
-  if (profile.type === "farm") {
-    return profile.product || profile.productType || "Local supply";
+  if (profile.type === "supplier") {
+    return profile.productFocus || profile.raw?.product || "Local supply";
   }
 
-  return profile.demandNeed || profile.product || "Local sourcing";
+  return profile.raw?.demandNeed || profile.productFocus || "Local sourcing";
 }
 
 function getProfileActivity(profile) {
-  if (profile.type === "farm") {
-    const count = profile.productsAvailable?.length || 0;
+  if (profile.type === "supplier") {
+    const count = profile.productListings?.length || 0;
     return count > 0 ? `${count} listed items` : "Supplier profile";
   }
 
-  return profile.orderFrequency || "Buyer profile";
+  return profile.orderFrequency || profile.raw?.orderFrequency || "Buyer profile";
 }
 
 function getProfileNote(profile) {
@@ -534,6 +538,7 @@ networkSearchInput?.addEventListener("input", () => {
 
 function getProfileProducts(profile) {
   return (
+    profile.productListings ||
     profile.productsAvailable ||
     profile.availableProducts ||
     profile.products ||
@@ -551,27 +556,38 @@ function renderProfileProducts(profile) {
   const productHTML = products.length
     ? products
         .map((product) => {
-          const parsed = parsePrice(product.price || product.listedPrice || product.unitPrice || "");
+          const parsed = {
+  amount:
+    product.priceAmount !== null && product.priceAmount !== undefined
+      ? String(product.priceAmount)
+      : parsePrice(product.price || product.listedPrice || product.unitPrice || "").amount,
 
-          const productName =
+  unit:
+    product.priceUnit ||
+    parsePrice(product.price || product.listedPrice || product.unitPrice || "").unit
+};
+
+        const productName =
             product.name ||
             product.product ||
             product.label ||
             "Listed product";
 
-          const productPrice =
+        const productPrice =
+            product.priceDisplay ||
             product.price ||
             product.listedPrice ||
             product.unitPrice ||
             "Price not listed";
 
-          const productNote =
+        const productNote =
+            product.availabilityNote ||
             product.note ||
             product.status ||
             product.availability ||
             "Available";
 
-          const isOrganic = Boolean(product.organic);
+            const isOrganic = Boolean(product.organic);
           const badge = isOrganic
             ? `<span class="organic-badge">Organic</span>`
             : `<span class="conventional-badge">Conventional</span>`;
