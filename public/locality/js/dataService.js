@@ -101,7 +101,30 @@ function normalizeBusinessProfile(profile = {}) {
     profile.type === "farm" ||
     profile.type === "supplier";
 
+  // Temporary compatibility field for the current prototype UI.
+  // Long-term, use marketplaceRoles instead.
   const type = isSupplier ? "supplier" : "buyer";
+
+  // In production, marketplaceRoles and businessCategories should come from
+  // required user profile setup fields. These fallbacks only support current
+  // mock profiles from profiles.js.
+  const marketplaceRoles =
+    profile.marketplaceRoles ||
+    (isSupplier ? ["seller"] : ["buyer"]);
+
+  const businessCategories =
+    profile.businessCategories ||
+    [
+      profile.businessSubtype ||
+      (isSupplier ? "farm" : "store")
+    ];
+
+  const specialties = profile.specialties || [];
+
+  const businessSubtype =
+    profile.businessSubtype ||
+    businessCategories[0] ||
+    "other";
 
   const products = (
     profile.productsAvailable ||
@@ -117,9 +140,14 @@ function normalizeBusinessProfile(profile = {}) {
 
     name: profile.name || "Unnamed business",
 
+    // Compatibility field.
     type,
-    businessSubtype:
-      profile.businessSubtype || (profile.type === "farm" ? "farm" : "business"),
+
+    // Backend-ready profile fields.
+    marketplaceRoles,
+    businessCategories,
+    specialties,
+    businessSubtype,
 
     iconVariant: profile.iconVariant || "",
     logo: profile.logo || "",
