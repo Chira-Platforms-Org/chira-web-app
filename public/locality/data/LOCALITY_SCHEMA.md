@@ -23,10 +23,12 @@ UserAccount = {
   createdAt: "2026-06-02T00:00:00.000Z",
   updatedAt: "2026-06-02T00:00:00.000Z"
 }
+```
 ***
 
 ## ** 2. Business Profile**
 
+```js
 
 BusinessProfile = {
   id: "business_123",
@@ -80,11 +82,12 @@ BusinessProfile = {
   createdAt: "2026-06-02T00:00:00.000Z",
   updatedAt: "2026-06-02T00:00:00.000Z"
 }
+```
 
 ***
 
 ## **3. Product Listing**
-
+```js
 ProductListing = {
   id: "product_123",
 
@@ -110,11 +113,11 @@ ProductListing = {
   createdAt: "2026-06-02T00:00:00.000Z",
   updatedAt: "2026-06-02T00:00:00.000Z"
 }
-
+```
 ***
 
 ##** 4. Contract Draft**
-
+```js
 ContractDraft = {
   id: "LOC-DRAFT-12345678",
   contractId: "LOC-2026-0041",
@@ -148,11 +151,11 @@ ContractDraft = {
     updatedAt: "2026-06-02T00:00:00.000Z"
   }
 }
-
+```
 ***
 
 ##** 5. Conversation
-
+```js
 Conversation = {
   id: "conversation_123",
 
@@ -167,11 +170,11 @@ Conversation = {
   createdAt: "2026-06-02T00:00:00.000Z",
   updatedAt: "2026-06-02T00:00:00.000Z"
 }
-
+```
 ***
 
 ##** 6. Conversation**
-
+```js
 Conversation = {
   id: "conversation_123",
 
@@ -186,7 +189,7 @@ Conversation = {
   createdAt: "2026-06-02T00:00:00.000Z",
   updatedAt: "2026-06-02T00:00:00.000Z"
 }
-
+```
 ***
 
 ##** 7.
