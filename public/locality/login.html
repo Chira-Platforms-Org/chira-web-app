@@ -71,28 +71,49 @@
   </main>
 
   <div id="hubSignInModal" class="hub-signin-modal">
-    <div class="hub-signin-card">
-      <button class="hub-signin-close" id="hubSignInClose">×</button>
+  <div class="hub-signin-card">
+    <button class="hub-signin-close" id="hubSignInClose">×</button>
 
-      <p class="login-eyebrow">Workspace sign in</p>
-      <h2>Sign in to enter your Locality workspace.</h2>
-      <p>
-        This prototype sign-in preview will eventually connect to secure account access,
-        role permissions, and workspace data.
-      </p>
+    <p class="login-eyebrow">Demo workspace access</p>
+    <h2>Choose a Locality demo profile.</h2>
+    <p>
+      Select a demo business profile to preview role-based workspace behavior.
+      This will later connect to secure account access, permissions, and live data.
+    </p>
 
-      <input type="email" placeholder="Email address" />
-      <input type="password" placeholder="Password" />
-
-      <button id="fakeSignInSubmit" class="hub-signin-submit">
-        Continue to workspace
+    <div class="demo-account-list" id="demoAccountList">
+      <button
+        class="demo-account-card active"
+        type="button"
+        data-demo-user="user-qch-owner"
+        data-demo-destination="supplier.html"
+      >
+        <span>Seller demo</span>
+        <strong>Queen Creek Harvest</strong>
+        <small>Farm · Seller workspace · Contract sender</small>
       </button>
 
-      <button id="demoAccessSubmit" class="hub-demo-submit">
-        Use demo workspace
+      <button
+        class="demo-account-card"
+        type="button"
+        data-demo-user="user-rrm-owner"
+        data-demo-destination="buyer.html"
+      >
+        <span>Buyer demo</span>
+        <strong>Roosevelt Row Market</strong>
+        <small>Store · Buyer workspace · Contract recipient</small>
       </button>
     </div>
+
+    <button id="fakeSignInSubmit" class="hub-signin-submit">
+      Enter selected workspace
+    </button>
+
+    <button id="demoAccessSubmit" class="hub-demo-submit">
+      Open Contract Studio
+    </button>
   </div>
+</div>
 
   <div id="pageLoader" class="page-loader">
     <div class="loader-card">
