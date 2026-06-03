@@ -33,14 +33,18 @@ const DEMO_USERS = [
     fullName: "Queen Creek Harvest Owner",
     email: "queencreek@example.com",
     businessId: "business-queen-creek-harvest",
-    defaultRole: "seller"
+    businessName: "Queen Creek Harvest",
+    workspaceType: "supplier",
+    defaultDestination: "supplier.html"
   },
   {
     id: "user-rrm-owner",
     fullName: "Roosevelt Row Market Owner",
     email: "roosevelt@example.com",
     businessId: "business-roosevelt-row-market",
-    defaultRole: "buyer"
+    businessName: "Roosevelt Row Market",
+    workspaceType: "buyer",
+    defaultDestination: "buyer.html"
   }
 ];
    
