@@ -599,11 +599,43 @@ const hubSignInClose = document.getElementById("hubSignInClose");
 const fakeSignInSubmit = document.getElementById("fakeSignInSubmit");
 const demoAccessSubmit = document.getElementById("demoAccessSubmit");
 const pageLoader = document.getElementById("pageLoader");
+const demoAccountButtons = document.querySelectorAll("[data-demo-user]");
 
 let selectedWorkspaceDestination = null;
+let selectedDemoUserId =
+  window.LocalityDataService?.getCurrentDemoUser?.()?.id || "user-qch-owner";
+
+function selectDemoUser(userId) {
+  selectedDemoUserId = userId;
+
+  demoAccountButtons.forEach((button) => {
+    button.classList.toggle("active", button.dataset.demoUser === userId);
+  });
+}
+
+function getSelectedDemoButton() {
+  return (
+    document.querySelector(`[data-demo-user="${selectedDemoUserId}"]`) ||
+    demoAccountButtons[0]
+  );
+}
+
+function getSelectedDemoDestination(fallbackDestination = "contracts.html") {
+  const selectedButton = getSelectedDemoButton();
+
+  return selectedButton?.dataset.demoDestination || fallbackDestination;
+}
 
 function openHubSignIn(destination) {
   selectedWorkspaceDestination = destination;
+
+  if (destination === "supplier.html") {
+    selectDemoUser("user-qch-owner");
+  }
+
+  if (destination === "buyer.html") {
+    selectDemoUser("user-rrm-owner");
+  }
 
   if (hubSignInModal) {
     hubSignInModal.classList.add("active");
@@ -616,8 +648,18 @@ function closeHubSignIn() {
   }
 }
 
-function enterWorkspaceWithLoader() {
-  if (!selectedWorkspaceDestination) return;
+function enterWorkspaceWithLoader(destinationOverride = null) {
+  const selectedUser =
+    window.LocalityDataService?.setCurrentDemoUser?.(selectedDemoUserId);
+
+  const fallbackDestination =
+    selectedUser?.defaultDestination ||
+    getSelectedDemoDestination(selectedWorkspaceDestination || "contracts.html");
+
+  const destination =
+    destinationOverride ||
+    selectedWorkspaceDestination ||
+    fallbackDestination;
 
   closeHubSignIn();
 
@@ -626,7 +668,7 @@ function enterWorkspaceWithLoader() {
   }
 
   setTimeout(() => {
-    window.location.href = selectedWorkspaceDestination;
+    window.location.href = destination;
   }, 900);
 }
 
@@ -636,7 +678,23 @@ hubGateButtons.forEach((button) => {
   });
 });
 
-hubSignInClose?.addEventListener("click", closeHubSignIn);
-fakeSignInSubmit?.addEventListener("click", enterWorkspaceWithLoader);
-demoAccessSubmit?.addEventListener("click", enterWorkspaceWithLoader);
+demoAccountButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    selectDemoUser(button.dataset.demoUser);
 
+    if (!selectedWorkspaceDestination) {
+      selectedWorkspaceDestination =
+        button.dataset.demoDestination || "contracts.html";
+    }
+  });
+});
+
+hubSignInClose?.addEventListener("click", closeHubSignIn);
+
+fakeSignInSubmit?.addEventListener("click", () => {
+  enterWorkspaceWithLoader();
+});
+
+demoAccessSubmit?.addEventListener("click", () => {
+  enterWorkspaceWithLoader("contracts.html");
+});
