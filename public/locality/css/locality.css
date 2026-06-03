@@ -116,6 +116,48 @@ body::after {
   border-radius: 999px;
 }
 
+/* ---> DemoSession Navigation Tools <--- */
+
+.demo-session-pill {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px 8px 14px;
+  border-radius: 999px;
+  background: rgba(8, 196, 100, 0.09);
+  border: 1px solid rgba(8, 196, 100, 0.16);
+  color: var(--navy);
+  white-space: nowrap;
+}
+
+.demo-session-pill span {
+  color: var(--muted);
+  font-size: 0.68rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.demo-session-pill strong {
+  color: var(--navy);
+  font-size: 0.82rem;
+  font-weight: 900;
+}
+
+.demo-session-pill button {
+  border: none;
+  border-radius: 999px;
+  padding: 7px 10px;
+  background: rgba(20, 50, 92, 0.08);
+  color: var(--navy);
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.demo-session-pill button:hover {
+  background: rgba(20, 50, 92, 0.14);
+}
+
 /* =========================
    HERO
 ========================= */
