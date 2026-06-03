@@ -273,6 +273,64 @@ function getProductListingsForBusiness(idOrSlug) {
     return getStoredDrafts();
   }
 
+   function getContractDraftsByStatus(status) {
+  if (!status || status === "all") {
+    return getStoredDrafts();
+  }
+
+  return getStoredDrafts().filter((draft) => draft.status === status);
+}
+
+function updateContractDraft(id, updates = {}) {
+  if (!id) return null;
+
+  const drafts = getStoredDrafts();
+  const existingIndex = drafts.findIndex((draft) => draft.id === id);
+
+  if (existingIndex < 0) {
+    return null;
+  }
+
+  const existingDraft = drafts[existingIndex];
+
+  const updatedDraft = normalizeDraft({
+    ...existingDraft,
+    ...updates,
+    id: existingDraft.id,
+    timestamps: {
+      ...existingDraft.timestamps,
+      ...(updates.timestamps || {})
+    }
+  });
+
+  drafts[existingIndex] = updatedDraft;
+  saveStoredDrafts(drafts);
+
+  return updatedDraft;
+}
+
+function updateContractStatus(id, status) {
+  const allowedStatuses = [
+    "draft",
+    "sent",
+    "viewed",
+    "revision_requested",
+    "accepted",
+    "archived"
+  ];
+
+  if (!allowedStatuses.includes(status)) {
+    console.warn(`Invalid contract status: ${status}`);
+    return null;
+  }
+
+  return updateContractDraft(id, { status });
+}
+
+function archiveContractDraft(id) {
+  return updateContractStatus(id, "archived");
+}
+
   function getMostRecentContractDraft() {
     return getStoredDrafts()[0] || null;
   }
@@ -307,12 +365,16 @@ function getProductListingsForBusiness(idOrSlug) {
   getMarketplaceProfile,
   getProductListingsForBusiness,
 
-  saveContractDraft,
-  getContractDraft,
-  getContractDrafts,
-  getMostRecentContractDraft,
-  deleteContractDraft,
-  setCurrentContractDraftId,
-  getCurrentContractDraftId
+   saveContractDraft,
+   getContractDraft,
+   getContractDrafts,
+   getContractDraftsByStatus,
+   updateContractDraft,
+   updateContractStatus,
+   archiveContractDraft,
+   getMostRecentContractDraft,
+   deleteContractDraft,
+   setCurrentContractDraftId,
+   getCurrentContractDraftId
 };
 })();
