@@ -269,6 +269,13 @@ function setCurrentDemoUser(userId) {
   return user;
 }
 
+// Local Demo User
+function clearCurrentDemoUser() {
+  localStorage.removeItem(CURRENT_DEMO_USER_KEY);
+  localStorage.removeItem(CURRENT_DRAFT_KEY);
+  return true;
+}
+
 function getCurrentBusinessProfile() {
   const currentUser = getCurrentDemoUser();
 
@@ -429,6 +436,7 @@ function archiveContractDraft(id) {
    getDemoUsers,
    getCurrentDemoUser,
    setCurrentDemoUser,
+   clearCurrentDemoUser,
    getCurrentBusinessProfile,
    getCurrentBusinessId,
 
