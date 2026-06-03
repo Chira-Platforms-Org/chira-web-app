@@ -44,7 +44,7 @@ const DEMO_USERS = [
     businessId: "business-roosevelt-row-market",
     businessName: "Roosevelt Row Market",
     workspaceType: "buyer",
-    defaultDestination: "buyer.html"
+    defaultDestination: "supplier.html"
   }
 ];
    
