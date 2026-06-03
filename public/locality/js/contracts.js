@@ -95,46 +95,82 @@ function renderBusinessList(filter = "all", searchTerm = "") {
   const normalizedSearch = searchTerm.toLowerCase();
 
   const visibleProfiles = profileData.filter((profile) => {
-    const role = profile.type === "farm" ? "supplier" : "buyer";
-    const matchesFilter = filter === "all" || filter === role;
+  const roles = profile.marketplaceRoles || [];
 
-    const searchableText = [
-      profile.name,
-      profile.type,
-      profile.product,
-      profile.location,
-      profile.productType,
-      profile.description,
-      profile.demandNeed
-    ]
-      .filter(Boolean)
-      .join(" ")
-      .toLowerCase();
+  const isSeller =
+    roles.includes("seller") ||
+    profile.type === "supplier" ||
+    profile.raw?.type === "farm";
 
-    return matchesFilter && searchableText.includes(normalizedSearch);
-  });
+  const isBuyer =
+    roles.includes("buyer") ||
+    profile.type === "buyer";
+
+  const matchesFilter =
+    filter === "all" ||
+    (filter === "supplier" && isSeller) ||
+    (filter === "buyer" && isBuyer);
+
+  const searchableText = [
+    profile.name,
+    profile.type,
+    profile.businessSubtype,
+    profile.businessCategories?.join(" "),
+    profile.specialties?.join(" "),
+    profile.marketplaceRoles?.join(" "),
+    profile.productFocus,
+    profile.locationLabel,
+    profile.productCategories?.join(" "),
+    profile.description,
+    profile.raw?.product,
+    profile.raw?.location,
+    profile.raw?.productType,
+    profile.raw?.demandNeed
+  ]
+    .filter(Boolean)
+    .join(" ")
+    .toLowerCase();
+
+  return matchesFilter && searchableText.includes(normalizedSearch);
+});
 
   businessList.innerHTML = visibleProfiles
     .map((profile, index) => {
       const key = slugifyProfileName(profile.name);
       const role = getProfileRole(profile);
-      const logoClass = profile.type === "farm" ? "green-logo" : "";
 
+      const primaryCategory =
+        profile.specialties?.[0] ||
+        profile.businessCategories?.[0] ||
+        profile.businessSubtype ||
+        "other";
+
+      const categoryLabel = formatBusinessCategory(primaryCategory);
+      
+      const isSeller =
+        profile.marketplaceRoles?.includes("seller") ||
+        profile.type === "supplier" ||
+        profile.raw?.type === "farm";
+      
+      const logoClass = isSeller ? "green-logo" : "";
+      
       return `
         <button class="business-row ${index === 0 ? "selected" : ""}" 
                 data-business="${key}" 
-                data-type="${profile.type === "farm" ? "supplier" : "buyer"}">
+                data-type="${isSeller ? "supplier" : "buyer"}">
           <span class="business-logo small-logo ${logoClass}">
             ${getProfileInitials(profile)}
           </span>
           <div>
             <strong>${profile.name}</strong>
-            <small>${role} · ${profile.location || "Phoenix region"} · ${profile.product || "Local network profile"}</small>
+            <small>
+              ${categoryLabel} · ${role} · ${profile.locationLabel || profile.raw?.location || "Phoenix region"}
+            </small>
           </div>
         </button>
       `;
-    })
-    .join("");
+          })
+          .join("");
 
   businessRows = document.querySelectorAll(".business-row");
 }
@@ -173,10 +209,38 @@ function getProfileInitials(profile) {
     .toUpperCase();
 }
 
+function formatBusinessCategory(category = "") {
+  const labels = {
+    farm: "Farm",
+    processor: "Processor",
+    distributor: "Distributor",
+    restaurant: "Restaurant",
+    store: "Store",
+    institution: "Institution",
+    "food-hub": "Food Hub",
+    other: "Other"
+  };
+
+  return labels[category] || "Business";
+}
+
+function formatMarketplaceRoles(roles = []) {
+  if (!Array.isArray(roles) || roles.length === 0) {
+    return "Network profile";
+  }
+
+  const hasBuyer = roles.includes("buyer");
+  const hasSeller = roles.includes("seller");
+
+  if (hasBuyer && hasSeller) return "Buyer + Seller";
+  if (hasSeller) return "Seller";
+  if (hasBuyer) return "Buyer";
+
+  return "Network profile";
+}
+
 function getProfileRole(profile) {
-  return profile.type === "supplier" || profile.raw?.type === "farm"
-    ? "Supplier"
-    : "Buyer";
+  return formatMarketplaceRoles(profile.marketplaceRoles);
 }
 
 function getProfileFocus(profile) {
