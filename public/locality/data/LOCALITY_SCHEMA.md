@@ -26,7 +26,7 @@ UserAccount = {
 ```
 ***
 
-## ** 2. Business Profile **
+##  2. Business Profile 
 
 ```js
 
@@ -86,7 +86,7 @@ BusinessProfile = {
 
 ***
 
-## **3. Product Listing**
+## 3. Product Listing
 ```js
 ProductListing = {
   id: "product_123",
@@ -116,7 +116,7 @@ ProductListing = {
 ```
 ***
 
-##** 4. Contract Draft**
+## 4. Contract Draft
 ```js
 ContractDraft = {
   id: "LOC-DRAFT-12345678",
@@ -154,7 +154,7 @@ ContractDraft = {
 ```
 ***
 
-##** 5. Conversation
+## 5. Conversation
 ```js
 Conversation = {
   id: "conversation_123",
@@ -173,7 +173,7 @@ Conversation = {
 ```
 ***
 
-##** 6. Conversation**
+## 6. Conversation**
 ```js
 Conversation = {
   id: "conversation_123",
@@ -192,4 +192,4 @@ Conversation = {
 ```
 ***
 
-##** 7.
+## 7.
