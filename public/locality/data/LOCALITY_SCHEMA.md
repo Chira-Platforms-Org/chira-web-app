@@ -26,7 +26,7 @@ UserAccount = {
 ```
 ***
 
-## ** 2. Business Profile**
+## ** 2. Business Profile **
 
 ```js
 
