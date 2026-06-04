@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Account Setup | Locality</title>
+
+  <link rel="icon" type="image/png" href="images/LOCALITY LOGO.png" />
+  <link rel="stylesheet" href="css/locality.css" />
+</head>
+
+<body class="login-page">
+  <main class="login-shell">
+    <section class="login-panel">
+      <img src="images/LOCALITY LOGO.png" alt="Locality" class="login-logo" />
+
+      <p class="login-eyebrow">Locality account setup</p>
+      <h1>Create or access your workspace.</h1>
+      <p>
+        This is the first real Supabase-backed account flow for Locality.
+        Create an account, sign in, then create your business profile.
+      </p>
+
+      <div class="real-auth-card">
+        <h2>Account</h2>
+
+        <label>
+          Email
+          <input id="accountEmail" type="email" placeholder="you@example.com" autocomplete="email" />
+        </label>
+
+        <label>
+          Password
+          <input id="accountPassword" type="password" placeholder="Minimum 6 characters" autocomplete="current-password" />
+        </label>
+
+        <div class="auth-action-row">
+          <button id="createAccountBtn" type="button">Create account</button>
+          <button id="signInBtn" type="button" class="secondary">Sign in</button>
+          <button id="signOutBtn" type="button" class="ghost">Sign out</button>
+        </div>
+
+        <p id="authStatus" class="auth-status">Not signed in yet.</p>
+      </div>
+
+      <div class="real-auth-card hidden" id="profileSetupCard">
+        <h2>Business profile</h2>
+        <p>
+          Create the business profile connected to this account.
+        </p>
+
+        <label>
+          Business name
+          <input id="businessNameInput" type="text" placeholder="Queen Creek Harvest" />
+        </label>
+
+        <label>
+          Marketplace role
+          <select id="marketplaceRoleInput">
+            <option value="seller">Seller</option>
+            <option value="buyer">Buyer</option>
+            <option value="buyer_seller">Buyer and Seller</option>
+          </select>
+        </label>
+
+        <label>
+          Business category
+          <select id="businessCategoryInput">
+            <option value="farm">Farm / Ranch</option>
+            <option value="processor">Processor</option>
+            <option value="distributor">Distributor</option>
+            <option value="restaurant">Restaurant / Food Service</option>
+            <option value="store">Store / Market</option>
+            <option value="institution">Institution</option>
+            <option value="food-hub">Food Hub / Coalition</option>
+            <option value="other">Other</option>
+          </select>
+        </label>
+
+        <label>
+          Location label
+          <input id="locationLabelInput" type="text" placeholder="Queen Creek, AZ" />
+        </label>
+
+        <label>
+          Product / sourcing focus
+          <input id="productFocusInput" type="text" placeholder="Leafy greens, tomatoes, herbs" />
+        </label>
+
+        <label>
+          Short description
+          <textarea id="businessDescriptionInput" placeholder="Briefly describe the business."></textarea>
+        </label>
+
+        <button id="createProfileBtn" type="button">Create business profile</button>
+      </div>
+
+      <div class="real-auth-card hidden" id="profileSummaryCard">
+        <h2>Your workspace profile</h2>
+        <p id="profileSummaryText">No profile loaded yet.</p>
+
+        <div class="auth-action-row">
+          <a href="supplier.html" class="auth-link-button">Enter Workspace</a>
+          <a href="contracts.html" class="auth-link-button secondary">Open Contract Studio</a>
+        </div>
+      </div>
+
+      <a href="login.html" class="login-back-link">← Back to demo access</a>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabaseConfig.js"></script>
+  <script src="js/supabaseClient.js"></script>
+  <script src="js/authService.js"></script>
+  <script src="js/profileService.js"></script>
+  <script src="js/account.js"></script>
+</body>
+</html>
