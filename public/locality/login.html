@@ -6,8 +6,8 @@
 
   <title>Enter Locality | Chira Platforms</title>
 
-<link rel="icon" type="image/png" href="images/Locality Flavicon Spinner.png" />
-<link rel="apple-touch-icon" href="images/Locality Flavicon Spinner.png" />
+  <link rel="icon" type="image/png" href="images/Locality Flavicon Spinner.png" />
+  <link rel="apple-touch-icon" href="images/Locality Flavicon Spinner.png" />
 
   <link rel="stylesheet" href="css/locality.css" />
 </head>
@@ -25,45 +25,46 @@
       <h1>Coordinate local supply with the right level of access.</h1>
 
       <p class="login-subtitle">
-        Regional supply networks work best when suppliers, buyers, and communities
-        can coordinate clearly. Explore how Locality can support your operations,
-        relationships, and regional growth.
+        Regional supply networks work best when farms, food businesses, buyers, and
+        community partners can coordinate clearly. Explore Locality as a guest, or
+        create an account to manage your workspace.
       </p>
 
-        <div class="access-grid">
-    <article class="access-card guest">
-      <span>Guest Access</span>
-      <h3>Browse the marketplace</h3>
-      <p>
-        Explore regional farms, buyers, profiles, supply activity, and local sourcing opportunities
-        without creating an account.
-      </p>
-      <a href="map.html" class="guest-access-link">Continue as Guest</a>
-    </article>
-  
-    <article class="access-card supplier">
-      <span>User Login</span>
-      <h3>Access your workspace</h3>
-      <p>
-        Sign in to manage your business profile, contracts, listings, messages, and regional
-        coordination tools.
-      </p>
-      <a href="account.html" class="login-gate-btn">
-        Sign in
-      </a>
-    </article>
-  
-    <article class="access-card buyer">
-      <span>Create Account</span>
-      <h3>Join the regional network</h3>
-      <p>
-        Create a Locality account and set up your business profile as a buyer, seller, or both.
-      </p>
-      <a href="account.html" class="login-gate-btn">
-        Create account
-      </a>
-    </article>
-  </div>
+      <div class="access-grid">
+        <article class="access-card guest">
+          <span>Guest Access</span>
+          <h3>Browse the marketplace</h3>
+          <p>
+            Explore regional farms, buyers, profiles, supply activity, and local sourcing
+            opportunities without creating an account.
+          </p>
+          <a href="map.html" class="guest-access-link">Continue as Guest</a>
+        </article>
+
+        <article class="access-card supplier">
+          <span>User Login</span>
+          <h3>Access your workspace</h3>
+          <p>
+            Sign in to manage your business profile, contracts, listings, messages,
+            and regional coordination tools.
+          </p>
+          <a href="account.html" class="login-gate-btn">
+            Sign in
+          </a>
+        </article>
+
+        <article class="access-card buyer">
+          <span>Create Account</span>
+          <h3>Join the regional network</h3>
+          <p>
+            Create a Locality account and set up your business profile as a buyer,
+            seller, or both.
+          </p>
+          <a href="account.html" class="login-gate-btn">
+            Create account
+          </a>
+        </article>
+      </div>
 
       <div class="login-footer-actions">
         <a href="#" class="plans-link">Explore access plans →</a>
@@ -72,67 +73,5 @@
     </section>
   </main>
 
-  <div id="hubSignInModal" class="hub-signin-modal">
-  <div class="hub-signin-card">
-    <button class="hub-signin-close" id="hubSignInClose">×</button>
-
-    <p class="login-eyebrow">Demo workspace access</p>
-    <h2>Choose a Locality demo profile.</h2>
-    <p>
-      Select a demo business profile to preview role-based workspace behavior.
-      This will later connect to secure account access, permissions, and live data.
-    </p>
-
-    <div class="demo-account-list" id="demoAccountList">
-      <button
-        class="demo-account-card active"
-        type="button"
-        data-demo-user="user-qch-owner"
-        data-demo-destination="supplier.html"
-      >
-        <span>Seller demo</span>
-        <strong>Queen Creek Harvest</strong>
-        <small>Farm · Seller workspace · Contract sender</small>
-      </button>
-
-      <button
-        class="demo-account-card"
-        type="button"
-        data-demo-user="user-rrm-owner"
-        data-demo-destination="supplier.html"
-      >
-        <span>Buyer demo</span>
-        <strong>Roosevelt Row Market</strong>
-        <small>Store · Buyer workspace · Contract recipient</small>
-      </button>
-    </div>
-
-    <button id="fakeSignInSubmit" class="hub-signin-submit">
-      Enter selected workspace
-    </button>
-
-    <button id="demoAccessSubmit" class="hub-demo-submit">
-      Open Contract Studio
-    </button>
-  </div>
-</div>
-
-  <div id="pageLoader" class="page-loader">
-    <div class="loader-card">
-      <img src="images/LOCALITY LOGO.png" alt="Locality loading" />
-      <div class="loader-pulse"></div>
-      <p>Opening Locality workspace...</p>
-    </div>
-  </div>
-
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/supabaseConfig.js"></script>
-  <script src="js/supabaseClient.js"></script>
-  <script src="js/authService.js"></script>
-  <script src="js/profileService.js"></script>
-  
-  <script src="js/dataService.js"></script>
-  <script src="js/locality.js"></script>
-  
 </body>
 </html>
