@@ -70,46 +70,59 @@
       </div>
     </section>
 
-      <aside class="auth-side-panel auth-visual-panel" aria-hidden="true">
-    <div class="locality-network-visual">
-      <div class="network-glow"></div>
-  
-      <div class="network-ring network-ring-one"></div>
-      <div class="network-ring network-ring-two"></div>
-      <div class="network-ring network-ring-three"></div>
-  
-      <div class="network-path path-one"></div>
-      <div class="network-path path-two"></div>
-      <div class="network-path path-three"></div>
-  
-      <div class="signal-dot signal-one"></div>
-      <div class="signal-dot signal-two"></div>
-  
-      <div class="network-node node-farm">
-        <span class="node-icon">✦</span>
-        <span>Farm</span>
-      </div>
-  
-      <div class="network-node node-market">
-        <span class="node-icon">●</span>
-        <span>Market</span>
-      </div>
-  
-      <div class="network-node node-buyer">
-        <span class="node-icon">◇</span>
-        <span>Buyer</span>
-      </div>
-  
-      <div class="network-node node-hub">
-        <span class="node-icon">◎</span>
-        <span>Hub</span>
-      </div>
-  
-      <div class="locality-core-mark">
-        <img src="images/LOCALITY LOGO.png" alt="" />
-      </div>
-    </div>
-  </aside>
+      <aside class="auth-side-panel auth-orb-panel" aria-hidden="true">
+  <div class="auth-art-panel">
+    <div class="auth-art-grid"></div>
+    <div class="auth-art-glow auth-art-glow-1"></div>
+    <div class="auth-art-glow auth-art-glow-2"></div>
+
+    <svg class="auth-liquid-orb" viewBox="0 0 520 520" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="localityMeshStroke" x1="90" y1="90" x2="430" y2="430" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stop-color="#7ed957" />
+          <stop offset="45%" stop-color="#17c964" />
+          <stop offset="100%" stop-color="#1d3d74" />
+        </linearGradient>
+
+        <radialGradient id="localityMeshGlow" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="rgba(126, 217, 87, 0.22)" />
+          <stop offset="60%" stop-color="rgba(23, 201, 100, 0.10)" />
+          <stop offset="100%" stop-color="rgba(255,255,255,0)" />
+        </radialGradient>
+      </defs>
+
+      <circle cx="260" cy="260" r="135" fill="url(#localityMeshGlow)" class="orb-core"></circle>
+
+      <g class="orb-float">
+        <path class="mesh-layer mesh-layer-1" d="M260 96C324 94 387 125 414 183C442 242 431 319 387 373C344 426 273 447 205 433C142 420 91 377 73 316C56 258 66 190 102 143C138 98 200 97 260 96Z"></path>
+        <path class="mesh-layer mesh-layer-2" d="M260 96C324 94 387 125 414 183C442 242 431 319 387 373C344 426 273 447 205 433C142 420 91 377 73 316C56 258 66 190 102 143C138 98 200 97 260 96Z"></path>
+        <path class="mesh-layer mesh-layer-3" d="M260 96C324 94 387 125 414 183C442 242 431 319 387 373C344 426 273 447 205 433C142 420 91 377 73 316C56 258 66 190 102 143C138 98 200 97 260 96Z"></path>
+        <path class="mesh-layer mesh-layer-4" d="M260 96C324 94 387 125 414 183C442 242 431 319 387 373C344 426 273 447 205 433C142 420 91 377 73 316C56 258 66 190 102 143C138 98 200 97 260 96Z"></path>
+        <path class="mesh-layer mesh-layer-5" d="M260 96C324 94 387 125 414 183C442 242 431 319 387 373C344 426 273 447 205 433C142 420 91 377 73 316C56 258 66 190 102 143C138 98 200 97 260 96Z"></path>
+        <path class="mesh-layer mesh-layer-6" d="M260 96C324 94 387 125 414 183C442 242 431 319 387 373C344 426 273 447 205 433C142 420 91 377 73 316C56 258 66 190 102 143C138 98 200 97 260 96Z"></path>
+
+        <path class="mesh-dots" d="M260 96C324 94 387 125 414 183C442 242 431 319 387 373C344 426 273 447 205 433C142 420 91 377 73 316C56 258 66 190 102 143C138 98 200 97 260 96Z"></path>
+
+        <ellipse class="mesh-ring mesh-ring-1" cx="260" cy="260" rx="150" ry="88"></ellipse>
+        <ellipse class="mesh-ring mesh-ring-2" cx="260" cy="260" rx="138" ry="104"></ellipse>
+        <ellipse class="mesh-ring mesh-ring-3" cx="260" cy="260" rx="124" ry="72"></ellipse>
+
+        <circle class="mesh-particle particle-1" cx="162" cy="164" r="4"></circle>
+        <circle class="mesh-particle particle-2" cx="352" cy="148" r="3.6"></circle>
+        <circle class="mesh-particle particle-3" cx="397" cy="260" r="4.2"></circle>
+        <circle class="mesh-particle particle-4" cx="334" cy="374" r="3.8"></circle>
+        <circle class="mesh-particle particle-5" cx="210" cy="395" r="4"></circle>
+        <circle class="mesh-particle particle-6" cx="120" cy="302" r="3.5"></circle>
+        <circle class="mesh-particle particle-7" cx="195" cy="122" r="3"></circle>
+        <circle class="mesh-particle particle-8" cx="309" cy="116" r="3.2"></circle>
+        <circle class="mesh-particle particle-9" cx="388" cy="198" r="3.2"></circle>
+        <circle class="mesh-particle particle-10" cx="384" cy="323" r="3"></circle>
+        <circle class="mesh-particle particle-11" cx="281" cy="406" r="3.5"></circle>
+        <circle class="mesh-particle particle-12" cx="143" cy="366" r="3.2"></circle>
+      </g>
+    </svg>
+  </div>
+</aside>
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
