@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Create Account | Locality</title>
+
+  <link rel="icon" type="image/png" href="images/Locality Flavicon Spinner.png" />
+  <link rel="apple-touch-icon" href="images/Locality Flavicon Spinner.png" />
+
+  <link rel="stylesheet" href="css/locality.css" />
+  <link rel="stylesheet" href="css/account.css" />
+</head>
+
+<body class="login-page account-page signup-page">
+  <main class="auth-shell signup-shell">
+    <section class="auth-card signup-card">
+      <a href="index.html" class="auth-logo">
+        <img src="images/LOCALITY LOGO.png" alt="Locality" />
+      </a>
+
+      <p class="login-eyebrow">Create your Locality workspace</p>
+
+      <h1>Set up your local food network account.</h1>
+
+      <p class="auth-subtitle">
+        Create your account, tell us how your business participates in the local
+        food network, and start building regional sourcing relationships.
+      </p>
+
+      <div class="signup-progress">
+        <div class="progress-step active" data-step-indicator="1">
+          <span>1</span>
+          Account
+        </div>
+        <div class="progress-step" data-step-indicator="2">
+          <span>2</span>
+          Business
+        </div>
+        <div class="progress-step" data-step-indicator="3">
+          <span>3</span>
+          Workspace
+        </div>
+      </div>
+
+      <form class="auth-form signup-step active" id="accountStep" data-step="1">
+        <h2>Create your account</h2>
+
+        <label>
+          Email address
+          <input id="signupEmail" type="email" placeholder="you@example.com" autocomplete="email" />
+        </label>
+
+        <label>
+          Password
+          <input id="signupPassword" type="password" placeholder="Minimum 6 characters" autocomplete="new-password" />
+        </label>
+
+        <button id="createAccountSubmit" type="submit" class="auth-primary-btn">
+          Continue to business setup
+        </button>
+
+        <p id="signupStatus" class="auth-status">
+          Start with your email and password.
+        </p>
+      </form>
+
+      <form class="auth-form signup-step" id="businessStep" data-step="2">
+        <h2>Set up your business profile</h2>
+
+        <label>
+          Business name
+          <input id="businessNameInput" type="text" placeholder="Queen Creek Harvest" />
+        </label>
+
+        <label>
+          What will you use Locality for?
+          <select id="marketplaceRoleInput">
+            <option value="seller">Selling local food</option>
+            <option value="buyer">Buying local food</option>
+            <option value="buyer_seller">Both buying and selling</option>
+          </select>
+        </label>
+
+        <label>
+          Business category
+          <select id="businessCategoryInput">
+            <option value="farm">Farm / Ranch</option>
+            <option value="processor">Processor</option>
+            <option value="distributor">Distributor</option>
+            <option value="restaurant">Restaurant / Food Service</option>
+            <option value="store">Store / Market</option>
+            <option value="institution">Institution</option>
+            <option value="food-hub">Food Hub / Coalition</option>
+            <option value="other">Other</option>
+          </select>
+        </label>
+
+        <label>
+          Location
+          <input id="locationLabelInput" type="text" placeholder="Queen Creek, AZ" />
+        </label>
+
+        <label>
+          Product or sourcing focus
+          <input id="productFocusInput" type="text" placeholder="Leafy greens, tomatoes, herbs" />
+        </label>
+
+        <label>
+          Short description
+          <textarea id="businessDescriptionInput" placeholder="Briefly describe your business and what you hope to coordinate through Locality."></textarea>
+        </label>
+
+        <button id="createProfileSubmit" type="submit" class="auth-primary-btn">
+          Create workspace
+        </button>
+      </form>
+
+      <div class="signup-step completion-card" id="completionStep" data-step="3">
+        <h2>Your workspace is ready.</h2>
+        <p id="profileSummaryText">
+          Your business profile has been created.
+        </p>
+
+        <a href="supplier.html" class="auth-primary-link">
+          Enter workspace
+        </a>
+
+        <a href="contracts.html" class="auth-secondary-link">
+          Open Contract Studio
+        </a>
+      </div>
+
+      <div class="auth-footer-links">
+        <a href="account.html">Already have an account? Sign in</a>
+        <a href="map.html">Continue as guest</a>
+      </div>
+    </section>
+
+    <aside class="auth-side-panel">
+      <p class="side-kicker">A warmer way to coordinate local supply.</p>
+      <h2>For farms, buyers, markets, and regional food partners.</h2>
+      <p>
+        Locality gives local food businesses a shared place to create profiles,
+        discover partners, coordinate supply, and build trusted sourcing relationships.
+      </p>
+    </aside>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabaseConfig.js"></script>
+  <script src="js/supabaseClient.js"></script>
+  <script src="js/authService.js"></script>
+  <script src="js/profileService.js"></script>
+  <script src="js/signup.js"></script>
+</body>
+</html>
