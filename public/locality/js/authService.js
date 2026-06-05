@@ -68,11 +68,21 @@
     return await supabase.auth.signOut();
   }
 
+   async function resetPasswordForEmail(email) {
+  const supabase = getClient();
+  if (!supabase) return { data: null, error: "Supabase client missing." };
+
+  return await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: `${window.location.origin}/account.html`
+  });
+}
+
   window.LocalityAuthService = {
-    getCurrentUser,
-    getCurrentSession,
-    signUpWithEmail,
-    signInWithEmail,
-    signOut
-  };
+  getCurrentUser,
+  getCurrentSession,
+  signUpWithEmail,
+  signInWithEmail,
+  signOut,
+  resetPasswordForEmail
+};
 })();
