@@ -731,3 +731,229 @@
     display: none;
   }
 }
+
+/* =========================================================
+   AUTH VISUAL PANEL — ABSTRACT LOCALITY ORB
+   ========================================================= */
+
+.auth-art-panel {
+  position: relative;
+  width: 100%;
+  min-height: 100%;
+  height: 100%;
+  border-radius: 34px;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 22% 18%, rgba(126, 217, 87, 0.14), transparent 28%),
+    radial-gradient(circle at 76% 22%, rgba(29, 61, 116, 0.07), transparent 26%),
+    linear-gradient(180deg, rgba(255,255,255,0.46), rgba(255,255,255,0.18));
+  border: 1px solid rgba(29, 61, 116, 0.07);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.45);
+}
+
+.auth-art-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(29, 61, 116, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(29, 61, 116, 0.05) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: linear-gradient(to bottom, rgba(0,0,0,0.85), rgba(0,0,0,0.35));
+  -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,0.85), rgba(0,0,0,0.35));
+  pointer-events: none;
+}
+
+.auth-art-glow {
+  position: absolute;
+  border-radius: 999px;
+  filter: blur(36px);
+  pointer-events: none;
+}
+
+.auth-art-glow-1 {
+  width: 190px;
+  height: 190px;
+  top: 10%;
+  left: 10%;
+  background: rgba(126, 217, 87, 0.14);
+}
+
+.auth-art-glow-2 {
+  width: 160px;
+  height: 160px;
+  bottom: 12%;
+  right: 12%;
+  background: rgba(29, 61, 116, 0.08);
+}
+
+.auth-liquid-orb {
+  position: absolute;
+  inset: 50%;
+  width: min(74%, 500px);
+  height: auto;
+  transform: translate(-50%, -50%);
+  overflow: visible;
+  filter: drop-shadow(0 28px 48px rgba(17, 50, 92, 0.10));
+}
+
+.orb-core {
+  animation: orbPulse 8s ease-in-out infinite;
+}
+
+.orb-float {
+  transform-origin: 260px 260px;
+  animation: orbFloat 13s ease-in-out infinite;
+}
+
+.mesh-layer,
+.mesh-dots,
+.mesh-ring,
+.mesh-particle {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.mesh-layer {
+  fill: none;
+  stroke: url(#localityMeshStroke);
+  stroke-width: 1.35;
+  opacity: 0.32;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.mesh-layer-1 {
+  transform: scale(0.60) rotate(-18deg);
+  opacity: 0.16;
+}
+
+.mesh-layer-2 {
+  transform: scale(0.72) rotate(-10deg);
+  opacity: 0.20;
+}
+
+.mesh-layer-3 {
+  transform: scale(0.82) rotate(-4deg);
+  opacity: 0.24;
+}
+
+.mesh-layer-4 {
+  transform: scale(0.91) rotate(6deg);
+  opacity: 0.30;
+}
+
+.mesh-layer-5 {
+  transform: scale(0.99) rotate(14deg);
+  opacity: 0.36;
+}
+
+.mesh-layer-6 {
+  transform: scale(1.08) rotate(21deg);
+  opacity: 0.25;
+}
+
+.mesh-dots {
+  fill: none;
+  stroke: url(#localityMeshStroke);
+  stroke-width: 3.2;
+  stroke-linecap: round;
+  stroke-dasharray: 1 13;
+  opacity: 0.24;
+  transform: scale(1.03) rotate(8deg);
+}
+
+.mesh-ring {
+  fill: none;
+  stroke: rgba(29, 61, 116, 0.14);
+  stroke-width: 1.15;
+  opacity: 0.48;
+}
+
+.mesh-ring-1 {
+  transform: rotate(20deg) scale(0.98);
+}
+
+.mesh-ring-2 {
+  transform: rotate(-18deg) scale(0.90);
+}
+
+.mesh-ring-3 {
+  transform: rotate(52deg) scale(0.84);
+}
+
+.mesh-particle {
+  fill: #16c964;
+  opacity: 0.55;
+  animation: particleDrift 6s ease-in-out infinite;
+}
+
+.particle-1  { animation-delay: 0s; }
+.particle-2  { animation-delay: 0.8s; }
+.particle-3  { animation-delay: 1.4s; }
+.particle-4  { animation-delay: 2.1s; }
+.particle-5  { animation-delay: 2.7s; }
+.particle-6  { animation-delay: 3.3s; }
+.particle-7  { animation-delay: 1.2s; }
+.particle-8  { animation-delay: 2.9s; }
+.particle-9  { animation-delay: 0.6s; }
+.particle-10 { animation-delay: 4.1s; }
+.particle-11 { animation-delay: 1.9s; }
+.particle-12 { animation-delay: 3.8s; }
+
+@keyframes orbFloat {
+  0% {
+    transform: translateY(0px) rotate(0deg) scale(1);
+  }
+  25% {
+    transform: translateY(-8px) rotate(2deg) scale(1.01);
+  }
+  50% {
+    transform: translateY(-2px) rotate(0deg) scale(1.02);
+  }
+  75% {
+    transform: translateY(8px) rotate(-2deg) scale(0.995);
+  }
+  100% {
+    transform: translateY(0px) rotate(0deg) scale(1);
+  }
+}
+
+@keyframes orbPulse {
+  0%, 100% {
+    opacity: 0.82;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+}
+
+@keyframes particleDrift {
+  0%, 100% {
+    opacity: 0.35;
+    transform: translateY(0px) scale(1);
+  }
+  50% {
+    opacity: 0.92;
+    transform: translateY(-8px) scale(1.15);
+  }
+}
+
+/* Slightly smaller visual on medium screens */
+@media (max-width: 1200px) {
+  .auth-liquid-orb {
+    width: min(78%, 420px);
+  }
+}
+
+/* Hide the right art panel on smaller mobile layouts if needed */
+@media (max-width: 920px) {
+  .auth-art-panel {
+    min-height: 280px;
+  }
+
+  .auth-liquid-orb {
+    width: min(68%, 320px);
+  }
+}
