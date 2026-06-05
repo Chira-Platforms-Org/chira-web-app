@@ -679,3 +679,67 @@
     display: none;
   }
 }
+
+/* =========================================================
+   AUTH NEW ANIMATION ORB IN PANEL
+========================================================= */
+
+.auth-orb-stage {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 640px;
+  border-radius: 34px;
+  overflow: hidden;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.72), rgba(255,255,255,0.42)),
+    linear-gradient(135deg, rgba(117, 239, 154, 0.18), rgba(255,255,255,0.02) 42%, rgba(59,130,246,0.05) 100%);
+  border: 1px solid rgba(165, 206, 184, 0.22);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.65),
+    0 24px 60px rgba(31, 58, 44, 0.08);
+}
+
+.auth-orb-stage::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(56, 93, 69, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(56, 93, 69, 0.06) 1px, transparent 1px);
+  background-size: 64px 64px;
+  opacity: 0.28;
+  pointer-events: none;
+}
+
+.auth-orb-stage::after {
+  content: "";
+  position: absolute;
+  inset: 14% 14% auto auto;
+  width: 280px;
+  height: 280px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(92, 255, 143, 0.18), rgba(92, 255, 143, 0.06) 42%, transparent 70%);
+  filter: blur(44px);
+  pointer-events: none;
+}
+
+.auth-orb-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.auth-orb-canvas canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+  filter:
+    drop-shadow(0 0 18px rgba(47, 212, 106, 0.18))
+    drop-shadow(0 0 42px rgba(92, 255, 143, 0.16))
+    drop-shadow(0 0 80px rgba(154, 255, 212, 0.10));
+}
+
+
