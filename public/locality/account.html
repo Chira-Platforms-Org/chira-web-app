@@ -3,112 +3,81 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Account Setup | Locality</title>
+
+  <title>Sign In | Locality</title>
 
   <link rel="icon" type="image/png" href="images/Gray Locality Favicon.png" />
+  <link rel="apple-touch-icon" href="images/Locality Flavicon Spinner.png" />
+
   <link rel="stylesheet" href="css/locality.css" />
   <link rel="stylesheet" href="css/account.css" />
 </head>
 
-<body class="login-page account-page">
-  <main class="login-shell">
-    <section class="login-panel">
-      <img src="images/LOCALITY LOGO.png" alt="Locality" class="login-logo" />
+<body class="login-page account-page signin-page">
+  <main class="auth-shell">
+    <section class="auth-card">
+      <a href="index.html" class="auth-logo">
+        <img src="images/LOCALITY LOGO.png" alt="Locality" />
+      </a>
 
-      <p class="login-eyebrow">Locality account setup</p>
-      <h1>Create or access your workspace.</h1>
-     
-      <p class="account-intro">
-        This is the first real Supabase-backed account flow for Locality.
-        Create an account, sign in, then create your business profile.
+      <p class="login-eyebrow">Workspace access</p>
+
+      <h1>Sign in to Locality.</h1>
+
+      <p class="auth-subtitle">
+        Access your workspace to manage your business profile, listings, contracts,
+        messages, and local sourcing relationships.
       </p>
 
-      <div class="real-auth-card">
-        <h2>Account</h2>
-
+      <form class="auth-form" id="signInForm">
         <label>
-          Email
-          <input id="accountEmail" type="email" placeholder="you@example.com" autocomplete="email" />
+          Email address
+          <input id="signInEmail" type="email" placeholder="you@example.com" autocomplete="email" />
         </label>
 
         <label>
-          Password
-          <input id="accountPassword" type="password" placeholder="Minimum 6 characters" autocomplete="current-password" />
+          <span class="label-row">
+            Password
+            <button id="forgotPasswordBtn" type="button" class="text-button">
+              Forgot password?
+            </button>
+          </span>
+          <input id="signInPassword" type="password" placeholder="Enter your password" autocomplete="current-password" />
         </label>
 
-        <div class="auth-action-row">
-          <button id="createAccountBtn" type="button">Create account</button>
-          <button id="signInBtn" type="button" class="secondary">Sign in</button>
-          <button id="signOutBtn" type="button" class="ghost">Sign out</button>
-        </div>
+        <button id="signInSubmit" type="submit" class="auth-primary-btn">
+          Sign in
+        </button>
 
-        <p id="authStatus" class="auth-status">Not signed in yet.</p>
-      </div>
-
-      <div class="real-auth-card hidden" id="profileSetupCard">
-        <h2>Business profile</h2>
-        <p>
-          Create the business profile connected to this account.
+        <p id="authStatus" class="auth-status">
+          Enter your email and password to continue.
         </p>
+      </form>
 
-        <label>
-          Business name
-          <input id="businessNameInput" type="text" placeholder="Queen Creek Harvest" />
-        </label>
-
-        <label>
-          Marketplace role
-          <select id="marketplaceRoleInput">
-            <option value="seller">Seller</option>
-            <option value="buyer">Buyer</option>
-            <option value="buyer_seller">Buyer and Seller</option>
-          </select>
-        </label>
-
-        <label>
-          Business category
-          <select id="businessCategoryInput">
-            <option value="farm">Farm / Ranch</option>
-            <option value="processor">Processor</option>
-            <option value="distributor">Distributor</option>
-            <option value="restaurant">Restaurant / Food Service</option>
-            <option value="store">Store / Market</option>
-            <option value="institution">Institution</option>
-            <option value="food-hub">Food Hub / Coalition</option>
-            <option value="other">Other</option>
-          </select>
-        </label>
-
-        <label>
-          Location label
-          <input id="locationLabelInput" type="text" placeholder="Queen Creek, AZ" />
-        </label>
-
-        <label>
-          Product / sourcing focus
-          <input id="productFocusInput" type="text" placeholder="Leafy greens, tomatoes, herbs" />
-        </label>
-
-        <label>
-          Short description
-          <textarea id="businessDescriptionInput" placeholder="Briefly describe the business."></textarea>
-        </label>
-
-        <button id="createProfileBtn" type="button">Create business profile</button>
+      <div class="auth-divider">
+        <span></span>
+        <p>New to Locality?</p>
+        <span></span>
       </div>
 
-      <div class="real-auth-card hidden" id="profileSummaryCard">
-        <h2>Your workspace profile</h2>
-        <p id="profileSummaryText">No profile loaded yet.</p>
+      <a href="signup.html" class="auth-secondary-btn">
+        Create a new account
+      </a>
 
-        <div class="auth-action-row">
-          <a href="supplier.html" class="auth-link-button">Enter Workspace</a>
-          <a href="contracts.html" class="auth-link-button secondary">Open Contract Studio</a>
-        </div>
+      <div class="auth-footer-links">
+        <a href="map.html">Continue as guest</a>
+        <a href="login.html">Back to access options</a>
       </div>
-
-      <a href="login.html" class="login-back-link">← Back to demo access</a>
     </section>
+
+    <aside class="auth-side-panel">
+      <p class="side-kicker">Good food starts with good relationships.</p>
+      <h2>Built for local food networks.</h2>
+      <p>
+        Locality helps farms, restaurants, markets, and local buyers coordinate
+        more directly while keeping local food rooted in the communities it serves.
+      </p>
+    </aside>
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
