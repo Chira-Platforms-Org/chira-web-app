@@ -16,8 +16,8 @@ function initAuthOrb(container) {
     1000
   );
 
-  // Went from 350 -> 390
-  camera.position.z = 390;
+  // Went from 350 -> 390 (best) -> 500 (test)
+  camera.position.z = 500;
 
   const renderer = new THREE.WebGLRenderer({
     antialias: true,
@@ -66,7 +66,8 @@ function initAuthOrb(container) {
     colors[i * 3 + 1] = tempColor.g;
     colors[i * 3 + 2] = tempColor.b;
 
-    sizes[i] = 10.7 + Math.random() * 7.7;
+    // 10.7 and 7.6 originally
+    sizes[i] = 11.7 + Math.random() * 8.2;
   }
 
   geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
@@ -146,8 +147,9 @@ function initAuthOrb(container) {
       positionArray[ix + 1] = y * scale;
       positionArray[ix + 2] = z * scale;
 
+      // 9.3 + 7.2 originally
       sizeArray[i] =
-      9.3 + 7.2 * (0.5 + 0.5 * Math.sin(time * 1.8 + i * 0.035));
+      10.3 + 8.2 * (0.5 + 0.5 * Math.sin(time * 1.8 + i * 0.035));
     }
 
     geometry.attributes.position.needsUpdate = true;
