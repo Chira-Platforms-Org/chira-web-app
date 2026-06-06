@@ -16,8 +16,8 @@ function initAuthOrb(container) {
     1000
   );
 
-  // Went from 350 -> 390 (best) -> 500 (test) -> 800 (test 2)
-  camera.position.z = 800;
+  // Went from 350 -> 390 (best) -> 500 (test) -> 800 (test 2[no good]) -> 1000 (test 3)
+  camera.position.z = 1000;
 
   const renderer = new THREE.WebGLRenderer({
     antialias: true,
@@ -66,8 +66,8 @@ function initAuthOrb(container) {
     colors[i * 3 + 1] = tempColor.g;
     colors[i * 3 + 2] = tempColor.b;
 
-    // 10.7 and 7.6 originally
-    sizes[i] = 11.7 + Math.random() * 8.2;
+    // 10.7 and 7.6 originally -> 11.7 and 8.2
+    sizes[i] = 14.7 + Math.random() * 10.2;
   }
 
   geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
@@ -120,8 +120,8 @@ function initAuthOrb(container) {
   group.add(orb);
   scene.add(group);
 
-  const sizeArray = geometry.attributes.size.array;
-  const positionArray = geometry.attributes.position.array;
+  const size = geometry.attributes.size.;
+  const position = geometry.attributes.position.;
 
   function animate(timeMs) {
     const time = timeMs * 0.001;
@@ -147,9 +147,9 @@ function initAuthOrb(container) {
       positionArray[ix + 1] = y * scale;
       positionArray[ix + 2] = z * scale;
 
-      // 9.3 + 7.2 originally
+      // 9.3 + 7.2 originally -> then 10.3 + 8.2
       sizeArray[i] =
-      10.3 + 8.2 * (0.5 + 0.5 * Math.sin(time * 1.8 + i * 0.035));
+      14.7 + 10.2 * (0.5 + 0.5 * Math.sin(time * 1.8 + i * 0.035));
     }
 
     geometry.attributes.position.needsUpdate = true;
