@@ -65,7 +65,7 @@ function initAuthOrb(container) {
     colors[i * 3 + 1] = tempColor.g;
     colors[i * 3 + 2] = tempColor.b;
 
-    sizes[i] = 6.8 + Math.random() * 4.6;
+    sizes[i] = 9.7 + Math.random() * 6.7;
   }
 
   geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
@@ -104,7 +104,7 @@ function initAuthOrb(container) {
         if (tex.a < 0.04) discard;
 
         vec3 finalColor = color * vColor;
-        gl_FragColor = vec4(finalColor, tex.a * 0.72);
+        gl_FragColor = vec4(finalColor, tex.a * 0.92);
       }
     `,
     transparent: true,
@@ -146,7 +146,7 @@ function initAuthOrb(container) {
       positionArray[ix + 2] = z * scale;
 
       sizeArray[i] =
-      6.2 + 4.8 * (0.5 + 0.5 * Math.sin(time * 1.8 + i * 0.035));
+      8.8 + 6.2 * (0.5 + 0.5 * Math.sin(time * 1.8 + i * 0.035));
     }
 
     geometry.attributes.position.needsUpdate = true;
