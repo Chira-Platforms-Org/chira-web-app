@@ -41,7 +41,6 @@ const countryInput = document.getElementById("countryInput");
 
 const logoUrlInput = document.getElementById("logoUrlInput");
 const bannerImageUrlInput = document.getElementById("bannerImageUrlInput");
-const websiteInput = document.getElementById("websiteInput");
 const socialLinkInput = document.getElementById("socialLinkInput");
 const businessDescriptionInput = document.getElementById("businessDescriptionInput");
 const profileVisibilityInput = document.getElementById("profileVisibilityInput");
