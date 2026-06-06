@@ -1,113 +1,99 @@
 /* =========================
-   LOCALITY SIGNUP / ONBOARDING
+   LOCALITY SIGNUP FLOW
+   Account -> Business -> Profile -> Workspace
 ========================= */
 
 const accountStep = document.getElementById("accountStep");
 const businessStep = document.getElementById("businessStep");
+const profileStep = document.getElementById("profileStep");
 const completionStep = document.getElementById("completionStep");
 
+const signupStatus = document.getElementById("signupStatus");
+const profileSummaryText = document.getElementById("profileSummaryText");
+
+const fullNameInput = document.getElementById("fullNameInput");
 const signupEmail = document.getElementById("signupEmail");
 const signupPassword = document.getElementById("signupPassword");
-const signupStatus = document.getElementById("signupStatus");
+const confirmPasswordInput = document.getElementById("confirmPasswordInput");
 
 const businessNameInput = document.getElementById("businessNameInput");
 const marketplaceRoleInput = document.getElementById("marketplaceRoleInput");
 const businessCategoryInput = document.getElementById("businessCategoryInput");
 const locationLabelInput = document.getElementById("locationLabelInput");
 const productFocusInput = document.getElementById("productFocusInput");
+
+const logoUrlInput = document.getElementById("logoUrlInput");
+const bannerImageUrlInput = document.getElementById("bannerImageUrlInput");
+const websiteInput = document.getElementById("websiteInput");
+const socialLinkInput = document.getElementById("socialLinkInput");
 const businessDescriptionInput = document.getElementById("businessDescriptionInput");
-const profileSummaryText = document.getElementById("profileSummaryText");
+const profileVisibilityInput = document.getElementById("profileVisibilityInput");
 
-const createAccountSubmit = document.getElementById("createAccountSubmit");
-const createProfileSubmit = document.getElementById("createProfileSubmit");
-
-const progressSteps = document.querySelectorAll("[data-step-indicator]");
-
-function setSignupStatus(message, type = "neutral") {
-  if (!signupStatus) return;
-
-  signupStatus.textContent = message;
-  signupStatus.dataset.status = type;
-}
+let createdUser = null;
 
 function setStep(stepNumber) {
-  accountStep?.classList.toggle("active", stepNumber === 1);
-  businessStep?.classList.toggle("active", stepNumber === 2);
-  completionStep?.classList.toggle("active", stepNumber === 3);
+  document.querySelectorAll(".signup-step").forEach((step) => {
+    step.classList.toggle("active", step.dataset.step === String(stepNumber));
+  });
 
-  progressSteps.forEach((step) => {
-    const indicator = Number(step.dataset.stepIndicator);
-    step.classList.toggle("active", indicator === stepNumber);
-    step.classList.toggle("complete", indicator < stepNumber);
+  document.querySelectorAll("[data-step-indicator]").forEach((indicator) => {
+    const indicatorStep = Number(indicator.dataset.stepIndicator);
+
+    indicator.classList.toggle("active", indicatorStep === stepNumber);
+    indicator.classList.toggle("complete", indicatorStep < stepNumber);
   });
 }
 
-function getMarketplaceRolesFromInput(value) {
-  if (value === "buyer_seller") {
-    return ["buyer", "seller"];
-  }
+function setStatus(element, message, status = "default") {
+  if (!element) return;
 
+  element.textContent = message;
+
+  if (status === "default") {
+    element.removeAttribute("data-status");
+  } else {
+    element.dataset.status = status;
+  }
+}
+
+function getMarketplaceRoles(value) {
+  if (value === "buyer_seller") return ["buyer", "seller"];
   return [value];
 }
 
-function setAccountLoading(isLoading) {
-  if (!createAccountSubmit) return;
-
-  createAccountSubmit.disabled = isLoading;
-  createAccountSubmit.textContent = isLoading
-    ? "Creating account..."
-    : "Continue to business setup";
-}
-
-function setProfileLoading(isLoading) {
-  if (!createProfileSubmit) return;
-
-  createProfileSubmit.disabled = isLoading;
-  createProfileSubmit.textContent = isLoading
-    ? "Creating workspace..."
-    : "Create workspace";
-}
-
-async function checkExistingSession() {
-  const user = await window.LocalityAuthService?.getCurrentUser?.();
-
-  if (!user) return;
-
-  const { data: profile } =
-    await window.LocalityProfileService.getMyPrimaryBusinessProfile();
-
-  if (profile) {
-    renderCompletion(profile);
-  } else {
-    setStep(2);
-  }
-}
-
-function renderCompletion(profile) {
-  if (profileSummaryText && profile) {
-    const roles = profile.marketplace_roles?.join(" + ") || "Locality member";
-    const category = profile.business_categories?.join(", ") || "Business profile";
-
-    profileSummaryText.textContent =
-      `${profile.name} is set up as ${roles} · ${category} · ${profile.location_label || "Location pending"}.`;
-  }
-
-  setStep(3);
+function getCleanValue(input) {
+  return input?.value?.trim() || "";
 }
 
 accountStep?.addEventListener("submit", async (event) => {
   event.preventDefault();
 
-  const email = signupEmail?.value.trim();
-  const password = signupPassword?.value;
+  const fullName = getCleanValue(fullNameInput);
+  const email = getCleanValue(signupEmail);
+  const password = signupPassword?.value || "";
+  const confirmPassword = confirmPasswordInput?.value || "";
 
-  if (!email || !password) {
-    setSignupStatus("Enter your email and password first.", "error");
+  if (!fullName) {
+    setStatus(signupStatus, "Please enter your full name.", "error");
     return;
   }
 
-  setAccountLoading(true);
-  setSignupStatus("Creating your account...");
+  if (!email || !password || !confirmPassword) {
+    setStatus(signupStatus, "Please enter your email, password, and confirmation password.", "error");
+    return;
+  }
+
+  if (password.length < 6) {
+    setStatus(signupStatus, "Password must be at least 6 characters.", "error");
+    return;
+  }
+
+  if (password !== confirmPassword) {
+    setStatus(signupStatus, "Passwords do not match.", "error");
+    return;
+  }
+
+  setStatus(signupStatus, "Creating your account...", "default");
 
   const { data, error } = await window.LocalityAuthService.signUpWithEmail(
     email,
@@ -115,56 +101,124 @@ accountStep?.addEventListener("submit", async (event) => {
   );
 
   if (error) {
-    setAccountLoading(false);
-    setSignupStatus(error.message || "Account creation failed.", "error");
-    console.error(error);
+    setStatus(signupStatus, error.message || "Unable to create account.", "error");
     return;
   }
 
-  console.log("Signup result:", data);
-  setSignupStatus("Account created. Now set up your business profile.", "success");
-  setAccountLoading(false);
+  createdUser = data?.user || await window.LocalityAuthService.getCurrentUser();
+
+  if (!createdUser) {
+    setStatus(signupStatus, "Account created, but no active user session was found. Try signing in.", "error");
+    return;
+  }
+
+  await window.LocalitySupabase
+    .from("user_profiles")
+    .upsert({
+      id: createdUser.id,
+      full_name: fullName,
+      updated_at: new Date().toISOString()
+    });
+
+  setStatus(signupStatus, "Account created. Continue with your business profile.", "success");
   setStep(2);
 });
 
-businessStep?.addEventListener("submit", async (event) => {
+businessStep?.addEventListener("submit", (event) => {
   event.preventDefault();
 
-  const name = businessNameInput?.value.trim();
+  const businessName = getCleanValue(businessNameInput);
+  const locationLabel = getCleanValue(locationLabelInput);
 
-  if (!name) {
-    setSignupStatus("Business name is required.", "error");
+  if (!businessName) {
+    alert("Please enter your business name.");
     return;
   }
 
-  setProfileLoading(true);
-  setSignupStatus("Creating your business workspace...");
+  if (!locationLabel) {
+    alert("Please enter your business location.");
+    return;
+  }
 
-  const roleValue = marketplaceRoleInput?.value;
-  const categoryValue = businessCategoryInput?.value;
+  setStep(3);
+});
 
-  const { data, error } = await window.LocalityProfileService.createBusinessProfile({
-    name,
-    marketplace_roles: getMarketplaceRolesFromInput(roleValue),
-    business_categories: [categoryValue],
+profileStep?.addEventListener("submit", async (event) => {
+  event.preventDefault();
+
+  const user = createdUser || await window.LocalityAuthService.getCurrentUser();
+
+  if (!user) {
+    alert("Please create or sign in to your account first.");
+    setStep(1);
+    return;
+  }
+
+  const businessName = getCleanValue(businessNameInput);
+  const marketplaceRole = marketplaceRoleInput?.value || "seller";
+  const businessCategory = businessCategoryInput?.value || "other";
+  const locationLabel = getCleanValue(locationLabelInput);
+  const productFocus = getCleanValue(productFocusInput);
+  const description = getCleanValue(businessDescriptionInput);
+
+  if (!businessName || !locationLabel) {
+    alert("Please complete the required business details.");
+    setStep(2);
+    return;
+  }
+
+  const profileVisibility = profileVisibilityInput?.value || "draft";
+
+  const businessProfile = {
+    owner_user_id: user.id,
+    name: businessName,
+
+    marketplace_roles: getMarketplaceRoles(marketplaceRole),
+    business_categories: [businessCategory],
     specialties: [],
-    description: businessDescriptionInput?.value.trim() || "",
-    location_label: locationLabelInput?.value.trim() || "",
-    product_focus: productFocusInput?.value.trim() || "",
-    status: "active"
-  });
+
+    logo_url: getCleanValue(logoUrlInput) || null,
+    banner_image_url: getCleanValue(bannerImageUrlInput) || null,
+
+    contact_name: getCleanValue(fullNameInput),
+    contact_email: getCleanValue(signupEmail),
+    website: getCleanValue(websiteInput) || null,
+    social_link: getCleanValue(socialLinkInput) || null,
+
+    description,
+    location_label: locationLabel,
+    product_focus: productFocus,
+
+    profile_visibility: profileVisibility,
+    onboarding_step: "profile_created",
+    onboarding_completed: true,
+    status: "active",
+    updated_at: new Date().toISOString()
+  };
+
+  const { data, error } = await window.LocalitySupabase
+    .from("business_profiles")
+    .insert(businessProfile)
+    .select()
+    .single();
 
   if (error) {
-    setProfileLoading(false);
-    setSignupStatus(error.message || "Business profile creation failed.", "error");
-    console.error(error);
+    console.error("Unable to create business profile:", error);
+    alert(error.message || "Unable to create business profile.");
     return;
   }
 
-  setProfileLoading(false);
-  setSignupStatus("Workspace created.", "success");
-  renderCompletion(data);
+  if (profileSummaryText) {
+    const roleLabel =
+      marketplaceRole === "buyer_seller"
+        ? "buyer and seller"
+        : marketplaceRole;
+
+    profileSummaryText.textContent =
+      `${data.name} is set up as a ${roleLabel} profile in ${data.location_label}. You can add products, listings, pricing, and availability next.`;
+  }
+
+  setStep(4);
 });
 
 setStep(1);
-checkExistingSession();
