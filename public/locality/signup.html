@@ -34,46 +34,63 @@
           <span>1</span>
           Account
         </div>
+      
         <div class="progress-step" data-step-indicator="2">
           <span>2</span>
           Business
         </div>
+      
         <div class="progress-step" data-step-indicator="3">
           <span>3</span>
+          Profile
+        </div>
+      
+        <div class="progress-step" data-step-indicator="4">
+          <span>4</span>
           Workspace
         </div>
       </div>
 
-      <form class="auth-form signup-step active" id="accountStep" data-step="1">
+       <form class="auth-form signup-step active" id="accountStep" data-step="1">
         <h2>Create your account</h2>
-
+      
+        <label>
+          Full name
+          <input id="fullNameInput" type="text" placeholder="Your name" autocomplete="name" />
+        </label>
+      
         <label>
           Email address
           <input id="signupEmail" type="email" placeholder="you@example.com" autocomplete="email" />
         </label>
-
+      
         <label>
           Password
           <input id="signupPassword" type="password" placeholder="Minimum 6 characters" autocomplete="new-password" />
         </label>
-
+      
+        <label>
+          Confirm password
+          <input id="confirmPasswordInput" type="password" placeholder="Re-enter your password" autocomplete="new-password" />
+        </label>
+      
         <button id="createAccountSubmit" type="submit" class="auth-primary-btn">
           Continue to business setup
         </button>
-
+      
         <p id="signupStatus" class="auth-status">
-          Start with your email and password.
+          Start with your name, email, and password.
         </p>
       </form>
 
       <form class="auth-form signup-step" id="businessStep" data-step="2">
-        <h2>Set up your business profile</h2>
-
+        <h2>Set up your business identity</h2>
+      
         <label>
           Business name
           <input id="businessNameInput" type="text" placeholder="Queen Creek Harvest" />
         </label>
-
+      
         <label>
           What will you use Locality for?
           <select id="marketplaceRoleInput">
@@ -82,7 +99,7 @@
             <option value="buyer_seller">Both buying and selling</option>
           </select>
         </label>
-
+      
         <label>
           Business category
           <select id="businessCategoryInput">
@@ -96,28 +113,68 @@
             <option value="other">Other</option>
           </select>
         </label>
-
+      
         <label>
           Location
           <input id="locationLabelInput" type="text" placeholder="Queen Creek, AZ" />
         </label>
-
+      
         <label>
           Product or sourcing focus
           <input id="productFocusInput" type="text" placeholder="Leafy greens, tomatoes, herbs" />
         </label>
+      
+        <button id="businessSetupSubmit" type="submit" class="auth-primary-btn">
+          Continue to profile design
+        </button>
+      </form>
 
+      <form class="auth-form signup-step" id="profileStep" data-step="3">
+        <h2>Design your public profile</h2>
+      
+        <label>
+          Logo URL
+          <input id="logoUrlInput" type="url" placeholder="https://example.com/logo.png" />
+        </label>
+      
+        <label>
+          Banner or profile image URL
+          <input id="bannerImageUrlInput" type="url" placeholder="https://example.com/farm-photo.jpg" />
+        </label>
+      
+        <label>
+          Website
+          <input id="websiteInput" type="url" placeholder="https://yourbusiness.com" />
+        </label>
+      
+        <label>
+          Instagram or social link
+          <input id="socialLinkInput" type="url" placeholder="https://instagram.com/yourbusiness" />
+        </label>
+      
         <label>
           Short description
           <textarea id="businessDescriptionInput" placeholder="Briefly describe your business and what you hope to coordinate through Locality."></textarea>
         </label>
-
+      
+        <label>
+          Profile visibility
+          <select id="profileVisibilityInput">
+            <option value="draft">Keep private for now</option>
+            <option value="public">Publish profile after setup</option>
+          </select>
+        </label>
+      
         <button id="createProfileSubmit" type="submit" class="auth-primary-btn">
           Create workspace
         </button>
+      
+        <p class="auth-status">
+          You can add products, listings, pricing, photos, and availability after your profile is created.
+        </p>
       </form>
 
-      <div class="signup-step completion-card" id="completionStep" data-step="3">
+      <div class="signup-step completion-card" id="completionStep" data-step="4">
         <h2>Your workspace is ready.</h2>
         <p id="profileSummaryText">
           Your business profile has been created.
