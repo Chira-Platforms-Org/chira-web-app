@@ -257,7 +257,7 @@
   max-width: 460px;
 }
 
-.signup-shell {
+.-shell {
   grid-template-columns: minmax(420px, 680px) 1fr;
 }
 
@@ -312,6 +312,16 @@
 .completion-card.active {
   display: grid;
   gap: 16px;
+}
+
+.signup-progress {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+@media (max-width: 680px) {
+  .signup-progress {
+    grid-template-columns: 1fr;
+  }
 }
 
 .completion-card {
