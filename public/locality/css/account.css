@@ -476,10 +476,11 @@
   display: block;
   width: 100% !important;
   height: 100% !important;
+  opacity: 1;
   filter:
-    drop-shadow(0 0 18px rgba(28,214,92,0.20))
-    drop-shadow(0 0 38px rgba(104,255,140,0.16))
-    drop-shadow(0 0 72px rgba(190,255,210,0.10));
+    drop-shadow(0 0 20px rgba(22, 217, 87, 0.38))
+    drop-shadow(0 0 48px rgba(104, 255, 140, 0.28))
+    drop-shadow(0 0 88px rgba(190, 255, 210, 0.18));
 }
 
 @keyframes authOrbGlowOne {
