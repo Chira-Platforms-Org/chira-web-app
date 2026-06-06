@@ -91,35 +91,97 @@ function getPhoneDigits(value) {
   return digits.slice(0, 10);
 }
 
-function formatUSPhone(value) {
-  const digits = getPhoneDigits(value);
-
-  const area = digits.slice(0, 3);
-  const prefix = digits.slice(3, 6);
-  const line = digits.slice(6, 10);
-
-  if (!digits) return "";
-
-  if (digits.length <= 3) {
-    return `+1 (${area}`;
-  }
-
-  if (digits.length <= 6) {
-    return `+1 (${area}) ${prefix}`;
-  }
-
-  return `+1 (${area}) ${prefix}-${line}`;
+function getPhoneInputs(groupName) {
+  return {
+    area: document.getElementById(`${groupName}PhoneArea`),
+    prefix: document.getElementById(`${groupName}PhonePrefix`),
+    line: document.getElementById(`${groupName}PhoneLine`),
+    hidden: document.getElementById(`${groupName}PhoneInput`)
+  };
 }
 
-function attachPhoneFormatter(input) {
-  if (!input) return;
+function syncSegmentedPhone(groupName) {
+  const { area, prefix, line, hidden } = getPhoneInputs(groupName);
 
-  input.addEventListener("input", () => {
-    input.value = formatUSPhone(input.value);
-    input.setSelectionRange(input.value.length, input.value.length);
+  if (!hidden) return "";
+
+  const digits = [
+    area?.value || "",
+    prefix?.value || "",
+    line?.value || ""
+  ].join("").replace(/\D/g, "").slice(0, 10);
+
+  hidden.value = digits;
+
+  return digits;
+}
+
+function fillSegmentedPhone(groupName, value) {
+  const digits = getPhoneDigits(value);
+  const { area, prefix, line, hidden } = getPhoneInputs(groupName);
+
+  if (area) area.value = digits.slice(0, 3);
+  if (prefix) prefix.value = digits.slice(3, 6);
+  if (line) line.value = digits.slice(6, 10);
+  if (hidden) hidden.value = digits;
+
+  if (digits.length < 3) {
+    area?.focus();
+  } else if (digits.length < 6) {
+    prefix?.focus();
+  } else {
+    line?.focus();
+  }
+}
+
+function attachSegmentedPhoneFormatter(groupName) {
+  const { area, prefix, line } = getPhoneInputs(groupName);
+
+  const segments = [
+    { input: area, max: 3 },
+    { input: prefix, max: 3 },
+    { input: line, max: 4 }
+  ].filter((segment) => segment.input);
+
+  segments.forEach((segment, index) => {
+    segment.input.addEventListener("input", () => {
+      const combinedDigits = segments
+        .map((item) => item.input.value)
+        .join("")
+        .replace(/\D/g, "");
+
+      fillSegmentedPhone(groupName, combinedDigits);
+
+      const nextSegment = segments[index + 1];
+
+      if (segment.input.value.length >= segment.max && nextSegment) {
+        nextSegment.input.focus();
+      }
+
+      syncSegmentedPhone(groupName);
+    });
+
+    segment.input.addEventListener("keydown", (event) => {
+      const previousSegment = segments[index - 1];
+
+      if (event.key === "Backspace" && !segment.input.value && previousSegment) {
+        previousSegment.input.focus();
+        previousSegment.input.setSelectionRange(
+          previousSegment.input.value.length,
+          previousSegment.input.value.length
+        );
+      }
+    });
+
+    segment.input.addEventListener("paste", (event) => {
+      event.preventDefault();
+
+      const pastedText = event.clipboardData.getData("text");
+      fillSegmentedPhone(groupName, pastedText);
+      syncSegmentedPhone(groupName);
+    });
   });
 }
-
 function normalizeUrl(value) {
   const trimmed = value?.trim();
 
@@ -141,8 +203,8 @@ function buildNotificationPreferences() {
   };
 }
 
-attachPhoneFormatter(personalPhoneInput);
-attachPhoneFormatter(businessPhoneInput);
+attachSegmentedPhoneFormatter("personal");
+attachSegmentedPhoneFormatter("business");
 
 function buildAddressPayload() {
   return {
