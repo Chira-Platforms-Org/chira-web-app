@@ -16,11 +16,28 @@ const signupEmail = document.getElementById("signupEmail");
 const signupPassword = document.getElementById("signupPassword");
 const confirmPasswordInput = document.getElementById("confirmPasswordInput");
 
+const personalPhoneInput = document.getElementById("personalPhoneInput");
+
+const notifyDirectContacts = document.getElementById("notifyDirectContacts");
+const notifyProfileInteractions = document.getElementById("notifyProfileInteractions");
+const notifyOperationalReminders = document.getElementById("notifyOperationalReminders");
+const notifyLocalityUpdates = document.getElementById("notifyLocalityUpdates");
+
 const businessNameInput = document.getElementById("businessNameInput");
+const businessEmailInput = document.getElementById("businessEmailInput");
+const businessPhoneInput = document.getElementById("businessPhoneInput");
 const marketplaceRoleInput = document.getElementById("marketplaceRoleInput");
 const businessCategoryInput = document.getElementById("businessCategoryInput");
-const locationLabelInput = document.getElementById("locationLabelInput");
+const websiteInput = document.getElementById("websiteInput");
 const productFocusInput = document.getElementById("productFocusInput");
+
+const locationStep = document.getElementById("locationStep");
+const streetAddressInput = document.getElementById("streetAddressInput");
+const addressLine2Input = document.getElementById("addressLine2Input");
+const cityInput = document.getElementById("cityInput");
+const stateInput = document.getElementById("stateInput");
+const zipInput = document.getElementById("zipInput");
+const countryInput = document.getElementById("countryInput");
 
 const logoUrlInput = document.getElementById("logoUrlInput");
 const bannerImageUrlInput = document.getElementById("bannerImageUrlInput");
@@ -63,6 +80,91 @@ function getMarketplaceRoles(value) {
 
 function getCleanValue(input) {
   return input?.value?.trim() || "";
+}
+
+function getPhoneDigits(value) {
+  let digits = String(value || "").replace(/\D/g, "");
+
+  if (digits.length > 10 && digits.startsWith("1")) {
+    digits = digits.slice(1);
+  }
+
+  return digits.slice(0, 10);
+}
+
+function formatUSPhone(value) {
+  const digits = getPhoneDigits(value);
+
+  const area = digits.slice(0, 3);
+  const prefix = digits.slice(3, 6);
+  const line = digits.slice(6, 10);
+
+  if (!digits) return "";
+
+  if (digits.length <= 3) {
+    return `+1 (${area}`;
+  }
+
+  if (digits.length <= 6) {
+    return `+1 (${area}) ${prefix}`;
+  }
+
+  return `+1 (${area}) ${prefix}-${line}`;
+}
+
+function attachPhoneFormatter(input) {
+  if (!input) return;
+
+  input.addEventListener("input", () => {
+    input.value = formatUSPhone(input.value);
+    input.setSelectionRange(input.value.length, input.value.length);
+  });
+}
+
+function normalizeUrl(value) {
+  const trimmed = value?.trim();
+
+  if (!trimmed) return null;
+
+  if (trimmed.startsWith("http://") || trimmed.startsWith("https://")) {
+    return trimmed;
+  }
+
+  return `https://${trimmed}`;
+}
+
+function buildNotificationPreferences() {
+  return {
+    direct_contacts: Boolean(notifyDirectContacts?.checked),
+    profile_interactions: Boolean(notifyProfileInteractions?.checked),
+    operational_reminders: Boolean(notifyOperationalReminders?.checked),
+    locality_updates: Boolean(notifyLocalityUpdates?.checked)
+  };
+}
+
+attachPhoneFormatter(personalPhoneInput);
+attachPhoneFormatter(businessPhoneInput);
+
+function buildAddressPayload() {
+  return {
+    street_address: getCleanValue(streetAddressInput),
+    address_line_2: getCleanValue(addressLine2Input),
+    city: getCleanValue(cityInput),
+    state: getCleanValue(stateInput).toUpperCase(),
+    zip_code: getCleanValue(zipInput),
+    country: "United States"
+  };
+}
+
+function formatLocationLabel(address) {
+  const city = address.city;
+  const state = address.state;
+
+  if (city && state) return `${city}, ${state}`;
+  if (city) return city;
+  if (state) return state;
+
+  return "";
 }
 
 accountStep?.addEventListener("submit", async (event) => {
@@ -113,12 +215,14 @@ accountStep?.addEventListener("submit", async (event) => {
   }
 
   await window.LocalitySupabase
-    .from("user_profiles")
-    .upsert({
-      id: createdUser.id,
-      full_name: fullName,
-      updated_at: new Date().toISOString()
-    });
+  .from("user_profiles")
+  .upsert({
+    id: createdUser.id,
+    full_name: fullName,
+    phone: getPhoneDigits(personalPhoneInput?.value) || null,
+    notification_preferences: buildNotificationPreferences(),
+    updated_at: new Date().toISOString()
+  });
 
   setStatus(signupStatus, "Account created. Continue with your business profile.", "success");
   setStep(2);
@@ -128,19 +232,64 @@ businessStep?.addEventListener("submit", (event) => {
   event.preventDefault();
 
   const businessName = getCleanValue(businessNameInput);
-  const locationLabel = getCleanValue(locationLabelInput);
+  const businessEmail = getCleanValue(businessEmailInput);
+  const personalPhoneDigits = getPhoneDigits(personalPhoneInput?.value);
+  const businessPhoneDigits = getPhoneDigits(businessPhoneInput?.value);
 
   if (!businessName) {
     alert("Please enter your business name.");
     return;
   }
 
-  if (!locationLabel) {
-    alert("Please enter your business location.");
+  if (businessEmail && !businessEmail.includes("@")) {
+    alert("Please enter a valid business email or leave it blank.");
+    return;
+  }
+
+  if (!personalPhoneDigits && !businessPhoneDigits) {
+    alert("Please enter either a personal phone number or a business phone number.");
+    return;
+  }
+
+  if (personalPhoneDigits && personalPhoneDigits.length !== 10) {
+    alert("Please enter a valid personal phone number.");
+    return;
+  }
+
+  if (businessPhoneDigits && businessPhoneDigits.length !== 10) {
+    alert("Please enter a valid business phone number.");
     return;
   }
 
   setStep(3);
+});
+
+locationStep?.addEventListener("submit", (event) => {
+  event.preventDefault();
+
+  const address = buildAddressPayload();
+
+  if (!address.street_address) {
+    alert("Please enter your street address.");
+    return;
+  }
+
+  if (!address.city) {
+    alert("Please enter your city.");
+    return;
+  }
+
+  if (!address.state || address.state.length !== 2) {
+    alert("Please enter a valid 2-letter state abbreviation.");
+    return;
+  }
+
+  if (!address.zip_code || !/^\d{5}(-\d{4})?$/.test(address.zip_code)) {
+    alert("Please enter a valid ZIP code.");
+    return;
+  }
+
+  setStep(4);
 });
 
 profileStep?.addEventListener("submit", async (event) => {
@@ -154,18 +303,29 @@ profileStep?.addEventListener("submit", async (event) => {
     return;
   }
 
-  const businessName = getCleanValue(businessNameInput);
-  const marketplaceRole = marketplaceRoleInput?.value || "seller";
-  const businessCategory = businessCategoryInput?.value || "other";
-  const locationLabel = getCleanValue(locationLabelInput);
-  const productFocus = getCleanValue(productFocusInput);
-  const description = getCleanValue(businessDescriptionInput);
-
-  if (!businessName || !locationLabel) {
-    alert("Please complete the required business details.");
-    setStep(2);
-    return;
-  }
+   const businessName = getCleanValue(businessNameInput);
+   const marketplaceRole = marketplaceRoleInput?.value || "seller";
+   const businessCategory = businessCategoryInput?.value || "other";
+   const address = buildAddressPayload();
+   const locationLabel = formatLocationLabel(address);
+   const productFocus = getCleanValue(productFocusInput);
+   const description = getCleanValue(businessDescriptionInput);
+   
+   const personalPhoneDigits = getPhoneDigits(personalPhoneInput?.value);
+   const businessPhoneDigits = getPhoneDigits(businessPhoneInput?.value);
+   const businessEmail = getCleanValue(businessEmailInput);
+   
+   if (!businessName) {
+     alert("Please complete the required business details.");
+     setStep(2);
+     return;
+   }
+   
+   if (!locationLabel) {
+     alert("Please complete the required location details.");
+     setStep(3);
+     return;
+   }
 
   const profileVisibility = profileVisibilityInput?.value || "draft";
 
@@ -180,14 +340,22 @@ profileStep?.addEventListener("submit", async (event) => {
     logo_url: getCleanValue(logoUrlInput) || null,
     banner_image_url: getCleanValue(bannerImageUrlInput) || null,
 
-    contact_name: getCleanValue(fullNameInput),
-    contact_email: getCleanValue(signupEmail),
-    website: getCleanValue(websiteInput) || null,
-    social_link: getCleanValue(socialLinkInput) || null,
-
-    description,
-    location_label: locationLabel,
-    product_focus: productFocus,
+   contact_name: getCleanValue(fullNameInput),
+   contact_email: businessEmail || getCleanValue(signupEmail),
+   phone: businessPhoneDigits || null,
+   website: normalizeUrl(websiteInput?.value),
+   social_link: normalizeUrl(socialLinkInput?.value),
+   
+   description,
+   location_label: locationLabel,
+   address,
+   product_focus: productFocus,
+   
+   public_contact_settings: {
+     show_business_email: Boolean(businessEmail),
+     show_business_phone: Boolean(businessPhoneDigits),
+     show_personal_phone: false
+   },
 
     profile_visibility: profileVisibility,
     onboarding_step: "profile_created",
@@ -218,7 +386,7 @@ profileStep?.addEventListener("submit", async (event) => {
       `${data.name} is set up as a ${roleLabel} profile in ${data.location_label}. You can add products, listings, pricing, and availability next.`;
   }
 
-  setStep(4);
+  setStep(5);
 });
 
 setStep(1);
