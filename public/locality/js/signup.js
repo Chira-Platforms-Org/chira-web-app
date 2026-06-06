@@ -228,6 +228,23 @@ function formatLocationLabel(address) {
   return "";
 }
 
+function prefillBusinessContactFromAccount() {
+  const accountEmail = getCleanValue(signupEmail);
+  const businessEmail = getCleanValue(businessEmailInput);
+
+  if (businessEmailInput && accountEmail && !businessEmail) {
+    businessEmailInput.value = accountEmail;
+  }
+
+  const accountPhoneDigits = getPhoneDigits(personalPhoneInput?.value);
+  const businessPhoneDigits = getPhoneDigits(businessPhoneInput?.value);
+
+  if (accountPhoneDigits && !businessPhoneDigits) {
+    fillSegmentedPhone("business", accountPhoneDigits);
+    syncSegmentedPhone("business");
+  }
+}
+
 accountStep?.addEventListener("submit", async (event) => {
   event.preventDefault();
 
@@ -285,8 +302,9 @@ accountStep?.addEventListener("submit", async (event) => {
     updated_at: new Date().toISOString()
   });
 
-  setStatus(signupStatus, "Account created. Continue with your business profile.", "success");
-  setStep(2);
+   prefillBusinessContactFromAccount();
+   setStatus(signupStatus, "Account created. Continue with your business profile.", "success");
+   setStep(2);
 });
 
 businessStep?.addEventListener("submit", (event) => {
