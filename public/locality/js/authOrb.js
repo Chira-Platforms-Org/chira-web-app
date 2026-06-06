@@ -16,7 +16,7 @@ function initAuthOrb(container) {
     1000
   );
 
-  camera.position.z = 280;
+  camera.position.z = 350;
 
   const renderer = new THREE.WebGLRenderer({
     antialias: true,
@@ -125,8 +125,8 @@ function initAuthOrb(container) {
     const time = timeMs * 0.001;
 
     group.rotation.y = time * 0.18;
-    group.rotation.x = Math.sin(time * 0.36) * 0.22;
-    group.rotation.z = Math.sin(time * 0.18) * 0.12;
+    group.rotation.x = 0.52 + Math.sin(time * 0.32) * 0.08;
+    group.rotation.z = Math.sin(time * 0.16) * 0.06;
 
     for (let i = 0; i < positionAttr.count; i++) {
       const ix = i * 3;
@@ -195,11 +195,11 @@ function createGlowTexture() {
     size / 2
   );
 
-  gradient.addColorStop(0.0, "rgba(255,255,255,0.92)");
-  gradient.addColorStop(0.16, "rgba(220,255,230,0.72)");
-  gradient.addColorStop(0.40, "rgba(92,235,128,0.34)");
-  gradient.addColorStop(0.72, "rgba(37,214,90,0.10)");
-  gradient.addColorStop(1.0, "rgba(37,214,90,0)");
+  gradient.addColorStop(0.0, "rgba(138,255,160,0.95)");
+  gradient.addColorStop(0.16, "rgba(90,244,124,0.82)");
+  gradient.addColorStop(0.40, "rgba(33,223,88,0.42)");
+  gradient.addColorStop(0.72, "rgba(18,170,60,0.14)");
+  gradient.addColorStop(1.0, "rgba(18,170,60,0)");
 
   ctx.fillStyle = gradient;
   ctx.fillRect(0, 0, size, size);
