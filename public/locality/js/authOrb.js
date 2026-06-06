@@ -65,7 +65,7 @@ function initAuthOrb(container) {
     colors[i * 3 + 1] = tempColor.g;
     colors[i * 3 + 2] = tempColor.b;
 
-    sizes[i] = 9.7 + Math.random() * 6.7;
+    sizes[i] = 10.7 + Math.random() * 7.7;
   }
 
   geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
@@ -146,7 +146,7 @@ function initAuthOrb(container) {
       positionArray[ix + 2] = z * scale;
 
       sizeArray[i] =
-      8.8 + 6.2 * (0.5 + 0.5 * Math.sin(time * 1.8 + i * 0.035));
+      9.3 + 7.2 * (0.5 + 0.5 * Math.sin(time * 1.8 + i * 0.035));
     }
 
     geometry.attributes.position.needsUpdate = true;
