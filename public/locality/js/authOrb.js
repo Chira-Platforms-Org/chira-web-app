@@ -16,7 +16,7 @@ function initAuthOrb(container) {
     1000
   );
 
-  camera.position.z = 250;
+  camera.position.z = 280;
 
   const renderer = new THREE.WebGLRenderer({
     antialias: true,
@@ -41,10 +41,10 @@ function initAuthOrb(container) {
   const colors = new Float32Array(positionAttr.count * 3);
   const sizes = new Float32Array(positionAttr.count);
 
-  const deepGreen = new THREE.Color("#08c464");
-  const brightMint = new THREE.Color("#baffd4");
-  const aqua = new THREE.Color("#7ef7ff");
-  const navyGlow = new THREE.Color("#1d3d74");
+  const deepGreen = new THREE.Color("#06c755");
+  const brightMint = new THREE.Color("#9ef0b8");
+  const freshGreen = new THREE.Color("#31e06f");
+  const shadowGreen = new THREE.Color("#0d6a37");
 
   const vertex = new THREE.Vector3();
   const tempColor = new THREE.Color();
@@ -57,15 +57,15 @@ function initAuthOrb(container) {
     const depthT = (vertex.z + radius) / (radius * 2);
 
     tempColor.copy(deepGreen);
-    tempColor.lerp(brightMint, verticalT * 0.55);
-    tempColor.lerp(aqua, edgeT * 0.18);
-    tempColor.lerp(navyGlow, depthT * 0.08);
+    tempColor.lerp(brightMint, verticalT * 0.30);
+    tempColor.lerp(freshGreen, edgeT * 0.24);
+    tempColor.lerp(shadowGreen, depthT * 0.12);
 
     colors[i * 3] = tempColor.r;
     colors[i * 3 + 1] = tempColor.g;
     colors[i * 3 + 2] = tempColor.b;
 
-    sizes[i] = 9 + Math.random() * 7;
+    sizes[i] = 6.8 + Math.random() * 4.6;
   }
 
   geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
@@ -104,7 +104,7 @@ function initAuthOrb(container) {
         if (tex.a < 0.04) discard;
 
         vec3 finalColor = color * vColor;
-        gl_FragColor = vec4(finalColor, tex.a);
+        gl_FragColor = vec4(finalColor, tex.a * 0.72);
       }
     `,
     transparent: true,
@@ -146,7 +146,7 @@ function initAuthOrb(container) {
       positionArray[ix + 2] = z * scale;
 
       sizeArray[i] =
-        8.5 + 7.5 * (0.5 + 0.5 * Math.sin(time * 1.8 + i * 0.035));
+      6.2 + 4.8 * (0.5 + 0.5 * Math.sin(time * 1.8 + i * 0.035));
     }
 
     geometry.attributes.position.needsUpdate = true;
@@ -195,11 +195,11 @@ function createGlowTexture() {
     size / 2
   );
 
-  gradient.addColorStop(0.0, "rgba(255,255,255,1)");
-  gradient.addColorStop(0.18, "rgba(255,255,255,0.98)");
-  gradient.addColorStop(0.42, "rgba(255,255,255,0.62)");
-  gradient.addColorStop(0.72, "rgba(255,255,255,0.20)");
-  gradient.addColorStop(1.0, "rgba(255,255,255,0)");
+  gradient.addColorStop(0.0, "rgba(255,255,255,0.92)");
+  gradient.addColorStop(0.16, "rgba(220,255,230,0.72)");
+  gradient.addColorStop(0.40, "rgba(92,235,128,0.34)");
+  gradient.addColorStop(0.72, "rgba(37,214,90,0.10)");
+  gradient.addColorStop(1.0, "rgba(37,214,90,0)");
 
   ctx.fillStyle = gradient;
   ctx.fillRect(0, 0, size, size);
