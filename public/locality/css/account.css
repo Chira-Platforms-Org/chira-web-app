@@ -430,29 +430,29 @@
 }
 
 .auth-orb-glow-one {
-  width: 340px;
-  height: 340px;
-  top: 10%;
-  left: 16%;
-  opacity: 0.6;
+  width: 320px;
+  height: 320px;
+  top: 12%;
+  left: 18%;
+  opacity: 0.34;
   background: radial-gradient(
     circle,
-    rgba(103, 255, 120, 0.22),
-    rgba(103, 255, 120, 0)
+    rgba(88, 235, 122, 0.16),
+    rgba(88, 235, 122, 0)
   );
   animation: authOrbGlowOne 10s ease-in-out infinite;
 }
 
 .auth-orb-glow-two {
-  width: 380px;
-  height: 380px;
-  top: 38%;
-  right: 10%;
-  opacity: 0.45;
+  width: 340px;
+  height: 340px;
+  top: 44%;
+  right: 12%;
+  opacity: 0.24;
   background: radial-gradient(
     circle,
-    rgba(18, 214, 76, 0.16),
-    rgba(18, 214, 76, 0)
+    rgba(18, 200, 76, 0.12),
+    rgba(18, 200, 76, 0)
   );
   animation: authOrbGlowTwo 14s ease-in-out infinite;
 }
@@ -472,8 +472,8 @@
   height: 100% !important;
   opacity: 1;
   filter:
-    drop-shadow(0 0 10px rgba(18, 214, 76, 0.18))
-    drop-shadow(0 0 26px rgba(37, 227, 90, 0.14));
+    drop-shadow(0 0 8px rgba(18, 214, 76, 0.12))
+    drop-shadow(0 0 18px rgba(37, 227, 90, 0.10));
 }
 
 @keyframes authOrbGlowOne {
