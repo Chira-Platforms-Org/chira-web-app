@@ -17,7 +17,7 @@ function initAuthOrb(container) {
     1000
   );
 
-  camera.position.z = 330;
+  camera.position.z = 305;
   camera.position.y = 0;
 
   const renderer = new THREE.WebGLRenderer({
@@ -44,10 +44,10 @@ function initAuthOrb(container) {
   const colors = new Float32Array(positionAttr.count * 3);
   const sizes = new Float32Array(positionAttr.count);
 
-  const bright = new THREE.Color('#b7ffb9');
-  const green = new THREE.Color('#19e35a');
-  const deep = new THREE.Color('#05bf46');
-  const dark = new THREE.Color('#04953a');
+  const bright = new THREE.Color('#7dff93');
+  const green = new THREE.Color('#25e35a');
+  const deep = new THREE.Color('#0fbe49');
+  const dark = new THREE.Color('#0b8f39');
 
   const vertex = new THREE.Vector3();
   const tempColor = new THREE.Color();
@@ -68,7 +68,7 @@ function initAuthOrb(container) {
     colors[i * 3 + 1] = tempColor.g;
     colors[i * 3 + 2] = tempColor.b;
 
-    sizes[i] = 4.8 + Math.random() * 2.2;
+    sizes[i] = 5.6 + Math.random() * 2.8;
   }
 
   geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
@@ -110,7 +110,7 @@ function initAuthOrb(container) {
     `,
     transparent: true,
     depthWrite: false,
-    blending: THREE.AdditiveBlending
+    blending: THREE.NormalBlending
   });
 
   const orb = new THREE.Points(geometry, material);
@@ -118,7 +118,7 @@ function initAuthOrb(container) {
   const group = new THREE.Group();
   group.add(orb);
   group.position.y = 0;
-  group.scale.setScalar(1.28);
+  group.scale.setScalar(1.46);
   scene.add(group);
 
   const sizeArray = geometry.attributes.size.array;
@@ -149,7 +149,7 @@ function initAuthOrb(container) {
       positionArray[ix + 1] = y * scale;
       positionArray[ix + 2] = z * scale;
 
-      sizeArray[i] = 4.6 + 2.2 * (0.5 + 0.5 * Math.sin(time * 1.6 + i * 0.026));
+      sizeArray[i] = 5.1 + 2.6 * (0.5 + 0.5 * Math.sin(time * 1.6 + i * 0.026));
     }
 
     geometry.attributes.position.needsUpdate = true;
