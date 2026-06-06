@@ -468,4 +468,13 @@ profileStep?.addEventListener("submit", async (event) => {
   setStep(5);
 });
 
+document.querySelectorAll(".signup-back-btn").forEach((button) => {
+  button.addEventListener("click", () => {
+    const backStep = Number(button.dataset.backStep);
+
+    if (!backStep) return;
+
+    setStep(backStep);
+  });
+});
 setStep(1);
