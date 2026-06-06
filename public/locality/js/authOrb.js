@@ -17,7 +17,7 @@ function initAuthOrb(container) {
     1000
   );
 
-  camera.position.z = 305;
+  camera.position.z = 300;
   camera.position.y = 0;
 
   const renderer = new THREE.WebGLRenderer({
@@ -109,8 +109,8 @@ function initAuthOrb(container) {
       }
     `,
     transparent: true,
-    depthWrite: false,
-    blending: THREE.NormalBlending
+  depthWrite: false,
+  blending: THREE.AdditiveBlending
   });
 
   const orb = new THREE.Points(geometry, material);
@@ -118,7 +118,7 @@ function initAuthOrb(container) {
   const group = new THREE.Group();
   group.add(orb);
   group.position.y = 0;
-  group.scale.setScalar(1.46);
+  group.scale.setScalar(1.55);
   scene.add(group);
 
   const sizeArray = geometry.attributes.size.array;
