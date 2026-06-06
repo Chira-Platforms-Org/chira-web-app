@@ -856,3 +856,23 @@
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
+
+.auth-secondary-btn {
+  width: 100%;
+  min-height: 48px;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(12, 33, 66, 0.06);
+  color: #10284a;
+  font-weight: 900;
+  cursor: pointer;
+  margin-top: 8px;
+}
+
+.auth-secondary-btn:hover {
+  background: rgba(12, 33, 66, 0.1);
+}
+
+.signup-back-btn + .auth-primary-btn {
+  margin-top: 10px;
+}
