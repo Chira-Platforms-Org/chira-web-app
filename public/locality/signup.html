@@ -66,10 +66,50 @@
           <input id="fullNameInput" type="text" placeholder="Your name" autocomplete="name" />
         </label>
       
-        <label>
-          Personal phone number
-          <input id="personalPhoneInput" type="tel" placeholder="+1 (___) ___-____" autocomplete="tel" />
-        </label>
+        <div class="phone-field-block">
+          <span class="phone-field-label">Personal phone number</span>
+        
+          <div class="segmented-phone-field" data-phone-group="personal">
+            <span class="phone-country">+1</span>
+            <span class="phone-symbol">(</span>
+        
+            <input
+              id="personalPhoneArea"
+              class="phone-segment phone-area"
+              type="text"
+              inputmode="numeric"
+              maxlength="3"
+              placeholder="___"
+              aria-label="Personal phone area code"
+            />
+        
+            <span class="phone-symbol">)</span>
+        
+            <input
+              id="personalPhonePrefix"
+              class="phone-segment phone-prefix"
+              type="text"
+              inputmode="numeric"
+              maxlength="3"
+              placeholder="___"
+              aria-label="Personal phone prefix"
+            />
+        
+            <span class="phone-symbol">-</span>
+        
+            <input
+              id="personalPhoneLine"
+              class="phone-segment phone-line"
+              type="text"
+              inputmode="numeric"
+              maxlength="4"
+              placeholder="____"
+              aria-label="Personal phone line number"
+            />
+        
+            <input id="personalPhoneInput" type="hidden" autocomplete="tel" />
+          </div>
+        </div>
       
         <p class="auth-helper-text">
           You can also add a business phone number in the next step. Only your business phone is public by default.
@@ -137,10 +177,50 @@
         <input id="businessEmailInput" type="email" placeholder="orders@yourbusiness.com" />
       </label>
     
-      <label>
-        Business phone number
-        <input id="businessPhoneInput" type="tel" placeholder="+1 (___) ___-____" />
-      </label>
+      <div class="phone-field-block">
+        <span class="phone-field-label">Business phone number</span>
+      
+        <div class="segmented-phone-field" data-phone-group="business">
+          <span class="phone-country">+1</span>
+          <span class="phone-symbol">(</span>
+      
+          <input
+            id="businessPhoneArea"
+            class="phone-segment phone-area"
+            type="text"
+            inputmode="numeric"
+            maxlength="3"
+            placeholder="___"
+            aria-label="Business phone area code"
+          />
+      
+          <span class="phone-symbol">)</span>
+      
+          <input
+            id="businessPhonePrefix"
+            class="phone-segment phone-prefix"
+            type="text"
+            inputmode="numeric"
+            maxlength="3"
+            placeholder="___"
+            aria-label="Business phone prefix"
+          />
+      
+          <span class="phone-symbol">-</span>
+      
+          <input
+            id="businessPhoneLine"
+            class="phone-segment phone-line"
+            type="text"
+            inputmode="numeric"
+            maxlength="4"
+            placeholder="____"
+            aria-label="Business phone line number"
+          />
+      
+          <input id="businessPhoneInput" type="hidden" />
+        </div>
+      </div>
     
       <p class="auth-helper-text">
         Please provide either a personal phone number or a business phone number. Your business phone is the public-facing number by default.
