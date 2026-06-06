@@ -783,3 +783,76 @@
 .signup-checkbox-row span {
   display: block;
 }
+
+/* =========================================================
+   PHONE FIELD FINAL COMPACT OVERRIDE
+   Matches standard input height, tighter segmented cells
+========================================================= */
+
+.segmented-phone-field {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+  min-height: 54px;
+  height: 54px;
+  border: 1px solid rgba(12, 33, 66, 0.1);
+  border-radius: 16px;
+  padding: 7px 14px;
+  background: rgba(255, 255, 255, 0.86);
+  box-sizing: border-box;
+}
+
+.phone-country,
+.phone-symbol {
+  flex: 0 0 auto;
+  color: #10284a;
+  font-weight: 900;
+  font-size: 0.98rem;
+  line-height: 1;
+}
+
+.segmented-phone-field .phone-segment {
+  flex: 0 0 auto;
+  height: 32px !important;
+  min-height: 32px !important;
+  border: 0 !important;
+  outline: 0 !important;
+  padding: 0 5px !important;
+  margin: 0 !important;
+  background: rgba(18, 191, 91, 0.08) !important;
+  border-radius: 9px !important;
+  color: #10284a;
+  font-size: 0.95rem;
+  font-weight: 900;
+  text-align: center;
+  letter-spacing: 0.03em;
+  box-sizing: border-box;
+}
+
+.segmented-phone-field .phone-area,
+.segmented-phone-field .phone-prefix {
+  width: 54px !important;
+}
+
+.segmented-phone-field .phone-line {
+  width: 76px !important;
+}
+
+.segmented-phone-field .phone-segment:focus {
+  background: rgba(18, 191, 91, 0.14) !important;
+  box-shadow: 0 0 0 2px rgba(18, 191, 91, 0.16);
+}
+
+.phone-field-block {
+  display: grid;
+  gap: 8px;
+}
+
+.phone-field-label {
+  color: #6b7a8f;
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
