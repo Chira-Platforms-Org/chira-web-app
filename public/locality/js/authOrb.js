@@ -11,14 +11,13 @@ function initAuthOrb(container) {
   const scene = new THREE.Scene();
 
   const camera = new THREE.PerspectiveCamera(
-    36,
+    34,
     container.clientWidth / container.clientHeight,
     1,
     1000
   );
 
-  /* farther back so the sphere is more zoomed out */
-  camera.position.z = 360;
+  camera.position.z = 380;
   camera.position.y = 0;
 
   const renderer = new THREE.WebGLRenderer({
@@ -29,11 +28,11 @@ function initAuthOrb(container) {
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.setSize(container.clientWidth, container.clientHeight);
   renderer.setClearColor(0x000000, 0);
+  container.innerHTML = '';
   container.appendChild(renderer.domElement);
 
-  /* denser geometry */
-  const radius = 88;
-  let geometry = new THREE.SphereGeometry(radius, 120, 78);
+  const radius = 72;
+  let geometry = new THREE.SphereGeometry(radius, 110, 74);
 
   geometry.deleteAttribute('normal');
   geometry.deleteAttribute('uv');
@@ -46,11 +45,10 @@ function initAuthOrb(container) {
   const colors = new Float32Array(positionAttr.count * 3);
   const sizes = new Float32Array(positionAttr.count);
 
-  /* stronger, greener palette */
-  const topColor = new THREE.Color('#b7ffd0');
-  const midColor = new THREE.Color('#12d85d');
-  const deepColor = new THREE.Color('#07b64a');
-  const glowColor = new THREE.Color('#7cff9f');
+  const bright = new THREE.Color('#9dffb8');
+  const green = new THREE.Color('#1fd45f');
+  const deep = new THREE.Color('#09b84a');
+  const soft = new THREE.Color('#d7ffe2');
 
   const vertex = new THREE.Vector3();
   const tempColor = new THREE.Color();
@@ -59,18 +57,18 @@ function initAuthOrb(container) {
     vertex.fromBufferAttribute(positionAttr, i);
 
     const verticalT = (vertex.y + radius) / (radius * 2);
-    const radialT = Math.abs(vertex.z) / radius;
+    const depthT = (vertex.z + radius) / (radius * 2);
 
-    tempColor.copy(deepColor)
-      .lerp(midColor, 0.55)
-      .lerp(topColor, verticalT * 0.78)
-      .lerp(glowColor, radialT * 0.16);
+    tempColor.copy(deep)
+      .lerp(green, 0.55)
+      .lerp(bright, verticalT * 0.7)
+      .lerp(soft, depthT * 0.16);
 
     colors[i * 3 + 0] = tempColor.r;
     colors[i * 3 + 1] = tempColor.g;
     colors[i * 3 + 2] = tempColor.b;
 
-    sizes[i] = 5.5 + Math.random() * 3.25;
+    sizes[i] = 5.6 + Math.random() * 2.8;
   }
 
   geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
@@ -87,21 +85,18 @@ function initAuthOrb(container) {
     vertexShader: `
       attribute float size;
       attribute vec3 ca;
-
       varying vec3 vColor;
 
       void main() {
         vColor = ca;
-
         vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
-        gl_PointSize = size * (250.0 / -mvPosition.z);
+        gl_PointSize = size * (220.0 / -mvPosition.z);
         gl_Position = projectionMatrix * mvPosition;
       }
     `,
     fragmentShader: `
       uniform vec3 color;
       uniform sampler2D pointTexture;
-
       varying vec3 vColor;
 
       void main() {
@@ -119,7 +114,7 @@ function initAuthOrb(container) {
 
   const group = new THREE.Group();
   group.add(orb);
-  group.position.y = -8;
+  group.position.y = -4;
   scene.add(group);
 
   const sizeArray = geometry.attributes.size.array;
@@ -128,11 +123,10 @@ function initAuthOrb(container) {
   function animate(timeMs) {
     const time = timeMs * 0.001;
 
-    /* smooth floating rotation */
     group.rotation.y = time * 0.34;
-    group.rotation.x = Math.sin(time * 0.55) * 0.16;
-    group.rotation.z = Math.sin(time * 0.22) * 0.09;
-    group.position.y = -8 + Math.sin(time * 0.75) * 6;
+    group.rotation.x = Math.sin(time * 0.55) * 0.14;
+    group.rotation.z = Math.sin(time * 0.22) * 0.07;
+    group.position.y = -4 + Math.sin(time * 0.75) * 4;
 
     for (let i = 0; i < positionAttr.count; i++) {
       const ix = i * 3;
@@ -141,10 +135,9 @@ function initAuthOrb(container) {
       const y = basePositions[ix + 1];
       const z = basePositions[ix + 2];
 
-      /* more "liquid in zero gravity" deformation */
-      const waveA = Math.sin(time * 1.2 + x * 0.034 + y * 0.022) * 0.05;
-      const waveB = Math.cos(time * 0.95 + z * 0.03 - x * 0.018) * 0.035;
-      const waveC = Math.sin(time * 0.72 + y * 0.026 - z * 0.018) * 0.028;
+      const waveA = Math.sin(time * 1.1 + x * 0.035 + y * 0.022) * 0.035;
+      const waveB = Math.cos(time * 0.9 + z * 0.028 - x * 0.018) * 0.025;
+      const waveC = Math.sin(time * 0.7 + y * 0.02 - z * 0.016) * 0.018;
 
       const scale = 1.0 + waveA + waveB + waveC;
 
@@ -152,7 +145,7 @@ function initAuthOrb(container) {
       positionArray[ix + 1] = y * scale;
       positionArray[ix + 2] = z * scale;
 
-      sizeArray[i] = 4.8 + 3.2 * (0.5 + 0.5 * Math.sin(time * 1.8 + i * 0.032));
+      sizeArray[i] = 4.8 + 2.7 * (0.5 + 0.5 * Math.sin(time * 1.9 + i * 0.03));
     }
 
     geometry.attributes.position.needsUpdate = true;
@@ -193,9 +186,9 @@ function createGlowTexture() {
   );
 
   gradient.addColorStop(0.0, 'rgba(255,255,255,1)');
-  gradient.addColorStop(0.18, 'rgba(255,255,255,0.98)');
-  gradient.addColorStop(0.40, 'rgba(255,255,255,0.70)');
-  gradient.addColorStop(0.68, 'rgba(255,255,255,0.18)');
+  gradient.addColorStop(0.18, 'rgba(255,255,255,0.96)');
+  gradient.addColorStop(0.42, 'rgba(255,255,255,0.62)');
+  gradient.addColorStop(0.68, 'rgba(255,255,255,0.16)');
   gradient.addColorStop(1.0, 'rgba(255,255,255,0)');
 
   ctx.fillStyle = gradient;
