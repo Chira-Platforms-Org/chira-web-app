@@ -42,15 +42,22 @@
       
         <div class="progress-step" data-step-indicator="3">
           <span>3</span>
-          Profile
+          Location
         </div>
       
         <div class="progress-step" data-step-indicator="4">
           <span>4</span>
+          Profile
+        </div>
+      
+        <div class="progress-step" data-step-indicator="5">
+          <span>5</span>
           Workspace
         </div>
       </div>
 
+      
+      <!-- STEP 1 — Account Creation -->
        <form class="auth-form signup-step active" id="accountStep" data-step="1">
         <h2>Create your account</h2>
       
@@ -58,6 +65,15 @@
           Full name
           <input id="fullNameInput" type="text" placeholder="Your name" autocomplete="name" />
         </label>
+      
+        <label>
+          Personal phone number
+          <input id="personalPhoneInput" type="tel" placeholder="+1 (___) ___-____" autocomplete="tel" />
+        </label>
+      
+        <p class="auth-helper-text">
+          You can also add a business phone number in the next step. Only your business phone is public by default.
+        </p>
       
         <label>
           Email address
@@ -74,6 +90,30 @@
           <input id="confirmPasswordInput" type="password" placeholder="Re-enter your password" autocomplete="new-password" />
         </label>
       
+        <fieldset class="signup-checkbox-group">
+          <legend>Notification preferences</legend>
+      
+          <label class="signup-checkbox-row">
+            <input id="notifyDirectContacts" type="checkbox" checked />
+            <span>Buyer/seller messages and direct contacts</span>
+          </label>
+      
+          <label class="signup-checkbox-row">
+            <input id="notifyProfileInteractions" type="checkbox" checked />
+            <span>Profile, listing, and marketplace interactions</span>
+          </label>
+      
+          <label class="signup-checkbox-row">
+            <input id="notifyOperationalReminders" type="checkbox" checked />
+            <span>Operational reminders and workspace tasks</span>
+          </label>
+      
+          <label class="signup-checkbox-row">
+            <input id="notifyLocalityUpdates" type="checkbox" />
+            <span>Locality updates, market notes, and newsletters</span>
+          </label>
+        </fieldset>
+      
         <button id="createAccountSubmit" type="submit" class="auth-primary-btn">
           Continue to business setup
         </button>
@@ -83,53 +123,116 @@
         </p>
       </form>
 
-      <form class="auth-form signup-step" id="businessStep" data-step="2">
-        <h2>Set up your business identity</h2>
+      <!-- STEP 2 — Business -->
+    <form class="auth-form signup-step" id="businessStep" data-step="2">
+      <h2>Set up your business identity</h2>
+    
+      <label>
+        Business name
+        <input id="businessNameInput" type="text" placeholder="Queen Creek Harvest" />
+      </label>
+    
+      <label>
+        Business email
+        <input id="businessEmailInput" type="email" placeholder="orders@yourbusiness.com" />
+      </label>
+    
+      <label>
+        Business phone number
+        <input id="businessPhoneInput" type="tel" placeholder="+1 (___) ___-____" />
+      </label>
+    
+      <p class="auth-helper-text">
+        Please provide either a personal phone number or a business phone number. Your business phone is the public-facing number by default.
+      </p>
+    
+      <label>
+        What will you use Locality for?
+        <select id="marketplaceRoleInput">
+          <option value="seller">Selling local food</option>
+          <option value="buyer">Buying local food</option>
+          <option value="buyer_seller">Both buying and selling</option>
+        </select>
+      </label>
+    
+      <label>
+        Business category
+        <select id="businessCategoryInput">
+          <option value="farm">Farm / Ranch</option>
+          <option value="processor">Processor</option>
+          <option value="distributor">Distributor</option>
+          <option value="restaurant">Restaurant / Food Service</option>
+          <option value="store">Store / Market</option>
+          <option value="institution">Institution</option>
+          <option value="food-hub">Food Hub / Coalition</option>
+          <option value="other">Other</option>
+        </select>
+      </label>
+    
+      <label>
+        Website
+        <input id="websiteInput" type="text" placeholder="yourbusiness.com" />
+      </label>
+    
+      <label>
+        Product or sourcing focus
+        <input id="productFocusInput" type="text" placeholder="Leafy greens, tomatoes, herbs" />
+      </label>
+    
+      <button id="businessSetupSubmit" type="submit" class="auth-primary-btn">
+        Continue to location
+      </button>
+    </form>
+
+    <!-- STEP 3 — Location Check -->
+      <form class="auth-form signup-step" id="locationStep" data-step="3">
+        <h2>Confirm your business location</h2>
       
         <label>
-          Business name
-          <input id="businessNameInput" type="text" placeholder="Queen Creek Harvest" />
+          Street address
+          <input id="streetAddressInput" type="text" placeholder="123 Main Street" autocomplete="address-line1" />
         </label>
       
         <label>
-          What will you use Locality for?
-          <select id="marketplaceRoleInput">
-            <option value="seller">Selling local food</option>
-            <option value="buyer">Buying local food</option>
-            <option value="buyer_seller">Both buying and selling</option>
-          </select>
+          Address line 2
+          <input id="addressLine2Input" type="text" placeholder="Suite 100, unit, building, etc." autocomplete="address-line2" />
         </label>
       
-        <label>
-          Business category
-          <select id="businessCategoryInput">
-            <option value="farm">Farm / Ranch</option>
-            <option value="processor">Processor</option>
-            <option value="distributor">Distributor</option>
-            <option value="restaurant">Restaurant / Food Service</option>
-            <option value="store">Store / Market</option>
-            <option value="institution">Institution</option>
-            <option value="food-hub">Food Hub / Coalition</option>
-            <option value="other">Other</option>
-          </select>
-        </label>
+        <div class="signup-two-column">
+          <label>
+            City
+            <input id="cityInput" type="text" placeholder="Phoenix" autocomplete="address-level2" />
+          </label>
       
-        <label>
-          Location
-          <input id="locationLabelInput" type="text" placeholder="Queen Creek, AZ" />
-        </label>
+          <label>
+            State
+            <input id="stateInput" type="text" placeholder="AZ" maxlength="2" autocomplete="address-level1" />
+          </label>
+        </div>
       
-        <label>
-          Product or sourcing focus
-          <input id="productFocusInput" type="text" placeholder="Leafy greens, tomatoes, herbs" />
-        </label>
+        <div class="signup-two-column">
+          <label>
+            ZIP code
+            <input id="zipInput" type="text" placeholder="85004" maxlength="10" autocomplete="postal-code" />
+          </label>
       
-        <button id="businessSetupSubmit" type="submit" class="auth-primary-btn">
+          <label>
+            Country
+            <input id="countryInput" type="text" value="United States" disabled />
+          </label>
+        </div>
+      
+        <p class="auth-helper-text">
+          Locality is currently available to businesses in the United States. Map pin confirmation will be added next.
+        </p>
+      
+        <button id="locationSetupSubmit" type="submit" class="auth-primary-btn">
           Continue to profile design
         </button>
       </form>
-
-      <form class="auth-form signup-step" id="profileStep" data-step="3">
+      
+      <!-- STEP 4 — Profile -->
+      <form class="auth-form signup-step" id="profileStep" data-step="4">
         <h2>Design your public profile</h2>
       
         <label>
@@ -140,11 +243,6 @@
         <label>
           Banner or profile image URL
           <input id="bannerImageUrlInput" type="url" placeholder="https://example.com/farm-photo.jpg" />
-        </label>
-      
-        <label>
-          Website
-          <input id="websiteInput" type="url" placeholder="https://yourbusiness.com" />
         </label>
       
         <label>
@@ -174,7 +272,7 @@
         </p>
       </form>
 
-      <div class="signup-step completion-card" id="completionStep" data-step="4">
+      <div class="signup-step completion-card" id="completionStep" data-step="5">
         <h2>Your workspace is ready.</h2>
         <p id="profileSummaryText">
           Your business profile has been created.
