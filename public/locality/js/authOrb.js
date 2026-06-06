@@ -1,6 +1,7 @@
-import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.166.1/build/three.module.js";
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.166.1/build/three.module.js';
+import * as BufferGeometryUtils from 'https://cdn.jsdelivr.net/npm/three@0.166.1/examples/jsm/utils/BufferGeometryUtils.js';
 
-const mount = document.getElementById("authOrbCanvas");
+const mount = document.getElementById('authOrbCanvas');
 
 if (mount) {
   initAuthOrb(mount);
@@ -10,41 +11,46 @@ function initAuthOrb(container) {
   const scene = new THREE.Scene();
 
   const camera = new THREE.PerspectiveCamera(
-    38,
-    getAspect(container),
+    36,
+    container.clientWidth / container.clientHeight,
     1,
     1000
   );
 
-  camera.position.z = 250;
+  /* farther back so the sphere is more zoomed out */
+  camera.position.z = 360;
+  camera.position.y = 0;
 
   const renderer = new THREE.WebGLRenderer({
     antialias: true,
     alpha: true
   });
 
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.setSize(container.clientWidth, container.clientHeight);
   renderer.setClearColor(0x000000, 0);
   container.appendChild(renderer.domElement);
 
-  const radius = 118;
-  const geometry = new THREE.SphereGeometry(radius, 118, 76);
+  /* denser geometry */
+  const radius = 88;
+  let geometry = new THREE.SphereGeometry(radius, 120, 78);
 
-  geometry.deleteAttribute("normal");
-  geometry.deleteAttribute("uv");
+  geometry.deleteAttribute('normal');
+  geometry.deleteAttribute('uv');
+  geometry = BufferGeometryUtils.mergeVertices(geometry);
 
-  const positionAttr = geometry.getAttribute("position");
-  const basePositions = Float32Array.from(positionAttr.array);
+  const positionAttr = geometry.getAttribute('position');
   const positions = Float32Array.from(positionAttr.array);
+  const basePositions = Float32Array.from(positionAttr.array);
 
   const colors = new Float32Array(positionAttr.count * 3);
   const sizes = new Float32Array(positionAttr.count);
 
-  const deepGreen = new THREE.Color("#08c464");
-  const brightMint = new THREE.Color("#baffd4");
-  const aqua = new THREE.Color("#7ef7ff");
-  const navyGlow = new THREE.Color("#1d3d74");
+  /* stronger, greener palette */
+  const topColor = new THREE.Color('#b7ffd0');
+  const midColor = new THREE.Color('#12d85d');
+  const deepColor = new THREE.Color('#07b64a');
+  const glowColor = new THREE.Color('#7cff9f');
 
   const vertex = new THREE.Vector3();
   const tempColor = new THREE.Color();
@@ -53,29 +59,30 @@ function initAuthOrb(container) {
     vertex.fromBufferAttribute(positionAttr, i);
 
     const verticalT = (vertex.y + radius) / (radius * 2);
-    const edgeT = Math.abs(vertex.x) / radius;
-    const depthT = (vertex.z + radius) / (radius * 2);
+    const radialT = Math.abs(vertex.z) / radius;
 
-    tempColor.copy(deepGreen);
-    tempColor.lerp(brightMint, verticalT * 0.55);
-    tempColor.lerp(aqua, edgeT * 0.18);
-    tempColor.lerp(navyGlow, depthT * 0.08);
+    tempColor.copy(deepColor)
+      .lerp(midColor, 0.55)
+      .lerp(topColor, verticalT * 0.78)
+      .lerp(glowColor, radialT * 0.16);
 
-    colors[i * 3] = tempColor.r;
+    colors[i * 3 + 0] = tempColor.r;
     colors[i * 3 + 1] = tempColor.g;
     colors[i * 3 + 2] = tempColor.b;
 
-    sizes[i] = 9 + Math.random() * 7;
+    sizes[i] = 5.5 + Math.random() * 3.25;
   }
 
-  geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
-  geometry.setAttribute("size", new THREE.Float32BufferAttribute(sizes, 1));
-  geometry.setAttribute("ca", new THREE.Float32BufferAttribute(colors, 3));
+  geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+  geometry.setAttribute('size', new THREE.Float32BufferAttribute(sizes, 1));
+  geometry.setAttribute('ca', new THREE.Float32BufferAttribute(colors, 3));
+
+  const pointTexture = createGlowTexture();
 
   const material = new THREE.ShaderMaterial({
     uniforms: {
       color: { value: new THREE.Color(0xffffff) },
-      pointTexture: { value: createGlowTexture() }
+      pointTexture: { value: pointTexture }
     },
     vertexShader: `
       attribute float size;
@@ -87,8 +94,7 @@ function initAuthOrb(container) {
         vColor = ca;
 
         vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
-
-        gl_PointSize = size * (330.0 / -mvPosition.z);
+        gl_PointSize = size * (250.0 / -mvPosition.z);
         gl_Position = projectionMatrix * mvPosition;
       }
     `,
@@ -100,11 +106,8 @@ function initAuthOrb(container) {
 
       void main() {
         vec4 tex = texture2D(pointTexture, gl_PointCoord);
-
-        if (tex.a < 0.04) discard;
-
         vec3 finalColor = color * vColor;
-        gl_FragColor = vec4(finalColor, tex.a);
+        gl_FragColor = vec4(finalColor, tex.a) * tex;
       }
     `,
     transparent: true,
@@ -116,6 +119,7 @@ function initAuthOrb(container) {
 
   const group = new THREE.Group();
   group.add(orb);
+  group.position.y = -8;
   scene.add(group);
 
   const sizeArray = geometry.attributes.size.array;
@@ -124,29 +128,31 @@ function initAuthOrb(container) {
   function animate(timeMs) {
     const time = timeMs * 0.001;
 
-    group.rotation.y = time * 0.18;
-    group.rotation.x = Math.sin(time * 0.36) * 0.22;
-    group.rotation.z = Math.sin(time * 0.18) * 0.12;
+    /* smooth floating rotation */
+    group.rotation.y = time * 0.34;
+    group.rotation.x = Math.sin(time * 0.55) * 0.16;
+    group.rotation.z = Math.sin(time * 0.22) * 0.09;
+    group.position.y = -8 + Math.sin(time * 0.75) * 6;
 
     for (let i = 0; i < positionAttr.count; i++) {
       const ix = i * 3;
 
-      const x = basePositions[ix];
+      const x = basePositions[ix + 0];
       const y = basePositions[ix + 1];
       const z = basePositions[ix + 2];
 
-      const waveA = Math.sin(time * 1.1 + x * 0.028 + y * 0.022) * 0.075;
-      const waveB = Math.cos(time * 0.85 + z * 0.026 - x * 0.018) * 0.055;
-      const waveC = Math.sin(time * 0.7 + (x + z) * 0.012) * 0.035;
+      /* more "liquid in zero gravity" deformation */
+      const waveA = Math.sin(time * 1.2 + x * 0.034 + y * 0.022) * 0.05;
+      const waveB = Math.cos(time * 0.95 + z * 0.03 - x * 0.018) * 0.035;
+      const waveC = Math.sin(time * 0.72 + y * 0.026 - z * 0.018) * 0.028;
 
-      const scale = 1 + waveA + waveB + waveC;
+      const scale = 1.0 + waveA + waveB + waveC;
 
-      positionArray[ix] = x * scale;
+      positionArray[ix + 0] = x * scale;
       positionArray[ix + 1] = y * scale;
       positionArray[ix + 2] = z * scale;
 
-      sizeArray[i] =
-        8.5 + 7.5 * (0.5 + 0.5 * Math.sin(time * 1.8 + i * 0.035));
+      sizeArray[i] = 4.8 + 3.2 * (0.5 + 0.5 * Math.sin(time * 1.8 + i * 0.032));
     }
 
     geometry.attributes.position.needsUpdate = true;
@@ -157,35 +163,26 @@ function initAuthOrb(container) {
   }
 
   function resize() {
-    const width = Math.max(container.clientWidth, 320);
-    const height = Math.max(container.clientHeight, 320);
+    const width = container.clientWidth;
+    const height = container.clientHeight;
 
     camera.aspect = width / height;
     camera.updateProjectionMatrix();
-
     renderer.setSize(width, height);
   }
 
-  window.addEventListener("resize", resize);
+  window.addEventListener('resize', resize);
   resize();
   requestAnimationFrame(animate);
 }
 
-function getAspect(container) {
-  const width = Math.max(container.clientWidth, 320);
-  const height = Math.max(container.clientHeight, 320);
-
-  return width / height;
-}
-
 function createGlowTexture() {
   const size = 128;
-  const canvas = document.createElement("canvas");
+  const canvas = document.createElement('canvas');
   canvas.width = size;
   canvas.height = size;
 
-  const ctx = canvas.getContext("2d");
-
+  const ctx = canvas.getContext('2d');
   const gradient = ctx.createRadialGradient(
     size / 2,
     size / 2,
@@ -195,17 +192,16 @@ function createGlowTexture() {
     size / 2
   );
 
-  gradient.addColorStop(0.0, "rgba(255,255,255,1)");
-  gradient.addColorStop(0.18, "rgba(255,255,255,0.98)");
-  gradient.addColorStop(0.42, "rgba(255,255,255,0.62)");
-  gradient.addColorStop(0.72, "rgba(255,255,255,0.20)");
-  gradient.addColorStop(1.0, "rgba(255,255,255,0)");
+  gradient.addColorStop(0.0, 'rgba(255,255,255,1)');
+  gradient.addColorStop(0.18, 'rgba(255,255,255,0.98)');
+  gradient.addColorStop(0.40, 'rgba(255,255,255,0.70)');
+  gradient.addColorStop(0.68, 'rgba(255,255,255,0.18)');
+  gradient.addColorStop(1.0, 'rgba(255,255,255,0)');
 
   ctx.fillStyle = gradient;
   ctx.fillRect(0, 0, size, size);
 
   const texture = new THREE.CanvasTexture(canvas);
   texture.needsUpdate = true;
-
   return texture;
 }
