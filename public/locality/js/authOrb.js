@@ -17,7 +17,7 @@ function initAuthOrb(container) {
   );
 
   // Went from 350 -> 390 (best) -> 500 (test)
-  camera.position.z = 500;
+  camera.position.z = 390;
 
   const renderer = new THREE.WebGLRenderer({
     antialias: true,
