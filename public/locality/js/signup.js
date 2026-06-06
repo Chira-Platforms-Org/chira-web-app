@@ -245,6 +245,23 @@ function prefillBusinessContactFromAccount() {
   }
 }
 
+function prefillBusinessContactFromAccount() {
+  const accountEmail = getCleanValue(signupEmail);
+  const businessEmail = getCleanValue(businessEmailInput);
+
+  if (businessEmailInput && accountEmail && !businessEmail) {
+    businessEmailInput.value = accountEmail;
+  }
+
+  const accountPhoneDigits = getPhoneDigits(personalPhoneInput?.value);
+  const businessPhoneDigits = getPhoneDigits(businessPhoneInput?.value);
+
+  if (accountPhoneDigits && !businessPhoneDigits) {
+    fillSegmentedPhone("business", accountPhoneDigits);
+    syncSegmentedPhone("business");
+  }
+}
+
 accountStep?.addEventListener("submit", async (event) => {
   event.preventDefault();
 
@@ -275,17 +292,44 @@ accountStep?.addEventListener("submit", async (event) => {
 
   setStatus(signupStatus, "Creating your account...", "default");
 
-  const { data, error } = await window.LocalityAuthService.signUpWithEmail(
-    email,
-    password
-  );
-
-  if (error) {
-    setStatus(signupStatus, error.message || "Unable to create account.", "error");
-    return;
-  }
-
-  createdUser = data?.user || await window.LocalityAuthService.getCurrentUser();
+   let signUpResult = await window.LocalityAuthService.signUpWithEmail(
+     email,
+     password
+   );
+   
+   if (signUpResult.error) {
+     const message = signUpResult.error.message || "";
+   
+     const alreadyExists =
+       message.toLowerCase().includes("already") ||
+       message.toLowerCase().includes("registered") ||
+       message.toLowerCase().includes("exists");
+   
+     if (!alreadyExists) {
+       setStatus(signupStatus, message || "Unable to create account.", "error");
+       return;
+     }
+   
+     setStatus(signupStatus, "Account already exists. Signing you in to continue setup...", "default");
+   
+     const signInResult = await window.LocalityAuthService.signInWithEmail(
+       email,
+       password
+     );
+   
+     if (signInResult.error) {
+       setStatus(
+         signupStatus,
+         "This account already exists. Sign in with the correct password to continue setup.",
+         "error"
+       );
+       return;
+     }
+   
+     createdUser = signInResult.data?.user || await window.LocalityAuthService.getCurrentUser();
+   } else {
+     createdUser = signUpResult.data?.user || await window.LocalityAuthService.getCurrentUser();
+   }
 
   if (!createdUser) {
     setStatus(signupStatus, "Account created, but no active user session was found. Try signing in.", "error");
@@ -416,8 +460,8 @@ profileStep?.addEventListener("submit", async (event) => {
     business_categories: [businessCategory],
     specialties: [],
 
-    logo_url: getCleanValue(logoUrlInput) || null,
-    banner_image_url: getCleanValue(bannerImageUrlInput) || null,
+   logo_url: normalizeUrl(logoUrlInput?.value),
+   banner_image_url: normalizeUrl(bannerImageUrlInput?.value),
 
    contact_name: getCleanValue(fullNameInput),
    contact_email: businessEmail || getCleanValue(signupEmail),
