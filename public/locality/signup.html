@@ -315,47 +315,276 @@
         </button>
       </form>
       
-      <!-- STEP 4 — Profile -->
-      <form class="auth-form signup-step" id="profileStep" data-step="4">
-        <h2>Design your public profile</h2>
+      <!-- STEP 4 — Profile Builder -->
+      <form class="auth-form signup-step profile-builder-step" id="profileStep" data-step="4">
+        <div class="profile-builder-heading">
+          <p class="login-eyebrow">Public profile design</p>
+          <h2>Build your Locality profile.</h2>
+          <p class="auth-helper-text">
+            Fill in the sections buyers will see when they discover your business in the local food network.
+          </p>
+        </div>
       
-      <label>
-        Logo URL
-        <input id="logoUrlInput" type="text" placeholder="example.com/logo.png" />
-      </label>
+        <div class="profile-builder-layout">
+          <aside class="profile-completion-card">
+            <div class="completion-card-header">
+              <span>Profile readiness</span>
+              <strong id="profileCompletionPercent">0%</strong>
+            </div>
       
-      <label>
-        Banner or profile image URL
-        <input id="bannerImageUrlInput" type="text" placeholder="example.com/farm-photo.jpg" />
-      </label>
+            <div class="completion-meter">
+              <div id="profileCompletionBar"></div>
+            </div>
       
-      <label>
-        Instagram or social link
-        <input id="socialLinkInput" type="text" placeholder="instagram.com/yourbusiness" />
-      </label>
+            <ul class="completion-section-list" id="profileCompletionList">
+              <li data-completion-key="logo"><span></span> Logo</li>
+              <li data-completion-key="banner"><span></span> Banner</li>
+              <li data-completion-key="short_intro"><span></span> Short intro</li>
+              <li data-completion-key="gallery"><span></span> Gallery <em>recommended</em></li>
+              <li data-completion-key="about_us"><span></span> About us</li>
+              <li data-completion-key="certifications"><span></span> Certifications <em>recommended</em></li>
+              <li data-completion-key="ordering_guidelines"><span></span> Ordering guidelines <em>recommended</em></li>
+            </ul>
+          </aside>
       
-        <label>
-          Short description
-          <textarea id="businessDescriptionInput" placeholder="Briefly describe your business and what you hope to coordinate through Locality."></textarea>
-        </label>
+          <section class="locality-profile-canvas">
+            <div class="profile-builder-toolbar">
+              <span id="profileBuilderStatus">Draft profile</span>
+              <button type="button" id="saveProfileDraftBtn" class="mini-editor-btn">
+                Save draft
+              </button>
+            </div>
       
-        <label>
-          Profile visibility
-          <select id="profileVisibilityInput">
-            <option value="draft">Keep private for now</option>
-            <option value="public">Publish profile after setup</option>
-          </select>
-        </label>
-
+            <section class="builder-profile-hero profile-builder-module" data-module="hero">
+              <button type="button" class="profile-banner-dropzone" id="bannerUploadBtn">
+                <img id="bannerPreviewImage" alt="" class="profile-media-preview hidden" />
+                <span id="bannerPlaceholder">Add banner image</span>
+              </button>
+      
+              <input id="bannerFileInput" type="file" accept="image/png,image/jpeg,image/webp,image/gif" class="hidden" />
+      
+              <div class="profile-identity-row">
+                <button type="button" class="profile-logo-dropzone" id="logoUploadBtn">
+                  <img id="logoPreviewImage" alt="" class="profile-logo-preview hidden" />
+                  <span id="logoPlaceholder">Logo</span>
+                </button>
+      
+                <input id="logoFileInput" type="file" accept="image/png,image/jpeg,image/webp,image/gif" class="hidden" />
+      
+                <div class="profile-identity-copy">
+                  <h3 id="builderBusinessName">Business name</h3>
+                  <p id="builderBusinessMeta">Location • Category • Role</p>
+      
+                  <div class="profile-chip-row">
+                    <span id="builderRoleChip" class="profile-chip">Seller</span>
+                    <span id="builderCategoryChip" class="profile-chip">Farm / Ranch</span>
+                    <span id="builderContactChip" class="profile-chip muted">Contact details added</span>
+                  </div>
+                </div>
+              </div>
+            </section>
+      
+            <section class="profile-builder-module editable-text-module" data-section-key="short_intro">
+              <div class="module-heading-row">
+                <div>
+                  <p class="module-kicker">Required</p>
+                  <h3>Short profile intro</h3>
+                </div>
+                <span class="section-status-pill" data-status-pill="short_intro">Missing</span>
+              </div>
+      
+              <textarea
+                id="shortIntroInput"
+                maxlength="500"
+                placeholder="Add 3–5 sentences about what your business offers and who you serve."
+              ></textarea>
+      
+              <div class="module-footer-row">
+                <span id="shortIntroCount">0 / 500</span>
+                <button type="button" class="mini-editor-btn mark-section-complete" data-section-key="short_intro">
+                  Mark complete
+                </button>
+              </div>
+            </section>
+      
+            <section class="profile-builder-module gallery-builder-module" data-section-key="gallery">
+              <div class="module-heading-row">
+                <div>
+                  <p class="module-kicker recommended">Recommended</p>
+                  <h3>Image gallery</h3>
+                </div>
+                <span class="section-status-pill" data-status-pill="gallery">Missing</span>
+              </div>
+      
+              <p class="module-description">
+                Add photos of your farm, products, team, storefront, pickup area, or production process.
+              </p>
+      
+              <div class="gallery-preview-grid" id="galleryPreviewGrid">
+                <button type="button" id="galleryUploadBtn" class="gallery-upload-card">
+                  + Add photos
+                </button>
+              </div>
+      
+              <input id="galleryFileInput" type="file" accept="image/png,image/jpeg,image/webp,image/gif" multiple class="hidden" />
+            </section>
+      
+            <section class="profile-builder-module editable-text-module" data-section-key="about_us">
+              <div class="module-heading-row">
+                <div>
+                  <p class="module-kicker">Required</p>
+                  <h3>About us</h3>
+                </div>
+                <span class="section-status-pill" data-status-pill="about_us">Missing</span>
+              </div>
+      
+              <textarea
+                id="aboutUsInput"
+                maxlength="2000"
+                placeholder="Tell buyers about your story, practices, values, and the relationships you want to build through Locality."
+              ></textarea>
+      
+              <div class="module-footer-row">
+                <span id="aboutUsCount">0 / 2000</span>
+                <button type="button" class="mini-editor-btn mark-section-complete" data-section-key="about_us">
+                  Mark complete
+                </button>
+              </div>
+            </section>
+      
+            <section class="profile-builder-module certifications-builder-module" data-section-key="certifications">
+              <div class="module-heading-row">
+                <div>
+                  <p class="module-kicker recommended">Recommended</p>
+                  <h3>Certifications & practices</h3>
+                </div>
+                <span class="section-status-pill" data-status-pill="certifications">Missing</span>
+              </div>
+      
+              <p class="module-description">
+                Highlight certifications and practices that help buyers understand your credibility. These are self-reported for now.
+              </p>
+      
+              <div class="certification-grid">
+                <label><input type="checkbox" class="certification-option" value="USDA Organic" /> USDA Organic</label>
+                <label><input type="checkbox" class="certification-option" value="GAP" /> GAP</label>
+                <label><input type="checkbox" class="certification-option" value="Certified Naturally Grown" /> Certified Naturally Grown</label>
+                <label><input type="checkbox" class="certification-option" value="Certified Humane" /> Certified Humane</label>
+                <label><input type="checkbox" class="certification-option" value="Animal Welfare Approved" /> Animal Welfare Approved</label>
+                <label><input type="checkbox" class="certification-option" value="Pasture-raised" /> Pasture-raised</label>
+                <label><input type="checkbox" class="certification-option" value="Regenerative practices" /> Regenerative practices</label>
+                <label><input type="checkbox" class="certification-option" value="Non-GMO practices" /> Non-GMO practices</label>
+              </div>
+      
+              <label class="custom-certification-label">
+                Other certification or practice
+                <input id="customCertificationInput" type="text" placeholder="Example: Arizona Grown, local food coalition member" />
+              </label>
+      
+              <button type="button" id="addCustomCertificationBtn" class="mini-editor-btn">
+                Add custom certification
+              </button>
+      
+              <div id="selectedCertificationsList" class="selected-certifications-list"></div>
+            </section>
+      
+            <section class="profile-builder-module product-preview-builder">
+              <div class="module-heading-row">
+                <div>
+                  <p class="module-kicker recommended">Recommended later</p>
+                  <h3>Product preview</h3>
+                </div>
+                <span class="section-status-pill muted">Coming later</span>
+              </div>
+      
+              <div class="product-preview-row">
+                <div class="product-preview-card">Add products after setup</div>
+                <div class="product-preview-card">Availability will appear here</div>
+                <div class="product-preview-card">Buyers can request quotes later</div>
+              </div>
+            </section>
+      
+            <section class="profile-builder-module editable-text-module" data-section-key="ordering_guidelines">
+              <div class="module-heading-row">
+                <div>
+                  <p class="module-kicker recommended">Recommended</p>
+                  <h3>Ordering guidelines</h3>
+                </div>
+                <span class="section-status-pill" data-status-pill="ordering_guidelines">Missing</span>
+              </div>
+      
+              <textarea
+                id="orderingGuidelinesInput"
+                maxlength="1500"
+                placeholder="Describe minimum orders, lead time, delivery or pickup expectations, recurring order options, or packaging notes."
+              ></textarea>
+      
+              <div class="module-footer-row">
+                <span id="orderingGuidelinesCount">0 / 1500</span>
+                <button type="button" class="mini-editor-btn mark-section-complete" data-section-key="ordering_guidelines">
+                  Mark complete
+                </button>
+              </div>
+            </section>
+      
+            <section class="profile-builder-module editable-text-module optional-profile-module" data-section-key="farming_practices">
+              <div class="module-heading-row">
+                <div>
+                  <p class="module-kicker">Optional</p>
+                  <h3>Farm, sourcing, or production practices</h3>
+                </div>
+                <span class="section-status-pill" data-status-pill="farming_practices">Missing</span>
+              </div>
+      
+              <textarea
+                id="farmingPracticesInput"
+                maxlength="1500"
+                placeholder="Share details about how you grow, source, raise, produce, or handle your products."
+              ></textarea>
+      
+              <div class="module-footer-row">
+                <span id="farmingPracticesCount">0 / 1500</span>
+                <button type="button" class="mini-editor-btn mark-section-complete" data-section-key="farming_practices">
+                  Mark complete
+                </button>
+              </div>
+            </section>
+      
+            <section class="profile-builder-module profile-visibility-module">
+              <div class="module-heading-row">
+                <div>
+                  <p class="module-kicker">Visibility</p>
+                  <h3>Profile visibility</h3>
+                </div>
+              </div>
+      
+              <select id="profileVisibilityInput">
+                <option value="draft">Keep private for now</option>
+                <option value="public">Publish profile after setup</option>
+              </select>
+      
+              <p class="module-description">
+                Draft profiles are saved but not publicly shown. Public profiles should have the required sections completed.
+              </p>
+            </section>
+          </section>
+        </div>
+      
+        <input id="logoUrlInput" type="hidden" />
+        <input id="bannerImageUrlInput" type="hidden" />
+        <input id="socialLinkInput" type="hidden" />
+        <textarea id="businessDescriptionInput" class="hidden"></textarea>
+      
         <button type="button" class="auth-secondary-btn signup-back-btn" data-back-step="3">
           Back to location
         </button>
+      
         <button id="createProfileSubmit" type="submit" class="auth-primary-btn">
           Create workspace
         </button>
       
         <p class="auth-status">
-          You can add products, listings, pricing, photos, and availability after your profile is created.
+          You can keep recommended sections as drafts and finish them later from your workspace.
         </p>
       </form>
 
