@@ -815,4 +815,4 @@ document.querySelectorAll(".signup-back-btn").forEach((button) => {
     setStep(backStep);
   });
 });
-resumeOnboardingIfNeeded();
+setStep(1);
