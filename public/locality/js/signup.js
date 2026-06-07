@@ -47,6 +47,9 @@ const profileVisibilityInput = document.getElementById("profileVisibilityInput")
 
 let createdUser = null;
 
+const ONBOARDING_PROFILE_ID_KEY = "locality_onboarding_business_profile_id";
+let activeBusinessProfileId = localStorage.getItem(ONBOARDING_PROFILE_ID_KEY) || null;
+
 function setStep(stepNumber) {
   document.querySelectorAll(".signup-step").forEach((step) => {
     step.classList.toggle("active", step.dataset.step === String(stepNumber));
@@ -245,21 +248,260 @@ function prefillBusinessContactFromAccount() {
   }
 }
 
-function prefillBusinessContactFromAccount() {
-  const accountEmail = getCleanValue(signupEmail);
-  const businessEmail = getCleanValue(businessEmailInput);
+function setActiveBusinessProfileId(id) {
+  activeBusinessProfileId = id || null;
 
-  if (businessEmailInput && accountEmail && !businessEmail) {
-    businessEmailInput.value = accountEmail;
+  if (activeBusinessProfileId) {
+    localStorage.setItem(ONBOARDING_PROFILE_ID_KEY, activeBusinessProfileId);
+  } else {
+    localStorage.removeItem(ONBOARDING_PROFILE_ID_KEY);
+  }
+}
+
+function parseJsonLike(value, fallback) {
+  if (!value) return fallback;
+
+  if (typeof value === "object") return value;
+
+  try {
+    return JSON.parse(value);
+  } catch {
+    return fallback;
+  }
+}
+
+function getRoleSelectValue(roles = []) {
+  const roleList = Array.isArray(roles) ? roles : parseJsonLike(roles, []);
+
+  if (roleList.includes("buyer") && roleList.includes("seller")) {
+    return "buyer_seller";
   }
 
-  const accountPhoneDigits = getPhoneDigits(personalPhoneInput?.value);
-  const businessPhoneDigits = getPhoneDigits(businessPhoneInput?.value);
+  return roleList[0] || "seller";
+}
 
-  if (accountPhoneDigits && !businessPhoneDigits) {
-    fillSegmentedPhone("business", accountPhoneDigits);
+function hydrateBusinessProfileFields(profile) {
+  if (!profile) return;
+
+  if (businessNameInput && profile.name) {
+    businessNameInput.value = profile.name;
+  }
+
+  if (businessEmailInput && profile.contact_email) {
+    businessEmailInput.value = profile.contact_email;
+  }
+
+  if (profile.phone) {
+    fillSegmentedPhone("business", profile.phone);
     syncSegmentedPhone("business");
   }
+
+  if (marketplaceRoleInput) {
+    marketplaceRoleInput.value = getRoleSelectValue(profile.marketplace_roles);
+  }
+
+  const categories = parseJsonLike(profile.business_categories, []);
+  if (businessCategoryInput && categories?.[0]) {
+    businessCategoryInput.value = categories[0];
+  }
+
+  if (websiteInput && profile.website) {
+    websiteInput.value = profile.website;
+  }
+
+  if (productFocusInput && profile.product_focus) {
+    productFocusInput.value = profile.product_focus;
+  }
+
+  const address = parseJsonLike(profile.address, {});
+
+  if (streetAddressInput && address.street_address) {
+    streetAddressInput.value = address.street_address;
+  }
+
+  if (addressLine2Input && address.address_line_2) {
+    addressLine2Input.value = address.address_line_2;
+  }
+
+  if (cityInput && address.city) {
+    cityInput.value = address.city;
+  }
+
+  if (stateInput && address.state) {
+    stateInput.value = address.state;
+  }
+
+  if (zipInput && address.zip_code) {
+    zipInput.value = address.zip_code;
+  }
+
+  if (logoUrlInput && profile.logo_url) {
+    logoUrlInput.value = profile.logo_url;
+  }
+
+  if (bannerImageUrlInput && profile.banner_image_url) {
+    bannerImageUrlInput.value = profile.banner_image_url;
+  }
+
+  if (socialLinkInput && profile.social_link) {
+    socialLinkInput.value = profile.social_link;
+  }
+
+  if (businessDescriptionInput && profile.description) {
+    businessDescriptionInput.value = profile.description;
+  }
+
+  if (profileVisibilityInput && profile.profile_visibility) {
+    profileVisibilityInput.value = profile.profile_visibility;
+  }
+}
+
+async function getSignedInUserOrRedirect() {
+  const user = createdUser || await window.LocalityAuthService.getCurrentUser();
+
+  if (!user) {
+    setStatus(signupStatus, "Please create or sign in to your account first.", "error");
+    setStep(1);
+    return null;
+  }
+
+  createdUser = user;
+  return user;
+}
+
+async function findIncompleteBusinessProfile(userId) {
+  const { data, error } = await window.LocalitySupabase
+    .from("business_profiles")
+    .select("*")
+    .eq("owner_user_id", userId)
+    .eq("onboarding_completed", false)
+    .order("created_at", { ascending: false })
+    .limit(1);
+
+  if (error) {
+    console.warn("Unable to look up incomplete business profile:", error);
+    return null;
+  }
+
+  return data?.[0] || null;
+}
+
+async function saveBusinessProfileProgress(stepName, updates = {}) {
+  const user = await getSignedInUserOrRedirect();
+
+  if (!user) {
+    return { data: null, error: "No authenticated user." };
+  }
+
+  const payload = {
+    ...updates,
+    onboarding_step: stepName,
+    updated_at: new Date().toISOString()
+  };
+
+  if (activeBusinessProfileId) {
+    const { data, error } = await window.LocalitySupabase
+      .from("business_profiles")
+      .update(payload)
+      .eq("id", activeBusinessProfileId)
+      .select()
+      .single();
+
+    return { data, error };
+  }
+
+  const existingDraft = await findIncompleteBusinessProfile(user.id);
+
+  if (existingDraft?.id) {
+    setActiveBusinessProfileId(existingDraft.id);
+
+    const { data, error } = await window.LocalitySupabase
+      .from("business_profiles")
+      .update(payload)
+      .eq("id", existingDraft.id)
+      .select()
+      .single();
+
+    return { data, error };
+  }
+
+  const { data, error } = await window.LocalitySupabase
+    .from("business_profiles")
+    .insert({
+      owner_user_id: user.id,
+      profile_visibility: "draft",
+      onboarding_completed: false,
+      status: "active",
+      ...payload
+    })
+    .select()
+    .single();
+
+  if (data?.id) {
+    setActiveBusinessProfileId(data.id);
+  }
+
+  return { data, error };
+}
+
+async function resumeOnboardingIfNeeded() {
+  const user = await window.LocalityAuthService.getCurrentUser();
+
+  if (!user) {
+    setStep(1);
+    return;
+  }
+
+  createdUser = user;
+
+  const { data, error } = await window.LocalitySupabase
+    .from("business_profiles")
+    .select("*")
+    .eq("owner_user_id", user.id)
+    .order("created_at", { ascending: false })
+    .limit(1);
+
+  if (error) {
+    console.warn("Unable to check onboarding progress:", error);
+    setStep(1);
+    return;
+  }
+
+  const profile = data?.[0];
+
+  if (!profile) {
+    prefillBusinessContactFromAccount();
+    setStatus(signupStatus, "You are signed in. Continue with your business profile.", "success");
+    setStep(2);
+    return;
+  }
+
+  setActiveBusinessProfileId(profile.id);
+  hydrateBusinessProfileFields(profile);
+
+  if (profile.onboarding_completed === true) {
+    if (profileSummaryText) {
+      profileSummaryText.textContent =
+        `${profile.name || "Your business"} is already set up. You can enter your workspace or continue editing later.`;
+    }
+
+    setStep(5);
+    return;
+  }
+
+  const stepName = profile.onboarding_step;
+
+  if (stepName === "business_identity") {
+    setStep(3);
+  } else if (stepName === "location") {
+    setStep(4);
+  } else if (stepName === "profile_created") {
+    setStep(4);
+  } else {
+    setStep(2);
+  }
+
+  setStatus(signupStatus, "Welcome back. We restored your setup progress.", "success");
 }
 
 accountStep?.addEventListener("submit", async (event) => {
@@ -351,11 +593,14 @@ accountStep?.addEventListener("submit", async (event) => {
    setStep(2);
 });
 
-businessStep?.addEventListener("submit", (event) => {
+businessStep?.addEventListener("submit", async (event) => {
   event.preventDefault();
 
   const businessName = getCleanValue(businessNameInput);
   const businessEmail = getCleanValue(businessEmailInput);
+  const marketplaceRole = marketplaceRoleInput?.value || "seller";
+  const businessCategory = businessCategoryInput?.value || "other";
+
   const personalPhoneDigits = getPhoneDigits(personalPhoneInput?.value);
   const businessPhoneDigits = getPhoneDigits(businessPhoneInput?.value);
 
@@ -370,12 +615,12 @@ businessStep?.addEventListener("submit", (event) => {
   }
 
   if (!personalPhoneDigits && !businessPhoneDigits) {
-    alert("Please enter either a personal phone number or a business phone number.");
+    alert("Please enter either an account phone number or a business phone number.");
     return;
   }
 
   if (personalPhoneDigits && personalPhoneDigits.length !== 10) {
-    alert("Please enter a valid personal phone number.");
+    alert("Please enter a valid account phone number.");
     return;
   }
 
@@ -384,10 +629,43 @@ businessStep?.addEventListener("submit", (event) => {
     return;
   }
 
+  const { data, error } = await saveBusinessProfileProgress("business_identity", {
+    name: businessName,
+    marketplace_roles: getMarketplaceRoles(marketplaceRole),
+    business_categories: [businessCategory],
+    specialties: [],
+
+    contact_name: getCleanValue(fullNameInput),
+    contact_email: businessEmail || getCleanValue(signupEmail),
+    phone: businessPhoneDigits || null,
+    website: normalizeUrl(websiteInput?.value),
+
+    product_focus: getCleanValue(productFocusInput),
+    profile_visibility: "draft",
+    onboarding_completed: false,
+    status: "active",
+
+    public_contact_settings: {
+      show_business_email: Boolean(businessEmail),
+      show_business_phone: Boolean(businessPhoneDigits),
+      show_personal_phone: false
+    }
+  });
+
+  if (error) {
+    console.error("Unable to save business setup:", error);
+    alert(error.message || "Unable to save your business setup.");
+    return;
+  }
+
+  if (data?.id) {
+    setActiveBusinessProfileId(data.id);
+  }
+
   setStep(3);
 });
 
-locationStep?.addEventListener("submit", (event) => {
+locationStep?.addEventListener("submit", async (event) => {
   event.preventDefault();
 
   const address = buildAddressPayload();
@@ -410,6 +688,24 @@ locationStep?.addEventListener("submit", (event) => {
   if (!address.zip_code || !/^\d{5}(-\d{4})?$/.test(address.zip_code)) {
     alert("Please enter a valid ZIP code.");
     return;
+  }
+
+  const locationLabel = formatLocationLabel(address);
+
+  const { data, error } = await saveBusinessProfileProgress("location", {
+    address,
+    location_label: locationLabel,
+    coordinates: {}
+  });
+
+  if (error) {
+    console.error("Unable to save location:", error);
+    alert(error.message || "Unable to save your location.");
+    return;
+  }
+
+  if (data?.id) {
+    setActiveBusinessProfileId(data.id);
   }
 
   setStep(4);
@@ -453,7 +749,6 @@ profileStep?.addEventListener("submit", async (event) => {
   const profileVisibility = profileVisibilityInput?.value || "draft";
 
   const businessProfile = {
-    owner_user_id: user.id,
     name: businessName,
 
     marketplace_roles: getMarketplaceRoles(marketplaceRole),
@@ -487,11 +782,10 @@ profileStep?.addEventListener("submit", async (event) => {
     updated_at: new Date().toISOString()
   };
 
-  const { data, error } = await window.LocalitySupabase
-    .from("business_profiles")
-    .insert(businessProfile)
-    .select()
-    .single();
+   const { data, error } = await saveBusinessProfileProgress(
+     "profile_created",
+     businessProfile
+   );
 
   if (error) {
     console.error("Unable to create business profile:", error);
@@ -521,4 +815,4 @@ document.querySelectorAll(".signup-back-btn").forEach((button) => {
     setStep(backStep);
   });
 });
-setStep(1);
+resumeOnboardingIfNeeded();
