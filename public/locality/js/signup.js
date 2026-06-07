@@ -53,6 +53,50 @@ const socialLinkInput = document.getElementById("socialLinkInput");
 const businessDescriptionInput = document.getElementById("businessDescriptionInput");
 const profileVisibilityInput = document.getElementById("profileVisibilityInput");
 
+const logoFileInput = document.getElementById("logoFileInput");
+const bannerFileInput = document.getElementById("bannerFileInput");
+const galleryFileInput = document.getElementById("galleryFileInput");
+
+const logoUploadBtn = document.getElementById("logoUploadBtn");
+const bannerUploadBtn = document.getElementById("bannerUploadBtn");
+const galleryUploadBtn = document.getElementById("galleryUploadBtn");
+
+const logoPreviewImage = document.getElementById("logoPreviewImage");
+const bannerPreviewImage = document.getElementById("bannerPreviewImage");
+const logoPlaceholder = document.getElementById("logoPlaceholder");
+const bannerPlaceholder = document.getElementById("bannerPlaceholder");
+const galleryPreviewGrid = document.getElementById("galleryPreviewGrid");
+
+const builderBusinessName = document.getElementById("builderBusinessName");
+const builderBusinessMeta = document.getElementById("builderBusinessMeta");
+const builderRoleChip = document.getElementById("builderRoleChip");
+const builderCategoryChip = document.getElementById("builderCategoryChip");
+const builderContactChip = document.getElementById("builderContactChip");
+
+const shortIntroInput = document.getElementById("shortIntroInput");
+const aboutUsInput = document.getElementById("aboutUsInput");
+const orderingGuidelinesInput = document.getElementById("orderingGuidelinesInput");
+const farmingPracticesInput = document.getElementById("farmingPracticesInput");
+
+const shortIntroCount = document.getElementById("shortIntroCount");
+const aboutUsCount = document.getElementById("aboutUsCount");
+const orderingGuidelinesCount = document.getElementById("orderingGuidelinesCount");
+const farmingPracticesCount = document.getElementById("farmingPracticesCount");
+
+const customCertificationInput = document.getElementById("customCertificationInput");
+const addCustomCertificationBtn = document.getElementById("addCustomCertificationBtn");
+const selectedCertificationsList = document.getElementById("selectedCertificationsList");
+
+const saveProfileDraftBtn = document.getElementById("saveProfileDraftBtn");
+const profileBuilderStatus = document.getElementById("profileBuilderStatus");
+const profileCompletionPercent = document.getElementById("profileCompletionPercent");
+const profileCompletionBar = document.getElementById("profileCompletionBar");
+const profileCompletionList = document.getElementById("profileCompletionList");
+
+let profileGalleryImages = [];
+let customCertifications = [];
+let profileSectionStatus = {};
+
 let createdUser = null;
 
 const ONBOARDING_PROFILE_ID_KEY = "locality_onboarding_business_profile_id";
