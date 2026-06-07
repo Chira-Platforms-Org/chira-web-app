@@ -11,6 +11,14 @@ const completionStep = document.getElementById("completionStep");
 const signupStatus = document.getElementById("signupStatus");
 const profileSummaryText = document.getElementById("profileSummaryText");
 
+const resumeDraftOpenBtn = document.getElementById("resumeDraftOpenBtn");
+const resumeDraftModal = document.getElementById("resumeDraftModal");
+const resumeDraftCloseBtn = document.getElementById("resumeDraftCloseBtn");
+const resumeDraftEmail = document.getElementById("resumeDraftEmail");
+const resumeDraftPassword = document.getElementById("resumeDraftPassword");
+const resumeDraftSubmitBtn = document.getElementById("resumeDraftSubmitBtn");
+const resumeDraftStatus = document.getElementById("resumeDraftStatus");
+
 const fullNameInput = document.getElementById("fullNameInput");
 const signupEmail = document.getElementById("signupEmail");
 const signupPassword = document.getElementById("signupPassword");
@@ -815,4 +823,131 @@ document.querySelectorAll(".signup-back-btn").forEach((button) => {
     setStep(backStep);
   });
 });
+
+function openResumeDraftModal() {
+  if (!resumeDraftModal) return;
+
+  resumeDraftModal.classList.remove("hidden");
+  resumeDraftModal.setAttribute("aria-hidden", "false");
+  resumeDraftEmail?.focus();
+}
+
+function closeResumeDraftModal() {
+  if (!resumeDraftModal) return;
+
+  resumeDraftModal.classList.add("hidden");
+  resumeDraftModal.setAttribute("aria-hidden", "true");
+}
+
+function setResumeDraftStatus(message, status = "default") {
+  if (!resumeDraftStatus) return;
+
+  resumeDraftStatus.textContent = message;
+
+  if (status === "default") {
+    resumeDraftStatus.removeAttribute("data-status");
+  } else {
+    resumeDraftStatus.dataset.status = status;
+  }
+}
+
+async function resumeDraftFromModal() {
+  const email = getCleanValue(resumeDraftEmail);
+  const password = resumeDraftPassword?.value || "";
+
+  if (!email || !password) {
+    setResumeDraftStatus("Enter your email and password to resume setup.", "error");
+    return;
+  }
+
+  setResumeDraftStatus("Checking your draft...", "default");
+
+  const signInResult = await window.LocalityAuthService.signInWithEmail(email, password);
+
+  if (signInResult.error) {
+    setResumeDraftStatus(
+      signInResult.error.message || "Unable to sign in with those details.",
+      "error"
+    );
+    return;
+  }
+
+  const user = signInResult.data?.user || await window.LocalityAuthService.getCurrentUser();
+
+  if (!user) {
+    setResumeDraftStatus("Signed in, but no active user session was found.", "error");
+    return;
+  }
+
+  createdUser = user;
+
+  const { data, error } = await window.LocalitySupabase
+    .from("business_profiles")
+    .select("*")
+    .eq("owner_user_id", user.id)
+    .order("created_at", { ascending: false })
+    .limit(1);
+
+  if (error) {
+    console.error("Unable to find setup draft:", error);
+    setResumeDraftStatus(error.message || "Unable to find your setup draft.", "error");
+    return;
+  }
+
+  const profile = data?.[0];
+
+  if (!profile) {
+    closeResumeDraftModal();
+    prefillBusinessContactFromAccount();
+    setStatus(signupStatus, "Signed in. Continue with your business profile.", "success");
+    setStep(2);
+    return;
+  }
+
+  if (profile.onboarding_completed === true) {
+    setResumeDraftStatus(
+      "This profile is already complete. Please sign in to access your workspace.",
+      "error"
+    );
+
+    setTimeout(() => {
+      window.location.href = "account.html";
+    }, 1400);
+
+    return;
+  }
+
+  setActiveBusinessProfileId(profile.id);
+  hydrateBusinessProfileFields(profile);
+  closeResumeDraftModal();
+
+  if (profile.onboarding_step === "business_identity") {
+    setStep(3);
+  } else if (profile.onboarding_step === "location") {
+    setStep(4);
+  } else if (profile.onboarding_step === "profile_created") {
+    setStep(4);
+  } else {
+    setStep(2);
+  }
+
+  setStatus(signupStatus, "Welcome back. We restored your setup draft.", "success");
+}
+
+resumeDraftOpenBtn?.addEventListener("click", openResumeDraftModal);
+resumeDraftCloseBtn?.addEventListener("click", closeResumeDraftModal);
+resumeDraftSubmitBtn?.addEventListener("click", resumeDraftFromModal);
+
+resumeDraftModal?.addEventListener("click", (event) => {
+  if (event.target === resumeDraftModal) {
+    closeResumeDraftModal();
+  }
+});
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") {
+    closeResumeDraftModal();
+  }
+});
+
 setStep(1);
