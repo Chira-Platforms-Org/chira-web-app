@@ -376,7 +376,44 @@
 
       <div class="auth-footer-links">
         <a href="account.html">Already have an account? Sign in</a>
+        <button id="resumeDraftOpenBtn" type="button" class="auth-footer-button">
+          Finish setup
+        </button>
         <a href="map.html">Continue as guest</a>
+      </div>
+      
+      <div id="resumeDraftModal" class="resume-draft-modal hidden" aria-hidden="true">
+        <div class="resume-draft-card">
+          <button id="resumeDraftCloseBtn" type="button" class="resume-draft-close" aria-label="Close">
+            ×
+          </button>
+      
+          <p class="login-eyebrow">Continue setup</p>
+      
+          <h2>Resume your Locality draft.</h2>
+      
+          <p class="auth-helper-text">
+            Enter the email and password you used to start your account. If your profile is already complete, we’ll send you to sign in.
+          </p>
+      
+          <label>
+            Email address
+            <input id="resumeDraftEmail" type="email" placeholder="you@example.com" autocomplete="email" />
+          </label>
+      
+          <label>
+            Password
+            <input id="resumeDraftPassword" type="password" placeholder="Enter your password" autocomplete="current-password" />
+          </label>
+      
+          <button id="resumeDraftSubmitBtn" type="button" class="auth-primary-btn">
+            Resume draft
+          </button>
+      
+          <p id="resumeDraftStatus" class="auth-status">
+            Use the same login details from your first setup attempt.
+          </p>
+        </div>
       </div>
     </section>
 
