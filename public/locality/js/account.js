@@ -31,11 +31,10 @@ async function routeAfterSignIn() {
     console.warn("Profile lookup error:", error);
   }
 
-  if (profile) {
-    window.location.href = "supplier.html";
-  } else {
-    window.location.href = "signup.html";
-  }
+if (profile?.onboarding_completed === true) {
+  window.location.href = "supplier.html";
+} else {
+  window.location.href = "signup.html";
 }
 
 signInForm?.addEventListener("submit", async (event) => {
