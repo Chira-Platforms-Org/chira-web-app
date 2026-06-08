@@ -1503,4 +1503,29 @@ saveProfileDraftBtn?.addEventListener("click", async () => {
   }
 });
 
+function handlePasswordToggleClick(event) {
+  const button = event.target.closest(".password-toggle");
+
+  if (!button) return;
+
+  event.preventDefault();
+  event.stopPropagation();
+
+  const targetId = button.getAttribute("data-password-target");
+  const input = document.getElementById(targetId);
+
+  if (!input) {
+    console.warn("Password toggle target not found:", targetId);
+    return;
+  }
+
+  const shouldShow = input.type === "password";
+
+  input.type = shouldShow ? "text" : "password";
+  button.textContent = shouldShow ? "Hide" : "Show";
+}
+
+document.addEventListener("click", handlePasswordToggleClick);
+document.addEventListener("pointerdown", handlePasswordToggleClick);
+
 setStep(1);
