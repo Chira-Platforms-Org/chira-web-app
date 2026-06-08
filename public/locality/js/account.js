@@ -88,15 +88,22 @@ forgotPasswordBtn?.addEventListener("click", async () => {
   setStatus("Password reset email sent. Check your inbox.", "success");
 });
 
-document.querySelectorAll(".password-toggle").forEach((button) => {
-  button.addEventListener("click", () => {
-    const targetId = button.dataset.passwordTarget;
-    const input = document.getElementById(targetId);
+document.addEventListener("click", (event) => {
+  const button = event.target.closest(".password-toggle");
 
-    if (!input) return;
+  if (!button) return;
 
-    const isHidden = input.type === "password";
-    input.type = isHidden ? "text" : "password";
-    button.textContent = isHidden ? "Hide" : "Show";
-  });
+  event.preventDefault();
+  event.stopPropagation();
+
+  const targetId = button.dataset.passwordTarget;
+  const input = document.getElementById(targetId);
+
+  if (!input) return;
+
+  const isHidden = input.type === "password";
+
+  input.type = isHidden ? "text" : "password";
+  button.textContent = isHidden ? "Hide" : "Show";
+});
 });
