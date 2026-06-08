@@ -34,6 +34,10 @@ const shortIntroInput = document.getElementById("shortIntroInput");
 const aboutUsInput = document.getElementById("aboutUsInput");
 const orderingGuidelinesInput = document.getElementById("orderingGuidelinesInput");
 
+const shortIntroDisplay = document.getElementById("shortIntroDisplay");
+const aboutUsDisplay = document.getElementById("aboutUsDisplay");
+const orderingGuidelinesDisplay = document.getElementById("orderingGuidelinesDisplay");
+
 const shortIntroCount = document.getElementById("shortIntroCount");
 const aboutUsCount = document.getElementById("aboutUsCount");
 const orderingGuidelinesCount = document.getElementById("orderingGuidelinesCount");
@@ -197,6 +201,97 @@ function updateCharacterCount(input, counter, max) {
   counter.textContent = `${input.value.length} / ${max}`;
 }
 
+const sectionConfig = {
+  short_intro: {
+    input: () => shortIntroInput,
+    display: () => shortIntroDisplay,
+    placeholder: "Add 3–5 sentences about what your business offers and who you serve."
+  },
+  about_us: {
+    input: () => aboutUsInput,
+    display: () => aboutUsDisplay,
+    placeholder: "Tell buyers about your story, practices, values, and the relationships you want to build through Locality."
+  },
+  ordering_guidelines: {
+    input: () => orderingGuidelinesInput,
+    display: () => orderingGuidelinesDisplay,
+    placeholder: "Add minimum orders, lead time, pickup, delivery, packaging, or recurring order notes."
+  }
+};
+
+function getSectionElement(sectionKey) {
+  return document.querySelector(`.editable-profile-section[data-section-key="${sectionKey}"]`);
+}
+
+function getSectionEditor(sectionKey) {
+  return document.querySelector(`[data-editor-section="${sectionKey}"]`);
+}
+
+function getSectionDisplayShell(sectionKey) {
+  return document.querySelector(`[data-edit-section="${sectionKey}"]`);
+}
+
+function renderTextSectionDisplay(sectionKey) {
+  const config = sectionConfig[sectionKey];
+
+  if (!config) return;
+
+  const input = config.input();
+  const display = config.display();
+
+  if (!input || !display) return;
+
+  const value = getCleanValue(input);
+
+  if (value) {
+    display.textContent = value;
+    display.classList.remove("empty");
+  } else {
+    display.textContent = config.placeholder;
+    display.classList.add("empty");
+  }
+}
+
+function renderAllTextSectionDisplays() {
+  Object.keys(sectionConfig).forEach(renderTextSectionDisplay);
+}
+
+function openSectionEditor(sectionKey) {
+  const sectionElement = getSectionElement(sectionKey);
+  const editor = getSectionEditor(sectionKey);
+  const displayShell = getSectionDisplayShell(sectionKey);
+  const input = sectionConfig[sectionKey]?.input();
+
+  if (!sectionElement || !editor || !displayShell || !input) return;
+
+  sectionElement.dataset.editing = "true";
+  editor.classList.remove("hidden");
+  displayShell.classList.add("is-editing");
+
+  setTimeout(() => {
+    input.focus();
+  }, 50);
+}
+
+function closeSectionEditor(sectionKey, shouldMarkDraft = true) {
+  const sectionElement = getSectionElement(sectionKey);
+  const editor = getSectionEditor(sectionKey);
+  const displayShell = getSectionDisplayShell(sectionKey);
+  const input = sectionConfig[sectionKey]?.input();
+
+  if (!sectionElement || !editor || !displayShell || !input) return;
+
+  if (shouldMarkDraft && getCleanValue(input)) {
+    markDraftIfHasValue(sectionKey, input);
+  }
+
+  renderTextSectionDisplay(sectionKey);
+
+  sectionElement.dataset.editing = "false";
+  editor.classList.add("hidden");
+  displayShell.classList.remove("is-editing");
+}
+
 function renderIdentity() {
   if (!currentProfile) return;
 
@@ -328,6 +423,11 @@ function hydrateBuilder(profile) {
   updateCharacterCount(aboutUsInput, aboutUsCount, 2000);
   updateCharacterCount(orderingGuidelinesInput, orderingGuidelinesCount, 1500);
   renderSectionStatus();
+  renderAllTextSectionDisplays();
+
+   Object.keys(sectionConfig).forEach((sectionKey) => {
+     closeSectionEditor(sectionKey, false);
+   });
 }
 
 function buildProfilePayload(markComplete = false) {
@@ -501,14 +601,55 @@ galleryFileInput?.addEventListener("change", async () => {
     updateCharacterCount(aboutUsInput, aboutUsCount, 2000);
     updateCharacterCount(orderingGuidelinesInput, orderingGuidelinesCount, 1500);
 
-    if (input === shortIntroInput) markDraftIfHasValue("short_intro", shortIntroInput);
-    if (input === aboutUsInput) markDraftIfHasValue("about_us", aboutUsInput);
-    if (input === orderingGuidelinesInput) markDraftIfHasValue("ordering_guidelines", orderingGuidelinesInput);
+    if (input === shortIntroInput) {
+      markDraftIfHasValue("short_intro", shortIntroInput);
+      renderTextSectionDisplay("short_intro");
+    }
+
+    if (input === aboutUsInput) {
+      markDraftIfHasValue("about_us", aboutUsInput);
+      renderTextSectionDisplay("about_us");
+    }
+
+    if (input === orderingGuidelinesInput) {
+      markDraftIfHasValue("ordering_guidelines", orderingGuidelinesInput);
+      renderTextSectionDisplay("ordering_guidelines");
+    }
+  });
+});
+
+document.querySelectorAll("[data-edit-section]").forEach((button) => {
+  button.addEventListener("click", () => {
+    const sectionKey = button.dataset.editSection;
+    openSectionEditor(sectionKey);
+  });
+});
+
+document.querySelectorAll(".cancel-section-edit").forEach((button) => {
+  button.addEventListener("click", () => {
+    const sectionKey = button.dataset.sectionKey;
+    closeSectionEditor(sectionKey, false);
+  });
+});
+
+document.querySelectorAll(".save-section-draft").forEach((button) => {
+  button.addEventListener("click", async () => {
+    const sectionKey = button.dataset.sectionKey;
+    const input = sectionConfig[sectionKey]?.input();
+
+    if (input && getCleanValue(input)) {
+      setSectionStatus(sectionKey, "draft");
+    } else {
+      setSectionStatus(sectionKey, "missing");
+    }
+
+    closeSectionEditor(sectionKey, false);
+    await saveProfile(false);
   });
 });
 
 document.querySelectorAll(".mark-section-complete").forEach((button) => {
-  button.addEventListener("click", () => {
+  button.addEventListener("click", async () => {
     const sectionKey = button.dataset.sectionKey;
 
     const inputMap = {
@@ -525,6 +666,8 @@ document.querySelectorAll(".mark-section-complete").forEach((button) => {
     }
 
     setSectionStatus(sectionKey, "complete");
+    closeSectionEditor(sectionKey, false);
+    await saveProfile(false);
   });
 });
 
