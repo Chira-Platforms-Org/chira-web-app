@@ -16,13 +16,6 @@ function setStatus(message, type = "neutral") {
   authStatus.dataset.status = type;
 }
 
-function setLoading(isLoading) {
-  if (!signInSubmit) return;
-
-  signInSubmit.disabled = isLoading;
-  signInSubmit.textContent = isLoading ? "Signing in..." : "Sign in";
-}
-
 async function routeAfterSignIn() {
   const { data: profile, error } =
     await window.LocalityProfileService.getMyPrimaryBusinessProfile();
@@ -31,11 +24,25 @@ async function routeAfterSignIn() {
     console.warn("Profile lookup error:", error);
   }
 
-if (profile?.onboarding_completed === true) {
-  window.location.href = "supplier.html";
-} else {
+  if (!profile) {
+    window.location.href = "signup.html";
+    return;
+  }
+
+  if (
+    profile.onboarding_step === "profile_builder_started" ||
+    profile.onboarding_step === "profile_builder_draft"
+  ) {
+    window.location.href = "profile-builder.html";
+    return;
+  }
+
+  if (profile.onboarding_completed === true) {
+    window.location.href = "supplier.html";
+    return;
+  }
+
   window.location.href = "signup.html";
-}
 }
 
 signInForm?.addEventListener("submit", async (event) => {
