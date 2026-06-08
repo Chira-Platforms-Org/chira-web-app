@@ -88,7 +88,7 @@ forgotPasswordBtn?.addEventListener("click", async () => {
   setStatus("Password reset email sent. Check your inbox.", "success");
 });
 
-document.addEventListener("click", (event) => {
+function handlePasswordToggleClick(event) {
   const button = event.target.closest(".password-toggle");
 
   if (!button) return;
@@ -96,14 +96,20 @@ document.addEventListener("click", (event) => {
   event.preventDefault();
   event.stopPropagation();
 
-  const targetId = button.dataset.passwordTarget;
+  const targetId = button.getAttribute("data-password-target");
   const input = document.getElementById(targetId);
 
-  if (!input) return;
+  if (!input) {
+    console.warn("Password toggle target not found:", targetId);
+    return;
+  }
 
-  const isHidden = input.type === "password";
+  const shouldShow = input.type === "password";
 
-  input.type = isHidden ? "text" : "password";
-  button.textContent = isHidden ? "Hide" : "Show";
-});
+  input.type = shouldShow ? "text" : "password";
+  button.textContent = shouldShow ? "Hide" : "Show";
+}
+
+document.addEventListener("click", handlePasswordToggleClick);
+document.addEventListener("pointerdown", handlePasswordToggleClick);
 });
