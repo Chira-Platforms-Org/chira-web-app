@@ -669,3 +669,147 @@
     padding: 0 24px 28px;
   }
 }
+
+/* =========================================================
+   PROFILE POLISH PASS — WARM EMPTY STATES + HUMAN DETAILS
+========================================================= */
+
+.profile-contact-line {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  margin: 0 0 16px;
+  color: var(--muted);
+  font-size: 0.86rem;
+  font-weight: 800;
+  line-height: 1.4;
+}
+
+.profile-contact-line span {
+  position: relative;
+}
+
+.profile-contact-line span:not(:last-child)::after {
+  content: "•";
+  position: absolute;
+  right: -10px;
+  color: rgba(12, 33, 66, 0.28);
+}
+
+.section-support-note {
+  margin: -10px 0 20px;
+  color: #6d7d91;
+  font-size: 0.9rem;
+  font-weight: 750;
+  line-height: 1.45;
+}
+
+.gallery-add-tile {
+  display: grid;
+  gap: 6px;
+}
+
+.gallery-add-tile strong {
+  color: var(--navy);
+  font-size: 0.98rem;
+}
+
+.gallery-add-tile span {
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.gallery-ghost-tile {
+  min-height: 180px;
+  display: grid;
+  place-items: center;
+  border-radius: 24px;
+  border: 1px dashed rgba(12, 33, 66, 0.13);
+  background:
+    radial-gradient(circle at 20% 20%, rgba(8, 196, 100, 0.06), transparent 32%),
+    rgba(12, 33, 66, 0.025);
+  color: rgba(89, 105, 125, 0.78);
+  font-size: 0.86rem;
+  font-weight: 900;
+  text-align: center;
+  padding: 18px;
+}
+
+.profile-story-grid .section-display-text {
+  text-align: left;
+}
+
+.story-side-panel .section-display-text {
+  font-size: 0.98rem;
+  line-height: 1.62;
+}
+
+.story-main-panel .section-display-text {
+  max-width: 760px;
+}
+
+.profile-team-section {
+  background:
+    radial-gradient(circle at 96% 18%, rgba(8, 196, 100, 0.055), transparent 28%),
+    transparent;
+}
+
+.team-preview-grid {
+  display: grid;
+  grid-template-columns: minmax(220px, 0.9fr) repeat(2, minmax(180px, 0.7fr));
+  gap: 16px;
+}
+
+.team-add-card,
+.team-ghost-card {
+  min-height: 210px;
+  border-radius: 26px;
+  border: 1px dashed rgba(12, 33, 66, 0.15);
+  background: rgba(12, 33, 66, 0.035);
+  color: var(--muted);
+  font: inherit;
+  font-weight: 900;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 8px;
+  text-align: center;
+  padding: 22px;
+}
+
+.team-add-card {
+  cursor: pointer;
+}
+
+.team-add-card strong {
+  color: var(--navy);
+  font-size: 1rem;
+}
+
+.team-add-card span,
+.team-ghost-card span {
+  color: var(--muted);
+  font-size: 0.84rem;
+  font-weight: 800;
+}
+
+.team-avatar-placeholder {
+  width: 68px;
+  height: 68px;
+  border-radius: 999px;
+  background:
+    radial-gradient(circle at 35% 30%, rgba(8, 196, 100, 0.18), transparent 35%),
+    rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(12, 33, 66, 0.1);
+}
+
+@media (max-width: 760px) {
+  .team-preview-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .profile-contact-line span::after {
+    display: none;
+  }
+}
