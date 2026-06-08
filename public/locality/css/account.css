@@ -1446,25 +1446,35 @@
 
 .password-field {
   position: relative;
+  width: 100%;
 }
 
 .password-field input {
-  padding-right: 72px;
+  width: 100%;
+  padding-right: 78px !important;
+  position: relative;
+  z-index: 1;
 }
 
 .password-toggle {
   position: absolute;
   top: 50%;
   right: 12px;
+  z-index: 5;
   transform: translateY(-50%);
   border: 0;
   border-radius: 999px;
-  padding: 6px 9px;
-  background: rgba(12, 33, 66, 0.06);
+  padding: 6px 10px;
+  background: rgba(12, 33, 66, 0.08);
   color: var(--navy);
   font: inherit;
   font-size: 0.76rem;
   font-weight: 950;
   cursor: pointer;
+  pointer-events: auto;
+}
+
+.password-toggle:hover {
+  background: rgba(12, 33, 66, 0.13);
 }
 
