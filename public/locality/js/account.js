@@ -112,4 +112,4 @@ function handlePasswordToggleClick(event) {
 
 document.addEventListener("click", handlePasswordToggleClick);
 document.addEventListener("pointerdown", handlePasswordToggleClick);
-});
+
