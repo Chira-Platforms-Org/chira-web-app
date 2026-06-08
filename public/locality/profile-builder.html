@@ -83,6 +83,13 @@
             <h1 id="profileBusinessName">Business name</h1>
             <p id="profileMetaLine">Location • Category • Role</p>
 
+            <div id="profileContactLine" class="profile-contact-line">
+              <span id="profileAddressText">Address will appear here</span>
+              <span id="profileWebsiteText">Website</span>
+              <span id="profileEmailText">Email</span>
+              <span id="profilePhoneText">Phone</span>
+            </div>
+            
             <div class="profile-chip-row">
               <span id="profileRoleChip" class="profile-chip">Role</span>
               <span id="profileCategoryChip" class="profile-chip">Category</span>
@@ -103,7 +110,7 @@
           </div>
 
           <p id="shortIntroDisplay" class="section-display-text empty">
-            Add 3–5 sentences about what your business offers and who you serve.
+            Add a short introduction that helps buyers quickly understand what you offer, who you serve, and what makes your business a good local sourcing partner.
           </p>
 
           <span class="section-edit-hint">Click to edit</span>
@@ -113,7 +120,7 @@
           <textarea
             id="shortIntroInput"
             maxlength="500"
-            placeholder="Add 3–5 sentences about what your business offers and who you serve."
+            placeholder="Aim for 3–5 sentences. Keep it clear, warm, and buyer-friendly. Share what you offer, who you serve, and what makes your business a good local sourcing partner."
           ></textarea>
 
           <div class="section-action-row">
@@ -144,13 +151,30 @@
         </div>
 
         <p class="section-description">
-          Add photos that help buyers understand your products, team, growing space, storefront, or pickup experience.
+          Add photos to show buyers what your business, products, team, growing space, storefront, or pickup experience looks like.
         </p>
-
+        
+        <p class="section-support-note">
+          Photos help buyers feel more familiar with your business before they reach out.
+        </p>
+        
         <div id="galleryPreviewGrid" class="profile-gallery-strip">
           <button id="galleryUploadBtn" type="button" class="gallery-add-tile">
-            + Add photos
+            <strong>+ Add photos</strong>
+            <span>Upload images for your gallery</span>
           </button>
+        
+          <div class="gallery-ghost-tile">
+            <span>Product photo</span>
+          </div>
+        
+          <div class="gallery-ghost-tile">
+            <span>Farm, shop, or pickup area</span>
+          </div>
+        
+          <div class="gallery-ghost-tile">
+            <span>Team or process</span>
+          </div>
         </div>
 
         <input id="galleryFileInput" type="file" accept="image/png,image/jpeg,image/webp,image/gif" multiple class="hidden" />
@@ -162,13 +186,13 @@
             <div class="section-heading-row">
               <div>
                 <p class="section-kicker recommended">Recommended</p>
-                <h2>Ordering notes</h2>
+                <h2>Ordering guidelines</h2>
               </div>
               <span class="section-status-pill" data-status-pill="ordering_guidelines">Missing</span>
             </div>
 
             <p id="orderingGuidelinesDisplay" class="section-display-text empty">
-              Add minimum orders, lead time, pickup, delivery, packaging, or recurring order notes.
+              Add practical details that help buyers understand how to order from you, including minimums, lead times, pickup or delivery options, packaging, recurring orders, or seasonal expectations.
             </p>
 
             <span class="section-edit-hint">Click to edit</span>
@@ -178,7 +202,7 @@
             <textarea
               id="orderingGuidelinesInput"
               maxlength="1500"
-              placeholder="Describe minimum orders, lead time, delivery or pickup expectations, recurring order options, or packaging notes."
+              placeholder="Add minimum orders, lead times, pickup or delivery options, packaging notes, recurring order expectations, or seasonal ordering details. Clear ordering information can reduce back-and-forth with buyers."
             ></textarea>
 
             <div class="section-action-row">
@@ -210,7 +234,7 @@
             </div>
 
             <p id="aboutUsDisplay" class="section-display-text empty">
-              Tell buyers about your story, practices, values, and the relationships you want to build through Locality.
+              Tell buyers your story, how you work, what you care about, and the kinds of local sourcing relationships you want to build.
             </p>
 
             <span class="section-edit-hint">Click to edit</span>
@@ -220,7 +244,7 @@
             <textarea
               id="aboutUsInput"
               maxlength="2000"
-              placeholder="Tell buyers about your story, practices, values, and the relationships you want to build through Locality."
+              placeholder="Use this section to share your background, practices, values, and what buyers can expect when working with you."
             ></textarea>
 
             <div class="section-action-row">
@@ -242,6 +266,39 @@
         </div>
       </section>
 
+      <section class="profile-page-section profile-team-section" data-section-key="team_members">
+        <div class="section-heading-row">
+          <div>
+            <p class="section-kicker recommended">Recommended</p>
+            <h2 id="teamSectionTitle">Meet the team</h2>
+          </div>
+          <span class="section-status-pill" data-status-pill="team_members">Optional</span>
+        </div>
+      
+        <p class="section-description" id="teamSectionDescription">
+          Let buyers get to know the people behind your business. Adding names, roles, and photos can make your profile feel more personal and help build trust before a conversation starts.
+        </p>
+      
+        <div id="teamPreviewGrid" class="team-preview-grid">
+          <button id="addTeamMemberBtn" type="button" class="team-add-card">
+            <strong>+ Add team member</strong>
+            <span>Add a photo, name, role, and short bio.</span>
+          </button>
+      
+          <div class="team-ghost-card">
+            <div class="team-avatar-placeholder"></div>
+            <strong>Name</strong>
+            <span>Role or position</span>
+          </div>
+      
+          <div class="team-ghost-card">
+            <div class="team-avatar-placeholder"></div>
+            <strong>Name</strong>
+            <span>Role or position</span>
+          </div>
+        </div>
+      </section>
+
       <section class="profile-page-section profile-certifications-section" data-section-key="certifications">
         <div class="section-heading-row">
           <div>
@@ -252,7 +309,11 @@
         </div>
 
         <p class="section-description">
-          Highlight certifications and practices that help buyers understand your credibility. These are self-reported for now.
+          Add certifications, standards, or practices that help buyers understand your credibility, sourcing approach, and production values.
+        </p>
+        
+        <p class="section-support-note">
+          These are self-reported for now. Locality may support verification later.
         </p>
 
         <div class="certification-grid">
@@ -285,8 +346,12 @@
           <span class="section-status-pill muted">Coming later</span>
         </div>
 
+        <p class="section-description">
+          Once you add products, buyers will be able to preview what you offer and continue to your product page for availability, pricing, and request details.
+        </p>
+
         <div class="product-preview-row">
-          <div class="product-preview-tile">Add products after setup</div>
+          <div class="product-preview-tile">Products will appear here</div>
           <div class="product-preview-tile">Availability will appear here</div>
           <div class="product-preview-tile">Buyers can request quotes later</div>
         </div>
