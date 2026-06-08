@@ -36,6 +36,7 @@ if (profile?.onboarding_completed === true) {
 } else {
   window.location.href = "signup.html";
 }
+}
 
 signInForm?.addEventListener("submit", async (event) => {
   event.preventDefault();
