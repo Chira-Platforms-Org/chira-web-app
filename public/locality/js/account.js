@@ -88,28 +88,23 @@ forgotPasswordBtn?.addEventListener("click", async () => {
   setStatus("Password reset email sent. Check your inbox.", "success");
 });
 
-function handlePasswordToggleClick(event) {
-  const button = event.target.closest(".password-toggle");
+const signInPasswordToggle = document.querySelector(
+  '[data-password-target="signInPassword"]'
+);
 
-  if (!button) return;
-
+signInPasswordToggle?.addEventListener("click", (event) => {
   event.preventDefault();
   event.stopPropagation();
 
-  const targetId = button.getAttribute("data-password-target");
-  const input = document.getElementById(targetId);
+  const input = document.getElementById("signInPassword");
 
   if (!input) {
-    console.warn("Password toggle target not found:", targetId);
+    console.warn("signInPassword input not found.");
     return;
   }
 
   const shouldShow = input.type === "password";
 
   input.type = shouldShow ? "text" : "password";
-  button.textContent = shouldShow ? "Hide" : "Show";
-}
-
-document.addEventListener("click", handlePasswordToggleClick);
-document.addEventListener("pointerdown", handlePasswordToggleClick);
-
+  signInPasswordToggle.textContent = shouldShow ? "Hide" : "Show";
+});
