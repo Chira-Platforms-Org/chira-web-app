@@ -1443,3 +1443,28 @@
     grid-template-columns: 1fr;
   }
 }
+
+.password-field {
+  position: relative;
+}
+
+.password-field input {
+  padding-right: 72px;
+}
+
+.password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%);
+  border: 0;
+  border-radius: 999px;
+  padding: 6px 9px;
+  background: rgba(12, 33, 66, 0.06);
+  color: var(--navy);
+  font: inherit;
+  font-size: 0.76rem;
+  font-weight: 950;
+  cursor: pointer;
+}
+
