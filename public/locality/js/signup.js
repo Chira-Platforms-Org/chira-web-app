@@ -750,15 +750,28 @@ async function saveBusinessProfileProgress(stepName, updates = {}) {
     updated_at: new Date().toISOString()
   };
 
-  if (activeBusinessProfileId) {
-    const { data, error } = await window.LocalitySupabase
+  async function updateExistingProfile(profileId) {
+    return await window.LocalitySupabase
       .from("business_profiles")
       .update(payload)
-      .eq("id", activeBusinessProfileId)
+      .eq("id", profileId)
+      .eq("owner_user_id", user.id)
       .select()
-      .single();
+      .maybeSingle();
+  }
 
-    return { data, error };
+  if (activeBusinessProfileId) {
+    const { data, error } = await updateExistingProfile(activeBusinessProfileId);
+
+    if (error) {
+      console.warn("Stored onboarding profile could not be updated:", error);
+      setActiveBusinessProfileId(null);
+    } else if (data?.id) {
+      return { data, error: null };
+    } else {
+      console.warn("Stored onboarding profile was not found for this user. Clearing stale profile id.");
+      setActiveBusinessProfileId(null);
+    }
   }
 
   const existingDraft = await findIncompleteBusinessProfile(user.id);
@@ -766,14 +779,17 @@ async function saveBusinessProfileProgress(stepName, updates = {}) {
   if (existingDraft?.id) {
     setActiveBusinessProfileId(existingDraft.id);
 
-    const { data, error } = await window.LocalitySupabase
-      .from("business_profiles")
-      .update(payload)
-      .eq("id", existingDraft.id)
-      .select()
-      .single();
+    const { data, error } = await updateExistingProfile(existingDraft.id);
 
-    return { data, error };
+    if (error) {
+      return { data: null, error };
+    }
+
+    if (data?.id) {
+      return { data, error: null };
+    }
+
+    setActiveBusinessProfileId(null);
   }
 
   const { data, error } = await window.LocalitySupabase
