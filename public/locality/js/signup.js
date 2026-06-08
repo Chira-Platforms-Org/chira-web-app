@@ -113,6 +113,10 @@ function setStep(stepNumber) {
     indicator.classList.toggle("active", indicatorStep === stepNumber);
     indicator.classList.toggle("complete", indicatorStep < stepNumber);
   });
+
+   if (stepNumber === 4) {
+    initializeProfileBuilderFields();
+  }
 }
 
 function setStatus(element, message, status = "default") {
@@ -237,6 +241,7 @@ function attachSegmentedPhoneFormatter(groupName) {
     });
   });
 }
+
 function normalizeUrl(value) {
   const trimmed = value?.trim();
 
@@ -248,6 +253,257 @@ function normalizeUrl(value) {
 
   return `https://${trimmed}`;
 }
+
+function getJsonValue(value, fallback) {
+  if (!value) return fallback;
+
+  if (typeof value === "object") return value;
+
+  try {
+    return JSON.parse(value);
+  } catch {
+    return fallback;
+  }
+}
+
+function setImagePreview(imageElement, placeholderElement, url) {
+  if (!imageElement || !url) return;
+
+  imageElement.src = url;
+  imageElement.classList.remove("hidden");
+
+  if (placeholderElement) {
+    placeholderElement.classList.add("hidden");
+  }
+}
+
+function getSectionStatus(sectionKey) {
+  return profileSectionStatus?.[sectionKey]?.status || "missing";
+}
+
+function setSectionStatus(sectionKey, status) {
+  profileSectionStatus = {
+    ...profileSectionStatus,
+    [sectionKey]: {
+      status,
+      updated_at: new Date().toISOString()
+    }
+  };
+
+  renderSectionStatus();
+}
+
+function markDraftIfHasValue(sectionKey, input) {
+  const value = getCleanValue(input);
+
+  if (!value) {
+    setSectionStatus(sectionKey, "missing");
+    return;
+  }
+
+  if (getSectionStatus(sectionKey) !== "complete") {
+    setSectionStatus(sectionKey, "draft");
+  }
+}
+
+function getSelectedCertifications() {
+  const checkedCertifications = Array.from(
+    document.querySelectorAll(".certification-option:checked")
+  ).map((input) => ({
+    name: input.value,
+    type: "certification_or_practice",
+    self_reported: true,
+    verified: false,
+    source: "profile_builder"
+  }));
+
+  const customItems = customCertifications.map((name) => ({
+    name,
+    type: "custom",
+    self_reported: true,
+    verified: false,
+    source: "profile_builder"
+  }));
+
+  return [...checkedCertifications, ...customItems];
+}
+
+function renderSelectedCertifications() {
+  if (!selectedCertificationsList) return;
+
+  const certs = getSelectedCertifications();
+
+  selectedCertificationsList.innerHTML = "";
+
+  certs.forEach((cert) => {
+    const chip = document.createElement("span");
+    chip.textContent = cert.name;
+    selectedCertificationsList.appendChild(chip);
+  });
+
+  if (certs.length) {
+    setSectionStatus("certifications", "complete");
+  } else {
+    setSectionStatus("certifications", "missing");
+  }
+}
+
+function renderGalleryPreview() {
+  if (!galleryPreviewGrid || !galleryUploadBtn) return;
+
+  const existingCards = galleryPreviewGrid.querySelectorAll(".gallery-image-card");
+  existingCards.forEach((card) => card.remove());
+
+  profileGalleryImages.forEach((image) => {
+    const card = document.createElement("div");
+    card.className = "gallery-image-card";
+
+    const img = document.createElement("img");
+    img.src = image.url;
+    img.alt = image.caption || "Business gallery image";
+
+    card.appendChild(img);
+    galleryPreviewGrid.insertBefore(card, galleryUploadBtn);
+  });
+
+  if (profileGalleryImages.length) {
+    setSectionStatus("gallery", "complete");
+  } else {
+    setSectionStatus("gallery", "missing");
+  }
+}
+
+function updateCharacterCount(input, counter, max) {
+  if (!input || !counter) return;
+
+  counter.textContent = `${input.value.length} / ${max}`;
+}
+
+function renderBuilderIdentity() {
+  const businessName = getCleanValue(businessNameInput) || "Your business name";
+  const address = buildAddressPayload();
+  const locationLabel = formatLocationLabel(address) || "Your location";
+  const marketplaceRole = marketplaceRoleInput?.value || "seller";
+  const businessCategory = businessCategoryInput?.value || "other";
+  const businessEmail = getCleanValue(businessEmailInput);
+  const businessPhone = getPhoneDigits(businessPhoneInput?.value);
+  const website = getCleanValue(websiteInput);
+
+  if (builderBusinessName) {
+    builderBusinessName.textContent = businessName;
+  }
+
+  if (builderBusinessMeta) {
+    builderBusinessMeta.textContent = `${locationLabel} • ${businessCategory.replace("-", " ")} • ${marketplaceRole.replace("_", " / ")}`;
+  }
+
+  if (builderRoleChip) {
+    builderRoleChip.textContent =
+      marketplaceRole === "buyer_seller"
+        ? "Buyer / Seller"
+        : marketplaceRole.charAt(0).toUpperCase() + marketplaceRole.slice(1);
+  }
+
+  if (builderCategoryChip) {
+    builderCategoryChip.textContent = businessCategory.replace("-", " ");
+  }
+
+  if (builderContactChip) {
+    const hasContact = Boolean(businessEmail || businessPhone || website);
+    builderContactChip.textContent = hasContact
+      ? "Contact details added"
+      : "Add public contact details";
+  }
+}
+
+function renderSectionStatus() {
+  const trackedSections = [
+    "logo",
+    "banner",
+    "short_intro",
+    "gallery",
+    "about_us",
+    "certifications",
+    "ordering_guidelines"
+  ];
+
+  const completedSections = trackedSections.filter(
+    (sectionKey) => getSectionStatus(sectionKey) === "complete"
+  );
+
+  const completionPercent = Math.round(
+    (completedSections.length / trackedSections.length) * 100
+  );
+
+  if (profileCompletionPercent) {
+    profileCompletionPercent.textContent = `${completionPercent}%`;
+  }
+
+  if (profileCompletionBar) {
+    profileCompletionBar.style.width = `${completionPercent}%`;
+  }
+
+  trackedSections.forEach((sectionKey) => {
+    const status = getSectionStatus(sectionKey);
+
+    document
+      .querySelectorAll(`[data-status-pill="${sectionKey}"]`)
+      .forEach((pill) => {
+        pill.textContent =
+          status === "complete"
+            ? "Complete"
+            : status === "draft"
+              ? "Draft"
+              : "Missing";
+
+        pill.dataset.status = status;
+      });
+
+    const listItem = profileCompletionList?.querySelector(
+      `[data-completion-key="${sectionKey}"]`
+    );
+
+    if (listItem) {
+      listItem.dataset.status = status;
+    }
+  });
+}
+
+function initializeProfileBuilderFields() {
+  renderBuilderIdentity();
+
+  updateCharacterCount(shortIntroInput, shortIntroCount, 500);
+  updateCharacterCount(aboutUsInput, aboutUsCount, 2000);
+  updateCharacterCount(orderingGuidelinesInput, orderingGuidelinesCount, 1500);
+  updateCharacterCount(farmingPracticesInput, farmingPracticesCount, 1500);
+
+  if (logoUrlInput?.value) {
+    setImagePreview(logoPreviewImage, logoPlaceholder, logoUrlInput.value);
+    setSectionStatus("logo", "complete");
+  }
+
+  if (bannerImageUrlInput?.value) {
+    setImagePreview(bannerPreviewImage, bannerPlaceholder, bannerImageUrlInput.value);
+    setSectionStatus("banner", "complete");
+  }
+
+  if (getCleanValue(shortIntroInput)) {
+    setSectionStatus("short_intro", "draft");
+  }
+
+  if (getCleanValue(aboutUsInput)) {
+    setSectionStatus("about_us", "draft");
+  }
+
+  if (getCleanValue(orderingGuidelinesInput)) {
+    setSectionStatus("ordering_guidelines", "draft");
+  }
+
+  renderGalleryPreview();
+  renderSelectedCertifications();
+  renderSectionStatus();
+}
+
 
 function buildNotificationPreferences() {
   return {
@@ -406,6 +662,49 @@ function hydrateBusinessProfileFields(profile) {
   if (profileVisibilityInput && profile.profile_visibility) {
     profileVisibilityInput.value = profile.profile_visibility;
   }
+
+  if (shortIntroInput && profile.short_intro) {
+    shortIntroInput.value = profile.short_intro;
+  }
+
+  if (aboutUsInput && profile.about_us) {
+    aboutUsInput.value = profile.about_us;
+  }
+
+  if (orderingGuidelinesInput && profile.ordering_guidelines) {
+    orderingGuidelinesInput.value = profile.ordering_guidelines;
+  }
+
+  if (farmingPracticesInput && profile.farming_practices) {
+    farmingPracticesInput.value = profile.farming_practices;
+  }
+
+  profileGalleryImages = getJsonValue(profile.gallery_images, []);
+  profileSectionStatus = getJsonValue(profile.profile_section_status, {});
+
+  const certifications = getJsonValue(profile.certifications, []);
+
+  document.querySelectorAll(".certification-option").forEach((checkbox) => {
+    checkbox.checked = certifications.some((cert) => cert.name === checkbox.value);
+  });
+
+  customCertifications = certifications
+    .filter((cert) => cert.type === "custom")
+    .map((cert) => cert.name);
+
+  if (profile.logo_url) {
+    logoUrlInput.value = profile.logo_url;
+    setImagePreview(logoPreviewImage, logoPlaceholder, profile.logo_url);
+  }
+
+  if (profile.banner_image_url) {
+    bannerImageUrlInput.value = profile.banner_image_url;
+    setImagePreview(bannerPreviewImage, bannerPlaceholder, profile.banner_image_url);
+  }
+
+  renderGalleryPreview();
+  renderSelectedCertifications();
+  initializeProfileBuilderFields();
 }
 
 async function getSignedInUserOrRedirect() {
@@ -774,70 +1073,49 @@ profileStep?.addEventListener("submit", async (event) => {
     return;
   }
 
-   const businessName = getCleanValue(businessNameInput);
-   const marketplaceRole = marketplaceRoleInput?.value || "seller";
-   const businessCategory = businessCategoryInput?.value || "other";
-   const address = buildAddressPayload();
-   const locationLabel = formatLocationLabel(address);
-   const productFocus = getCleanValue(productFocusInput);
-   const description = getCleanValue(businessDescriptionInput);
-   
-   const personalPhoneDigits = getPhoneDigits(personalPhoneInput?.value);
-   const businessPhoneDigits = getPhoneDigits(businessPhoneInput?.value);
-   const businessEmail = getCleanValue(businessEmailInput);
-   
-   if (!businessName) {
-     alert("Please complete the required business details.");
-     setStep(2);
-     return;
-   }
-   
-   if (!locationLabel) {
-     alert("Please complete the required location details.");
-     setStep(3);
-     return;
-   }
+  const businessName = getCleanValue(businessNameInput);
+  const address = buildAddressPayload();
+  const locationLabel = formatLocationLabel(address);
 
-  const profileVisibility = profileVisibilityInput?.value || "draft";
+  if (!businessName) {
+    alert("Please complete the required business details.");
+    setStep(2);
+    return;
+  }
 
-  const businessProfile = {
-    name: businessName,
+  if (!locationLabel) {
+    alert("Please complete the required location details.");
+    setStep(3);
+    return;
+  }
 
-    marketplace_roles: getMarketplaceRoles(marketplaceRole),
-    business_categories: [businessCategory],
-    specialties: [],
+  const shortIntro = getCleanValue(shortIntroInput);
+  const aboutUs = getCleanValue(aboutUsInput);
 
-   logo_url: normalizeUrl(logoUrlInput?.value),
-   banner_image_url: normalizeUrl(bannerImageUrlInput?.value),
+  if (!shortIntro) {
+    alert("Please add a short profile intro before creating your workspace.");
+    return;
+  }
 
-   contact_name: getCleanValue(fullNameInput),
-   contact_email: businessEmail || getCleanValue(signupEmail),
-   phone: businessPhoneDigits || null,
-   website: normalizeUrl(websiteInput?.value),
-   social_link: normalizeUrl(socialLinkInput?.value),
-   
-   description,
-   location_label: locationLabel,
-   address,
-   product_focus: productFocus,
-   
-   public_contact_settings: {
-     show_business_email: Boolean(businessEmail),
-     show_business_phone: Boolean(businessPhoneDigits),
-     show_personal_phone: false
-   },
+  if (!aboutUs) {
+    alert("Please add an About us section before creating your workspace.");
+    return;
+  }
 
-    profile_visibility: profileVisibility,
-    onboarding_step: "profile_created",
-    onboarding_completed: true,
-    status: "active",
-    updated_at: new Date().toISOString()
-  };
+  if (getSectionStatus("short_intro") !== "complete") {
+    setSectionStatus("short_intro", "complete");
+  }
 
-   const { data, error } = await saveBusinessProfileProgress(
-     "profile_created",
-     businessProfile
-   );
+  if (getSectionStatus("about_us") !== "complete") {
+    setSectionStatus("about_us", "complete");
+  }
+
+  const businessProfile = buildProfileBuilderPayload(true);
+
+  const { data, error } = await saveBusinessProfileProgress(
+    "profile_created",
+    businessProfile
+  );
 
   if (error) {
     console.error("Unable to create business profile:", error);
@@ -846,6 +1124,8 @@ profileStep?.addEventListener("submit", async (event) => {
   }
 
   if (profileSummaryText) {
+    const marketplaceRole = marketplaceRoleInput?.value || "seller";
+
     const roleLabel =
       marketplaceRole === "buyer_seller"
         ? "buyer and seller"
@@ -991,6 +1271,235 @@ resumeDraftModal?.addEventListener("click", (event) => {
 document.addEventListener("keydown", (event) => {
   if (event.key === "Escape") {
     closeResumeDraftModal();
+  }
+});
+
+
+function buildProfileBuilderPayload(markOnboardingComplete = true) {
+  const marketplaceRole = marketplaceRoleInput?.value || "seller";
+  const businessCategory = businessCategoryInput?.value || "other";
+  const address = buildAddressPayload();
+  const locationLabel = formatLocationLabel(address);
+  const personalPhoneDigits = getPhoneDigits(personalPhoneInput?.value);
+  const businessPhoneDigits = getPhoneDigits(businessPhoneInput?.value);
+  const businessEmail = getCleanValue(businessEmailInput);
+
+  const shortIntro = getCleanValue(shortIntroInput);
+  const aboutUs = getCleanValue(aboutUsInput);
+
+  businessDescriptionInput.value = shortIntro;
+
+  return {
+    name: getCleanValue(businessNameInput),
+    marketplace_roles: getMarketplaceRoles(marketplaceRole),
+    business_categories: [businessCategory],
+    specialties: [],
+
+    logo_url: logoUrlInput?.value || null,
+    banner_image_url: bannerImageUrlInput?.value || null,
+
+    contact_name: getCleanValue(fullNameInput),
+    contact_email: businessEmail || getCleanValue(signupEmail),
+    phone: businessPhoneDigits || personalPhoneDigits || null,
+    website: normalizeUrl(websiteInput?.value),
+    social_link: normalizeUrl(socialLinkInput?.value),
+
+    description: shortIntro,
+    short_intro: shortIntro,
+    about_us: aboutUs,
+
+    gallery_images: profileGalleryImages,
+    certifications: getSelectedCertifications(),
+    ordering_guidelines: getCleanValue(orderingGuidelinesInput),
+    farming_practices: getCleanValue(farmingPracticesInput),
+    seasonality_notes: "",
+
+    location_label: locationLabel,
+    address,
+    product_focus: getCleanValue(productFocusInput),
+
+    public_contact_settings: {
+      show_business_email: Boolean(businessEmail),
+      show_business_phone: Boolean(businessPhoneDigits),
+      show_personal_phone: false
+    },
+
+    profile_section_status: profileSectionStatus,
+    profile_visibility: profileVisibilityInput?.value || "draft",
+    onboarding_step: markOnboardingComplete ? "profile_created" : "profile_builder_draft",
+    onboarding_completed: Boolean(markOnboardingComplete),
+    status: "active",
+    updated_at: new Date().toISOString()
+  };
+}
+
+async function handleProfileMediaUpload(file, mediaType) {
+  const user = createdUser || await window.LocalityAuthService.getCurrentUser();
+
+  if (!user) {
+    alert("Please sign in before uploading images.");
+    return null;
+  }
+
+  if (!activeBusinessProfileId) {
+    alert("Please complete the business setup step before uploading images.");
+    setStep(2);
+    return null;
+  }
+
+  if (!window.LocalityProfileMediaService?.uploadBusinessProfileMedia) {
+    alert("Profile media upload service is not available.");
+    return null;
+  }
+
+  if (profileBuilderStatus) {
+    profileBuilderStatus.textContent = "Uploading image...";
+  }
+
+  const { data, error } =
+    await window.LocalityProfileMediaService.uploadBusinessProfileMedia({
+      file,
+      businessProfileId: activeBusinessProfileId,
+      mediaType
+    });
+
+  if (error) {
+    console.error("Upload error:", error);
+    alert(error.message || error || "Unable to upload image.");
+    if (profileBuilderStatus) profileBuilderStatus.textContent = "Draft profile";
+    return null;
+  }
+
+  if (profileBuilderStatus) {
+    profileBuilderStatus.textContent = "Image uploaded";
+  }
+
+  return data;
+}
+
+logoUploadBtn?.addEventListener("click", () => {
+  logoFileInput?.click();
+});
+
+bannerUploadBtn?.addEventListener("click", () => {
+  bannerFileInput?.click();
+});
+
+galleryUploadBtn?.addEventListener("click", () => {
+  galleryFileInput?.click();
+});
+
+logoFileInput?.addEventListener("change", async () => {
+  const file = logoFileInput.files?.[0];
+  if (!file) return;
+
+  const uploaded = await handleProfileMediaUpload(file, "logo");
+  if (!uploaded?.url) return;
+
+  logoUrlInput.value = uploaded.url;
+  setImagePreview(logoPreviewImage, logoPlaceholder, uploaded.url);
+  setSectionStatus("logo", "complete");
+});
+
+bannerFileInput?.addEventListener("change", async () => {
+  const file = bannerFileInput.files?.[0];
+  if (!file) return;
+
+  const uploaded = await handleProfileMediaUpload(file, "banner");
+  if (!uploaded?.url) return;
+
+  bannerImageUrlInput.value = uploaded.url;
+  setImagePreview(bannerPreviewImage, bannerPlaceholder, uploaded.url);
+  setSectionStatus("banner", "complete");
+});
+
+galleryFileInput?.addEventListener("change", async () => {
+  const files = Array.from(galleryFileInput.files || []);
+  if (!files.length) return;
+
+  for (const file of files) {
+    const uploaded = await handleProfileMediaUpload(file, "gallery");
+
+    if (uploaded?.url) {
+      profileGalleryImages.push({
+        url: uploaded.url,
+        path: uploaded.path,
+        caption: "",
+        sort_order: profileGalleryImages.length + 1,
+        uploaded_at: uploaded.uploaded_at
+      });
+    }
+  }
+
+  renderGalleryPreview();
+});
+
+[shortIntroInput, aboutUsInput, orderingGuidelinesInput, farmingPracticesInput].forEach((input) => {
+  input?.addEventListener("input", () => {
+    updateCharacterCount(shortIntroInput, shortIntroCount, 500);
+    updateCharacterCount(aboutUsInput, aboutUsCount, 2000);
+    updateCharacterCount(orderingGuidelinesInput, orderingGuidelinesCount, 1500);
+    updateCharacterCount(farmingPracticesInput, farmingPracticesCount, 1500);
+
+    if (input === shortIntroInput) markDraftIfHasValue("short_intro", shortIntroInput);
+    if (input === aboutUsInput) markDraftIfHasValue("about_us", aboutUsInput);
+    if (input === orderingGuidelinesInput) markDraftIfHasValue("ordering_guidelines", orderingGuidelinesInput);
+    if (input === farmingPracticesInput) markDraftIfHasValue("farming_practices", farmingPracticesInput);
+  });
+});
+
+document.querySelectorAll(".mark-section-complete").forEach((button) => {
+  button.addEventListener("click", () => {
+    const sectionKey = button.dataset.sectionKey;
+    let relatedInput = null;
+
+    if (sectionKey === "short_intro") relatedInput = shortIntroInput;
+    if (sectionKey === "about_us") relatedInput = aboutUsInput;
+    if (sectionKey === "ordering_guidelines") relatedInput = orderingGuidelinesInput;
+    if (sectionKey === "farming_practices") relatedInput = farmingPracticesInput;
+
+    if (relatedInput && !getCleanValue(relatedInput)) {
+      alert("Add content before marking this section complete.");
+      return;
+    }
+
+    setSectionStatus(sectionKey, "complete");
+  });
+});
+
+document.querySelectorAll(".certification-option").forEach((checkbox) => {
+  checkbox.addEventListener("change", renderSelectedCertifications);
+});
+
+addCustomCertificationBtn?.addEventListener("click", () => {
+  const value = getCleanValue(customCertificationInput);
+
+  if (!value) {
+    alert("Enter a certification or practice first.");
+    return;
+  }
+
+  if (!customCertifications.includes(value)) {
+    customCertifications.push(value);
+  }
+
+  customCertificationInput.value = "";
+  renderSelectedCertifications();
+});
+
+saveProfileDraftBtn?.addEventListener("click", async () => {
+  const draftPayload = buildProfileBuilderPayload(false);
+
+  const { error } = await saveBusinessProfileProgress("profile_builder_draft", draftPayload);
+
+  if (error) {
+    console.error("Unable to save profile draft:", error);
+    alert(error.message || "Unable to save profile draft.");
+    return;
+  }
+
+  if (profileBuilderStatus) {
+    profileBuilderStatus.textContent = "Draft saved";
   }
 });
 
