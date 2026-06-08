@@ -122,12 +122,22 @@
       
         <label>
           Password
-          <input id="signupPassword" type="password" placeholder="Minimum 6 characters" autocomplete="new-password" />
+          <div class="password-field">
+            <input id="signupPassword" type="password" placeholder="Minimum 6 characters" autocomplete="new-password" />
+            <button type="button" class="password-toggle" data-password-target="signupPassword">
+              Show
+            </button>
+          </div>
         </label>
       
         <label>
           Confirm password
-          <input id="confirmPasswordInput" type="password" placeholder="Re-enter your password" autocomplete="new-password" />
+          <div class="password-field">
+            <input id="confirmPasswordInput" type="password" placeholder="Re-enter your password" autocomplete="new-password" />
+            <button type="button" class="password-toggle" data-password-target="confirmPasswordInput">
+              Show
+            </button>
+          </div>
         </label>
       
         <fieldset class="signup-checkbox-group">
