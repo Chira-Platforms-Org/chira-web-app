@@ -61,8 +61,8 @@
       </p>
     </aside>
 
-    <section class="public-profile-canvas">
-      <section class="profile-hero-card">
+    <section class="public-profile-page">
+      <section class="profile-hero-section">
         <button id="bannerUploadBtn" type="button" class="profile-banner-zone">
           <img id="bannerPreviewImage" class="media-preview hidden" alt="" />
           <span id="bannerPlaceholder">Add banner image</span>
@@ -70,7 +70,7 @@
 
         <input id="bannerFileInput" type="file" accept="image/png,image/jpeg,image/webp,image/gif" class="hidden" />
 
-        <div class="profile-identity-band">
+        <div class="profile-identity-section">
           <button id="logoUploadBtn" type="button" class="profile-logo-zone">
             <img id="logoPreviewImage" class="logo-preview hidden" alt="" />
             <span id="logoPlaceholder">Logo</span>
@@ -79,6 +79,7 @@
           <input id="logoFileInput" type="file" accept="image/png,image/jpeg,image/webp,image/gif" class="hidden" />
 
           <div class="profile-main-details">
+            <p class="profile-overline">Locality business profile</p>
             <h1 id="profileBusinessName">Business name</h1>
             <p id="profileMetaLine">Location • Category • Role</p>
 
@@ -91,44 +92,63 @@
         </div>
       </section>
 
-      <section class="profile-section-card" data-section-key="short_intro">
-        <div class="section-heading-row">
-          <div>
-            <p class="section-kicker">Required</p>
-            <h2>Short profile intro</h2>
+      <section class="profile-page-section editable-profile-section" data-section-key="short_intro">
+        <button type="button" class="section-display-shell" data-edit-section="short_intro">
+          <div class="section-heading-row">
+            <div>
+              <p class="section-kicker">Required</p>
+              <h2>Profile summary</h2>
+            </div>
+            <span class="section-status-pill" data-status-pill="short_intro">Missing</span>
           </div>
-          <span class="section-status-pill" data-status-pill="short_intro">Missing</span>
-        </div>
 
-        <textarea
-          id="shortIntroInput"
-          maxlength="500"
-          placeholder="Add 3–5 sentences about what your business offers and who you serve."
-        ></textarea>
+          <p id="shortIntroDisplay" class="section-display-text empty">
+            Add 3–5 sentences about what your business offers and who you serve.
+          </p>
 
-        <div class="section-action-row">
-          <span id="shortIntroCount">0 / 500</span>
-          <button type="button" class="builder-mini-btn mark-section-complete" data-section-key="short_intro">
-            Mark complete
-          </button>
+          <span class="section-edit-hint">Click to edit</span>
+        </button>
+
+        <div class="section-editor-shell hidden" data-editor-section="short_intro">
+          <textarea
+            id="shortIntroInput"
+            maxlength="500"
+            placeholder="Add 3–5 sentences about what your business offers and who you serve."
+          ></textarea>
+
+          <div class="section-action-row">
+            <span id="shortIntroCount">0 / 500</span>
+
+            <div class="section-editor-actions">
+              <button type="button" class="builder-mini-btn cancel-section-edit" data-section-key="short_intro">
+                Cancel
+              </button>
+              <button type="button" class="builder-mini-btn save-section-draft" data-section-key="short_intro">
+                Save draft
+              </button>
+              <button type="button" class="builder-mini-btn mark-section-complete" data-section-key="short_intro">
+                Mark complete
+              </button>
+            </div>
+          </div>
         </div>
       </section>
 
-      <section class="profile-section-card" data-section-key="gallery">
+      <section class="profile-page-section profile-gallery-section" data-section-key="gallery">
         <div class="section-heading-row">
           <div>
             <p class="section-kicker recommended">Recommended</p>
-            <h2>Image gallery</h2>
+            <h2>Gallery</h2>
           </div>
           <span class="section-status-pill" data-status-pill="gallery">Missing</span>
         </div>
 
         <p class="section-description">
-          Add photos of your farm, products, team, storefront, pickup area, or production process.
+          Add photos that help buyers understand your products, team, growing space, storefront, or pickup experience.
         </p>
 
-        <div id="galleryPreviewGrid" class="profile-gallery-grid">
-          <button id="galleryUploadBtn" type="button" class="gallery-add-card">
+        <div id="galleryPreviewGrid" class="profile-gallery-strip">
+          <button id="galleryUploadBtn" type="button" class="gallery-add-tile">
             + Add photos
           </button>
         </div>
@@ -136,30 +156,93 @@
         <input id="galleryFileInput" type="file" accept="image/png,image/jpeg,image/webp,image/gif" multiple class="hidden" />
       </section>
 
-      <section class="profile-section-card" data-section-key="about_us">
-        <div class="section-heading-row">
-          <div>
-            <p class="section-kicker">Required</p>
-            <h2>About us</h2>
+      <section class="profile-page-section profile-story-grid">
+        <div class="story-side-panel editable-profile-section" data-section-key="ordering_guidelines">
+          <button type="button" class="section-display-shell compact-display-shell" data-edit-section="ordering_guidelines">
+            <div class="section-heading-row">
+              <div>
+                <p class="section-kicker recommended">Recommended</p>
+                <h2>Ordering notes</h2>
+              </div>
+              <span class="section-status-pill" data-status-pill="ordering_guidelines">Missing</span>
+            </div>
+
+            <p id="orderingGuidelinesDisplay" class="section-display-text empty">
+              Add minimum orders, lead time, pickup, delivery, packaging, or recurring order notes.
+            </p>
+
+            <span class="section-edit-hint">Click to edit</span>
+          </button>
+
+          <div class="section-editor-shell hidden" data-editor-section="ordering_guidelines">
+            <textarea
+              id="orderingGuidelinesInput"
+              maxlength="1500"
+              placeholder="Describe minimum orders, lead time, delivery or pickup expectations, recurring order options, or packaging notes."
+            ></textarea>
+
+            <div class="section-action-row">
+              <span id="orderingGuidelinesCount">0 / 1500</span>
+
+              <div class="section-editor-actions">
+                <button type="button" class="builder-mini-btn cancel-section-edit" data-section-key="ordering_guidelines">
+                  Cancel
+                </button>
+                <button type="button" class="builder-mini-btn save-section-draft" data-section-key="ordering_guidelines">
+                  Save draft
+                </button>
+                <button type="button" class="builder-mini-btn mark-section-complete" data-section-key="ordering_guidelines">
+                  Mark complete
+                </button>
+              </div>
+            </div>
           </div>
-          <span class="section-status-pill" data-status-pill="about_us">Missing</span>
         </div>
 
-        <textarea
-          id="aboutUsInput"
-          maxlength="2000"
-          placeholder="Tell buyers about your story, practices, values, and the relationships you want to build through Locality."
-        ></textarea>
+        <div class="story-main-panel editable-profile-section" data-section-key="about_us">
+          <button type="button" class="section-display-shell" data-edit-section="about_us">
+            <div class="section-heading-row">
+              <div>
+                <p class="section-kicker">Required</p>
+                <h2>About us</h2>
+              </div>
+              <span class="section-status-pill" data-status-pill="about_us">Missing</span>
+            </div>
 
-        <div class="section-action-row">
-          <span id="aboutUsCount">0 / 2000</span>
-          <button type="button" class="builder-mini-btn mark-section-complete" data-section-key="about_us">
-            Mark complete
+            <p id="aboutUsDisplay" class="section-display-text empty">
+              Tell buyers about your story, practices, values, and the relationships you want to build through Locality.
+            </p>
+
+            <span class="section-edit-hint">Click to edit</span>
           </button>
+
+          <div class="section-editor-shell hidden" data-editor-section="about_us">
+            <textarea
+              id="aboutUsInput"
+              maxlength="2000"
+              placeholder="Tell buyers about your story, practices, values, and the relationships you want to build through Locality."
+            ></textarea>
+
+            <div class="section-action-row">
+              <span id="aboutUsCount">0 / 2000</span>
+
+              <div class="section-editor-actions">
+                <button type="button" class="builder-mini-btn cancel-section-edit" data-section-key="about_us">
+                  Cancel
+                </button>
+                <button type="button" class="builder-mini-btn save-section-draft" data-section-key="about_us">
+                  Save draft
+                </button>
+                <button type="button" class="builder-mini-btn mark-section-complete" data-section-key="about_us">
+                  Mark complete
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
-      <section class="profile-section-card" data-section-key="certifications">
+      <section class="profile-page-section profile-certifications-section" data-section-key="certifications">
         <div class="section-heading-row">
           <div>
             <p class="section-kicker recommended">Recommended</p>
@@ -193,7 +276,7 @@
         <div id="selectedCertificationsList" class="selected-certifications-list"></div>
       </section>
 
-      <section class="profile-section-card product-preview-section">
+      <section class="profile-page-section profile-product-preview-section">
         <div class="section-heading-row">
           <div>
             <p class="section-kicker recommended">Recommended later</p>
@@ -203,49 +286,25 @@
         </div>
 
         <div class="product-preview-row">
-          <div class="product-preview-card">Add products after setup</div>
-          <div class="product-preview-card">Availability will appear here</div>
-          <div class="product-preview-card">Buyers can request quotes later</div>
+          <div class="product-preview-tile">Add products after setup</div>
+          <div class="product-preview-tile">Availability will appear here</div>
+          <div class="product-preview-tile">Buyers can request quotes later</div>
         </div>
       </section>
 
-      <section class="profile-section-card" data-section-key="ordering_guidelines">
-        <div class="section-heading-row">
-          <div>
-            <p class="section-kicker recommended">Recommended</p>
-            <h2>Ordering guidelines</h2>
-          </div>
-          <span class="section-status-pill" data-status-pill="ordering_guidelines">Missing</span>
-        </div>
-
-        <textarea
-          id="orderingGuidelinesInput"
-          maxlength="1500"
-          placeholder="Describe minimum orders, lead time, delivery or pickup expectations, recurring order options, or packaging notes."
-        ></textarea>
-
-        <div class="section-action-row">
-          <span id="orderingGuidelinesCount">0 / 1500</span>
-          <button type="button" class="builder-mini-btn mark-section-complete" data-section-key="ordering_guidelines">
-            Mark complete
-          </button>
-        </div>
-      </section>
-
-      <section class="profile-section-card profile-publish-section">
+      <section class="profile-page-section profile-footer-section">
         <div>
           <p class="section-kicker">Visibility</p>
           <h2>Profile visibility</h2>
+          <p class="section-description">
+            Draft profiles are saved but not publicly shown. Public profiles should have the required sections completed.
+          </p>
         </div>
 
         <select id="profileVisibilityInput">
           <option value="draft">Keep private for now</option>
           <option value="public">Publish profile after setup</option>
         </select>
-
-        <p class="section-description">
-          Draft profiles are saved but not publicly shown. Public profiles should have the required sections completed.
-        </p>
       </section>
     </section>
   </main>
