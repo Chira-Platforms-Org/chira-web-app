@@ -99,6 +99,8 @@ let profileSectionStatus = {};
 
 let createdUser = null;
 
+const startProfileBuilderBtn = document.getElementById("startProfileBuilderBtn");
+const skipProfileBuilderBtn = document.getElementById("skipProfileBuilderBtn");
 const ONBOARDING_PROFILE_ID_KEY = "locality_onboarding_business_profile_id";
 let activeBusinessProfileId = localStorage.getItem(ONBOARDING_PROFILE_ID_KEY) || null;
 
@@ -113,10 +115,6 @@ function setStep(stepNumber) {
     indicator.classList.toggle("active", indicatorStep === stepNumber);
     indicator.classList.toggle("complete", indicatorStep < stepNumber);
   });
-
-   if (stepNumber === 4) {
-    initializeProfileBuilderFields();
-  }
 }
 
 function setStatus(element, message, status = "default") {
@@ -1105,50 +1103,68 @@ profileStep?.addEventListener("submit", async (event) => {
     return;
   }
 
-  const shortIntro = getCleanValue(shortIntroInput);
-  const aboutUs = getCleanValue(aboutUsInput);
-
-  if (!shortIntro) {
-    alert("Please add a short profile intro before creating your workspace.");
-    return;
-  }
-
-  if (!aboutUs) {
-    alert("Please add an About us section before creating your workspace.");
-    return;
-  }
-
-  if (getSectionStatus("short_intro") !== "complete") {
-    setSectionStatus("short_intro", "complete");
-  }
-
-  if (getSectionStatus("about_us") !== "complete") {
-    setSectionStatus("about_us", "complete");
-  }
-
-  const businessProfile = buildProfileBuilderPayload(true);
-
-  const { data, error } = await saveBusinessProfileProgress(
-    "profile_created",
-    businessProfile
-  );
+  const { data, error } = await saveBusinessProfileProgress("profile_builder_started", {
+    onboarding_completed: false,
+    profile_setup_completed: false,
+    profile_visibility: "draft",
+    profile_last_edited_at: new Date().toISOString()
+  });
 
   if (error) {
-    console.error("Unable to create business profile:", error);
-    alert(error.message || "Unable to create business profile.");
+    console.error("Unable to start profile builder:", error);
+    alert(error.message || "Unable to start profile builder.");
+    return;
+  }
+
+  if (data?.id) {
+    setActiveBusinessProfileId(data.id);
+  }
+
+  window.location.href = "profile-builder.html";
+});
+
+skipProfileBuilderBtn?.addEventListener("click", async () => {
+  const user = createdUser || await window.LocalityAuthService.getCurrentUser();
+
+  if (!user) {
+    alert("Please create or sign in to your account first.");
+    setStep(1);
+    return;
+  }
+
+  const businessName = getCleanValue(businessNameInput);
+  const address = buildAddressPayload();
+  const locationLabel = formatLocationLabel(address);
+
+  if (!businessName) {
+    alert("Please complete the required business details.");
+    setStep(2);
+    return;
+  }
+
+  if (!locationLabel) {
+    alert("Please complete the required location details.");
+    setStep(3);
+    return;
+  }
+
+  const { data, error } = await saveBusinessProfileProgress("profile_skipped", {
+    onboarding_completed: true,
+    profile_setup_completed: false,
+    profile_visibility: "draft",
+    profile_completion_score: 0,
+    profile_last_edited_at: new Date().toISOString()
+  });
+
+  if (error) {
+    console.error("Unable to skip profile builder:", error);
+    alert(error.message || "Unable to skip profile setup.");
     return;
   }
 
   if (profileSummaryText) {
-    const marketplaceRole = marketplaceRoleInput?.value || "seller";
-
-    const roleLabel =
-      marketplaceRole === "buyer_seller"
-        ? "buyer and seller"
-        : marketplaceRole;
-
     profileSummaryText.textContent =
-      `${data.name} is set up as a ${roleLabel} profile in ${data.location_label}. You can add products, listings, pricing, and availability next.`;
+      `${data?.name || "Your business"} workspace is ready. Your public profile is saved as a draft and can be finished later.`;
   }
 
   setStep(5);
