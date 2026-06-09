@@ -492,19 +492,29 @@
   color: var(--green);
 }
 
-/* =========================================================
-   EMBEDDED PROFILE MODULES
-========================================================= */
 
 /* =========================================================
-   LARGE HORIZONTAL PROFILE GALLERY
+   LARGE HORIZONTAL PROFILE GALLERY — SINGLE HERO PEEK
 ========================================================= */
+
+.profile-gallery-section {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.profile-gallery-section > .section-heading-row,
+.profile-gallery-section > .section-description,
+.profile-gallery-section > .section-support-note,
+.profile-gallery-section > .gallery-format-note {
+  margin-left: 42px;
+  margin-right: 42px;
+}
 
 .profile-gallery-frame {
   position: relative;
   width: 100%;
   overflow: hidden;
-  margin-top: 22px;
+  margin-top: 24px;
 }
 
 .profile-gallery-frame::before,
@@ -512,33 +522,40 @@
   content: "";
   position: absolute;
   top: 0;
-  bottom: 14px;
-  width: 44px;
+  bottom: 16px;
+  width: 56px;
   z-index: 2;
   pointer-events: none;
 }
 
 .profile-gallery-frame::before {
   left: 0;
-  background: linear-gradient(90deg, rgba(255, 255, 255, 0.96), rgba(255, 255, 255, 0));
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.98),
+    rgba(255, 255, 255, 0)
+  );
 }
 
 .profile-gallery-frame::after {
   right: 0;
-  background: linear-gradient(270deg, rgba(255, 255, 255, 0.96), rgba(255, 255, 255, 0));
+  background: linear-gradient(
+    270deg,
+    rgba(255, 255, 255, 0.98),
+    rgba(255, 255, 255, 0)
+  );
 }
 
 .profile-gallery-strip {
   display: grid;
   grid-auto-flow: column;
-  grid-auto-columns: clamp(360px, 47%, 540px);
-  gap: 18px;
+  grid-auto-columns: minmax(620px, 82%);
+  gap: 22px;
   overflow-x: auto;
   overscroll-behavior-inline: contain;
   scroll-snap-type: inline mandatory;
-  scroll-padding-inline: 28px;
-  padding: 4px 42px 18px;
-  margin-inline: -42px;
+  scroll-padding-inline: 42px;
+  padding: 4px 42px 20px;
   scrollbar-width: thin;
 }
 
@@ -562,10 +579,10 @@
 
 .gallery-showcase-tile,
 .gallery-image-card {
-  min-height: 330px;
-  aspect-ratio: 16 / 10;
+  min-height: 420px;
+  aspect-ratio: 16 / 9;
   scroll-snap-align: start;
-  border-radius: 30px;
+  border-radius: 34px;
   overflow: hidden;
 }
 
@@ -574,11 +591,12 @@
   place-items: center;
   align-content: center;
   gap: 10px;
-  padding: 28px;
-  border: 1px dashed rgba(12, 33, 66, 0.17);
+  padding: 34px;
+  border: 1px dashed rgba(12, 33, 66, 0.16);
   background:
-    radial-gradient(circle at 20% 18%, rgba(8, 196, 100, 0.075), transparent 34%),
-    linear-gradient(135deg, rgba(255, 255, 255, 0.78), rgba(248, 246, 240, 0.78));
+    radial-gradient(circle at 18% 18%, rgba(8, 196, 100, 0.1), transparent 34%),
+    radial-gradient(circle at 80% 70%, rgba(12, 33, 66, 0.035), transparent 30%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.84), rgba(248, 246, 240, 0.82));
   color: var(--muted);
   font: inherit;
   font-weight: 950;
@@ -590,35 +608,37 @@
 }
 
 .gallery-add-tile:hover {
-  border-color: rgba(8, 196, 100, 0.38);
+  border-color: rgba(8, 196, 100, 0.42);
   background:
-    radial-gradient(circle at 20% 18%, rgba(8, 196, 100, 0.13), transparent 34%),
-    linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(248, 246, 240, 0.86));
+    radial-gradient(circle at 18% 18%, rgba(8, 196, 100, 0.15), transparent 34%),
+    radial-gradient(circle at 80% 70%, rgba(12, 33, 66, 0.04), transparent 30%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.94), rgba(248, 246, 240, 0.9));
 }
 
 .gallery-add-tile strong {
   color: var(--navy);
-  font-size: 1.16rem;
-  letter-spacing: -0.02em;
+  font-size: 1.22rem;
+  letter-spacing: -0.025em;
 }
 
 .gallery-add-tile span,
 .gallery-ghost-tile span {
+  max-width: 280px;
   color: var(--muted);
-  font-size: 0.92rem;
+  font-size: 0.94rem;
   font-weight: 850;
-  line-height: 1.35;
+  line-height: 1.4;
 }
 
 .gallery-ghost-tile {
-  opacity: 0.86;
+  opacity: 0.78;
 }
 
 .gallery-image-card {
   position: relative;
   border: 1px solid rgba(12, 33, 66, 0.08);
   background: rgba(12, 33, 66, 0.04);
-  box-shadow: 0 16px 38px rgba(20, 50, 92, 0.08);
+  box-shadow: 0 18px 44px rgba(20, 50, 92, 0.1);
 }
 
 .gallery-image-card img {
@@ -628,14 +648,7 @@
   display: block;
 }
 
-.gallery-format-note {
-  margin: -10px 0 18px;
-  color: rgba(89, 105, 125, 0.78);
-  font-size: 0.82rem;
-  font-weight: 800;
-}
-
-/* Product preview replacement if you removed the old shared block */
+/* Product preview replacement if needed */
 .product-preview-tile {
   min-height: 180px;
   border-radius: 24px;
@@ -651,38 +664,71 @@
   overflow: hidden;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1100px) {
   .profile-gallery-strip {
-    grid-auto-columns: minmax(300px, 82%);
-    padding-inline: 28px;
-    margin-inline: -28px;
+    grid-auto-columns: minmax(520px, 86%);
   }
 
   .gallery-showcase-tile,
   .gallery-image-card {
-    min-height: 280px;
+    min-height: 360px;
+  }
+}
+
+@media (max-width: 900px) {
+  .profile-gallery-section > .section-heading-row,
+  .profile-gallery-section > .section-description,
+  .profile-gallery-section > .section-support-note,
+  .profile-gallery-section > .gallery-format-note {
+    margin-left: 28px;
+    margin-right: 28px;
+  }
+
+  .profile-gallery-strip {
+    grid-auto-columns: minmax(320px, 88%);
+    scroll-padding-inline: 28px;
+    padding-inline: 28px;
+  }
+
+  .gallery-showcase-tile,
+  .gallery-image-card {
+    min-height: 300px;
+    border-radius: 28px;
   }
 }
 
 @media (max-width: 620px) {
+  .profile-gallery-section > .section-heading-row,
+  .profile-gallery-section > .section-description,
+  .profile-gallery-section > .section-support-note,
+  .profile-gallery-section > .gallery-format-note {
+    margin-left: 24px;
+    margin-right: 24px;
+  }
+
   .profile-gallery-strip {
-    grid-auto-columns: minmax(260px, 88%);
+    grid-auto-columns: minmax(260px, 90%);
     gap: 14px;
-    padding-inline: 22px;
-    margin-inline: -22px;
+    scroll-padding-inline: 24px;
+    padding-inline: 24px;
   }
 
   .gallery-showcase-tile,
   .gallery-image-card {
-    min-height: 230px;
+    min-height: 240px;
     border-radius: 24px;
   }
 
   .profile-gallery-frame::before,
   .profile-gallery-frame::after {
-    width: 24px;
+    width: 26px;
   }
 }
+
+
+/* =========================================================
+   EMBEDDED PROFILE MODULES
+========================================================= */
 
 .profile-story-grid {
   display: grid;
