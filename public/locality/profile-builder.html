@@ -272,38 +272,95 @@
         </div>
       </section>
 
-      <section class="profile-page-section profile-team-section" data-section-key="team_members">
-        <div class="section-heading-row">
-          <div>
-            <p class="section-kicker recommended">Recommended</p>
-            <h2 id="teamSectionTitle">Meet the team</h2>
-          </div>
-          <span class="section-status-pill" data-status-pill="team_members">Optional</span>
-        </div>
-      
-        <p class="section-description" id="teamSectionDescription">
-          Let buyers get to know the people behind your business. Adding names, roles, and photos can make your profile feel more personal and help build trust before a conversation starts.
-        </p>
-      
-        <div id="teamPreviewGrid" class="team-preview-grid">
-          <button id="addTeamMemberBtn" type="button" class="team-add-card">
-            <strong>+ Add team member</strong>
-            <span>Add a photo, name, role, and short bio.</span>
-          </button>
-      
-          <div class="team-ghost-card">
-            <div class="team-avatar-placeholder"></div>
-            <strong>Name</strong>
-            <span>Role or position</span>
-          </div>
-      
-          <div class="team-ghost-card">
-            <div class="team-avatar-placeholder"></div>
-            <strong>Name</strong>
-            <span>Role or position</span>
-          </div>
-        </div>
-      </section>
+<section class="profile-page-section profile-team-section" data-section-key="team_members">
+  <div class="section-heading-row">
+    <div>
+      <p class="section-kicker recommended">Recommended</p>
+      <h2 id="teamSectionTitle">Meet the team</h2>
+    </div>
+    <span class="section-status-pill" data-status-pill="team_members">Optional</span>
+  </div>
+
+  <p class="section-description" id="teamSectionDescription">
+    Let buyers get to know the people behind your business. Adding names, roles, and photos can make your profile feel more personal and help build trust before a conversation starts.
+  </p>
+
+  <div id="teamPreviewGrid" class="team-preview-grid">
+    <button id="addTeamMemberBtn" type="button" class="team-add-card">
+      <strong>+ Add team member</strong>
+      <span>Add a photo, name, role, and short bio.</span>
+    </button>
+
+    <div class="team-ghost-card">
+      <div class="team-avatar-placeholder"></div>
+      <strong>Name</strong>
+      <span>Role or position</span>
+    </div>
+
+    <div class="team-ghost-card">
+      <div class="team-avatar-placeholder"></div>
+      <strong>Name</strong>
+      <span>Role or position</span>
+    </div>
+  </div>
+</section>
+
+<div id="teamMemberModal" class="profile-modal hidden" aria-hidden="true">
+  <div class="profile-modal-card">
+    <button id="closeTeamMemberModalBtn" type="button" class="profile-modal-close" aria-label="Close">
+      ×
+    </button>
+
+    <p class="section-kicker recommended">Team profile</p>
+    <h2>Add a team member</h2>
+
+    <p class="modal-helper-text">
+      Add someone buyers may work with or recognize. This helps make your business feel more personal and trustworthy.
+    </p>
+
+    <div class="team-photo-upload-row">
+      <button id="teamPhotoUploadBtn" type="button" class="team-photo-upload">
+        <img id="teamPhotoPreview" class="team-photo-preview hidden" alt="" />
+        <span id="teamPhotoPlaceholder">Add photo</span>
+      </button>
+
+      <input id="teamPhotoFileInput" type="file" accept="image/png,image/jpeg,image/webp,image/gif" class="hidden" />
+
+      <p>
+        A clear headshot or friendly working photo is best. You can skip this and add a photo later.
+      </p>
+    </div>
+
+    <label class="modal-field">
+      Name
+      <input id="teamMemberNameInput" type="text" placeholder="Name" maxlength="80" />
+    </label>
+
+    <label class="modal-field">
+      Role or position
+      <input id="teamMemberRoleInput" type="text" placeholder="Owner, grower, buyer relations, chef, market manager..." maxlength="100" />
+    </label>
+
+    <label class="modal-field">
+      Short bio
+      <textarea id="teamMemberBioInput" placeholder="Briefly describe what this person does or how buyers may interact with them." maxlength="500"></textarea>
+    </label>
+
+    <div class="modal-action-row">
+      <span id="teamMemberModalStatus">Team members are optional, but they help buyers connect with real people.</span>
+
+      <div class="modal-actions">
+        <button id="cancelTeamMemberBtn" type="button" class="builder-secondary-btn">
+          Cancel
+        </button>
+
+        <button id="saveTeamMemberBtn" type="button" class="builder-primary-btn">
+          Save team member
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
 
    <section class="profile-page-section profile-certifications-section editable-certifications-section" data-section-key="certifications">
     <button type="button" class="certifications-display-shell" id="certificationsDisplayBtn">
