@@ -44,7 +44,6 @@ const cancelGalleryManagerBtn = document.getElementById("cancelGalleryManagerBtn
 const saveGalleryManagerBtn = document.getElementById("saveGalleryManagerBtn");
 
 const galleryAddImagesBtn = document.getElementById("galleryAddImagesBtn");
-const galleryFileInput = document.getElementById("galleryFileInput");
 const galleryReplaceFileInput = document.getElementById("galleryReplaceFileInput");
 
 const galleryManagerGrid = document.getElementById("galleryManagerGrid");
@@ -1202,28 +1201,6 @@ bannerFileInput?.addEventListener("change", async () => {
 
   setImagePreview(bannerPreviewImage, bannerPlaceholder, uploaded.url);
   setSectionStatus("banner", "complete");
-  await saveProfile(false);
-});
-
-galleryFileInput?.addEventListener("change", async () => {
-  const files = Array.from(galleryFileInput.files || []);
-  if (!files.length) return;
-
-  for (const file of files) {
-    const uploaded = await handleProfileMediaUpload(file, "gallery");
-
-    if (uploaded?.url) {
-      profileGalleryImages.push({
-        url: uploaded.url,
-        path: uploaded.path,
-        caption: "",
-        sort_order: profileGalleryImages.length + 1,
-        uploaded_at: uploaded.uploaded_at
-      });
-    }
-  }
-
-  renderGalleryPreview();
   await saveProfile(false);
 });
 
