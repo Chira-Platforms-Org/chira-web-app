@@ -190,8 +190,12 @@ function renderGalleryPreview() {
 
   const ghostTiles = galleryPreviewGrid.querySelectorAll(".gallery-ghost-tile");
 
+  const hasImages = profileGalleryImages.length > 0;
+
+  galleryPreviewGrid.classList.toggle("gallery-empty-state", !hasImages);
+
   ghostTiles.forEach((tile) => {
-    tile.classList.toggle("hidden", profileGalleryImages.length > 0);
+    tile.classList.toggle("hidden", hasImages);
   });
 
   profileGalleryImages.forEach((image) => {
@@ -206,9 +210,8 @@ function renderGalleryPreview() {
     galleryPreviewGrid.insertBefore(card, galleryUploadBtn);
   });
 
-  setSectionStatus("gallery", profileGalleryImages.length ? "complete" : "missing");
+  setSectionStatus("gallery", hasImages ? "complete" : "missing");
 }
-
 function updateCharacterCount(input, counter, max) {
   if (!input || !counter) return;
   counter.textContent = `${input.value.length} / ${max}`;
