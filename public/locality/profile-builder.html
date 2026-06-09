@@ -305,43 +305,76 @@
         </div>
       </section>
 
-      <section class="profile-page-section profile-certifications-section" data-section-key="certifications">
-        <div class="section-heading-row">
-          <div>
-            <p class="section-kicker recommended">Recommended</p>
-            <h2>Certifications & practices</h2>
-          </div>
-          <span class="section-status-pill" data-status-pill="certifications">Missing</span>
+   <section class="profile-page-section profile-certifications-section editable-certifications-section" data-section-key="certifications">
+    <button type="button" class="certifications-display-shell" id="certificationsDisplayBtn">
+      <div class="section-heading-row">
+        <div>
+          <p class="section-kicker recommended">Recommended</p>
+          <h2>Certifications & practices</h2>
         </div>
-
-        <p class="section-description">
-          Add certifications, standards, or practices that help buyers understand your credibility, sourcing approach, and production values.
-        </p>
-        
-        <p class="section-support-note">
-          These are self-reported for now. Locality may support verification later.
-        </p>
-
-        <div class="certification-grid">
-          <label><input type="checkbox" class="certification-option" value="USDA Organic" /> USDA Organic</label>
-          <label><input type="checkbox" class="certification-option" value="GAP" /> GAP</label>
-          <label><input type="checkbox" class="certification-option" value="Certified Naturally Grown" /> Certified Naturally Grown</label>
-          <label><input type="checkbox" class="certification-option" value="Certified Humane" /> Certified Humane</label>
-          <label><input type="checkbox" class="certification-option" value="Animal Welfare Approved" /> Animal Welfare Approved</label>
-          <label><input type="checkbox" class="certification-option" value="Pasture-raised" /> Pasture-raised</label>
-          <label><input type="checkbox" class="certification-option" value="Regenerative practices" /> Regenerative practices</label>
-          <label><input type="checkbox" class="certification-option" value="Non-GMO practices" /> Non-GMO practices</label>
+        <span class="section-status-pill" data-status-pill="certifications">Missing</span>
+      </div>
+  
+      <p class="section-description">
+        Add certifications, standards, or practices that help buyers understand your credibility, sourcing approach, and production values.
+      </p>
+  
+      <p class="section-support-note">
+        These are self-reported for now. Locality may support verification later.
+      </p>
+  
+      <div id="certificationsBadgeDisplay" class="certifications-badge-display">
+        <div class="certifications-empty-state">
+          <strong>Add certifications or practices</strong>
+          <span>
+            Share relevant standards, practices, or credentials that help buyers understand how you work.
+          </span>
         </div>
-
-        <div class="custom-certification-row">
-          <input id="customCertificationInput" type="text" placeholder="Other certification or practice" />
-          <button id="addCustomCertificationBtn" type="button" class="builder-mini-btn">
-            Add
+      </div>
+  
+      <span class="section-edit-hint">Click to edit</span>
+    </button>
+  
+    <div id="certificationsEditorShell" class="certifications-editor-shell hidden">
+      <div class="certification-grid">
+        <label><input type="checkbox" class="certification-option" value="USDA Organic" /> USDA Organic</label>
+        <label><input type="checkbox" class="certification-option" value="GAP" /> GAP</label>
+        <label><input type="checkbox" class="certification-option" value="Certified Naturally Grown" /> Certified Naturally Grown</label>
+        <label><input type="checkbox" class="certification-option" value="Certified Humane" /> Certified Humane</label>
+        <label><input type="checkbox" class="certification-option" value="Animal Welfare Approved" /> Animal Welfare Approved</label>
+        <label><input type="checkbox" class="certification-option" value="Pasture-raised" /> Pasture-raised</label>
+        <label><input type="checkbox" class="certification-option" value="Regenerative practices" /> Regenerative practices</label>
+        <label><input type="checkbox" class="certification-option" value="Non-GMO practices" /> Non-GMO practices</label>
+      </div>
+  
+      <div class="custom-certification-row">
+        <input id="customCertificationInput" type="text" placeholder="Other certification, standard, or practice" />
+        <button id="addCustomCertificationBtn" type="button" class="builder-mini-btn">
+          Add
+        </button>
+      </div>
+  
+      <div id="selectedCertificationsList" class="selected-certifications-list"></div>
+  
+      <div class="section-action-row certifications-action-row">
+        <span>Only completed selections will appear publicly when your profile is published.</span>
+  
+        <div class="section-editor-actions">
+          <button id="cancelCertificationsEditBtn" type="button" class="builder-mini-btn">
+            Cancel
+          </button>
+  
+          <button id="saveCertificationsDraftBtn" type="button" class="builder-mini-btn save-section-draft">
+            Save draft
+          </button>
+  
+          <button id="markCertificationsCompleteBtn" type="button" class="builder-mini-btn mark-section-complete">
+            Mark complete
           </button>
         </div>
-
-        <div id="selectedCertificationsList" class="selected-certifications-list"></div>
-      </section>
+      </div>
+    </div>
+  </section>
 
       <section class="profile-page-section profile-product-preview-section">
         <div class="section-heading-row">
