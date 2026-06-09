@@ -57,6 +57,9 @@ const closeTeamMemberModalBtn = document.getElementById("closeTeamMemberModalBtn
 const cancelTeamMemberBtn = document.getElementById("cancelTeamMemberBtn");
 const saveTeamMemberBtn = document.getElementById("saveTeamMemberBtn");
 
+const teamMemberModalTitle = document.getElementById("teamMemberModalTitle");
+const removeTeamMemberBtn = document.getElementById("removeTeamMemberBtn");
+
 const teamPhotoUploadBtn = document.getElementById("teamPhotoUploadBtn");
 const teamPhotoFileInput = document.getElementById("teamPhotoFileInput");
 const teamPhotoPreview = document.getElementById("teamPhotoPreview");
@@ -69,6 +72,7 @@ const teamMemberModalStatus = document.getElementById("teamMemberModalStatus");
 
 let teamMembers = [];
 let pendingTeamPhoto = null;
+let editingTeamMemberIndex = null;
 
 const certificationsDisplayBtn = document.getElementById("certificationsDisplayBtn");
 const certificationsEditorShell = document.getElementById("certificationsEditorShell");
@@ -282,6 +286,19 @@ function renderGalleryPreview() {
 
 function resetTeamMemberModal() {
   pendingTeamPhoto = null;
+  editingTeamMemberIndex = null;
+
+  if (teamMemberModalTitle) {
+    teamMemberModalTitle.textContent = "Add a team member";
+  }
+
+  if (saveTeamMemberBtn) {
+    saveTeamMemberBtn.textContent = "Save team member";
+  }
+
+  if (removeTeamMemberBtn) {
+    removeTeamMemberBtn.classList.add("hidden");
+  }
 
   if (teamMemberNameInput) teamMemberNameInput.value = "";
   if (teamMemberRoleInput) teamMemberRoleInput.value = "";
@@ -315,13 +332,61 @@ function openTeamMemberModal() {
   }, 50);
 }
 
+function openEditTeamMemberModal(index) {
+  const member = teamMembers[index];
+
+  if (!member || !teamMemberModal) return;
+
+  editingTeamMemberIndex = index;
+  pendingTeamPhoto = member.photo_url || null;
+
+  if (teamMemberModalTitle) {
+    teamMemberModalTitle.textContent = "Edit team member";
+  }
+
+  if (saveTeamMemberBtn) {
+    saveTeamMemberBtn.textContent = "Save changes";
+  }
+
+  if (removeTeamMemberBtn) {
+    removeTeamMemberBtn.classList.remove("hidden");
+  }
+
+  if (teamMemberNameInput) teamMemberNameInput.value = member.name || "";
+  if (teamMemberRoleInput) teamMemberRoleInput.value = member.role || "";
+  if (teamMemberBioInput) teamMemberBioInput.value = member.bio || "";
+
+  if (teamPhotoPreview && member.photo_url) {
+    teamPhotoPreview.src = member.photo_url;
+    teamPhotoPreview.classList.remove("hidden");
+  } else if (teamPhotoPreview) {
+    teamPhotoPreview.src = "";
+    teamPhotoPreview.classList.add("hidden");
+  }
+
+  if (teamPhotoPlaceholder) {
+    teamPhotoPlaceholder.classList.toggle("hidden", Boolean(member.photo_url));
+  }
+
+  if (teamMemberModalStatus) {
+    teamMemberModalStatus.textContent =
+      "Update this team member’s public profile details.";
+  }
+
+  teamMemberModal.classList.remove("hidden");
+  teamMemberModal.setAttribute("aria-hidden", "false");
+
+  setTimeout(() => {
+    teamMemberNameInput?.focus();
+  }, 50);
+}
+
 function closeTeamMemberModal() {
   if (!teamMemberModal) return;
 
   teamMemberModal.classList.add("hidden");
   teamMemberModal.setAttribute("aria-hidden", "true");
 }
-
 function renderTeamMembers() {
   if (!teamPreviewGrid || !addTeamMemberBtn) return;
 
@@ -340,15 +405,27 @@ function renderTeamMembers() {
     const card = document.createElement("div");
     card.className = "team-member-card";
 
-    const removeBtn = document.createElement("button");
-    removeBtn.type = "button";
-    removeBtn.className = "team-member-remove-btn";
-    removeBtn.textContent = "Remove";
-    removeBtn.addEventListener("click", async () => {
-      teamMembers.splice(index, 1);
-      renderTeamMembers();
-      await saveProfile(false);
-    });
+   const editBtn = document.createElement("button");
+   editBtn.type = "button";
+   editBtn.className = "team-member-edit-btn";
+   editBtn.textContent = "Edit";
+   editBtn.addEventListener("click", () => {
+     openEditTeamMemberModal(index);
+   });
+   
+   const removeBtn = document.createElement("button");
+   removeBtn.type = "button";
+   removeBtn.className = "team-member-remove-btn";
+   removeBtn.textContent = "Remove";
+   removeBtn.addEventListener("click", async () => {
+     const shouldRemove = confirm("Remove this team member from your profile?");
+   
+     if (!shouldRemove) return;
+   
+     teamMembers.splice(index, 1);
+     renderTeamMembers();
+     await saveProfile(false);
+   });
 
     const photo = document.createElement("img");
     photo.className = "team-member-photo";
@@ -372,6 +449,7 @@ function renderTeamMembers() {
     bio.className = "team-member-bio";
     bio.textContent = member.bio || "";
 
+    card.appendChild(editBtn);
     card.appendChild(removeBtn);
     card.appendChild(photo);
     card.appendChild(name);
@@ -948,12 +1026,20 @@ document.querySelectorAll(".mark-section-complete").forEach((button) => {
 });
 
 addTeamMemberBtn?.addEventListener("click", openTeamMemberModal);
-closeTeamMemberModalBtn?.addEventListener("click", closeTeamMemberModal);
-cancelTeamMemberBtn?.addEventListener("click", closeTeamMemberModal);
+closeTeamMemberModalBtn?.addEventListener("click", () => {
+  closeTeamMemberModal();
+  resetTeamMemberModal();
+});
+
+cancelTeamMemberBtn?.addEventListener("click", () => {
+  closeTeamMemberModal();
+  resetTeamMemberModal();
+});
 
 teamMemberModal?.addEventListener("click", (event) => {
   if (event.target === teamMemberModal) {
     closeTeamMemberModal();
+    resetTeamMemberModal();
   }
 });
 
@@ -994,24 +1080,55 @@ saveTeamMemberBtn?.addEventListener("click", async () => {
     return;
   }
 
-  if (teamMembers.length >= 6) {
-    if (teamMemberModalStatus) {
-      teamMemberModalStatus.textContent = "You can add up to 6 team members for now.";
-    }
-    return;
-  }
-
-  teamMembers.push({
+  const teamMemberPayload = {
     name,
     role,
     bio,
     photo_url: pendingTeamPhoto,
-    sort_order: teamMembers.length + 1,
-    created_at: new Date().toISOString()
-  });
+    updated_at: new Date().toISOString()
+  };
+
+  if (editingTeamMemberIndex !== null) {
+    const existingMember = teamMembers[editingTeamMemberIndex];
+
+    teamMembers[editingTeamMemberIndex] = {
+      ...existingMember,
+      ...teamMemberPayload
+    };
+  } else {
+    if (teamMembers.length >= 6) {
+      if (teamMemberModalStatus) {
+        teamMemberModalStatus.textContent = "You can add up to 6 team members for now.";
+      }
+      return;
+    }
+
+    teamMembers.push({
+      ...teamMemberPayload,
+      sort_order: teamMembers.length + 1,
+      created_at: new Date().toISOString()
+    });
+  }
 
   renderTeamMembers();
   closeTeamMemberModal();
+  resetTeamMemberModal();
+
+  await saveProfile(false);
+});
+
+removeTeamMemberBtn?.addEventListener("click", async () => {
+  if (editingTeamMemberIndex === null) return;
+
+  const shouldRemove = confirm("Remove this team member from your profile?");
+
+  if (!shouldRemove) return;
+
+  teamMembers.splice(editingTeamMemberIndex, 1);
+
+  renderTeamMembers();
+  closeTeamMemberModal();
+  resetTeamMemberModal();
 
   await saveProfile(false);
 });
