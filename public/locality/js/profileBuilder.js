@@ -188,6 +188,12 @@ function renderGalleryPreview() {
     .querySelectorAll(".gallery-image-card")
     .forEach((card) => card.remove());
 
+  const ghostTiles = galleryPreviewGrid.querySelectorAll(".gallery-ghost-tile");
+
+  ghostTiles.forEach((tile) => {
+    tile.classList.toggle("hidden", profileGalleryImages.length > 0);
+  });
+
   profileGalleryImages.forEach((image) => {
     const card = document.createElement("div");
     card.className = "gallery-image-card";
