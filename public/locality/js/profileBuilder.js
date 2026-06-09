@@ -37,6 +37,33 @@ const logoPlaceholder = document.getElementById("logoPlaceholder");
 const bannerPlaceholder = document.getElementById("bannerPlaceholder");
 const galleryPreviewGrid = document.getElementById("galleryPreviewGrid");
 
+const manageGalleryBtn = document.getElementById("manageGalleryBtn");
+const galleryManagerModal = document.getElementById("galleryManagerModal");
+const closeGalleryManagerModalBtn = document.getElementById("closeGalleryManagerModalBtn");
+const cancelGalleryManagerBtn = document.getElementById("cancelGalleryManagerBtn");
+const saveGalleryManagerBtn = document.getElementById("saveGalleryManagerBtn");
+
+const galleryAddImagesBtn = document.getElementById("galleryAddImagesBtn");
+const galleryFileInput = document.getElementById("galleryFileInput");
+const galleryReplaceFileInput = document.getElementById("galleryReplaceFileInput");
+
+const galleryManagerGrid = document.getElementById("galleryManagerGrid");
+const galleryImageCountLabel = document.getElementById("galleryImageCountLabel");
+const selectedGalleryOrderLabel = document.getElementById("selectedGalleryOrderLabel");
+const selectedGalleryPreview = document.getElementById("selectedGalleryPreview");
+const galleryCaptionInput = document.getElementById("galleryCaptionInput");
+const galleryManagerStatus = document.getElementById("galleryManagerStatus");
+
+const moveGalleryLeftBtn = document.getElementById("moveGalleryLeftBtn");
+const moveGalleryRightBtn = document.getElementById("moveGalleryRightBtn");
+const replaceGalleryImageBtn = document.getElementById("replaceGalleryImageBtn");
+const removeGalleryImageBtn = document.getElementById("removeGalleryImageBtn");
+
+const MAX_GALLERY_IMAGES = 8;
+
+let galleryWorkingImages = [];
+let selectedGalleryIndex = null;
+
 const shortIntroInput = document.getElementById("shortIntroInput");
 const aboutUsInput = document.getElementById("aboutUsInput");
 const orderingGuidelinesInput = document.getElementById("orderingGuidelinesInput");
@@ -282,6 +309,248 @@ function renderGalleryPreview() {
   });
 
   setSectionStatus("gallery", hasImages ? "complete" : "missing");
+}
+
+function cloneGalleryImages(images = []) {
+  return images.map((image, index) => ({
+    id: image.id || crypto.randomUUID?.() || `gallery-${Date.now()}-${index}`,
+    url: image.url,
+    caption: image.caption || image.title || "",
+    sort_order: index + 1,
+    uploaded_at: image.uploaded_at || image.created_at || new Date().toISOString()
+  }));
+}
+
+function openGalleryManagerModal() {
+  galleryWorkingImages = cloneGalleryImages(profileGalleryImages);
+  selectedGalleryIndex = galleryWorkingImages.length ? 0 : null;
+
+  renderGalleryManager();
+
+  galleryManagerModal?.classList.remove("hidden");
+  galleryManagerModal?.setAttribute("aria-hidden", "false");
+}
+
+function closeGalleryManagerModal() {
+  galleryManagerModal?.classList.add("hidden");
+  galleryManagerModal?.setAttribute("aria-hidden", "true");
+
+  galleryWorkingImages = [];
+  selectedGalleryIndex = null;
+}
+
+function setGalleryManagerStatus(message) {
+  if (galleryManagerStatus) {
+    galleryManagerStatus.textContent = message;
+  }
+}
+
+function renderGalleryManager() {
+  if (!galleryManagerGrid) return;
+
+  galleryManagerGrid.innerHTML = "";
+
+  if (galleryImageCountLabel) {
+    galleryImageCountLabel.textContent = `${galleryWorkingImages.length} / ${MAX_GALLERY_IMAGES} photos`;
+  }
+
+  for (let index = 0; index < MAX_GALLERY_IMAGES; index += 1) {
+    const image = galleryWorkingImages[index];
+
+    const tile = document.createElement("button");
+    tile.type = "button";
+    tile.className = "gallery-manager-tile";
+
+    if (image) {
+      tile.classList.toggle("is-selected", selectedGalleryIndex === index);
+
+      const img = document.createElement("img");
+      img.src = image.url;
+      img.alt = image.caption || `Gallery photo ${index + 1}`;
+
+      const orderBadge = document.createElement("span");
+      orderBadge.className = "gallery-manager-order-badge";
+      orderBadge.textContent = index + 1;
+
+      tile.appendChild(img);
+      tile.appendChild(orderBadge);
+
+      if (image.caption) {
+        const captionBadge = document.createElement("span");
+        captionBadge.className = "gallery-manager-caption-badge";
+        captionBadge.textContent = image.caption;
+        tile.appendChild(captionBadge);
+      }
+
+      tile.addEventListener("click", () => {
+        selectedGalleryIndex = index;
+        renderGalleryManager();
+      });
+    } else {
+      tile.classList.add("is-empty");
+      tile.textContent = "+ Add photo";
+
+      tile.addEventListener("click", () => {
+        galleryFileInput?.click();
+      });
+    }
+
+    galleryManagerGrid.appendChild(tile);
+  }
+
+  renderSelectedGalleryPanel();
+}
+
+function renderSelectedGalleryPanel() {
+  const selectedImage =
+    selectedGalleryIndex !== null ? galleryWorkingImages[selectedGalleryIndex] : null;
+
+  if (selectedGalleryOrderLabel) {
+    selectedGalleryOrderLabel.textContent = selectedImage
+      ? `Photo ${selectedGalleryIndex + 1}`
+      : "None selected";
+  }
+
+  if (selectedGalleryPreview) {
+    selectedGalleryPreview.innerHTML = "";
+
+    if (selectedImage) {
+      const img = document.createElement("img");
+      img.src = selectedImage.url;
+      img.alt = selectedImage.caption || "Selected gallery photo";
+      selectedGalleryPreview.appendChild(img);
+    } else {
+      const empty = document.createElement("span");
+      empty.textContent = "Select a photo to manage it.";
+      selectedGalleryPreview.appendChild(empty);
+    }
+  }
+
+  if (galleryCaptionInput) {
+    galleryCaptionInput.value = selectedImage?.caption || "";
+    galleryCaptionInput.disabled = !selectedImage;
+  }
+
+  const hasSelected = Boolean(selectedImage);
+
+  [moveGalleryLeftBtn, moveGalleryRightBtn, replaceGalleryImageBtn, removeGalleryImageBtn].forEach((button) => {
+    if (button) button.disabled = !hasSelected;
+  });
+}
+
+async function addGalleryFiles(files) {
+  const incomingFiles = Array.from(files || []);
+
+  if (!incomingFiles.length) return;
+
+  const remainingSlots = MAX_GALLERY_IMAGES - galleryWorkingImages.length;
+
+  if (remainingSlots <= 0) {
+    setGalleryManagerStatus(`You can add up to ${MAX_GALLERY_IMAGES} gallery photos for now.`);
+    return;
+  }
+
+  const filesToUpload = incomingFiles.slice(0, remainingSlots);
+
+  setGalleryManagerStatus("Uploading gallery photos...");
+
+  for (const file of filesToUpload) {
+    const uploaded = await handleProfileMediaUpload(file, "gallery");
+
+    if (uploaded?.url) {
+      galleryWorkingImages.push({
+        id: crypto.randomUUID?.() || `gallery-${Date.now()}-${Math.random()}`,
+        url: uploaded.url,
+        caption: "",
+        sort_order: galleryWorkingImages.length + 1,
+        uploaded_at: new Date().toISOString()
+      });
+    }
+  }
+
+  selectedGalleryIndex = galleryWorkingImages.length ? galleryWorkingImages.length - 1 : null;
+
+  setGalleryManagerStatus("Photos added. Review the order, captions, or save your gallery.");
+  renderGalleryManager();
+
+  if (galleryFileInput) {
+    galleryFileInput.value = "";
+  }
+}
+
+async function replaceSelectedGalleryImage(file) {
+  if (selectedGalleryIndex === null || !galleryWorkingImages[selectedGalleryIndex] || !file) return;
+
+  setGalleryManagerStatus("Replacing selected photo...");
+
+  const uploaded = await handleProfileMediaUpload(file, "gallery");
+
+  if (uploaded?.url) {
+    galleryWorkingImages[selectedGalleryIndex] = {
+      ...galleryWorkingImages[selectedGalleryIndex],
+      url: uploaded.url,
+      updated_at: new Date().toISOString()
+    };
+
+    setGalleryManagerStatus("Photo replaced. Save your gallery to keep this change.");
+    renderGalleryManager();
+  }
+
+  if (galleryReplaceFileInput) {
+    galleryReplaceFileInput.value = "";
+  }
+}
+
+function moveSelectedGalleryImage(direction) {
+  if (selectedGalleryIndex === null) return;
+
+  const nextIndex = selectedGalleryIndex + direction;
+
+  if (nextIndex < 0 || nextIndex >= galleryWorkingImages.length) {
+    setGalleryManagerStatus("This photo is already at the edge of your current gallery order.");
+    return;
+  }
+
+  const current = galleryWorkingImages[selectedGalleryIndex];
+  galleryWorkingImages[selectedGalleryIndex] = galleryWorkingImages[nextIndex];
+  galleryWorkingImages[nextIndex] = current;
+
+  selectedGalleryIndex = nextIndex;
+  setGalleryManagerStatus("Gallery order updated. Save your gallery to keep this change.");
+  renderGalleryManager();
+}
+
+function removeSelectedGalleryImage() {
+  if (selectedGalleryIndex === null || !galleryWorkingImages[selectedGalleryIndex]) return;
+
+  const shouldRemove = confirm("Remove this photo from your gallery?");
+
+  if (!shouldRemove) return;
+
+  galleryWorkingImages.splice(selectedGalleryIndex, 1);
+
+  if (!galleryWorkingImages.length) {
+    selectedGalleryIndex = null;
+  } else if (selectedGalleryIndex >= galleryWorkingImages.length) {
+    selectedGalleryIndex = galleryWorkingImages.length - 1;
+  }
+
+  setGalleryManagerStatus("Photo removed. Save your gallery to keep this change.");
+  renderGalleryManager();
+}
+
+async function saveGalleryManagerChanges() {
+  profileGalleryImages = galleryWorkingImages.map((image, index) => ({
+    ...image,
+    sort_order: index + 1
+  }));
+
+  setSectionStatus("gallery", profileGalleryImages.length ? "complete" : "missing");
+  renderGalleryPreview();
+
+  closeGalleryManagerModal();
+
+  await saveProfile(false);
 }
 
 function resetTeamMemberModal() {
@@ -911,7 +1180,6 @@ async function loadProfileBuilder() {
 
 logoUploadBtn?.addEventListener("click", () => logoFileInput?.click());
 bannerUploadBtn?.addEventListener("click", () => bannerFileInput?.click());
-galleryUploadBtn?.addEventListener("click", () => galleryFileInput?.click());
 
 logoFileInput?.addEventListener("change", async () => {
   const file = logoFileInput.files?.[0];
@@ -1011,6 +1279,54 @@ document.querySelectorAll(".save-section-draft").forEach((button) => {
     await saveProfile(false);
   });
 });
+
+manageGalleryBtn?.addEventListener("click", openGalleryManagerModal);
+galleryUploadBtn?.addEventListener("click", openGalleryManagerModal);
+
+closeGalleryManagerModalBtn?.addEventListener("click", closeGalleryManagerModal);
+cancelGalleryManagerBtn?.addEventListener("click", closeGalleryManagerModal);
+
+galleryManagerModal?.addEventListener("click", (event) => {
+  if (event.target === galleryManagerModal) {
+    closeGalleryManagerModal();
+  }
+});
+
+galleryAddImagesBtn?.addEventListener("click", () => {
+  galleryFileInput?.click();
+});
+
+galleryFileInput?.addEventListener("change", async () => {
+  await addGalleryFiles(galleryFileInput.files);
+});
+
+replaceGalleryImageBtn?.addEventListener("click", () => {
+  galleryReplaceFileInput?.click();
+});
+
+galleryReplaceFileInput?.addEventListener("change", async () => {
+  const file = galleryReplaceFileInput.files?.[0];
+  await replaceSelectedGalleryImage(file);
+});
+
+moveGalleryLeftBtn?.addEventListener("click", () => {
+  moveSelectedGalleryImage(-1);
+});
+
+moveGalleryRightBtn?.addEventListener("click", () => {
+  moveSelectedGalleryImage(1);
+});
+
+removeGalleryImageBtn?.addEventListener("click", removeSelectedGalleryImage);
+
+galleryCaptionInput?.addEventListener("input", () => {
+  if (selectedGalleryIndex === null || !galleryWorkingImages[selectedGalleryIndex]) return;
+
+  galleryWorkingImages[selectedGalleryIndex].caption = galleryCaptionInput.value.trim();
+  renderGalleryManager();
+});
+
+saveGalleryManagerBtn?.addEventListener("click", saveGalleryManagerChanges);
 
 document.querySelectorAll(".mark-section-complete").forEach((button) => {
   button.addEventListener("click", async () => {
