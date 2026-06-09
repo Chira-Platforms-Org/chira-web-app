@@ -49,6 +49,27 @@ const shortIntroCount = document.getElementById("shortIntroCount");
 const aboutUsCount = document.getElementById("aboutUsCount");
 const orderingGuidelinesCount = document.getElementById("orderingGuidelinesCount");
 
+const addTeamMemberBtn = document.getElementById("addTeamMemberBtn");
+const teamPreviewGrid = document.getElementById("teamPreviewGrid");
+
+const teamMemberModal = document.getElementById("teamMemberModal");
+const closeTeamMemberModalBtn = document.getElementById("closeTeamMemberModalBtn");
+const cancelTeamMemberBtn = document.getElementById("cancelTeamMemberBtn");
+const saveTeamMemberBtn = document.getElementById("saveTeamMemberBtn");
+
+const teamPhotoUploadBtn = document.getElementById("teamPhotoUploadBtn");
+const teamPhotoFileInput = document.getElementById("teamPhotoFileInput");
+const teamPhotoPreview = document.getElementById("teamPhotoPreview");
+const teamPhotoPlaceholder = document.getElementById("teamPhotoPlaceholder");
+
+const teamMemberNameInput = document.getElementById("teamMemberNameInput");
+const teamMemberRoleInput = document.getElementById("teamMemberRoleInput");
+const teamMemberBioInput = document.getElementById("teamMemberBioInput");
+const teamMemberModalStatus = document.getElementById("teamMemberModalStatus");
+
+let teamMembers = [];
+let pendingTeamPhoto = null;
+
 const certificationsDisplayBtn = document.getElementById("certificationsDisplayBtn");
 const certificationsEditorShell = document.getElementById("certificationsEditorShell");
 const certificationsBadgeDisplay = document.getElementById("certificationsBadgeDisplay");
@@ -258,6 +279,115 @@ function renderGalleryPreview() {
 
   setSectionStatus("gallery", hasImages ? "complete" : "missing");
 }
+
+function resetTeamMemberModal() {
+  pendingTeamPhoto = null;
+
+  if (teamMemberNameInput) teamMemberNameInput.value = "";
+  if (teamMemberRoleInput) teamMemberRoleInput.value = "";
+  if (teamMemberBioInput) teamMemberBioInput.value = "";
+
+  if (teamPhotoPreview) {
+    teamPhotoPreview.src = "";
+    teamPhotoPreview.classList.add("hidden");
+  }
+
+  if (teamPhotoPlaceholder) {
+    teamPhotoPlaceholder.classList.remove("hidden");
+  }
+
+  if (teamMemberModalStatus) {
+    teamMemberModalStatus.textContent =
+      "Team members are optional, but they help buyers connect with real people.";
+  }
+}
+
+function openTeamMemberModal() {
+  resetTeamMemberModal();
+
+  if (!teamMemberModal) return;
+
+  teamMemberModal.classList.remove("hidden");
+  teamMemberModal.setAttribute("aria-hidden", "false");
+
+  setTimeout(() => {
+    teamMemberNameInput?.focus();
+  }, 50);
+}
+
+function closeTeamMemberModal() {
+  if (!teamMemberModal) return;
+
+  teamMemberModal.classList.add("hidden");
+  teamMemberModal.setAttribute("aria-hidden", "true");
+}
+
+function renderTeamMembers() {
+  if (!teamPreviewGrid || !addTeamMemberBtn) return;
+
+  teamPreviewGrid
+    .querySelectorAll(".team-member-card")
+    .forEach((card) => card.remove());
+
+  const ghostCards = teamPreviewGrid.querySelectorAll(".team-ghost-card");
+  const hasTeamMembers = teamMembers.length > 0;
+
+  ghostCards.forEach((card) => {
+    card.classList.toggle("hidden", hasTeamMembers);
+  });
+
+  teamMembers.forEach((member, index) => {
+    const card = document.createElement("div");
+    card.className = "team-member-card";
+
+    const removeBtn = document.createElement("button");
+    removeBtn.type = "button";
+    removeBtn.className = "team-member-remove-btn";
+    removeBtn.textContent = "Remove";
+    removeBtn.addEventListener("click", async () => {
+      teamMembers.splice(index, 1);
+      renderTeamMembers();
+      await saveProfile(false);
+    });
+
+    const photo = document.createElement("img");
+    photo.className = "team-member-photo";
+    photo.alt = member.name || "Team member";
+
+    if (member.photo_url) {
+      photo.src = member.photo_url;
+    } else {
+      photo.src =
+        "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Crect width='120' height='120' rx='60' fill='%23eef5ed'/%3E%3Ccircle cx='60' cy='46' r='19' fill='%2312bf5b' opacity='0.35'/%3E%3Cpath d='M27 100c5-23 21-35 33-35s28 12 33 35' fill='%2312bf5b' opacity='0.25'/%3E%3C/svg%3E";
+    }
+
+    const name = document.createElement("h3");
+    name.textContent = member.name || "Team member";
+
+    const role = document.createElement("span");
+    role.className = "team-member-role";
+    role.textContent = member.role || "Locality contact";
+
+    const bio = document.createElement("p");
+    bio.className = "team-member-bio";
+    bio.textContent = member.bio || "";
+
+    card.appendChild(removeBtn);
+    card.appendChild(photo);
+    card.appendChild(name);
+    card.appendChild(role);
+
+    if (member.bio) {
+      card.appendChild(bio);
+    }
+
+    teamPreviewGrid.insertBefore(card, addTeamMemberBtn);
+  });
+
+  const status = teamMembers.length ? "complete" : "missing";
+  setSectionStatus("team_members", status);
+}
+
 function updateCharacterCount(input, counter, max) {
   if (!input || !counter) return;
   counter.textContent = `${input.value.length} / ${max}`;
@@ -461,14 +591,15 @@ function renderIdentity() {
 
 function renderSectionStatus() {
   const trackedSections = [
-    "logo",
-    "banner",
-    "short_intro",
-    "gallery",
-    "about_us",
-    "certifications",
-    "ordering_guidelines"
-  ];
+     "logo",
+     "banner",
+     "short_intro",
+     "gallery",
+     "about_us",
+     "team_members",
+     "certifications",
+     "ordering_guidelines"
+   ];
 
   const completedSections = trackedSections.filter(
     (sectionKey) => getSectionStatus(sectionKey) === "complete"
@@ -519,6 +650,7 @@ function hydrateBuilder(profile) {
 
   profileSectionStatus = getJsonValue(profile.profile_section_status, {});
   profileGalleryImages = getJsonValue(profile.gallery_images, []);
+  teamMembers = getJsonValue(profile.team_members, []);
 
   if (profile.logo_url) {
     setImagePreview(logoPreviewImage, logoPlaceholder, profile.logo_url);
@@ -559,6 +691,7 @@ function hydrateBuilder(profile) {
 
   renderIdentity();
   renderGalleryPreview();
+  renderTeamMembers();
   renderSelectedCertifications();
   closeCertificationsEditor();
   updateCharacterCount(shortIntroInput, shortIntroCount, 500);
@@ -588,6 +721,7 @@ function buildProfilePayload(markComplete = false) {
     short_intro: getCleanValue(shortIntroInput),
     about_us: getCleanValue(aboutUsInput),
     gallery_images: profileGalleryImages,
+    team_members: teamMembers,
     certifications: getSelectedCertifications(),
     ordering_guidelines: getCleanValue(orderingGuidelinesInput),
 
@@ -811,6 +945,75 @@ document.querySelectorAll(".mark-section-complete").forEach((button) => {
     closeSectionEditor(sectionKey, false);
     await saveProfile(false);
   });
+});
+
+addTeamMemberBtn?.addEventListener("click", openTeamMemberModal);
+closeTeamMemberModalBtn?.addEventListener("click", closeTeamMemberModal);
+cancelTeamMemberBtn?.addEventListener("click", closeTeamMemberModal);
+
+teamMemberModal?.addEventListener("click", (event) => {
+  if (event.target === teamMemberModal) {
+    closeTeamMemberModal();
+  }
+});
+
+teamPhotoUploadBtn?.addEventListener("click", () => {
+  teamPhotoFileInput?.click();
+});
+
+teamPhotoFileInput?.addEventListener("change", async () => {
+  const file = teamPhotoFileInput.files?.[0];
+
+  if (!file) return;
+
+  const uploaded = await handleProfileMediaUpload(file, "team");
+
+  if (!uploaded?.url) return;
+
+  pendingTeamPhoto = uploaded.url;
+
+  if (teamPhotoPreview) {
+    teamPhotoPreview.src = uploaded.url;
+    teamPhotoPreview.classList.remove("hidden");
+  }
+
+  if (teamPhotoPlaceholder) {
+    teamPhotoPlaceholder.classList.add("hidden");
+  }
+});
+
+saveTeamMemberBtn?.addEventListener("click", async () => {
+  const name = getCleanValue(teamMemberNameInput);
+  const role = getCleanValue(teamMemberRoleInput);
+  const bio = getCleanValue(teamMemberBioInput);
+
+  if (!name) {
+    if (teamMemberModalStatus) {
+      teamMemberModalStatus.textContent = "Please add a name before saving this team member.";
+    }
+    return;
+  }
+
+  if (teamMembers.length >= 6) {
+    if (teamMemberModalStatus) {
+      teamMemberModalStatus.textContent = "You can add up to 6 team members for now.";
+    }
+    return;
+  }
+
+  teamMembers.push({
+    name,
+    role,
+    bio,
+    photo_url: pendingTeamPhoto,
+    sort_order: teamMembers.length + 1,
+    created_at: new Date().toISOString()
+  });
+
+  renderTeamMembers();
+  closeTeamMemberModal();
+
+  await saveProfile(false);
 });
 
 certificationsDisplayBtn?.addEventListener("click", () => {
