@@ -148,7 +148,13 @@
             <p class="section-kicker recommended">Recommended</p>
             <h2>Gallery</h2>
           </div>
-          <span class="section-status-pill" data-status-pill="gallery">Missing</span>
+        
+          <div class="gallery-heading-actions">
+            <button id="manageGalleryBtn" type="button" class="builder-mini-btn gallery-manage-btn">
+              Manage gallery
+            </button>
+            <span class="section-status-pill" data-status-pill="gallery">Missing</span>
+          </div>
         </div>
 
         <p class="section-description">
@@ -474,6 +480,113 @@
       </section>
     </section>
   </main>
+
+  <div id="galleryManagerModal" class="profile-modal gallery-manager-modal hidden" aria-hidden="true">
+  <div class="profile-modal-card gallery-manager-card">
+    <button id="closeGalleryManagerModalBtn" type="button" class="profile-modal-close" aria-label="Close">
+      ×
+    </button>
+
+    <div class="gallery-manager-header">
+      <div>
+        <p class="section-kicker recommended">Profile gallery</p>
+        <h2>Manage gallery photos</h2>
+        <p class="modal-helper-text">
+          Add photos that help buyers understand your business, products, team, growing space, storefront, or pickup experience.
+        </p>
+      </div>
+
+      <button id="galleryAddImagesBtn" type="button" class="builder-primary-btn gallery-upload-main-btn">
+        Upload photos
+      </button>
+
+      <input
+        id="galleryFileInput"
+        type="file"
+        accept="image/png,image/jpeg,image/webp,image/gif"
+        multiple
+        class="hidden"
+      />
+
+      <input
+        id="galleryReplaceFileInput"
+        type="file"
+        accept="image/png,image/jpeg,image/webp,image/gif"
+        class="hidden"
+      />
+    </div>
+
+    <div class="gallery-manager-layout">
+      <section class="gallery-manager-order-panel">
+        <div class="gallery-manager-section-title">
+          <h3>Gallery order</h3>
+          <span id="galleryImageCountLabel">0 / 8 photos</span>
+        </div>
+
+        <p class="gallery-manager-note">
+          Photos appear left to right in this order. Select a photo to move, replace, remove, or add a caption.
+        </p>
+
+        <div id="galleryManagerGrid" class="gallery-manager-grid"></div>
+      </section>
+
+      <aside class="gallery-selected-panel">
+        <div class="gallery-manager-section-title">
+          <h3>Selected photo</h3>
+          <span id="selectedGalleryOrderLabel">None selected</span>
+        </div>
+
+        <div id="selectedGalleryPreview" class="selected-gallery-preview">
+          <span>Select a photo to manage it.</span>
+        </div>
+
+        <label class="modal-field gallery-caption-field">
+          Caption or title
+          <input
+            id="galleryCaptionInput"
+            type="text"
+            placeholder="Example: Our pastures, harvest prep, pickup area..."
+            maxlength="100"
+          />
+        </label>
+
+        <div class="gallery-selected-controls">
+          <button id="moveGalleryLeftBtn" type="button" class="builder-secondary-btn">
+            Move left
+          </button>
+
+          <button id="moveGalleryRightBtn" type="button" class="builder-secondary-btn">
+            Move right
+          </button>
+
+          <button id="replaceGalleryImageBtn" type="button" class="builder-secondary-btn">
+            Replace photo
+          </button>
+
+          <button id="removeGalleryImageBtn" type="button" class="modal-danger-btn">
+            Remove photo
+          </button>
+        </div>
+      </aside>
+    </div>
+
+    <div class="modal-action-row gallery-manager-footer">
+      <span id="galleryManagerStatus">
+        Wide or landscape photos work best, but vertical photos can still be included.
+      </span>
+
+      <div class="modal-actions">
+        <button id="cancelGalleryManagerBtn" type="button" class="builder-secondary-btn">
+          Cancel
+        </button>
+
+        <button id="saveGalleryManagerBtn" type="button" class="builder-primary-btn">
+          Save gallery
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/supabaseConfig.js"></script>
