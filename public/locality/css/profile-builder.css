@@ -1382,3 +1382,62 @@
     justify-items: start;
   }
 }
+
+/* =========================================================
+   TEAM CARD EDITING CONTROLS
+========================================================= */
+
+.team-member-edit-btn {
+  position: absolute;
+  top: 12px;
+  right: 82px;
+  border: 0;
+  border-radius: 999px;
+  padding: 5px 9px;
+  background: rgba(8, 196, 100, 0.1);
+  color: var(--green);
+  font: inherit;
+  font-size: 0.72rem;
+  font-weight: 950;
+  cursor: pointer;
+}
+
+.team-member-edit-btn:hover {
+  background: rgba(8, 196, 100, 0.16);
+}
+
+.modal-danger-btn {
+  border: 0;
+  border-radius: 999px;
+  min-height: 42px;
+  padding: 10px 16px;
+  background: rgba(157, 51, 40, 0.1);
+  color: #9d3328;
+  font: inherit;
+  font-weight: 950;
+  cursor: pointer;
+}
+
+.modal-danger-btn:hover {
+  background: rgba(157, 51, 40, 0.16);
+}
+
+.modal-actions {
+  align-items: center;
+}
+
+.modal-actions .modal-danger-btn {
+  margin-right: auto;
+}
+
+@media (max-width: 640px) {
+  .team-member-edit-btn {
+    right: 12px;
+    top: 44px;
+  }
+
+  .modal-actions .modal-danger-btn {
+    width: 100%;
+    margin-right: 0;
+  }
+}
