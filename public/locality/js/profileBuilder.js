@@ -49,6 +49,13 @@ const shortIntroCount = document.getElementById("shortIntroCount");
 const aboutUsCount = document.getElementById("aboutUsCount");
 const orderingGuidelinesCount = document.getElementById("orderingGuidelinesCount");
 
+const certificationsDisplayBtn = document.getElementById("certificationsDisplayBtn");
+const certificationsEditorShell = document.getElementById("certificationsEditorShell");
+const certificationsBadgeDisplay = document.getElementById("certificationsBadgeDisplay");
+const cancelCertificationsEditBtn = document.getElementById("cancelCertificationsEditBtn");
+const saveCertificationsDraftBtn = document.getElementById("saveCertificationsDraftBtn");
+const markCertificationsCompleteBtn = document.getElementById("markCertificationsCompleteBtn");
+
 const customCertificationInput = document.getElementById("customCertificationInput");
 const addCustomCertificationBtn = document.getElementById("addCustomCertificationBtn");
 const selectedCertificationsList = document.getElementById("selectedCertificationsList");
@@ -166,19 +173,58 @@ function getSelectedCertifications() {
 }
 
 function renderSelectedCertifications() {
-  if (!selectedCertificationsList) return;
-
   const certs = getSelectedCertifications();
 
-  selectedCertificationsList.innerHTML = "";
+  if (selectedCertificationsList) {
+    selectedCertificationsList.innerHTML = "";
+
+    certs.forEach((cert) => {
+      const chip = document.createElement("span");
+      chip.textContent = cert.name;
+      selectedCertificationsList.appendChild(chip);
+    });
+  }
+
+  renderCertificationsDisplay(certs);
+
+  if (certs.length) {
+    if (getSectionStatus("certifications") !== "complete") {
+      setSectionStatus("certifications", "draft");
+    }
+  } else {
+    setSectionStatus("certifications", "missing");
+  }
+}
+
+function renderCertificationsDisplay(certs = getSelectedCertifications()) {
+  if (!certificationsBadgeDisplay) return;
+
+  certificationsBadgeDisplay.innerHTML = "";
+
+  if (!certs.length) {
+    const emptyState = document.createElement("div");
+    emptyState.className = "certifications-empty-state";
+
+    const title = document.createElement("strong");
+    title.textContent = "Add certifications or practices";
+
+    const description = document.createElement("span");
+    description.textContent =
+      "Share relevant standards, practices, or credentials that help buyers understand how you work.";
+
+    emptyState.appendChild(title);
+    emptyState.appendChild(description);
+    certificationsBadgeDisplay.appendChild(emptyState);
+
+    return;
+  }
 
   certs.forEach((cert) => {
-    const chip = document.createElement("span");
-    chip.textContent = cert.name;
-    selectedCertificationsList.appendChild(chip);
+    const badge = document.createElement("span");
+    badge.className = "certification-display-badge self-reported";
+    badge.textContent = cert.name;
+    certificationsBadgeDisplay.appendChild(badge);
   });
-
-  setSectionStatus("certifications", certs.length ? "complete" : "missing");
 }
 
 function renderGalleryPreview() {
@@ -306,6 +352,24 @@ function closeSectionEditor(sectionKey, shouldMarkDraft = true) {
   sectionElement.dataset.editing = "false";
   editor.classList.add("hidden");
   displayShell.classList.remove("is-editing");
+}
+
+function openCertificationsEditor() {
+  const section = document.querySelector(".editable-certifications-section");
+
+  section?.setAttribute("data-editing", "true");
+  certificationsEditorShell?.classList.remove("hidden");
+
+  setTimeout(() => {
+    customCertificationInput?.focus();
+  }, 50);
+}
+
+function closeCertificationsEditor() {
+  const section = document.querySelector(".editable-certifications-section");
+
+  section?.setAttribute("data-editing", "false");
+  certificationsEditorShell?.classList.add("hidden");
 }
 
 
@@ -496,6 +560,7 @@ function hydrateBuilder(profile) {
   renderIdentity();
   renderGalleryPreview();
   renderSelectedCertifications();
+  closeCertificationsEditor();
   updateCharacterCount(shortIntroInput, shortIntroCount, 500);
   updateCharacterCount(aboutUsInput, aboutUsCount, 2000);
   updateCharacterCount(orderingGuidelinesInput, orderingGuidelinesCount, 1500);
@@ -748,6 +813,40 @@ document.querySelectorAll(".mark-section-complete").forEach((button) => {
   });
 });
 
+certificationsDisplayBtn?.addEventListener("click", () => {
+  openCertificationsEditor();
+});
+
+cancelCertificationsEditBtn?.addEventListener("click", () => {
+  closeCertificationsEditor();
+  renderSelectedCertifications();
+});
+
+saveCertificationsDraftBtn?.addEventListener("click", async () => {
+  const certs = getSelectedCertifications();
+
+  setSectionStatus("certifications", certs.length ? "draft" : "missing");
+  renderCertificationsDisplay(certs);
+  closeCertificationsEditor();
+
+  await saveProfile(false);
+});
+
+markCertificationsCompleteBtn?.addEventListener("click", async () => {
+  const certs = getSelectedCertifications();
+
+  if (!certs.length) {
+    alert("Add at least one certification or practice before marking this section complete.");
+    return;
+  }
+
+  setSectionStatus("certifications", "complete");
+  renderCertificationsDisplay(certs);
+  closeCertificationsEditor();
+
+  await saveProfile(false);
+});
+
 document.querySelectorAll(".certification-option").forEach((checkbox) => {
   checkbox.addEventListener("change", renderSelectedCertifications);
 });
@@ -756,7 +855,7 @@ addCustomCertificationBtn?.addEventListener("click", () => {
   const value = getCleanValue(customCertificationInput);
 
   if (!value) {
-    alert("Enter a certification or practice first.");
+    alert("Enter a certification, standard, or practice first.");
     return;
   }
 
