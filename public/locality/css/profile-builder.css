@@ -1499,3 +1499,237 @@
     margin-right: 0;
   }
 }
+
+/* =========================================================
+   GALLERY MANAGER MODAL
+========================================================= */
+
+.gallery-heading-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.gallery-manage-btn {
+  background: rgba(8, 196, 100, 0.1);
+  color: var(--green);
+}
+
+.gallery-manage-btn:hover {
+  background: rgba(8, 196, 100, 0.16);
+}
+
+.gallery-manager-card {
+  width: min(1120px, 96vw);
+  max-height: min(92vh, 900px);
+  gap: 22px;
+}
+
+.gallery-manager-header {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 18px;
+  align-items: start;
+  padding-right: 42px;
+}
+
+.gallery-upload-main-btn {
+  white-space: nowrap;
+  align-self: center;
+}
+
+.gallery-manager-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(300px, 0.75fr);
+  gap: 22px;
+  align-items: start;
+}
+
+.gallery-manager-order-panel,
+.gallery-selected-panel {
+  border: 1px solid rgba(12, 33, 66, 0.08);
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at 12% 10%, rgba(8, 196, 100, 0.045), transparent 30%),
+    rgba(255, 255, 255, 0.72);
+  padding: 22px;
+}
+
+.gallery-manager-section-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.gallery-manager-section-title h3 {
+  margin: 0;
+  color: var(--navy);
+  font-size: 1.08rem;
+  font-weight: 950;
+  letter-spacing: -0.02em;
+}
+
+.gallery-manager-section-title span {
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 950;
+}
+
+.gallery-manager-note {
+  margin: 10px 0 18px;
+  color: var(--muted);
+  font-size: 0.88rem;
+  font-weight: 760;
+  line-height: 1.45;
+}
+
+.gallery-manager-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(180px, 1fr));
+  gap: 14px;
+}
+
+.gallery-manager-tile {
+  position: relative;
+  min-height: 150px;
+  aspect-ratio: 16 / 10;
+  border: 1px dashed rgba(12, 33, 66, 0.16);
+  border-radius: 20px;
+  background:
+    radial-gradient(circle at 24% 20%, rgba(8, 196, 100, 0.06), transparent 30%),
+    rgba(12, 33, 66, 0.035);
+  color: var(--muted);
+  font: inherit;
+  font-weight: 900;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.gallery-manager-tile img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.gallery-manager-tile.is-selected {
+  border: 3px solid rgba(8, 196, 100, 0.82);
+  box-shadow: 0 14px 34px rgba(8, 196, 100, 0.15);
+}
+
+.gallery-manager-tile.is-empty {
+  display: grid;
+  place-items: center;
+  text-align: center;
+  cursor: pointer;
+}
+
+.gallery-manager-order-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  min-width: 30px;
+  height: 30px;
+  display: inline-grid;
+  place-items: center;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--navy);
+  font-size: 0.78rem;
+  font-weight: 950;
+  box-shadow: 0 8px 20px rgba(20, 50, 92, 0.12);
+}
+
+.gallery-manager-caption-badge {
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  bottom: 10px;
+  border-radius: 999px;
+  padding: 7px 10px;
+  background: rgba(12, 33, 66, 0.72);
+  color: white;
+  font-size: 0.72rem;
+  font-weight: 850;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.selected-gallery-preview {
+  min-height: 260px;
+  border-radius: 24px;
+  border: 1px dashed rgba(12, 33, 66, 0.16);
+  background:
+    radial-gradient(circle at 30% 20%, rgba(8, 196, 100, 0.07), transparent 30%),
+    rgba(12, 33, 66, 0.035);
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  color: var(--muted);
+  font-weight: 900;
+  text-align: center;
+  margin-top: 16px;
+}
+
+.selected-gallery-preview img {
+  width: 100%;
+  max-height: 360px;
+  object-fit: contain;
+  display: block;
+}
+
+.gallery-caption-field {
+  margin-top: 16px;
+}
+
+.gallery-selected-controls {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.gallery-selected-controls button {
+  min-height: 42px;
+}
+
+.gallery-selected-controls .modal-danger-btn {
+  grid-column: span 2;
+}
+
+.gallery-manager-footer {
+  border-top: 1px solid rgba(12, 33, 66, 0.08);
+  padding-top: 4px;
+}
+
+@media (max-width: 900px) {
+  .gallery-manager-header,
+  .gallery-manager-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .gallery-upload-main-btn {
+    justify-self: start;
+  }
+}
+
+@media (max-width: 620px) {
+  .gallery-manager-card {
+    padding: 26px 18px;
+  }
+
+  .gallery-manager-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .gallery-selected-controls {
+    grid-template-columns: 1fr;
+  }
+
+  .gallery-selected-controls .modal-danger-btn {
+    grid-column: auto;
+  }
+}
