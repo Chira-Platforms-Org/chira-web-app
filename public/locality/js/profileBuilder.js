@@ -16,6 +16,13 @@ const profileRoleChip = document.getElementById("profileRoleChip");
 const profileCategoryChip = document.getElementById("profileCategoryChip");
 const profileContactChip = document.getElementById("profileContactChip");
 
+const profileContactLine = document.getElementById("profileContactLine");
+const profileAddressText = document.getElementById("profileAddressText");
+const profileWebsiteText = document.getElementById("profileWebsiteText");
+const profileEmailText = document.getElementById("profileEmailText");
+const profilePhoneText = document.getElementById("profilePhoneText");
+const teamSectionTitle = document.getElementById("teamSectionTitle");
+
 const logoUploadBtn = document.getElementById("logoUploadBtn");
 const bannerUploadBtn = document.getElementById("bannerUploadBtn");
 const galleryUploadBtn = document.getElementById("galleryUploadBtn");
@@ -205,17 +212,17 @@ const sectionConfig = {
   short_intro: {
     input: () => shortIntroInput,
     display: () => shortIntroDisplay,
-    placeholder: "Add 3–5 sentences about what your business offers and who you serve."
+    placeholder: "Add a short introduction that helps buyers quickly understand what you offer, who you serve, and what makes your business a good local sourcing partner."
   },
   about_us: {
     input: () => aboutUsInput,
     display: () => aboutUsDisplay,
-    placeholder: "Tell buyers about your story, practices, values, and the relationships you want to build through Locality."
+    placeholder: "Tell buyers your story, how you work, what you care about, and the kinds of local sourcing relationships you want to build."
   },
   ordering_guidelines: {
     input: () => orderingGuidelinesInput,
     display: () => orderingGuidelinesDisplay,
-    placeholder: "Add minimum orders, lead time, pickup, delivery, packaging, or recurring order notes."
+    placeholder: "Add practical details that help buyers understand how to order from you, including minimums, lead times, pickup or delivery options, packaging, recurring orders, or seasonal expectations."
   }
 };
 
@@ -292,6 +299,59 @@ function closeSectionEditor(sectionKey, shouldMarkDraft = true) {
   displayShell.classList.remove("is-editing");
 }
 
+
+function formatPhoneForDisplay(phone = "") {
+  const digits = String(phone).replace(/\D/g, "");
+
+  if (digits.length !== 10) {
+    return phone || "";
+  }
+
+  return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
+}
+
+function getAddressForDisplay(profile) {
+  const address = getJsonValue(profile.address, {});
+
+  const city = address.city || "";
+  const state = address.state || "";
+
+  if (city && state) {
+    return `${city}, ${state}`;
+  }
+
+  return profile.location_label || "";
+}
+
+function renderHeroContactDetails() {
+  if (!currentProfile) return;
+
+  const addressText = getAddressForDisplay(currentProfile);
+  const websiteText = currentProfile.website || "";
+  const emailText = currentProfile.contact_email || "";
+  const phoneText = formatPhoneForDisplay(currentProfile.phone || "");
+
+  if (profileAddressText) {
+    profileAddressText.textContent = addressText || "Location details";
+    profileAddressText.classList.toggle("muted-empty", !addressText);
+  }
+
+  if (profileWebsiteText) {
+    profileWebsiteText.textContent = websiteText ? websiteText.replace(/^https?:\/\//, "") : "Website";
+    profileWebsiteText.classList.toggle("muted-empty", !websiteText);
+  }
+
+  if (profileEmailText) {
+    profileEmailText.textContent = emailText || "Email";
+    profileEmailText.classList.toggle("muted-empty", !emailText);
+  }
+
+  if (profilePhoneText) {
+    profilePhoneText.textContent = phoneText || "Phone";
+    profilePhoneText.classList.toggle("muted-empty", !phoneText);
+  }
+}
+
 function renderIdentity() {
   if (!currentProfile) return;
 
@@ -315,6 +375,14 @@ function renderIdentity() {
     profileContactChip.textContent = hasContact
       ? "Contact details added"
       : "Add public contact details";
+  }
+
+  renderHeroContactDetails();
+
+  if (teamSectionTitle) {
+    teamSectionTitle.textContent = currentProfile.name
+      ? `Meet the people behind ${currentProfile.name}`
+      : "Meet the team";
   }
 }
 
