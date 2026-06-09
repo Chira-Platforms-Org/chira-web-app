@@ -496,17 +496,139 @@
    EMBEDDED PROFILE MODULES
 ========================================================= */
 
+/* =========================================================
+   LARGE HORIZONTAL PROFILE GALLERY
+========================================================= */
+
+.profile-gallery-frame {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  margin-top: 22px;
+}
+
+.profile-gallery-frame::before,
+.profile-gallery-frame::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 14px;
+  width: 44px;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.profile-gallery-frame::before {
+  left: 0;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.96), rgba(255, 255, 255, 0));
+}
+
+.profile-gallery-frame::after {
+  right: 0;
+  background: linear-gradient(270deg, rgba(255, 255, 255, 0.96), rgba(255, 255, 255, 0));
+}
+
 .profile-gallery-strip {
   display: grid;
   grid-auto-flow: column;
-  grid-auto-columns: minmax(250px, 1fr);
-  gap: 16px;
+  grid-auto-columns: clamp(360px, 47%, 540px);
+  gap: 18px;
   overflow-x: auto;
-  padding-bottom: 4px;
+  overscroll-behavior-inline: contain;
+  scroll-snap-type: inline mandatory;
+  scroll-padding-inline: 28px;
+  padding: 4px 42px 18px;
+  margin-inline: -42px;
+  scrollbar-width: thin;
 }
 
-.gallery-add-tile,
-.gallery-image-card,
+.profile-gallery-strip::-webkit-scrollbar {
+  height: 10px;
+}
+
+.profile-gallery-strip::-webkit-scrollbar-track {
+  background: rgba(12, 33, 66, 0.05);
+  border-radius: 999px;
+}
+
+.profile-gallery-strip::-webkit-scrollbar-thumb {
+  background: rgba(12, 33, 66, 0.18);
+  border-radius: 999px;
+}
+
+.profile-gallery-strip::-webkit-scrollbar-thumb:hover {
+  background: rgba(12, 33, 66, 0.28);
+}
+
+.gallery-showcase-tile,
+.gallery-image-card {
+  min-height: 330px;
+  aspect-ratio: 16 / 10;
+  scroll-snap-align: start;
+  border-radius: 30px;
+  overflow: hidden;
+}
+
+.gallery-showcase-tile {
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 10px;
+  padding: 28px;
+  border: 1px dashed rgba(12, 33, 66, 0.17);
+  background:
+    radial-gradient(circle at 20% 18%, rgba(8, 196, 100, 0.075), transparent 34%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.78), rgba(248, 246, 240, 0.78));
+  color: var(--muted);
+  font: inherit;
+  font-weight: 950;
+  text-align: center;
+}
+
+.gallery-add-tile {
+  cursor: pointer;
+}
+
+.gallery-add-tile:hover {
+  border-color: rgba(8, 196, 100, 0.38);
+  background:
+    radial-gradient(circle at 20% 18%, rgba(8, 196, 100, 0.13), transparent 34%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(248, 246, 240, 0.86));
+}
+
+.gallery-add-tile strong {
+  color: var(--navy);
+  font-size: 1.16rem;
+  letter-spacing: -0.02em;
+}
+
+.gallery-add-tile span,
+.gallery-ghost-tile span {
+  color: var(--muted);
+  font-size: 0.92rem;
+  font-weight: 850;
+  line-height: 1.35;
+}
+
+.gallery-ghost-tile {
+  opacity: 0.86;
+}
+
+.gallery-image-card {
+  position: relative;
+  border: 1px solid rgba(12, 33, 66, 0.08);
+  background: rgba(12, 33, 66, 0.04);
+  box-shadow: 0 16px 38px rgba(20, 50, 92, 0.08);
+}
+
+.gallery-image-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Product preview replacement if you removed the old shared block */
 .product-preview-tile {
   min-height: 180px;
   border-radius: 24px;
@@ -518,15 +640,41 @@
   place-items: center;
   text-align: center;
   border: 1px dashed rgba(12, 33, 66, 0.16);
-  cursor: pointer;
+  cursor: default;
   overflow: hidden;
 }
 
-.gallery-image-card img {
-  width: 100%;
-  height: 180px;
-  object-fit: cover;
-  display: block;
+@media (max-width: 900px) {
+  .profile-gallery-strip {
+    grid-auto-columns: minmax(300px, 82%);
+    padding-inline: 28px;
+    margin-inline: -28px;
+  }
+
+  .gallery-showcase-tile,
+  .gallery-image-card {
+    min-height: 280px;
+  }
+}
+
+@media (max-width: 620px) {
+  .profile-gallery-strip {
+    grid-auto-columns: minmax(260px, 88%);
+    gap: 14px;
+    padding-inline: 22px;
+    margin-inline: -22px;
+  }
+
+  .gallery-showcase-tile,
+  .gallery-image-card {
+    min-height: 230px;
+    border-radius: 24px;
+  }
+
+  .profile-gallery-frame::before,
+  .profile-gallery-frame::after {
+    width: 24px;
+  }
 }
 
 .profile-story-grid {
