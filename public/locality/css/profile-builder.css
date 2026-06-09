@@ -1202,11 +1202,18 @@
 }
 
 .team-member-photo-placeholder {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(circle at 50% 34%, rgba(8, 196, 100, 0.18), transparent 19%),
+    radial-gradient(circle at 50% 72%, rgba(8, 196, 100, 0.14), transparent 28%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.78), rgba(245, 248, 242, 0.92));
   color: var(--muted);
-  font-weight: 900;
+  font-weight: 950;
   font-size: 0.95rem;
   text-align: center;
-  padding: 18px;
 }
 
 .team-member-name,
@@ -1234,25 +1241,6 @@
   font-size: 0.9rem;
   font-weight: 750;
   line-height: 1.48;
-}
-.team-member-remove-btn {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  border: 0;
-  border-radius: 999px;
-  padding: 5px 8px;
-  background: rgba(12, 33, 66, 0.07);
-  color: var(--muted);
-  font: inherit;
-  font-size: 0.72rem;
-  font-weight: 950;
-  cursor: pointer;
-}
-
-.team-member-remove-btn:hover {
-  background: rgba(157, 51, 40, 0.1);
-  color: #9d3328;
 }
 
 .profile-modal {
@@ -1415,23 +1403,42 @@
    TEAM CARD EDITING CONTROLS
 ========================================================= */
 
-.team-member-edit-btn {
-  position: absolute;
-  top: 12px;
-  right: 82px;
+.team-member-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: auto;
+  padding-top: 8px;
+}
+
+.team-member-actions .team-member-edit-btn,
+.team-member-actions .team-member-remove-btn {
+  position: static;
   border: 0;
   border-radius: 999px;
-  padding: 5px 9px;
-  background: rgba(8, 196, 100, 0.1);
-  color: var(--green);
+  padding: 8px 12px;
   font: inherit;
-  font-size: 0.72rem;
+  font-size: 0.76rem;
   font-weight: 950;
   cursor: pointer;
 }
 
-.team-member-edit-btn:hover {
+.team-member-actions .team-member-edit-btn {
+  background: rgba(8, 196, 100, 0.1);
+  color: var(--green);
+}
+
+.team-member-actions .team-member-edit-btn:hover {
   background: rgba(8, 196, 100, 0.16);
+}
+
+.team-member-actions .team-member-remove-btn {
+  background: rgba(12, 33, 66, 0.07);
+  color: var(--muted);
+}
+
+.team-member-actions .team-member-remove-btn:hover {
+  background: rgba(157, 51, 40, 0.1);
+  color: #9d3328;
 }
 
 .modal-danger-btn {
@@ -1459,9 +1466,13 @@
 }
 
 @media (max-width: 640px) {
-  .team-member-edit-btn {
-    right: 12px;
-    top: 44px;
+  .team-member-actions {
+    flex-direction: column;
+  }
+
+  .team-member-actions .team-member-edit-btn,
+  .team-member-actions .team-member-remove-btn {
+    width: 100%;
   }
 
   .modal-actions .modal-danger-btn {
