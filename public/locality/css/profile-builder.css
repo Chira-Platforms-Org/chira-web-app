@@ -960,13 +960,13 @@
 
 .team-preview-grid {
   display: grid;
-  grid-template-columns: minmax(220px, 0.9fr) repeat(2, minmax(180px, 0.7fr));
-  gap: 16px;
+  grid-template-columns: repeat(3, minmax(240px, 1fr));
+  gap: 18px;
 }
 
 .team-add-card,
 .team-ghost-card {
-  min-height: 210px;
+  min-height: 430px;
   border-radius: 26px;
   border: 1px dashed rgba(12, 33, 66, 0.15);
   background: rgba(12, 33, 66, 0.035);
@@ -1163,50 +1163,78 @@
 ========================================================= */
 
 .team-member-card {
-  min-height: 210px;
+  position: relative;
+  min-height: 430px;
   border-radius: 26px;
   border: 1px solid rgba(12, 33, 66, 0.08);
   background:
     radial-gradient(circle at 18% 18%, rgba(8, 196, 100, 0.055), transparent 34%),
     rgba(255, 255, 255, 0.72);
   color: var(--navy);
-  display: grid;
-  align-content: start;
-  gap: 10px;
-  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 18px;
   text-align: left;
-  position: relative;
+  overflow: hidden;
 }
 
-.team-member-photo {
-  width: 76px;
-  height: 76px;
-  border-radius: 999px;
+.team-member-photo-frame {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  border-radius: 22px;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 35% 25%, rgba(8, 196, 100, 0.12), transparent 28%),
+    rgba(12, 33, 66, 0.04);
+  border: 1px solid rgba(12, 33, 66, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.team-member-photo-frame img {
+  width: 100%;
+  height: 100%;
   object-fit: cover;
-  border: 1px solid rgba(12, 33, 66, 0.1);
-  background: rgba(12, 33, 66, 0.04);
+  object-position: center top;
+  display: block;
 }
 
-.team-member-card h3 {
-  margin: 4px 0 0;
-  color: var(--navy);
-  font-size: 1rem;
-  font-weight: 950;
-}
-
-.team-member-card .team-member-role {
-  color: var(--green);
-  font-size: 0.8rem;
-  font-weight: 950;
-}
-
-.team-member-card .team-member-bio {
+.team-member-photo-placeholder {
   color: var(--muted);
-  font-size: 0.86rem;
-  font-weight: 750;
-  line-height: 1.45;
+  font-weight: 900;
+  font-size: 0.95rem;
+  text-align: center;
+  padding: 18px;
 }
 
+.team-member-name,
+.team-member-card h3 {
+  margin: 2px 0 0;
+  color: var(--navy);
+  font-size: 1.28rem;
+  line-height: 1.08;
+  font-weight: 950;
+  letter-spacing: -0.025em;
+}
+
+.team-member-role,
+.team-member-card .team-member-role {
+  margin: 0;
+  color: var(--green);
+  font-size: 0.9rem;
+  font-weight: 950;
+}
+
+.team-member-bio,
+.team-member-card .team-member-bio {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-weight: 750;
+  line-height: 1.48;
+}
 .team-member-remove-btn {
   position: absolute;
   top: 12px;
