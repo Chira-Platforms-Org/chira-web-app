@@ -313,7 +313,7 @@
     </button>
 
     <p class="section-kicker recommended">Team profile</p>
-    <h2>Add a team member</h2>
+    <h2 id="teamMemberModalTitle">Add a team member</h2>
 
     <p class="modal-helper-text">
       Add someone buyers may work with or recognize. This helps make your business feel more personal and trustworthy.
@@ -351,10 +351,14 @@
       <span id="teamMemberModalStatus">Team members are optional, but they help buyers connect with real people.</span>
 
       <div class="modal-actions">
+        <button id="removeTeamMemberBtn" type="button" class="modal-danger-btn hidden">
+          Remove person
+        </button>
+      
         <button id="cancelTeamMemberBtn" type="button" class="builder-secondary-btn">
           Cancel
         </button>
-
+      
         <button id="saveTeamMemberBtn" type="button" class="builder-primary-btn">
           Save team member
         </button>
