@@ -454,15 +454,20 @@ function renderTeamMembers() {
     bio.className = "team-member-bio";
     bio.textContent = member.bio || "";
 
-    card.appendChild(editBtn);
-    card.appendChild(removeBtn);
-    card.appendChild(photoFrame);
-    card.appendChild(name);
-    card.appendChild(role);
-
-    if (member.bio) {
-      card.appendChild(bio);
-    }
+   const actions = document.createElement("div");
+   actions.className = "team-member-actions";
+   actions.appendChild(editBtn);
+   actions.appendChild(removeBtn);
+   
+   card.appendChild(photoFrame);
+   card.appendChild(name);
+   card.appendChild(role);
+   
+   if (member.bio) {
+     card.appendChild(bio);
+   }
+   
+   card.appendChild(actions);
 
     teamPreviewGrid.insertBefore(card, addTeamMemberBtn);
   });
