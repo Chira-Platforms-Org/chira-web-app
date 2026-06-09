@@ -427,19 +427,24 @@ function renderTeamMembers() {
      await saveProfile(false);
    });
 
-    const photo = document.createElement("img");
-    photo.className = "team-member-photo";
-    photo.alt = member.name || "Team member";
+   const photoFrame = document.createElement("div");
+   photoFrame.className = "team-member-photo-frame";
+   
+   if (member.photo_url) {
+     const photo = document.createElement("img");
+     photo.src = member.photo_url;
+     photo.alt = member.name ? `${member.name} portrait` : "Team member portrait";
+     photoFrame.appendChild(photo);
+   } else {
+     const placeholder = document.createElement("div");
+     placeholder.className = "team-member-photo-placeholder";
+     placeholder.textContent = "Photo";
+     photoFrame.appendChild(placeholder);
+   }
 
-    if (member.photo_url) {
-      photo.src = member.photo_url;
-    } else {
-      photo.src =
-        "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Crect width='120' height='120' rx='60' fill='%23eef5ed'/%3E%3Ccircle cx='60' cy='46' r='19' fill='%2312bf5b' opacity='0.35'/%3E%3Cpath d='M27 100c5-23 21-35 33-35s28 12 33 35' fill='%2312bf5b' opacity='0.25'/%3E%3C/svg%3E";
-    }
-
-    const name = document.createElement("h3");
-    name.textContent = member.name || "Team member";
+   const name = document.createElement("h3");
+   name.className = "team-member-name";
+   name.textContent = member.name || "Team member";
 
     const role = document.createElement("span");
     role.className = "team-member-role";
@@ -451,7 +456,7 @@ function renderTeamMembers() {
 
     card.appendChild(editBtn);
     card.appendChild(removeBtn);
-    card.appendChild(photo);
+    card.appendChild(photoFrame);
     card.appendChild(name);
     card.appendChild(role);
 
