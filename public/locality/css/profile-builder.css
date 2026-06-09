@@ -813,3 +813,7 @@
     display: none;
   }
 }
+
+.profile-contact-line .muted-empty {
+  opacity: 0.58;
+}
