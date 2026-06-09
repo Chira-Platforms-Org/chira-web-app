@@ -1020,3 +1020,140 @@
 .profile-contact-line .muted-empty {
   opacity: 0.58;
 }
+
+
+/* =========================================================
+   DISPLAY-FIRST CERTIFICATIONS SECTION
+========================================================= */
+
+.editable-certifications-section {
+  padding: 0;
+}
+
+.certifications-display-shell {
+  width: 100%;
+  display: grid;
+  gap: 14px;
+  padding: 38px 42px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.certifications-display-shell:hover {
+  background:
+    radial-gradient(circle at 96% 12%, rgba(8, 196, 100, 0.055), transparent 28%),
+    rgba(8, 196, 100, 0.012);
+}
+
+.certifications-badge-display {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.certification-display-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 36px;
+  border-radius: 999px;
+  padding: 8px 13px;
+  background: rgba(8, 196, 100, 0.1);
+  color: var(--green);
+  border: 1px solid rgba(8, 196, 100, 0.15);
+  font-size: 0.84rem;
+  font-weight: 950;
+}
+
+.certification-display-badge::before {
+  content: "✓";
+  display: inline-grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  background: rgba(8, 196, 100, 0.14);
+  color: var(--green);
+  font-size: 0.7rem;
+}
+
+.certification-display-badge.self-reported::after {
+  content: "self-reported";
+  margin-left: 4px;
+  padding: 3px 7px;
+  border-radius: 999px;
+  background: rgba(12, 33, 66, 0.055);
+  color: var(--muted);
+  font-size: 0.65rem;
+  font-weight: 950;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.certifications-empty-state {
+  width: min(100%, 640px);
+  display: grid;
+  gap: 6px;
+  padding: 22px;
+  border-radius: 24px;
+  border: 1px dashed rgba(12, 33, 66, 0.15);
+  background:
+    radial-gradient(circle at 12% 20%, rgba(8, 196, 100, 0.08), transparent 32%),
+    rgba(12, 33, 66, 0.025);
+  color: var(--muted);
+}
+
+.certifications-empty-state strong {
+  color: var(--navy);
+  font-size: 0.98rem;
+  font-weight: 950;
+}
+
+.certifications-empty-state span {
+  color: var(--muted);
+  font-size: 0.88rem;
+  font-weight: 800;
+  line-height: 1.45;
+}
+
+.certifications-editor-shell {
+  display: grid;
+  gap: 16px;
+  padding: 0 42px 38px;
+  background: rgba(8, 196, 100, 0.012);
+}
+
+.editable-certifications-section[data-editing="true"] {
+  background: rgba(8, 196, 100, 0.018);
+}
+
+.certifications-action-row {
+  margin-top: 2px;
+}
+
+.certifications-action-row > span {
+  color: var(--muted);
+  font-size: 0.84rem;
+  font-weight: 800;
+  line-height: 1.4;
+}
+
+@media (max-width: 760px) {
+  .certifications-display-shell {
+    padding: 28px 24px;
+  }
+
+  .certifications-editor-shell {
+    padding: 0 24px 28px;
+  }
+
+  .certification-display-badge {
+    width: 100%;
+    justify-content: flex-start;
+  }
+}
