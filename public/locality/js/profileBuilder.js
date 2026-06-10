@@ -1299,6 +1299,12 @@ removeGalleryImageBtn?.addEventListener("click", removeSelectedGalleryImage);
 galleryCaptionInput?.addEventListener("input", () => {
   if (selectedGalleryIndex === null || !galleryWorkingImages[selectedGalleryIndex]) return;
 
+  galleryWorkingImages[selectedGalleryIndex].caption = galleryCaptionInput.value;
+});
+
+galleryCaptionInput?.addEventListener("blur", () => {
+  if (selectedGalleryIndex === null || !galleryWorkingImages[selectedGalleryIndex]) return;
+
   galleryWorkingImages[selectedGalleryIndex].caption = galleryCaptionInput.value.trim();
   renderGalleryManager();
 });
