@@ -1304,6 +1304,7 @@ galleryScrollRightBtn?.addEventListener("click", () => {
 
 manageGalleryBtn?.addEventListener("click", openGalleryManagerModal);
 galleryUploadBtn?.addEventListener("click", openGalleryManagerModal);
+galleryInlineManageBtn?.addEventListener("click", openGalleryManagerModal);
 
 closeGalleryManagerModalBtn?.addEventListener("click", closeGalleryManagerModal);
 cancelGalleryManagerBtn?.addEventListener("click", closeGalleryManagerModal);
