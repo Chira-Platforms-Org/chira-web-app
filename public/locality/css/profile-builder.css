@@ -1660,13 +1660,14 @@
   bottom: 10px;
   border-radius: 999px;
   padding: 7px 10px;
-  background: rgba(12, 33, 66, 0.72);
-  color: white;
+  background: rgba(255, 255, 255, 0.88);
+  color: var(--navy);
   font-size: 0.72rem;
   font-weight: 850;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  box-shadow: 0 8px 20px rgba(20, 50, 92, 0.12);
 }
 
 .selected-gallery-preview {
