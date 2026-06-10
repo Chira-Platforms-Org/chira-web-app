@@ -624,13 +624,11 @@
   position: relative;
   flex: 0 0 auto;
   height: 420px;
-  width: auto;
+  width: fit-content;
   max-width: 760px;
-  min-width: 260px;
   border-radius: 28px;
   overflow: hidden;
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(245, 248, 242, 0.96));
+  background: rgba(255, 255, 255, 0.96);
   border: 1px solid rgba(12, 33, 66, 0.08);
   box-shadow: 0 18px 42px rgba(20, 50, 92, 0.08);
   display: flex;
@@ -644,8 +642,9 @@
   max-width: 760px;
   object-fit: contain;
   display: block;
-  background: transparent;
+  border-radius: inherit;
 }
+
 /* Product preview replacement if needed */
 .product-preview-tile {
   min-height: 180px;
