@@ -321,11 +321,26 @@ function renderGalleryPreview() {
     card.className = "gallery-image-card";
 
     const img = document.createElement("img");
-    img.src = image.url;
-    img.alt = image.caption || "Business gallery image";
+      img.src = image.url;
+      img.alt = image.caption || "Business gallery image";
+      
+      function setGalleryCardRatio() {
+        if (!img.naturalWidth || !img.naturalHeight) return;
+      
+        const ratio = img.naturalWidth / img.naturalHeight;
+        const safeRatio = Math.max(0.55, Math.min(ratio, 1.85));
+      
+        card.style.setProperty("--gallery-card-ratio", safeRatio);
+      }
 
-    card.appendChild(img);
-    galleryPreviewGrid.insertBefore(card, galleryUploadBtn);
+img.addEventListener("load", setGalleryCardRatio);
+
+if (img.complete) {
+  setGalleryCardRatio();
+}
+
+card.appendChild(img);
+galleryPreviewGrid.insertBefore(card, galleryUploadBtn);
   });
 
   setSectionStatus("gallery", hasImages ? "complete" : "missing");
