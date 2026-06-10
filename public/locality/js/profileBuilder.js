@@ -27,6 +27,8 @@ const logoUploadBtn = document.getElementById("logoUploadBtn");
 const bannerUploadBtn = document.getElementById("bannerUploadBtn");
 const galleryUploadBtn = document.getElementById("galleryUploadBtn");
 
+const MAX_PROFILE_IMAGE_SIZE_BYTES = 5 * 1024 * 1024;
+
 const logoFileInput = document.getElementById("logoFileInput");
 const bannerFileInput = document.getElementById("bannerFileInput");
 const galleryFileInput = document.getElementById("galleryFileInput");
@@ -52,6 +54,9 @@ const selectedGalleryOrderLabel = document.getElementById("selectedGalleryOrderL
 const selectedGalleryPreview = document.getElementById("selectedGalleryPreview");
 const galleryCaptionInput = document.getElementById("galleryCaptionInput");
 const galleryManagerStatus = document.getElementById("galleryManagerStatus");
+
+const galleryScrollLeftBtn = document.getElementById("galleryScrollLeftBtn");
+const galleryScrollRightBtn = document.getElementById("galleryScrollRightBtn");
 
 const moveGalleryLeftBtn = document.getElementById("moveGalleryLeftBtn");
 const moveGalleryRightBtn = document.getElementById("moveGalleryRightBtn");
@@ -174,6 +179,22 @@ function setImagePreview(imageElement, placeholderElement, url) {
 
 function getSectionStatus(sectionKey) {
   return profileSectionStatus?.[sectionKey]?.status || "missing";
+}
+
+function validateProfileImageFile(file) {
+  if (!file) return false;
+
+  if (file.size > MAX_PROFILE_IMAGE_SIZE_BYTES) {
+    const sizeMb = (file.size / (1024 * 1024)).toFixed(1);
+
+    alert(
+      `This image is ${sizeMb} MB. Locality currently supports images up to 5 MB. Try exporting it as a smaller JPG or compressed PNG.`
+    );
+
+    return false;
+  }
+
+  return true;
 }
 
 function setSectionStatus(sectionKey, status) {
@@ -449,7 +470,9 @@ async function addGalleryFiles(files) {
     return;
   }
 
-  const filesToUpload = incomingFiles.slice(0, remainingSlots);
+  const filesToUpload = incomingFiles
+  .filter(validateProfileImageFile)
+  .slice(0, remainingSlots);
 
   setGalleryManagerStatus("Uploading gallery photos...");
 
@@ -479,7 +502,8 @@ async function addGalleryFiles(files) {
 
 async function replaceSelectedGalleryImage(file) {
   if (selectedGalleryIndex === null || !galleryWorkingImages[selectedGalleryIndex] || !file) return;
-
+  if (!validateProfileImageFile(file)) return;
+   
   setGalleryManagerStatus("Replacing selected photo...");
 
   const uploaded = await handleProfileMediaUpload(file, "gallery");
@@ -1182,7 +1206,8 @@ bannerUploadBtn?.addEventListener("click", () => bannerFileInput?.click());
 
 logoFileInput?.addEventListener("change", async () => {
   const file = logoFileInput.files?.[0];
-  if (!file) return;
+   if (!file) return;
+   if (!validateProfileImageFile(file)) return;
 
   const uploaded = await handleProfileMediaUpload(file, "logo");
   if (!uploaded?.url) return;
@@ -1194,7 +1219,8 @@ logoFileInput?.addEventListener("change", async () => {
 
 bannerFileInput?.addEventListener("change", async () => {
   const file = bannerFileInput.files?.[0];
-  if (!file) return;
+   if (!file) return;
+   if (!validateProfileImageFile(file)) return;
 
   const uploaded = await handleProfileMediaUpload(file, "banner");
   if (!uploaded?.url) return;
@@ -1255,6 +1281,25 @@ document.querySelectorAll(".save-section-draft").forEach((button) => {
     closeSectionEditor(sectionKey, false);
     await saveProfile(false);
   });
+});
+
+function scrollProfileGallery(direction) {
+  if (!galleryPreviewGrid) return;
+
+  const scrollAmount = Math.max(360, galleryPreviewGrid.clientWidth * 0.72);
+
+  galleryPreviewGrid.scrollBy({
+    left: direction * scrollAmount,
+    behavior: "smooth"
+  });
+}
+
+galleryScrollLeftBtn?.addEventListener("click", () => {
+  scrollProfileGallery(-1);
+});
+
+galleryScrollRightBtn?.addEventListener("click", () => {
+  scrollProfileGallery(1);
 });
 
 manageGalleryBtn?.addEventListener("click", openGalleryManagerModal);
@@ -1359,7 +1404,8 @@ teamPhotoUploadBtn?.addEventListener("click", () => {
 teamPhotoFileInput?.addEventListener("change", async () => {
   const file = teamPhotoFileInput.files?.[0];
 
-  if (!file) return;
+   if (!file) return;
+   if (!validateProfileImageFile(file)) return;
 
   const uploaded = await handleProfileMediaUpload(file, "team");
 
