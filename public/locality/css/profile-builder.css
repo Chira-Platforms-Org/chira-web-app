@@ -1766,3 +1766,45 @@
 .gallery-manager-footer .modal-actions {
   display: none;
 }
+
+.profile-gallery-frame {
+  position: relative;
+}
+
+.gallery-scroll-arrow {
+  position: absolute;
+  top: 50%;
+  z-index: 5;
+  width: 44px;
+  height: 44px;
+  transform: translateY(-50%);
+  border: 0;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--navy);
+  font-size: 2rem;
+  font-weight: 800;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: 0 14px 34px rgba(20, 50, 92, 0.14);
+  display: grid;
+  place-items: center;
+}
+
+.gallery-scroll-arrow:hover {
+  background: white;
+  transform: translateY(-50%) scale(1.04);
+}
+
+.gallery-scroll-arrow-left {
+  left: 18px;
+}
+
+.gallery-scroll-arrow-right {
+  right: 18px;
+}
+
+.gallery-empty-state ~ .gallery-scroll-arrow,
+.profile-gallery-frame:has(.gallery-empty-state) .gallery-scroll-arrow {
+  display: none;
+}
