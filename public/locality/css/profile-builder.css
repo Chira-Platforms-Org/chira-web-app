@@ -2201,3 +2201,112 @@
       0 18px 42px rgba(8, 196, 100, 0.18);
   }
 }
+
+/* =========================
+   PROFILE SETUP TRANSITION MODAL
+========================= */
+
+.setup-transition-card {
+  max-width: 760px;
+}
+
+.setup-transition-step {
+  display: grid;
+  gap: 18px;
+}
+
+.setup-transition-card h2 {
+  margin: 0;
+  color: var(--navy);
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  line-height: 1;
+  letter-spacing: -0.045em;
+}
+
+.setup-transition-summary {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.setup-transition-summary div,
+.setup-choice-card {
+  display: grid;
+  gap: 8px;
+  padding: 18px;
+  border-radius: 24px;
+  border: 1px solid rgba(12, 33, 66, 0.08);
+  background:
+    radial-gradient(circle at 16% 18%, rgba(8, 196, 100, 0.07), transparent 32%),
+    rgba(255, 255, 255, 0.72);
+}
+
+.setup-transition-summary strong,
+.setup-choice-card strong {
+  color: var(--navy);
+  font-size: 1rem;
+  font-weight: 950;
+  letter-spacing: -0.02em;
+}
+
+.setup-transition-summary span,
+.setup-choice-card span,
+.setup-transition-note {
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-weight: 780;
+  line-height: 1.45;
+}
+
+.setup-transition-actions {
+  margin-top: 4px;
+}
+
+.setup-choice-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.setup-choice-card {
+  min-height: 160px;
+  color: inherit;
+  text-decoration: none;
+  transition:
+    transform 0.16s ease,
+    border-color 0.16s ease,
+    box-shadow 0.16s ease,
+    background 0.16s ease;
+}
+
+.setup-choice-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(8, 196, 100, 0.2);
+  box-shadow: 0 18px 42px rgba(20, 50, 92, 0.1);
+}
+
+.setup-choice-card.primary {
+  border-color: rgba(8, 196, 100, 0.2);
+  background:
+    radial-gradient(circle at 86% 18%, rgba(8, 196, 100, 0.14), transparent 34%),
+    rgba(244, 255, 247, 0.94);
+}
+
+.setup-choice-card.primary strong {
+  color: var(--green);
+}
+
+.setup-transition-note {
+  margin: 0;
+  padding: 14px 16px;
+  border-radius: 20px;
+  background: rgba(8, 196, 100, 0.08);
+  color: var(--navy);
+}
+
+@media (max-width: 760px) {
+  .setup-transition-summary,
+  .setup-choice-grid {
+    grid-template-columns: 1fr;
+  }
+}
