@@ -6,6 +6,14 @@ const builderSaveDraftBtn = document.getElementById("builderSaveDraftBtn");
 const builderFinishBtn = document.getElementById("builderFinishBtn");
 const builderStatusText = document.getElementById("builderStatusText");
 
+const profileSetupModal = document.getElementById("profileSetupModal");
+const closeProfileSetupModalBtn = document.getElementById("closeProfileSetupModalBtn");
+const cancelProfileSetupBtn = document.getElementById("cancelProfileSetupBtn");
+const confirmProfileSetupBtn = document.getElementById("confirmProfileSetupBtn");
+const profileSetupConfirmStep = document.getElementById("profileSetupConfirmStep");
+const profileSetupNextStep = document.getElementById("profileSetupNextStep");
+const profileSetupModalStatus = document.getElementById("profileSetupModalStatus");
+
 const builderCompletionPercent = document.getElementById("builderCompletionPercent");
 const builderCompletionBar = document.getElementById("builderCompletionBar");
 const builderCompletionList = document.getElementById("builderCompletionList");
@@ -1559,22 +1567,61 @@ addCustomCertificationBtn?.addEventListener("click", () => {
   renderSelectedCertifications();
 });
 
+function openProfileSetupModal() {
+  if (!profileSetupModal) return;
+
+  profileSetupConfirmStep?.classList.remove("hidden");
+  profileSetupNextStep?.classList.add("hidden");
+
+  if (profileSetupModalStatus) {
+    profileSetupModalStatus.textContent = "You can still make changes before continuing.";
+  }
+
+  profileSetupModal.classList.remove("hidden");
+  profileSetupModal.setAttribute("aria-hidden", "false");
+}
+
+function closeProfileSetupModal() {
+  if (!profileSetupModal) return;
+
+  profileSetupModal.classList.add("hidden");
+  profileSetupModal.setAttribute("aria-hidden", "true");
+}
+
+function showSupplySetupPrompt() {
+  profileSetupConfirmStep?.classList.add("hidden");
+  profileSetupNextStep?.classList.remove("hidden");
+}
+
 builderSaveDraftBtn?.addEventListener("click", async () => {
   await saveProfile(false);
 });
 
-builderFinishBtn?.addEventListener("click", async () => {
+builderFinishBtn?.addEventListener("click", () => {
   const shortIntro = getCleanValue(shortIntroInput);
   const aboutUs = getCleanValue(aboutUsInput);
 
   if (!shortIntro) {
-    alert("Please add a short intro before finishing your profile.");
+    alert("Please add a profile summary before continuing.");
     return;
   }
 
   if (!aboutUs) {
-    alert("Please add an About us section before finishing your profile.");
+    alert("Please add an About us section before continuing.");
     return;
+  }
+
+  openProfileSetupModal();
+});
+
+confirmProfileSetupBtn?.addEventListener("click", async () => {
+  if (confirmProfileSetupBtn) {
+    confirmProfileSetupBtn.disabled = true;
+    confirmProfileSetupBtn.textContent = "Saving profile...";
+  }
+
+  if (profileSetupModalStatus) {
+    profileSetupModalStatus.textContent = "Saving your profile...";
   }
 
   if (getSectionStatus("short_intro") !== "complete") {
@@ -1587,8 +1634,33 @@ builderFinishBtn?.addEventListener("click", async () => {
 
   const savedProfile = await saveProfile(true);
 
-  if (savedProfile) {
-    window.location.href = "supplier.html";
+  if (!savedProfile) {
+    if (confirmProfileSetupBtn) {
+      confirmProfileSetupBtn.disabled = false;
+      confirmProfileSetupBtn.textContent = "Save profile & continue";
+    }
+
+    if (profileSetupModalStatus) {
+      profileSetupModalStatus.textContent = "Something went wrong. Please try saving again.";
+    }
+
+    return;
+  }
+
+  if (confirmProfileSetupBtn) {
+    confirmProfileSetupBtn.disabled = false;
+    confirmProfileSetupBtn.textContent = "Save profile & continue";
+  }
+
+  showSupplySetupPrompt();
+});
+
+closeProfileSetupModalBtn?.addEventListener("click", closeProfileSetupModal);
+cancelProfileSetupBtn?.addEventListener("click", closeProfileSetupModal);
+
+profileSetupModal?.addEventListener("click", (event) => {
+  if (event.target === profileSetupModal) {
+    closeProfileSetupModal();
   }
 });
 
