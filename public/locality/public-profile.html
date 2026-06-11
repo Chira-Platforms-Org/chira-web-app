@@ -1,1 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+  <title>Public Profile Preview | Locality</title>
+
+  <link rel="icon" type="image/png" href="images/Locality Flavicon Spinner.png" />
+  <link rel="apple-touch-icon" href="images/Locality Flavicon Spinner.png" />
+
+  <link rel="stylesheet" href="css/locality.css" />
+  <link rel="stylesheet" href="css/public-profile.css" />
+</head>
+
+<body class="public-profile-body">
+  <header class="public-profile-header">
+    <a href="index.html" class="public-profile-brand">
+      <img src="images/LOCALITY LOGO.png" alt="Locality" />
+    </a>
+
+    <nav class="public-profile-nav" aria-label="Public profile navigation">
+      <a href="profile-builder.html">Edit profile</a>
+      <a href="map.html">Explore network</a>
+      <a href="account.html" class="public-profile-nav-cta">Account</a>
+    </nav>
+  </header>
+
+  <main class="public-profile-shell">
+    <section id="publicProfileLoading" class="public-profile-state">
+      <strong>Loading profile...</strong>
+      <span>Preparing your buyer-facing profile preview.</span>
+    </section>
+
+    <section id="publicProfileEmpty" class="public-profile-state hidden">
+      <strong>No business profile found.</strong>
+      <span>Create your profile first, then come back to preview how buyers will see it.</span>
+      <a href="signup.html">Go to signup</a>
+    </section>
+
+    <section id="publicProfilePage" class="public-profile-page hidden">
+      <nav class="public-profile-tabs" aria-label="Business profile sections">
+        <a href="public-profile.html" class="public-profile-tab active">
+          <span>Business Profile</span>
+          <small>Story, trust, and identity</small>
+        </a>
+
+        <a href="#" class="public-profile-tab disabled" aria-disabled="true">
+          <span>Supply & Products</span>
+          <small>Products, pricing, and availability</small>
+          <em>Coming next</em>
+        </a>
+      </nav>
+
+      <section class="public-hero-section">
+        <div id="publicBanner" class="public-banner">
+          <img id="publicBannerImage" class="hidden" alt="" />
+          <span id="publicBannerFallback">Locality business profile</span>
+        </div>
+
+        <div class="public-identity-section">
+          <div id="publicLogoFrame" class="public-logo-frame">
+            <img id="publicLogoImage" class="hidden" alt="" />
+            <span id="publicLogoFallback">Logo</span>
+          </div>
+
+          <div class="public-main-details">
+            <p class="public-overline">Locality business profile</p>
+            <h1 id="publicBusinessName">Business name</h1>
+            <p id="publicMetaLine">Location • Category • Role</p>
+
+            <div id="publicContactLine" class="public-contact-line">
+              <span id="publicAddressText">Location</span>
+              <a id="publicWebsiteText" href="#" class="hidden" target="_blank" rel="noopener">Website</a>
+              <a id="publicEmailText" href="#" class="hidden">Email</a>
+              <a id="publicPhoneText" href="#" class="hidden">Phone</a>
+            </div>
+
+            <div class="public-chip-row">
+              <span id="publicRoleChip" class="public-chip">Role</span>
+              <span id="publicCategoryChip" class="public-chip">Category</span>
+              <span id="publicTrustChip" class="public-chip muted">Locality profile</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="publicSummarySection" class="public-profile-section">
+        <div class="public-section-heading">
+          <div>
+            <p class="public-section-kicker">Profile summary</p>
+            <h2>What buyers should know</h2>
+          </div>
+        </div>
+
+        <p id="publicShortIntro" class="public-section-text"></p>
+      </section>
+
+      <section id="publicGallerySection" class="public-profile-section public-gallery-section hidden">
+        <div class="public-section-heading">
+          <div>
+            <p class="public-section-kicker">Gallery</p>
+            <h2>A look inside the business</h2>
+          </div>
+        </div>
+
+        <p class="public-section-description">
+          Photos help buyers understand the products, people, spaces, and working style behind this business.
+        </p>
+
+        <div class="public-gallery-frame">
+          <button id="publicGalleryLeftBtn" type="button" class="public-gallery-arrow public-gallery-arrow-left" aria-label="Scroll gallery left">
+            ‹
+          </button>
+
+          <div id="publicGalleryStrip" class="public-gallery-strip"></div>
+
+          <button id="publicGalleryRightBtn" type="button" class="public-gallery-arrow public-gallery-arrow-right" aria-label="Scroll gallery right">
+            ›
+          </button>
+        </div>
+      </section>
+
+      <section class="public-story-grid">
+        <section id="publicOrderingSection" class="public-profile-section public-story-side hidden">
+          <div class="public-section-heading">
+            <div>
+              <p class="public-section-kicker">Ordering</p>
+              <h2>How to work together</h2>
+            </div>
+          </div>
+
+          <p id="publicOrderingGuidelines" class="public-section-text"></p>
+        </section>
+
+        <section id="publicAboutSection" class="public-profile-section public-story-main hidden">
+          <div class="public-section-heading">
+            <div>
+              <p class="public-section-kicker">About</p>
+              <h2>About this business</h2>
+            </div>
+          </div>
+
+          <p id="publicAboutUs" class="public-section-text"></p>
+        </section>
+      </section>
+
+      <section id="publicTeamSection" class="public-profile-section public-team-section hidden">
+        <div class="public-section-heading">
+          <div>
+            <p class="public-section-kicker">Team</p>
+            <h2 id="publicTeamTitle">Meet the team</h2>
+          </div>
+        </div>
+
+        <p class="public-section-description">
+          Local sourcing works best when buyers know the people behind the business.
+        </p>
+
+        <div id="publicTeamGrid" class="public-team-grid"></div>
+      </section>
+
+      <section id="publicCertificationsSection" class="public-profile-section public-certifications-section hidden">
+        <div class="public-section-heading">
+          <div>
+            <p class="public-section-kicker">Practices</p>
+            <h2>Certifications & practices</h2>
+          </div>
+        </div>
+
+        <p class="public-section-description">
+          These details are self-reported for now and help buyers understand standards, practices, and values.
+        </p>
+
+        <div id="publicCertificationsList" class="public-certifications-list"></div>
+      </section>
+
+      <section class="public-profile-section public-products-preview-section">
+        <div class="public-section-heading">
+          <div>
+            <p class="public-section-kicker">Supply</p>
+            <h2>Products and availability</h2>
+          </div>
+
+          <span class="public-coming-pill">Coming next</span>
+        </div>
+
+        <p class="public-section-description">
+          This profile explains who the business is. The supply page will show what buyers can order, including products, pricing, unit sizes, minimum orders, availability, and request details.
+        </p>
+
+        <div class="public-product-preview-row">
+          <div class="public-product-preview-card">
+            <strong>Featured products</strong>
+            <span>Preview key goods from the full supply page.</span>
+          </div>
+
+          <div class="public-product-preview-card">
+            <strong>Availability</strong>
+            <span>Show what is current, seasonal, or upcoming.</span>
+          </div>
+
+          <div class="public-product-preview-card">
+            <strong>Ordering terms</strong>
+            <span>Clarify units, minimums, pricing, and request details.</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="public-profile-cta-section">
+        <div>
+          <p class="public-section-kicker">Next step</p>
+          <h2>Interested in working with this business?</h2>
+          <p>
+            Buyers will eventually be able to view supply, request quotes, message the business, or begin a contract workflow from here.
+          </p>
+        </div>
+
+        <div class="public-cta-actions">
+          <a href="#" class="public-primary-cta disabled" aria-disabled="true">View supply page</a>
+          <a id="publicContactCta" href="#" class="public-secondary-cta hidden">Contact business</a>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabaseConfig.js"></script>
+  <script src="js/supabaseClient.js"></script>
+  <script src="js/authService.js"></script>
+  <script src="js/profileService.js"></script>
+  <script src="js/publicProfile.js"></script>
+</body>
+</html>
