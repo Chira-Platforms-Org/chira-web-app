@@ -40,7 +40,7 @@
       </button>
     
       <button id="builderFinishBtn" type="button" class="builder-primary-btn">
-        Finish profile
+        Save & Continue Setup
       </button>
     </div>
   </header>
@@ -81,8 +81,8 @@
     
         <a href="#" class="profile-page-tab disabled" aria-disabled="true">
           <span>Supply & Products</span>
-          <small>Products, pricing, and availability</small>
-          <em>Coming next</em>
+          <small>Set up after completing your profile</small>
+          <em>Next step</em>
         </a>
       </nav>
     
@@ -534,6 +534,75 @@
       </section>
     </section>
   </main>
+
+
+  <div id="profileSetupModal" class="profile-modal setup-transition-modal hidden" aria-hidden="true">
+  <div class="profile-modal-card setup-transition-card">
+    <button id="closeProfileSetupModalBtn" type="button" class="profile-modal-close" aria-label="Close">
+      ×
+    </button>
+
+    <div id="profileSetupConfirmStep" class="setup-transition-step">
+      <p class="section-kicker recommended">Profile setup</p>
+      <h2>Ready to finish your business profile?</h2>
+
+      <p class="modal-helper-text">
+        This will save your profile and mark the main profile sections as complete. You can come back anytime to update your story, photos, team, certifications, or ordering details from your workspace.
+      </p>
+
+      <div class="setup-transition-summary">
+        <div>
+          <strong>Business profile</strong>
+          <span>Your story, trust details, gallery, team, and public-facing identity.</span>
+        </div>
+
+        <div>
+          <strong>Supply & Products</strong>
+          <span>The next step where you can add products, availability, pricing, units, and order details.</span>
+        </div>
+      </div>
+
+      <div class="modal-action-row setup-transition-actions">
+        <span id="profileSetupModalStatus">You can still make changes before continuing.</span>
+
+        <div class="modal-actions">
+          <button id="cancelProfileSetupBtn" type="button" class="builder-secondary-btn">
+            Keep editing
+          </button>
+
+          <button id="confirmProfileSetupBtn" type="button" class="builder-primary-btn">
+            Save profile & continue
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div id="profileSetupNextStep" class="setup-transition-step hidden">
+      <p class="section-kicker recommended">Next step</p>
+      <h2>Set up your Supply & Products page?</h2>
+
+      <p class="modal-helper-text">
+        Your Supply & Products page is where buyers can see what you offer, when it may be available, and the details they need to start an order, quote request, or contract conversation.
+      </p>
+
+      <div class="setup-choice-grid">
+        <a href="supply-builder.html" class="setup-choice-card primary">
+          <strong>Add products now</strong>
+          <span>Start entering products, unit sizes, availability, pricing, minimum orders, and fulfillment notes.</span>
+        </a>
+
+        <a href="supplier.html" class="setup-choice-card">
+          <strong>Skip for now</strong>
+          <span>Finish setup and come back later from your workspace when you are ready to add products.</span>
+        </a>
+      </div>
+
+      <p class="setup-transition-note">
+        Welcome to Locality. Good food starts with good relationships — and this profile is the first step in helping buyers get to know yours.
+      </p>
+    </div>
+  </div>
+</div>
 
   <div id="galleryManagerModal" class="profile-modal gallery-manager-modal hidden" aria-hidden="true">
   <div class="profile-modal-card gallery-manager-card">
