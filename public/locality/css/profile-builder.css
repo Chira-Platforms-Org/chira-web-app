@@ -65,8 +65,8 @@
 .profile-mode-switch {
   display: inline-flex;
   align-items: center;
-  min-width: 238px;
-  height: 46px;
+  min-width: 278px;
+  height: 48px;
   text-decoration: none;
   color: var(--navy);
 }
@@ -74,7 +74,7 @@
 .mode-switch-track {
   position: relative;
   width: 100%;
-  height: 46px;
+  height: 48px;
   display: grid;
   grid-template-columns: 1fr 1fr;
   align-items: center;
@@ -106,7 +106,7 @@
   top: 4px;
   z-index: 2;
   width: calc(50% - 6px);
-  height: 38px;
+  height: 40px;
   display: grid;
   place-items: center;
   border-radius: 999px;
@@ -123,7 +123,7 @@
 }
 
 .mode-switch-knob span {
-  font-size: 0.78rem;
+  font-size: 0.76rem;
   font-weight: 950;
   letter-spacing: -0.01em;
 }
@@ -2149,6 +2149,55 @@
 
   .mode-switch-option,
   .mode-switch-knob span {
-    font-size: 0.72rem;
+    font-size: 0.76rem;
+  }
+}
+
+/* =========================================================
+   Mini animation for switch
+========================================================= */
+
+.profile-builder-page .profile-mode-switch {
+  animation: modeSwitchIntro 1.15s ease 0.55s 1 both;
+}
+
+@keyframes modeSwitchIntro {
+  0% {
+    transform: translateY(0);
+  }
+
+  28% {
+    transform: translateY(-2px);
+  }
+
+  56% {
+    transform: translateY(0);
+  }
+
+  78% {
+    transform: translateY(-1px);
+  }
+
+  100% {
+    transform: translateY(0);
+  }
+}
+
+.profile-builder-page .profile-mode-switch .mode-switch-track {
+  animation: modeSwitchGlow 1.15s ease 0.55s 1 both;
+}
+
+@keyframes modeSwitchGlow {
+  0%,
+  100% {
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.88),
+      0 14px 32px rgba(20, 50, 92, 0.08);
+  }
+
+  45% {
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.88),
+      0 18px 42px rgba(8, 196, 100, 0.18);
   }
 }
