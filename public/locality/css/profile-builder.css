@@ -2207,44 +2207,58 @@
 ========================= */
 
 .setup-transition-card {
-  max-width: 760px;
+  width: min(860px, 94vw);
+  max-width: 860px;
+  padding: 42px 46px 38px;
+  gap: 24px;
 }
 
 .setup-transition-step {
   display: grid;
-  gap: 18px;
+  gap: 22px;
 }
 
 .setup-transition-card h2 {
+  max-width: 700px;
   margin: 0;
   color: var(--navy);
-  font-size: clamp(1.8rem, 4vw, 2.6rem);
-  line-height: 1;
-  letter-spacing: -0.045em;
+  font-size: clamp(2.1rem, 4vw, 3.05rem);
+  line-height: 0.96;
+  letter-spacing: -0.055em;
+}
+
+.setup-transition-card .modal-helper-text {
+  max-width: 680px;
+  margin: 0;
+  color: var(--muted);
+  font-size: 1rem;
+  font-weight: 780;
+  line-height: 1.58;
 }
 
 .setup-transition-summary {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 14px;
+  gap: 18px;
+  margin-top: 2px;
 }
 
 .setup-transition-summary div,
 .setup-choice-card {
   display: grid;
-  gap: 8px;
-  padding: 18px;
-  border-radius: 24px;
+  gap: 10px;
+  padding: 22px;
+  border-radius: 26px;
   border: 1px solid rgba(12, 33, 66, 0.08);
   background:
     radial-gradient(circle at 16% 18%, rgba(8, 196, 100, 0.07), transparent 32%),
-    rgba(255, 255, 255, 0.72);
+    rgba(255, 255, 255, 0.74);
 }
 
 .setup-transition-summary strong,
 .setup-choice-card strong {
   color: var(--navy);
-  font-size: 1rem;
+  font-size: 1.05rem;
   font-weight: 950;
   letter-spacing: -0.02em;
 }
@@ -2253,23 +2267,42 @@
 .setup-choice-card span,
 .setup-transition-note {
   color: var(--muted);
-  font-size: 0.9rem;
+  font-size: 0.94rem;
   font-weight: 780;
-  line-height: 1.45;
+  line-height: 1.55;
 }
 
 .setup-transition-actions {
-  margin-top: 4px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 18px;
+  margin-top: 6px;
+}
+
+.setup-transition-actions > span {
+  max-width: 360px;
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-weight: 820;
+  line-height: 1.45;
+}
+
+.setup-transition-actions .modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  flex-wrap: nowrap;
 }
 
 .setup-choice-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 14px;
+  gap: 18px;
 }
 
 .setup-choice-card {
-  min-height: 160px;
+  min-height: 178px;
   color: inherit;
   text-decoration: none;
   transition:
@@ -2298,15 +2331,29 @@
 
 .setup-transition-note {
   margin: 0;
-  padding: 14px 16px;
+  padding: 16px 18px;
   border-radius: 20px;
   background: rgba(8, 196, 100, 0.08);
   color: var(--navy);
 }
 
 @media (max-width: 760px) {
+  .setup-transition-card {
+    padding: 30px 22px 24px;
+  }
+
   .setup-transition-summary,
-  .setup-choice-grid {
+  .setup-choice-grid,
+  .setup-transition-actions {
     grid-template-columns: 1fr;
+  }
+
+  .setup-transition-actions .modal-actions {
+    justify-content: stretch;
+    flex-wrap: wrap;
+  }
+
+  .setup-transition-actions .modal-actions button {
+    width: 100%;
   }
 }
