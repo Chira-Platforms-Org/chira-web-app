@@ -63,6 +63,19 @@
     </aside>
 
     <section class="public-profile-page">
+      <nav class="profile-page-tabs" aria-label="Business profile sections">
+        <a href="profile-builder.html" class="profile-page-tab active">
+          <span>Business Profile</span>
+          <small>Story, trust, and identity</small>
+        </a>
+    
+        <a href="#" class="profile-page-tab disabled" aria-disabled="true">
+          <span>Supply & Products</span>
+          <small>Products, pricing, and availability</small>
+          <em>Coming next</em>
+        </a>
+      </nav>
+    
       <section class="profile-hero-section">
         <button id="bannerUploadBtn" type="button" class="profile-banner-zone">
           <img id="bannerPreviewImage" class="media-preview hidden" alt="" />
@@ -166,7 +179,7 @@
         </p>
 
         <p class="gallery-format-note">
-          Wide or landscape photos work best. Images will be cropped slightly to keep the gallery clean.
+          Upload clear photos of your business, products, team, growing space, storefront, or pickup experience. Images keep a consistent height while adapting to their natural shape.
         </p>
 
         <div class="gallery-inline-toolbar">
@@ -464,17 +477,34 @@
             <p class="section-kicker recommended">Recommended later</p>
             <h2>Product preview</h2>
           </div>
-          <span class="section-status-pill muted">Coming later</span>
+          <span class="section-status-pill muted">Supply page coming next</span>
         </div>
-
+      
         <p class="section-description">
-          Once you add products, buyers will be able to preview what you offer and continue to your product page for availability, pricing, and request details.
+          Your business profile helps buyers understand who you are. Your supply page will show what buyers can order, including products, availability, unit sizes, pricing, minimum orders, and request details.
         </p>
-
+      
         <div class="product-preview-row">
-          <div class="product-preview-tile">Products will appear here</div>
-          <div class="product-preview-tile">Availability will appear here</div>
-          <div class="product-preview-tile">Buyers can request quotes later</div>
+          <div class="product-preview-tile">
+            <strong>Featured products</strong>
+            <span>Highlight a few key goods from your full supply page.</span>
+          </div>
+      
+          <div class="product-preview-tile">
+            <strong>Availability windows</strong>
+            <span>Show when products are currently available or seasonally expected.</span>
+          </div>
+      
+          <div class="product-preview-tile">
+            <strong>Ordering details</strong>
+            <span>Help buyers understand units, minimums, pricing, and quote requests.</span>
+          </div>
+        </div>
+      
+        <div class="product-preview-action-row">
+          <button type="button" class="builder-secondary-btn product-preview-disabled-btn" disabled>
+            Set up supply page later
+          </button>
         </div>
       </section>
 
