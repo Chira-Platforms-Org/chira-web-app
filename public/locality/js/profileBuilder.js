@@ -40,6 +40,7 @@ const bannerPlaceholder = document.getElementById("bannerPlaceholder");
 const galleryPreviewGrid = document.getElementById("galleryPreviewGrid");
 
 const manageGalleryBtn = document.getElementById("manageGalleryBtn");
+const galleryInlineManageBtn = document.getElementById("galleryInlineManageBtn");
 const galleryManagerModal = document.getElementById("galleryManagerModal");
 const closeGalleryManagerModalBtn = document.getElementById("closeGalleryManagerModalBtn");
 const cancelGalleryManagerBtn = document.getElementById("cancelGalleryManagerBtn");
