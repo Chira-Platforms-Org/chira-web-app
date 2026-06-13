@@ -21,7 +21,7 @@
 
     <div class="supply-builder-topbar-copy">
       <strong>Supply & Products Builder</strong>
-      <span>Add the products, availability, and buying details buyers need.</span>
+      <span>Add products, availability, units, pricing, and buying details.</span>
     </div>
 
     <div class="supply-builder-topbar-actions">
@@ -60,7 +60,7 @@
       </ul>
 
       <p id="supplyStatusText" class="supply-status-text">
-        Supply draft ready.
+        Loading supply builder...
       </p>
     </aside>
 
@@ -77,35 +77,55 @@
         </a>
       </nav>
 
-      <section class="supply-hero-panel">
-        <div>
-          <p class="supply-kicker">Next setup step</p>
-          <h1>Build your Supply & Products page.</h1>
-          <p>
-            Add the goods buyers can request from you, including what each unit means, when products are available, minimum orders, pricing, and fulfillment notes.
-          </p>
-        </div>
+      <section class="supply-business-header">
+        <div id="supplyMiniBanner" class="supply-mini-banner"></div>
 
-        <button id="openAddProductBtn" type="button" class="supply-primary-btn supply-hero-action">
-          + Add product
-        </button>
+        <div class="supply-business-header-content">
+          <div id="supplyBusinessLogo" class="supply-business-logo">
+            <span>?</span>
+          </div>
+
+          <div class="supply-business-copy">
+            <p class="supply-kicker">Supply & Products setup</p>
+            <h1 id="supplyBusinessName">Loading business...</h1>
+            <p id="supplyBusinessMeta">Preparing your product page.</p>
+            <p id="supplyBusinessIntro" class="supply-business-intro">
+              Add the goods buyers can request from you, then control how they appear on your Supply & Products page.
+            </p>
+          </div>
+        </div>
       </section>
 
-      <section class="supply-guidance-strip">
-        <article>
-          <strong>Keep units clear</strong>
-          <span>If you sell by case, box, crate, bag, or pallet, explain what that unit contains.</span>
-        </article>
+      <section class="supply-tools-row" aria-label="Product browsing controls">
+        <label class="supply-tool-field search">
+          <span>Search</span>
+          <input id="productSearchInput" type="search" placeholder="Search products..." />
+        </label>
 
-        <article>
-          <strong>Feature key products</strong>
-          <span>Featured products can appear first and later feed your main profile preview.</span>
-        </article>
+        <label class="supply-tool-field">
+          <span>Category</span>
+          <select id="productCategoryFilter">
+            <option value="all">All categories</option>
+          </select>
+        </label>
 
-        <article>
-          <strong>Use practical buying details</strong>
-          <span>Minimums, lead times, and delivery notes help buyers know how to start.</span>
-        </article>
+        <label class="supply-tool-field">
+          <span>Availability</span>
+          <select id="productAvailabilityFilter">
+            <option value="all">All availability</option>
+          </select>
+        </label>
+
+        <label class="supply-tool-field">
+          <span>Sort by</span>
+          <select id="productSortSelect">
+            <option value="custom">Custom order</option>
+            <option value="featured">Featured first</option>
+            <option value="name">Name A–Z</option>
+            <option value="newest">Newest first</option>
+            <option value="public">Public first</option>
+          </select>
+        </label>
       </section>
 
       <section class="supply-products-section">
@@ -116,205 +136,27 @@
           </div>
 
           <div class="supply-heading-actions">
-            <button id="collapseAllProductsBtn" type="button" class="supply-mini-btn">
-              Collapse all
-            </button>
-
-            <button id="openAddProductBtnSecondary" type="button" class="supply-mini-btn featured">
-              + Add product
+            <button id="resetProductViewBtn" type="button" class="supply-mini-btn">
+              Reset view
             </button>
           </div>
         </div>
 
         <p class="supply-section-description">
-          Product cards are shown in the same general style buyers will see later. Click a card to expand it and review buying details.
+          Add products as buyer-facing cards. Use the order controls to decide how products appear by default. The add-product card always stays at the end.
         </p>
 
-        <div id="productGrid" class="product-grid"></div>
-
-        <div id="emptyProductState" class="empty-product-state hidden">
-          <strong>No products yet</strong>
-          <span>Add your first product to start building your Supply & Products page.</span>
-          <button type="button" class="supply-primary-btn" id="emptyAddProductBtn">
-            Add first product
-          </button>
-        </div>
+        <div id="productGrid" class="product-grid" aria-live="polite"></div>
       </section>
     </section>
   </main>
 
-  <div id="productModal" class="supply-modal hidden" aria-hidden="true">
-    <div class="supply-modal-card">
-      <button id="closeProductModalBtn" type="button" class="supply-modal-close" aria-label="Close">
-        ×
-      </button>
-
-      <p class="supply-kicker">Product details</p>
-      <h2 id="productModalTitle">Add product</h2>
-
-      <p class="modal-helper-text">
-        Add the practical details a buyer needs to understand what this product is, how it is sold, and how to start a request.
-      </p>
-
-      <form id="productForm" class="product-form">
-        <section class="product-form-section">
-          <h3>Product basics</h3>
-
-          <div class="form-grid two-columns">
-            <label class="form-field">
-              Product name
-              <input id="productNameInput" type="text" placeholder="Rainbow carrots" maxlength="100" required />
-            </label>
-
-            <label class="form-field">
-              Category
-              <select id="productCategoryInput">
-                <option value="Produce">Produce</option>
-                <option value="Fruit">Fruit</option>
-                <option value="Herbs">Herbs</option>
-                <option value="Dairy">Dairy</option>
-                <option value="Eggs">Eggs</option>
-                <option value="Meat">Meat</option>
-                <option value="Flowers">Flowers</option>
-                <option value="Prepared goods">Prepared goods</option>
-                <option value="Other">Other</option>
-              </select>
-            </label>
-          </div>
-
-          <label class="form-field">
-            Short description
-            <textarea id="productDescriptionInput" placeholder="Briefly describe quality, variety, growing approach, best uses, or what makes this product worth noting." maxlength="700"></textarea>
-          </label>
-
-          <label class="form-field">
-            Image URL for now
-            <input id="productImageInput" type="url" placeholder="https://..." />
-            <span class="field-note">Temporary for this front-end version. We can add real image upload after the product structure feels right.</span>
-          </label>
-        </section>
-
-        <section class="product-form-section">
-          <h3>Pricing and units</h3>
-
-          <div class="form-grid three-columns">
-            <label class="form-field">
-              Price display
-              <input id="productPriceInput" type="text" placeholder="$20" maxlength="40" />
-            </label>
-
-            <label class="form-field">
-              Price unit
-              <select id="productUnitInput">
-                <option value="lb">per lb</option>
-                <option value="oz">per oz</option>
-                <option value="kg">per kg</option>
-                <option value="each">per each</option>
-                <option value="dozen">per dozen</option>
-                <option value="bunch">per bunch</option>
-                <option value="case">per case</option>
-                <option value="box">per box</option>
-                <option value="crate">per crate</option>
-                <option value="bag">per bag</option>
-                <option value="flat">per flat</option>
-                <option value="pallet">per pallet</option>
-                <option value="custom">custom unit</option>
-              </select>
-            </label>
-
-            <label class="form-field">
-              Minimum order
-              <input id="productMinimumInput" type="text" placeholder="4 cases" maxlength="80" />
-            </label>
-          </div>
-
-          <label id="unitDescriptionField" class="form-field unit-description-field">
-            Explain this unit
-            <input id="productUnitDescriptionInput" type="text" placeholder="Example: 1 case = 5 lbs, 1 box = 12 bunches, or 1 crate = approx. 20 lbs" maxlength="140" />
-            <span class="field-note">Required for custom or ambiguous units like case, box, crate, bag, flat, pallet, or custom.</span>
-          </label>
-        </section>
-
-        <section class="product-form-section">
-          <h3>Availability and fulfillment</h3>
-
-          <div class="form-grid two-columns">
-            <label class="form-field">
-              Availability status
-              <select id="productAvailabilityInput">
-                <option value="Available now">Available now</option>
-                <option value="Limited availability">Limited availability</option>
-                <option value="Seasonal">Seasonal</option>
-                <option value="Coming soon">Coming soon</option>
-                <option value="Sold out">Sold out</option>
-                <option value="Contract only">Contract only</option>
-                <option value="Quote only">Quote only</option>
-              </select>
-            </label>
-
-            <label class="form-field">
-              Seasonal or timing notes
-              <input id="productSeasonInput" type="text" placeholder="March–June, weekly harvest, preorder for fall..." maxlength="140" />
-            </label>
-          </div>
-
-          <label class="form-field">
-            Fulfillment notes
-            <textarea id="productFulfillmentInput" placeholder="Pickup, delivery route, lead time, packaging, cold storage, advance notice, or other buying details." maxlength="700"></textarea>
-          </label>
-        </section>
-
-        <section class="product-form-section compact">
-          <h3>Visibility</h3>
-
-          <div class="form-grid two-columns">
-            <label class="toggle-field">
-              <input id="productFeaturedInput" type="checkbox" />
-              <span>
-                <strong>Feature on profile</strong>
-                <small>Featured products appear first and can later show in your profile preview.</small>
-              </span>
-            </label>
-
-            <label class="form-field">
-              Product visibility
-              <select id="productVisibilityInput">
-                <option value="public">Public</option>
-                <option value="draft">Draft</option>
-                <option value="hidden">Hidden</option>
-              </select>
-            </label>
-          </div>
-        </section>
-
-        <div class="modal-action-row">
-          <span id="productModalStatus">Products are saved locally in this first version.</span>
-
-          <div class="modal-actions">
-            <button id="deleteProductBtn" type="button" class="supply-danger-btn hidden">
-              Remove product
-            </button>
-
-            <button id="cancelProductBtn" type="button" class="supply-secondary-btn">
-              Cancel
-            </button>
-
-            <button type="submit" class="supply-primary-btn">
-              Save product
-            </button>
-          </div>
-        </div>
-      </form>
-    </div>
-  </div>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="js/supabaseConfig.js"></script>
-<script src="js/supabaseClient.js"></script>
-<script src="js/authService.js"></script>
-<script src="js/profileService.js"></script>
-<script src="js/productService.js"></script>
-<script src="js/supplyBuilder.js"></script>
-  
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabaseConfig.js"></script>
+  <script src="js/supabaseClient.js"></script>
+  <script src="js/authService.js"></script>
+  <script src="js/profileService.js"></script>
+  <script src="js/productService.js"></script>
+  <script src="js/supplyBuilder.js"></script>
 </body>
 </html>
