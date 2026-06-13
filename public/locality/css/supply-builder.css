@@ -287,17 +287,17 @@
 
 .supply-business-header-content {
   display: grid;
-  grid-template-columns: 112px minmax(0, 1fr);
-  gap: 22px;
+  grid-template-columns: 148px minmax(0, 1fr);
+  gap: 26px;
   align-items: center;
 }
 
 .supply-business-logo {
-  width: 112px;
-  height: 112px;
-  border-radius: 28px;
+  width: 148px;
+  height: 148px;
+  border-radius: 30px;
   border: 1px solid rgba(12, 33, 66, 0.1);
-  background: rgba(255, 255, 255, 0.96);
+  background: white;
   box-shadow: 0 16px 36px rgba(20, 50, 92, 0.1);
   display: grid;
   place-items: center;
@@ -311,8 +311,7 @@
   object-position: center;
   padding: 0;
   display: block;
-  transform: scale(1.38);
-  transform-origin: center;
+  transform: none;
 }
 
 .supply-business-logo span {
