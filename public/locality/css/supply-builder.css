@@ -278,60 +278,51 @@
 ========================= */
 
 .supply-business-header {
-  position: relative;
-  padding: 0;
+  padding: 30px 36px;
   border-bottom: 1px solid rgba(12, 33, 66, 0.08);
-  background: rgba(255, 255, 255, 0.72);
-}
-
-.supply-mini-banner {
-  height: 118px;
   background:
-    linear-gradient(90deg, rgba(12, 33, 66, 0.58), rgba(12, 33, 66, 0.08)),
-    radial-gradient(circle at 16% 24%, rgba(8, 196, 100, 0.18), transparent 35%),
-    linear-gradient(135deg, #edf8ec, #fffaf0);
-  background-size: cover;
-  background-position: center;
+    radial-gradient(circle at 92% 12%, rgba(8, 196, 100, 0.07), transparent 30%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(255, 252, 245, 0.86));
 }
 
 .supply-business-header-content {
   display: grid;
-  grid-template-columns: 92px minmax(0, 1fr);
-  gap: 18px;
+  grid-template-columns: 112px minmax(0, 1fr);
+  gap: 22px;
   align-items: center;
-  padding: 0 36px 24px;
-  margin-top: -38px;
 }
 
 .supply-business-logo {
-  width: 92px;
-  height: 92px;
-  border-radius: 26px;
+  width: 112px;
+  height: 112px;
+  border-radius: 28px;
   border: 1px solid rgba(12, 33, 66, 0.1);
-  background: rgba(255, 255, 255, 0.94);
-  box-shadow: 0 14px 32px rgba(20, 50, 92, 0.1);
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 16px 36px rgba(20, 50, 92, 0.1);
   display: grid;
   place-items: center;
   overflow: hidden;
 }
 
 .supply-business-logo img {
-  width: 100%;
-  height: 100%;
+  width: 88%;
+  height: 88%;
   object-fit: contain;
-  padding: 10px;
+  padding: 0;
+  display: block;
+  transform: scale(1.08);
 }
 
 .supply-business-logo span {
   color: var(--green);
-  font-size: 1.7rem;
+  font-size: 1.8rem;
   font-weight: 950;
 }
 
 .supply-business-copy {
   min-width: 0;
   display: grid;
-  gap: 4px;
+  gap: 6px;
 }
 
 .supply-kicker {
@@ -346,8 +337,8 @@
 .supply-business-copy h1 {
   margin: 0;
   color: var(--navy);
-  font-size: clamp(2rem, 4.5vw, 3.4rem);
-  line-height: 0.96;
+  font-size: clamp(2.35rem, 4.5vw, 4rem);
+  line-height: 0.94;
   letter-spacing: -0.055em;
 }
 
@@ -357,18 +348,17 @@
 
 #supplyBusinessMeta {
   color: var(--muted);
-  font-size: 0.92rem;
+  font-size: 0.96rem;
   font-weight: 850;
 }
 
 .supply-business-intro {
-  max-width: 760px;
+  max-width: 780px;
   color: var(--muted);
-  font-size: 0.9rem;
+  font-size: 0.94rem;
   font-weight: 760;
-  line-height: 1.5;
+  line-height: 1.48;
 }
-
 /* =========================
    TOOLS
 ========================= */
@@ -899,10 +889,18 @@
     flex-direction: column;
   }
 
-  .supply-business-header-content {
-    grid-template-columns: 1fr;
-    padding: 0 24px 24px;
-  }
+.supply-business-header {
+  padding: 26px 24px;
+}
+
+.supply-business-header-content {
+  grid-template-columns: 1fr;
+}
+
+.supply-business-logo {
+  width: 96px;
+  height: 96px;
+}
 
   .supply-tools-row,
   .product-grid,
