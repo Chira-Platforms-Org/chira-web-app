@@ -1,49 +1,29 @@
 /* =========================
    LOCALITY SUPPLY BUILDER
-   Front-end prototype state only
+   Supabase-backed product builder.
 ========================= */
 
 const productGrid = document.getElementById("productGrid");
-const emptyProductState = document.getElementById("emptyProductState");
 
-const openAddProductBtn = document.getElementById("openAddProductBtn");
-const openAddProductBtnSecondary = document.getElementById("openAddProductBtnSecondary");
-const emptyAddProductBtn = document.getElementById("emptyAddProductBtn");
-const collapseAllProductsBtn = document.getElementById("collapseAllProductsBtn");
-
-const saveSupplyDraftBtn = document.getElementById("saveSupplyDraftBtn");
-const finishSupplySetupBtn = document.getElementById("finishSupplySetupBtn");
 const supplyStatusText = document.getElementById("supplyStatusText");
-
 const supplyCompletionPercent = document.getElementById("supplyCompletionPercent");
 const supplyCompletionBar = document.getElementById("supplyCompletionBar");
 const supplyCompletionList = document.getElementById("supplyCompletionList");
 
-const productModal = document.getElementById("productModal");
-const closeProductModalBtn = document.getElementById("closeProductModalBtn");
-const cancelProductBtn = document.getElementById("cancelProductBtn");
-const deleteProductBtn = document.getElementById("deleteProductBtn");
-const productForm = document.getElementById("productForm");
-const productModalTitle = document.getElementById("productModalTitle");
-const productModalStatus = document.getElementById("productModalStatus");
+const saveSupplyDraftBtn = document.getElementById("saveSupplyDraftBtn");
+const finishSupplySetupBtn = document.getElementById("finishSupplySetupBtn");
+const resetProductViewBtn = document.getElementById("resetProductViewBtn");
 
-const productNameInput = document.getElementById("productNameInput");
-const productCategoryInput = document.getElementById("productCategoryInput");
-const productDescriptionInput = document.getElementById("productDescriptionInput");
-const productImageInput = document.getElementById("productImageInput");
+const supplyMiniBanner = document.getElementById("supplyMiniBanner");
+const supplyBusinessLogo = document.getElementById("supplyBusinessLogo");
+const supplyBusinessName = document.getElementById("supplyBusinessName");
+const supplyBusinessMeta = document.getElementById("supplyBusinessMeta");
+const supplyBusinessIntro = document.getElementById("supplyBusinessIntro");
 
-const productPriceInput = document.getElementById("productPriceInput");
-const productUnitInput = document.getElementById("productUnitInput");
-const productMinimumInput = document.getElementById("productMinimumInput");
-const unitDescriptionField = document.getElementById("unitDescriptionField");
-const productUnitDescriptionInput = document.getElementById("productUnitDescriptionInput");
-
-const productAvailabilityInput = document.getElementById("productAvailabilityInput");
-const productSeasonInput = document.getElementById("productSeasonInput");
-const productFulfillmentInput = document.getElementById("productFulfillmentInput");
-
-const productFeaturedInput = document.getElementById("productFeaturedInput");
-const productVisibilityInput = document.getElementById("productVisibilityInput");
+const productSearchInput = document.getElementById("productSearchInput");
+const productCategoryFilter = document.getElementById("productCategoryFilter");
+const productAvailabilityFilter = document.getElementById("productAvailabilityFilter");
+const productSortSelect = document.getElementById("productSortSelect");
 
 const ambiguousUnits = new Set([
   "case",
@@ -55,65 +35,33 @@ const ambiguousUnits = new Set([
   "custom"
 ]);
 
-let products = [
-  {
-    id: "sample-rainbow-carrots",
-    name: "Rainbow carrots",
-    category: "Produce",
-    description:
-      "Colorful carrots grown for restaurants, markets, and buyers looking for a visually distinct seasonal item.",
-    image_url: "",
-    price_display: "$20",
-    price_unit: "case",
-    unit_description: "1 case = approx. 5 lbs",
-    minimum_order: "4 cases",
-    availability_status: "Available now",
-    season_notes: "Weekly harvest during spring and early summer.",
-    fulfillment_notes:
-      "Pickup available with 48 hours notice. Local delivery may be available for recurring orders.",
-    featured: true,
-    visibility: "public"
-  },
-  {
-    id: "sample-mixed-greens",
-    name: "Mixed greens",
-    category: "Produce",
-    description:
-      "Fresh mixed greens suited for cafés, restaurants, market boxes, and small grocery displays.",
-    image_url: "",
-    price_display: "$8",
-    price_unit: "lb",
-    unit_description: "",
-    minimum_order: "10 lbs",
-    availability_status: "Limited availability",
-    season_notes: "Best availability early spring and fall.",
-    fulfillment_notes:
-      "Packed cold. Please plan pickup or delivery quickly after harvest.",
-    featured: false,
-    visibility: "public"
-  },
-  {
-    id: "sample-basil",
-    name: "Fresh basil",
-    category: "Herbs",
-    description:
-      "Aromatic basil for kitchens, specialty grocery, prepared foods, and seasonal menu use.",
-    image_url: "",
-    price_display: "Quote required",
-    price_unit: "bunch",
-    unit_description: "1 bunch = approx. 3 oz",
-    minimum_order: "12 bunches",
-    availability_status: "Seasonal",
-    season_notes: "Summer availability, weather dependent.",
-    fulfillment_notes:
-      "Best ordered close to use date. Can be bundled with other herb orders.",
-    featured: false,
-    visibility: "draft"
-  }
+const categories = [
+  "Produce",
+  "Fruit",
+  "Herbs",
+  "Dairy",
+  "Eggs",
+  "Meat",
+  "Flowers",
+  "Prepared goods",
+  "Other"
 ];
 
-let expandedProductId = products[0]?.id || null;
+const availabilityOptions = [
+  "Available now",
+  "Limited availability",
+  "Seasonal",
+  "Coming soon",
+  "Sold out",
+  "Contract only",
+  "Quote only"
+];
+
+let currentProfile = null;
+let products = [];
 let editingProductId = null;
+let isCreatingProduct = false;
+let isSaving = false;
 
 function setSupplyStatus(message) {
   if (supplyStatusText) {
@@ -125,196 +73,250 @@ function getCleanValue(input) {
   return input?.value?.trim() || "";
 }
 
-function getSelectedProductUnitLabel(unit) {
+function unitNeedsDescription(unit) {
+  return ambiguousUnits.has(unit);
+}
+
+function getUnitLabel(unit) {
   if (!unit) return "unit";
   if (unit === "custom") return "custom unit";
   return unit;
 }
 
-function unitNeedsDescription(unit) {
-  return ambiguousUnits.has(unit);
+function getBusinessRoles(profile) {
+  const roles = Array.isArray(profile?.marketplace_roles)
+    ? profile.marketplace_roles
+    : [];
+
+  return roles
+    .map((role) => {
+      if (role === "buyer_seller") return "Buyer / Seller";
+      if (role === "seller") return "Seller";
+      if (role === "buyer") return "Buyer";
+      return String(role || "")
+        .replace(/_/g, " ")
+        .replace(/\b\w/g, (char) => char.toUpperCase());
+    })
+    .filter(Boolean);
 }
 
-function updateUnitDescriptionRequirement() {
-  const unit = productUnitInput?.value || "";
-  const isRequired = unitNeedsDescription(unit);
+function getBusinessCategories(profile) {
+  const categoriesValue = Array.isArray(profile?.business_categories)
+    ? profile.business_categories
+    : [];
 
-  unitDescriptionField?.classList.toggle("is-required", isRequired);
+  return categoriesValue
+    .map((category) => {
+      if (category === "farm") return "Farm";
+      return String(category || "")
+        .replace(/_/g, " ")
+        .replace(/\b\w/g, (char) => char.toUpperCase());
+    })
+    .filter(Boolean);
+}
 
-  if (productUnitDescriptionInput) {
-    productUnitDescriptionInput.required = isRequired;
+function getBusinessLocation(profile) {
+  return profile?.location_label || profile?.address || "";
+}
+
+function getInitials(name = "") {
+  const words = name.trim().split(/\s+/).filter(Boolean);
+
+  if (!words.length) return "?";
+
+  return words
+    .slice(0, 2)
+    .map((word) => word[0]?.toUpperCase())
+    .join("");
+}
+
+function renderBusinessHeader(profile) {
+  if (!profile) return;
+
+  const name = profile.name || "Your business";
+  const location = getBusinessLocation(profile);
+  const roles = getBusinessRoles(profile);
+  const businessCategories = getBusinessCategories(profile);
+  const metaParts = [location, ...businessCategories, ...roles].filter(Boolean);
+
+  if (supplyBusinessName) {
+    supplyBusinessName.textContent = name;
+  }
+
+  if (supplyBusinessMeta) {
+    supplyBusinessMeta.textContent = metaParts.length
+      ? metaParts.join(" • ")
+      : "Supply & Products setup";
+  }
+
+  if (supplyBusinessIntro) {
+    supplyBusinessIntro.textContent =
+      "Add products, clarify units, and decide how buyers will understand your available supply.";
+  }
+
+  if (supplyMiniBanner && profile.banner_image_url) {
+    supplyMiniBanner.style.backgroundImage =
+      `linear-gradient(90deg, rgba(12, 33, 66, 0.56), rgba(12, 33, 66, 0.08)), url("${profile.banner_image_url}")`;
+  }
+
+  if (supplyBusinessLogo) {
+    supplyBusinessLogo.innerHTML = "";
+
+    if (profile.logo_url) {
+      const logo = document.createElement("img");
+      logo.src = profile.logo_url;
+      logo.alt = `${name} logo`;
+      supplyBusinessLogo.appendChild(logo);
+    } else {
+      const initials = document.createElement("span");
+      initials.textContent = getInitials(name);
+      supplyBusinessLogo.appendChild(initials);
+    }
   }
 }
 
-function buildProductPayload() {
+function normalizeProduct(product = {}, index = 0) {
   return {
-    id: editingProductId || `product-${Date.now()}`,
-    name: getCleanValue(productNameInput),
-    category: productCategoryInput?.value || "Other",
-    description: getCleanValue(productDescriptionInput),
-    image_url: getCleanValue(productImageInput),
-    price_display: getCleanValue(productPriceInput),
-    price_unit: productUnitInput?.value || "lb",
-    unit_description: getCleanValue(productUnitDescriptionInput),
-    minimum_order: getCleanValue(productMinimumInput),
-    availability_status: productAvailabilityInput?.value || "Available now",
-    season_notes: getCleanValue(productSeasonInput),
-    fulfillment_notes: getCleanValue(productFulfillmentInput),
-    featured: Boolean(productFeaturedInput?.checked),
-    visibility: productVisibilityInput?.value || "public",
-    updated_at: new Date().toISOString()
+    id: product.id,
+    business_profile_id: product.business_profile_id || currentProfile?.id || "",
+    name: product.name || "",
+    category: product.category || "Other",
+    description: product.description || "",
+    image_url: product.image_url || "",
+    price_display: product.price_display || "",
+    price_unit: product.price_unit || "lb",
+    unit_description: product.unit_description || "",
+    minimum_order: product.minimum_order || "",
+    availability_status: product.availability_status || "Available now",
+    season_notes: product.season_notes || "",
+    fulfillment_notes: product.fulfillment_notes || "",
+    featured: Boolean(product.featured),
+    visibility: product.visibility || "draft",
+    sort_order: Number.isFinite(Number(product.sort_order))
+      ? Number(product.sort_order)
+      : index,
+    created_at: product.created_at || null,
+    updated_at: product.updated_at || null
   };
 }
 
-function resetProductForm() {
-  editingProductId = null;
+function getProductsInCustomOrder(list = products) {
+  return [...list].sort((a, b) => {
+    const orderA = Number.isFinite(Number(a.sort_order)) ? Number(a.sort_order) : 0;
+    const orderB = Number.isFinite(Number(b.sort_order)) ? Number(b.sort_order) : 0;
 
-  if (productModalTitle) productModalTitle.textContent = "Add product";
-  if (productModalStatus) productModalStatus.textContent = "Products are saved locally in this first version.";
-  if (deleteProductBtn) deleteProductBtn.classList.add("hidden");
+    if (orderA !== orderB) return orderA - orderB;
 
-  productForm?.reset();
-
-  if (productCategoryInput) productCategoryInput.value = "Produce";
-  if (productUnitInput) productUnitInput.value = "lb";
-  if (productAvailabilityInput) productAvailabilityInput.value = "Available now";
-  if (productVisibilityInput) productVisibilityInput.value = "public";
-
-  updateUnitDescriptionRequirement();
-}
-
-function openProductModal(productId = null) {
-  resetProductForm();
-
-  const product = products.find((item) => item.id === productId);
-
-  if (product) {
-    editingProductId = product.id;
-
-    if (productModalTitle) productModalTitle.textContent = "Edit product";
-    if (deleteProductBtn) deleteProductBtn.classList.remove("hidden");
-
-    if (productNameInput) productNameInput.value = product.name || "";
-    if (productCategoryInput) productCategoryInput.value = product.category || "Other";
-    if (productDescriptionInput) productDescriptionInput.value = product.description || "";
-    if (productImageInput) productImageInput.value = product.image_url || "";
-
-    if (productPriceInput) productPriceInput.value = product.price_display || "";
-    if (productUnitInput) productUnitInput.value = product.price_unit || "lb";
-    if (productMinimumInput) productMinimumInput.value = product.minimum_order || "";
-    if (productUnitDescriptionInput) productUnitDescriptionInput.value = product.unit_description || "";
-
-    if (productAvailabilityInput) productAvailabilityInput.value = product.availability_status || "Available now";
-    if (productSeasonInput) productSeasonInput.value = product.season_notes || "";
-    if (productFulfillmentInput) productFulfillmentInput.value = product.fulfillment_notes || "";
-
-    if (productFeaturedInput) productFeaturedInput.checked = Boolean(product.featured);
-    if (productVisibilityInput) productVisibilityInput.value = product.visibility || "public";
-
-    updateUnitDescriptionRequirement();
-  }
-
-  productModal?.classList.remove("hidden");
-  productModal?.setAttribute("aria-hidden", "false");
-
-  setTimeout(() => {
-    productNameInput?.focus();
-  }, 50);
-}
-
-function closeProductModal() {
-  productModal?.classList.add("hidden");
-  productModal?.setAttribute("aria-hidden", "true");
-}
-
-function saveProduct(event) {
-  event.preventDefault();
-
-  const payload = buildProductPayload();
-
-  if (!payload.name) {
-    if (productModalStatus) {
-      productModalStatus.textContent = "Please add a product name before saving.";
-    }
-    return;
-  }
-
-  if (unitNeedsDescription(payload.price_unit) && !payload.unit_description) {
-    if (productModalStatus) {
-      productModalStatus.textContent =
-        "Please explain what this unit means so buyers understand exactly what they are ordering.";
-    }
-
-    productUnitDescriptionInput?.focus();
-    return;
-  }
-
-  if (editingProductId) {
-    products = products.map((product) =>
-      product.id === editingProductId
-        ? { ...product, ...payload }
-        : product
-    );
-  } else {
-    products.push({
-      ...payload,
-      created_at: new Date().toISOString()
-    });
-
-    expandedProductId = payload.id;
-  }
-
-  sortProducts();
-  renderProducts();
-  updateSupplyReadiness();
-  closeProductModal();
-  setSupplyStatus("Product saved locally. Supabase saving comes next.");
-}
-
-function deleteCurrentProduct() {
-  if (!editingProductId) return;
-
-  const shouldDelete = confirm("Remove this product from your supply page?");
-
-  if (!shouldDelete) return;
-
-  products = products.filter((product) => product.id !== editingProductId);
-
-  if (expandedProductId === editingProductId) {
-    expandedProductId = products[0]?.id || null;
-  }
-
-  renderProducts();
-  updateSupplyReadiness();
-  closeProductModal();
-  setSupplyStatus("Product removed.");
-}
-
-function toggleFeatured(productId) {
-  products = products.map((product) =>
-    product.id === productId
-      ? { ...product, featured: !product.featured }
-      : product
-  );
-
-  sortProducts();
-  renderProducts();
-  updateSupplyReadiness();
-}
-
-function sortProducts() {
-  products.sort((a, b) => {
-    if (a.featured && !b.featured) return -1;
-    if (!a.featured && b.featured) return 1;
-    return a.name.localeCompare(b.name);
+    return new Date(a.created_at || 0) - new Date(b.created_at || 0);
   });
 }
 
-function getAvailabilityClass(status = "") {
-  return status
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/(^-|-$)/g, "");
+function refreshFilterOptions() {
+  if (!productCategoryFilter || !productAvailabilityFilter) return;
+
+  const selectedCategory = productCategoryFilter.value || "all";
+  const selectedAvailability = productAvailabilityFilter.value || "all";
+
+  const productCategories = [...new Set(products.map((product) => product.category).filter(Boolean))];
+  const productAvailability = [...new Set(products.map((product) => product.availability_status).filter(Boolean))];
+
+  productCategoryFilter.innerHTML = `<option value="all">All categories</option>`;
+  productAvailabilityFilter.innerHTML = `<option value="all">All availability</option>`;
+
+  [...new Set([...categories, ...productCategories])].forEach((category) => {
+    const option = document.createElement("option");
+    option.value = category;
+    option.textContent = category;
+    productCategoryFilter.appendChild(option);
+  });
+
+  [...new Set([...availabilityOptions, ...productAvailability])].forEach((availability) => {
+    const option = document.createElement("option");
+    option.value = availability;
+    option.textContent = availability;
+    productAvailabilityFilter.appendChild(option);
+  });
+
+  productCategoryFilter.value = [...productCategoryFilter.options].some((option) => option.value === selectedCategory)
+    ? selectedCategory
+    : "all";
+
+  productAvailabilityFilter.value = [...productAvailabilityFilter.options].some((option) => option.value === selectedAvailability)
+    ? selectedAvailability
+    : "all";
+}
+
+function getVisibleProducts() {
+  const searchValue = (productSearchInput?.value || "").trim().toLowerCase();
+  const selectedCategory = productCategoryFilter?.value || "all";
+  const selectedAvailability = productAvailabilityFilter?.value || "all";
+  const sortMode = productSortSelect?.value || "custom";
+
+  let visibleProducts = [...products];
+
+  if (searchValue) {
+    visibleProducts = visibleProducts.filter((product) => {
+      const searchableText = [
+        product.name,
+        product.category,
+        product.description,
+        product.price_display,
+        product.price_unit,
+        product.unit_description,
+        product.minimum_order,
+        product.availability_status,
+        product.season_notes,
+        product.fulfillment_notes
+      ]
+        .join(" ")
+        .toLowerCase();
+
+      return searchableText.includes(searchValue);
+    });
+  }
+
+  if (selectedCategory !== "all") {
+    visibleProducts = visibleProducts.filter((product) => product.category === selectedCategory);
+  }
+
+  if (selectedAvailability !== "all") {
+    visibleProducts = visibleProducts.filter((product) => product.availability_status === selectedAvailability);
+  }
+
+  if (sortMode === "featured") {
+    visibleProducts.sort((a, b) => Number(b.featured) - Number(a.featured) || a.name.localeCompare(b.name));
+  } else if (sortMode === "name") {
+    visibleProducts.sort((a, b) => a.name.localeCompare(b.name));
+  } else if (sortMode === "newest") {
+    visibleProducts.sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
+  } else if (sortMode === "public") {
+    visibleProducts.sort((a, b) => {
+      const aPublic = a.visibility === "public" ? 1 : 0;
+      const bPublic = b.visibility === "public" ? 1 : 0;
+
+      return bPublic - aPublic || a.name.localeCompare(b.name);
+    });
+  } else {
+    visibleProducts = getProductsInCustomOrder(visibleProducts);
+  }
+
+  return visibleProducts;
+}
+
+function createMetaItem(label, value) {
+  const item = document.createElement("div");
+  item.className = "product-meta-item";
+
+  const labelElement = document.createElement("span");
+  labelElement.textContent = label;
+
+  const valueElement = document.createElement("strong");
+  valueElement.textContent = value || "Not set";
+
+  item.appendChild(labelElement);
+  item.appendChild(valueElement);
+
+  return item;
 }
 
 function renderProductImage(product) {
@@ -325,22 +327,43 @@ function renderProductImage(product) {
   badgeRow.className = "product-badge-row";
 
   const availabilityBadge = document.createElement("span");
-  availabilityBadge.className = `product-badge availability-${getAvailabilityClass(product.availability_status)}`;
+  availabilityBadge.className = "product-badge";
   availabilityBadge.textContent = product.availability_status || "Availability";
-
   badgeRow.appendChild(availabilityBadge);
+
+  const rightBadges = document.createElement("div");
+  rightBadges.style.display = "flex";
+  rightBadges.style.gap = "8px";
+  rightBadges.style.flexWrap = "wrap";
+  rightBadges.style.justifyContent = "flex-end";
+
+  if (product.visibility === "draft") {
+    const draftBadge = document.createElement("span");
+    draftBadge.className = "product-badge draft";
+    draftBadge.textContent = "Draft";
+    rightBadges.appendChild(draftBadge);
+  }
+
+  if (product.visibility === "hidden") {
+    const hiddenBadge = document.createElement("span");
+    hiddenBadge.className = "product-badge hidden-product";
+    hiddenBadge.textContent = "Hidden";
+    rightBadges.appendChild(hiddenBadge);
+  }
 
   if (product.featured) {
     const featuredBadge = document.createElement("span");
     featuredBadge.className = "product-badge featured";
     featuredBadge.textContent = "Featured";
-    badgeRow.appendChild(featuredBadge);
+    rightBadges.appendChild(featuredBadge);
   }
+
+  badgeRow.appendChild(rightBadges);
 
   if (product.image_url) {
     const image = document.createElement("img");
     image.src = product.image_url;
-    image.alt = product.name ? `${product.name} product image` : "Product image";
+    image.alt = `${product.name || "Product"} image`;
     frame.appendChild(image);
   } else {
     const placeholder = document.createElement("span");
@@ -354,10 +377,8 @@ function renderProductImage(product) {
 }
 
 function renderProductCard(product) {
-  const isExpanded = product.id === expandedProductId;
-
   const card = document.createElement("article");
-  card.className = `product-card${isExpanded ? " expanded" : ""}`;
+  card.className = "product-card";
   card.dataset.productId = product.id;
 
   card.appendChild(renderProductImage(product));
@@ -372,8 +393,7 @@ function renderProductCard(product) {
   title.textContent = product.name || "Unnamed product";
 
   const description = document.createElement("p");
-  description.textContent =
-    product.description || "Add a short product description to help buyers understand this item.";
+  description.textContent = product.description || "Add a description to help buyers understand this product.";
 
   heading.appendChild(title);
   heading.appendChild(description);
@@ -381,21 +401,18 @@ function renderProductCard(product) {
   const metaGrid = document.createElement("div");
   metaGrid.className = "product-meta-grid";
 
-  const priceMeta = createMetaItem(
-    "Price",
-    product.price_display
-      ? `${product.price_display} / ${getSelectedProductUnitLabel(product.price_unit)}`
-      : "Price not set"
+  metaGrid.appendChild(
+    createMetaItem(
+      "Price",
+      product.price_display
+        ? `${product.price_display} / ${getUnitLabel(product.price_unit)}`
+        : "Not set"
+    )
   );
 
-  const minMeta = createMetaItem("Minimum", product.minimum_order || "Minimum not set");
-  const availabilityMeta = createMetaItem("Availability", product.availability_status || "Not set");
-  const visibilityMeta = createMetaItem("Visibility", product.visibility || "Draft");
-
-  metaGrid.appendChild(priceMeta);
-  metaGrid.appendChild(minMeta);
-  metaGrid.appendChild(availabilityMeta);
-  metaGrid.appendChild(visibilityMeta);
+  metaGrid.appendChild(createMetaItem("Minimum", product.minimum_order || "Not set"));
+  metaGrid.appendChild(createMetaItem("Availability", product.availability_status || "Not set"));
+  metaGrid.appendChild(createMetaItem("Visibility", product.visibility || "draft"));
 
   body.appendChild(heading);
   body.appendChild(metaGrid);
@@ -407,115 +424,580 @@ function renderProductCard(product) {
     body.appendChild(unitClarity);
   } else if (unitNeedsDescription(product.price_unit)) {
     const unitClarity = document.createElement("div");
-    unitClarity.className = "unit-clarity";
+    unitClarity.className = "unit-clarity warning";
     unitClarity.textContent = "Unit meaning needed — explain what this unit contains.";
     body.appendChild(unitClarity);
   }
 
-  const expandedDetails = document.createElement("div");
-  expandedDetails.className = "product-expanded-details";
-
-  expandedDetails.appendChild(
-    createDetailBlock("Timing", product.season_notes || "No timing notes added yet.")
-  );
-
-  expandedDetails.appendChild(
-    createDetailBlock("Fulfillment", product.fulfillment_notes || "No pickup, delivery, or fulfillment notes added yet.")
-  );
-
   const actions = document.createElement("div");
   actions.className = "product-card-actions";
 
-  const editBtn = document.createElement("button");
-  editBtn.type = "button";
-  editBtn.textContent = "Edit product";
-  editBtn.addEventListener("click", (event) => {
-    event.stopPropagation();
-    openProductModal(product.id);
-  });
+  const editButton = document.createElement("button");
+  editButton.type = "button";
+  editButton.textContent = "Edit";
+  editButton.addEventListener("click", () => startEditingProduct(product.id));
 
-  const featureBtn = document.createElement("button");
-  featureBtn.type = "button";
-  featureBtn.className = `feature-toggle${product.featured ? " is-featured" : ""}`;
-  featureBtn.textContent = product.featured ? "Featured" : "Feature on profile";
-  featureBtn.addEventListener("click", (event) => {
-    event.stopPropagation();
-    toggleFeatured(product.id);
-  });
+  const moveEarlierButton = document.createElement("button");
+  moveEarlierButton.type = "button";
+  moveEarlierButton.textContent = "Move earlier";
+  moveEarlierButton.disabled = !canMoveProduct(product.id, -1);
+  moveEarlierButton.addEventListener("click", () => moveProduct(product.id, -1));
 
-  const quoteLink = document.createElement("a");
-  quoteLink.href = "coming-soon.html";
-  quoteLink.textContent = "Request flow preview";
-  quoteLink.addEventListener("click", (event) => {
-    event.stopPropagation();
-  });
+  const moveLaterButton = document.createElement("button");
+  moveLaterButton.type = "button";
+  moveLaterButton.textContent = "Move later";
+  moveLaterButton.disabled = !canMoveProduct(product.id, 1);
+  moveLaterButton.addEventListener("click", () => moveProduct(product.id, 1));
 
-  actions.appendChild(editBtn);
-  actions.appendChild(featureBtn);
-  actions.appendChild(quoteLink);
+  const featureButton = document.createElement("button");
+  featureButton.type = "button";
+  featureButton.className = `feature-toggle${product.featured ? " is-featured" : ""}`;
+  featureButton.textContent = product.featured ? "Featured" : "Feature";
+  featureButton.addEventListener("click", () => toggleFeatured(product.id));
 
-  expandedDetails.appendChild(actions);
+  actions.appendChild(editButton);
+  actions.appendChild(moveEarlierButton);
+  actions.appendChild(moveLaterButton);
+  actions.appendChild(featureButton);
 
-  body.appendChild(expandedDetails);
+  body.appendChild(actions);
   card.appendChild(body);
-
-  card.addEventListener("click", () => {
-    expandedProductId = isExpanded ? null : product.id;
-    renderProducts();
-  });
 
   return card;
 }
 
-function createMetaItem(label, value) {
-  const item = document.createElement("div");
-  item.className = "product-meta-item";
+function renderAddProductCard() {
+  if (isCreatingProduct) {
+    return renderProductEditor(null);
+  }
 
-  const labelElement = document.createElement("span");
-  labelElement.textContent = label;
+  const card = document.createElement("button");
+  card.type = "button";
+  card.className = "product-add-card";
+  card.addEventListener("click", startCreatingProduct);
 
-  const valueElement = document.createElement("strong");
-  valueElement.textContent = value;
+  const icon = document.createElement("div");
+  icon.className = "product-add-icon";
+  icon.textContent = "+";
 
-  item.appendChild(labelElement);
-  item.appendChild(valueElement);
+  const title = document.createElement("strong");
+  title.textContent = "Add product";
 
-  return item;
+  const description = document.createElement("span");
+  description.textContent =
+    "Create a product card with pricing, unit size, availability, and fulfillment details.";
+
+  card.appendChild(icon);
+  card.appendChild(title);
+  card.appendChild(description);
+
+  return card;
 }
 
-function createDetailBlock(label, value) {
-  const block = document.createElement("div");
-  block.className = "product-detail-block";
+function renderNoMatchingProductsCard() {
+  const card = document.createElement("div");
+  card.className = "no-products-card";
 
-  const labelElement = document.createElement("span");
-  labelElement.textContent = label;
+  const title = document.createElement("strong");
+  title.textContent = "No products match this view";
 
-  const text = document.createElement("p");
-  text.textContent = value;
+  const description = document.createElement("span");
+  description.textContent = "Try clearing your filters, changing your search, or adding a new product.";
 
-  block.appendChild(labelElement);
-  block.appendChild(text);
+  card.appendChild(title);
+  card.appendChild(description);
 
-  return block;
+  return card;
 }
 
-function renderProducts() {
-  if (!productGrid || !emptyProductState) return;
+function createSelectOptions(values, selectedValue) {
+  return values
+    .map((value) => {
+      const selected = value === selectedValue ? "selected" : "";
+      return `<option value="${value}" ${selected}>${value}</option>`;
+    })
+    .join("");
+}
 
-  productGrid.innerHTML = "";
+function renderProductEditor(product) {
+  const isEdit = Boolean(product?.id);
+  const card = document.createElement("article");
+  card.className = "product-editor-card";
+  card.dataset.editorFor = isEdit ? product.id : "new";
 
-  if (!products.length) {
-    productGrid.classList.add("hidden");
-    emptyProductState.classList.remove("hidden");
+  card.innerHTML = `
+    <div class="product-editor-heading">
+      <div>
+        <h3>${isEdit ? "Edit product" : "Add a new product"}</h3>
+        <p>${isEdit ? "Update how this product appears on your Supply & Products page." : "Fill out the details buyers need, then save this product to your supply catalog."}</p>
+      </div>
+    </div>
+
+    <form class="product-form">
+      <section class="product-form-section">
+        <h4>Product basics</h4>
+
+        <div class="form-grid two-columns">
+          <label class="form-field">
+            Product name
+            <input name="name" type="text" placeholder="Rainbow carrots" maxlength="120" required />
+          </label>
+
+          <label class="form-field">
+            Category
+            <select name="category">
+              ${createSelectOptions(categories, product?.category || "Produce")}
+            </select>
+          </label>
+        </div>
+
+        <label class="form-field">
+          Short description
+          <textarea name="description" maxlength="700" placeholder="Briefly describe quality, variety, growing approach, best uses, or what makes this product worth noting."></textarea>
+        </label>
+
+        <label class="form-field">
+          Image URL for now
+          <input name="image_url" type="url" placeholder="https://..." />
+          <span class="field-note">Temporary for this first version. We can add real image upload after the product builder structure is working.</span>
+        </label>
+      </section>
+
+      <section class="product-form-section">
+        <h4>Pricing and units</h4>
+
+        <div class="form-grid three-columns">
+          <label class="form-field">
+            Price display
+            <input name="price_display" type="text" placeholder="$20" maxlength="40" />
+          </label>
+
+          <label class="form-field">
+            Price unit
+            <select name="price_unit">
+              <option value="lb">per lb</option>
+              <option value="oz">per oz</option>
+              <option value="kg">per kg</option>
+              <option value="each">per each</option>
+              <option value="dozen">per dozen</option>
+              <option value="bunch">per bunch</option>
+              <option value="case">per case</option>
+              <option value="box">per box</option>
+              <option value="crate">per crate</option>
+              <option value="bag">per bag</option>
+              <option value="flat">per flat</option>
+              <option value="pallet">per pallet</option>
+              <option value="custom">custom unit</option>
+            </select>
+          </label>
+
+          <label class="form-field">
+            Minimum order
+            <input name="minimum_order" type="text" placeholder="4 cases" maxlength="80" />
+          </label>
+        </div>
+
+        <label class="form-field unit-description-field">
+          Explain this unit
+          <input name="unit_description" type="text" placeholder="Example: 1 case = 5 lbs, 1 box = 12 bunches, or 1 crate = approx. 20 lbs" maxlength="140" />
+          <span class="field-note">Required for custom or ambiguous units like case, box, crate, bag, flat, pallet, or custom.</span>
+        </label>
+      </section>
+
+      <section class="product-form-section">
+        <h4>Availability and fulfillment</h4>
+
+        <div class="form-grid two-columns">
+          <label class="form-field">
+            Availability status
+            <select name="availability_status">
+              ${createSelectOptions(availabilityOptions, product?.availability_status || "Available now")}
+            </select>
+          </label>
+
+          <label class="form-field">
+            Seasonal or timing notes
+            <input name="season_notes" type="text" placeholder="March–June, weekly harvest, preorder for fall..." maxlength="140" />
+          </label>
+        </div>
+
+        <label class="form-field">
+          Fulfillment notes
+          <textarea name="fulfillment_notes" maxlength="700" placeholder="Pickup, delivery route, lead time, packaging, cold storage, advance notice, or other buying details."></textarea>
+        </label>
+      </section>
+
+      <section class="product-form-section">
+        <h4>Visibility</h4>
+
+        <div class="form-grid two-columns">
+          <label class="toggle-field">
+            <input name="featured" type="checkbox" />
+            <span>
+              <strong>Feature on profile</strong>
+              <small>Featured products can later feed your profile preview and receive a buyer-facing badge.</small>
+            </span>
+          </label>
+
+          <label class="form-field">
+            Product visibility
+            <select name="visibility">
+              <option value="public">Public</option>
+              <option value="draft">Draft</option>
+              <option value="hidden">Hidden</option>
+            </select>
+          </label>
+        </div>
+      </section>
+
+      <p class="editor-status">Products save directly to your Locality supply catalog.</p>
+
+      <div class="editor-actions">
+        ${isEdit ? `<button type="button" class="supply-danger-btn" data-action="delete">Remove product</button>` : ""}
+        <button type="button" class="supply-secondary-btn" data-action="cancel">Cancel</button>
+        <button type="submit" class="supply-primary-btn">${isEdit ? "Save changes" : "Save product"}</button>
+      </div>
+    </form>
+  `;
+
+  const form = card.querySelector("form");
+  const status = card.querySelector(".editor-status");
+
+  const fields = {
+    name: form.elements.name,
+    category: form.elements.category,
+    description: form.elements.description,
+    image_url: form.elements.image_url,
+    price_display: form.elements.price_display,
+    price_unit: form.elements.price_unit,
+    minimum_order: form.elements.minimum_order,
+    unit_description: form.elements.unit_description,
+    availability_status: form.elements.availability_status,
+    season_notes: form.elements.season_notes,
+    fulfillment_notes: form.elements.fulfillment_notes,
+    featured: form.elements.featured,
+    visibility: form.elements.visibility
+  };
+
+  fields.name.value = product?.name || "";
+  fields.category.value = product?.category || "Produce";
+  fields.description.value = product?.description || "";
+  fields.image_url.value = product?.image_url || "";
+  fields.price_display.value = product?.price_display || "";
+  fields.price_unit.value = product?.price_unit || "lb";
+  fields.minimum_order.value = product?.minimum_order || "";
+  fields.unit_description.value = product?.unit_description || "";
+  fields.availability_status.value = product?.availability_status || "Available now";
+  fields.season_notes.value = product?.season_notes || "";
+  fields.fulfillment_notes.value = product?.fulfillment_notes || "";
+  fields.featured.checked = Boolean(product?.featured);
+  fields.visibility.value = product?.visibility || "draft";
+
+  updateUnitRequirementForForm(form);
+
+  fields.price_unit.addEventListener("change", () => {
+    updateUnitRequirementForForm(form);
+  });
+
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    await saveProductFromForm(form, product, status);
+  });
+
+  form.querySelector('[data-action="cancel"]')?.addEventListener("click", cancelEditing);
+  form.querySelector('[data-action="delete"]')?.addEventListener("click", async () => {
+    await deleteProduct(product.id);
+  });
+
+  setTimeout(() => {
+    fields.name.focus();
+  }, 50);
+
+  return card;
+}
+
+function updateUnitRequirementForForm(form) {
+  const unitSelect = form.elements.price_unit;
+  const unitDescriptionInput = form.elements.unit_description;
+  const unitDescriptionField = unitDescriptionInput.closest(".unit-description-field");
+  const isRequired = unitNeedsDescription(unitSelect.value);
+
+  unitDescriptionField.classList.toggle("is-required", isRequired);
+  unitDescriptionInput.required = isRequired;
+}
+
+function buildPayloadFromForm(form, existingProduct = null) {
+  const fields = form.elements;
+  const maxSortOrder = products.reduce((max, product) => Math.max(max, Number(product.sort_order) || 0), -1);
+
+  return {
+    business_profile_id: currentProfile.id,
+    name: fields.name.value.trim(),
+    category: fields.category.value,
+    description: fields.description.value.trim(),
+    image_url: fields.image_url.value.trim(),
+    price_display: fields.price_display.value.trim(),
+    price_unit: fields.price_unit.value,
+    unit_description: fields.unit_description.value.trim(),
+    minimum_order: fields.minimum_order.value.trim(),
+    availability_status: fields.availability_status.value,
+    season_notes: fields.season_notes.value.trim(),
+    fulfillment_notes: fields.fulfillment_notes.value.trim(),
+    featured: fields.featured.checked,
+    visibility: fields.visibility.value,
+    sort_order: existingProduct?.sort_order ?? maxSortOrder + 1
+  };
+}
+
+async function saveProductFromForm(form, existingProduct, statusElement) {
+  if (isSaving) return;
+
+  const payload = buildPayloadFromForm(form, existingProduct);
+
+  if (!payload.name) {
+    statusElement.textContent = "Please add a product name before saving.";
+    form.elements.name.focus();
     return;
   }
 
-  productGrid.classList.remove("hidden");
-  emptyProductState.classList.add("hidden");
+  if (unitNeedsDescription(payload.price_unit) && !payload.unit_description) {
+    statusElement.textContent =
+      "Please explain what this unit means so buyers understand exactly what they are ordering.";
+    form.elements.unit_description.focus();
+    return;
+  }
 
-  products.forEach((product) => {
-    productGrid.appendChild(renderProductCard(product));
+  isSaving = true;
+  statusElement.textContent = "Saving product...";
+
+  let result;
+
+  if (existingProduct?.id) {
+    result = await window.LocalityProductService.updateProduct(existingProduct.id, payload);
+  } else {
+    result = await window.LocalityProductService.createProduct(payload);
+  }
+
+  isSaving = false;
+
+  if (result.error) {
+    console.error("Product save error:", result.error);
+    statusElement.textContent = typeof result.error === "string"
+      ? result.error
+      : "Unable to save this product. Please try again.";
+    return;
+  }
+
+  const savedProduct = normalizeProduct(result.data);
+
+  if (existingProduct?.id) {
+    products = products.map((product) =>
+      product.id === savedProduct.id ? savedProduct : product
+    );
+  } else {
+    products.push(savedProduct);
+  }
+
+  products = getProductsInCustomOrder(products).map((product, index) => ({
+    ...product,
+    sort_order: index
+  }));
+
+  await persistProductOrder();
+
+  editingProductId = null;
+  isCreatingProduct = false;
+
+  refreshFilterOptions();
+  renderProducts();
+  updateSupplyReadiness();
+  setSupplyStatus("Product saved.");
+}
+
+function startCreatingProduct() {
+  editingProductId = null;
+  isCreatingProduct = true;
+  renderProducts();
+
+  setTimeout(() => {
+    document.querySelector(".product-editor-card")?.scrollIntoView({
+      behavior: "smooth",
+      block: "center"
+    });
+  }, 60);
+}
+
+function startEditingProduct(productId) {
+  editingProductId = productId;
+  isCreatingProduct = false;
+  renderProducts();
+
+  setTimeout(() => {
+    document.querySelector(".product-editor-card")?.scrollIntoView({
+      behavior: "smooth",
+      block: "center"
+    });
+  }, 60);
+}
+
+function cancelEditing() {
+  editingProductId = null;
+  isCreatingProduct = false;
+  renderProducts();
+}
+
+async function deleteProduct(productId) {
+  const product = products.find((item) => item.id === productId);
+
+  if (!product) return;
+
+  const confirmed = confirm(`Remove "${product.name}" from your supply catalog?`);
+
+  if (!confirmed) return;
+
+  setSupplyStatus("Removing product...");
+
+  const result = await window.LocalityProductService.deleteProduct(productId);
+
+  if (result.error) {
+    console.error("Product delete error:", result.error);
+    setSupplyStatus("Unable to remove product. Please try again.");
+    return;
+  }
+
+  products = products.filter((item) => item.id !== productId);
+  products = getProductsInCustomOrder(products).map((item, index) => ({
+    ...item,
+    sort_order: index
+  }));
+
+  await persistProductOrder();
+
+  editingProductId = null;
+  isCreatingProduct = false;
+
+  refreshFilterOptions();
+  renderProducts();
+  updateSupplyReadiness();
+  setSupplyStatus("Product removed.");
+}
+
+function getProductIndex(productId) {
+  const orderedProducts = getProductsInCustomOrder(products);
+  return orderedProducts.findIndex((product) => product.id === productId);
+}
+
+function canMoveProduct(productId, direction) {
+  if ((productSortSelect?.value || "custom") !== "custom") return false;
+
+  const index = getProductIndex(productId);
+
+  if (index < 0) return false;
+  if (direction < 0) return index > 0;
+  if (direction > 0) return index < products.length - 1;
+
+  return false;
+}
+
+async function moveProduct(productId, direction) {
+  if (!canMoveProduct(productId, direction)) return;
+
+  const orderedProducts = getProductsInCustomOrder(products);
+  const currentIndex = orderedProducts.findIndex((product) => product.id === productId);
+  const newIndex = currentIndex + direction;
+
+  const [movedProduct] = orderedProducts.splice(currentIndex, 1);
+  orderedProducts.splice(newIndex, 0, movedProduct);
+
+  products = orderedProducts.map((product, index) => ({
+    ...product,
+    sort_order: index
+  }));
+
+  renderProducts();
+  setSupplyStatus("Saving product order...");
+
+  const result = await persistProductOrder();
+
+  if (result?.error) {
+    setSupplyStatus("Unable to save product order. Please try again.");
+    return;
+  }
+
+  setSupplyStatus("Product order saved.");
+}
+
+async function toggleFeatured(productId) {
+  const product = products.find((item) => item.id === productId);
+
+  if (!product) return;
+
+  const updates = {
+    ...product,
+    featured: !product.featured
+  };
+
+  setSupplyStatus("Updating featured product...");
+
+  const result = await window.LocalityProductService.updateProduct(productId, updates);
+
+  if (result.error) {
+    console.error("Feature toggle error:", result.error);
+    setSupplyStatus("Unable to update featured status.");
+    return;
+  }
+
+  products = products.map((item) =>
+    item.id === productId ? normalizeProduct(result.data) : item
+  );
+
+  renderProducts();
+  updateSupplyReadiness();
+  setSupplyStatus(updates.featured ? "Product featured." : "Product unfeatured.");
+}
+
+async function persistProductOrder() {
+  const orderedProducts = getProductsInCustomOrder(products).map((product, index) => ({
+    ...product,
+    sort_order: index
+  }));
+
+  products = orderedProducts;
+
+  if (!window.LocalityProductService?.reorderProducts) {
+    return { data: null, error: "Product service is unavailable." };
+  }
+
+  return await window.LocalityProductService.reorderProducts(orderedProducts);
+}
+
+function renderProducts() {
+  if (!productGrid) return;
+
+  productGrid.innerHTML = "";
+
+  const visibleProducts = getVisibleProducts();
+
+  if (!products.length && !isCreatingProduct) {
+    productGrid.appendChild(renderAddProductCard());
+    return;
+  }
+
+  if (!visibleProducts.length && !isCreatingProduct) {
+    productGrid.appendChild(renderNoMatchingProductsCard());
+    productGrid.appendChild(renderAddProductCard());
+    return;
+  }
+
+  visibleProducts.forEach((product) => {
+    if (editingProductId === product.id) {
+      productGrid.appendChild(renderProductEditor(product));
+    } else {
+      productGrid.appendChild(renderProductCard(product));
+    }
   });
+
+  productGrid.appendChild(renderAddProductCard());
 }
 
 function setReadinessStatus(key, status) {
@@ -564,43 +1046,93 @@ function updateSupplyReadiness() {
   return completionPercent;
 }
 
-function saveSupplyDraft() {
-  console.log("Supply draft payload:", products);
-  setSupplyStatus("Supply draft saved locally for this prototype.");
-}
+async function saveSupplyDraft() {
+  setSupplyStatus("Saving supply draft...");
 
-function finishSupplySetup() {
-  saveSupplyDraft();
-  alert("Supply setup is saved locally for now. Supabase product saving comes next.");
-}
+  const result = await persistProductOrder();
 
-openAddProductBtn?.addEventListener("click", () => openProductModal());
-openAddProductBtnSecondary?.addEventListener("click", () => openProductModal());
-emptyAddProductBtn?.addEventListener("click", () => openProductModal());
-
-collapseAllProductsBtn?.addEventListener("click", () => {
-  expandedProductId = null;
-  renderProducts();
-});
-
-closeProductModalBtn?.addEventListener("click", closeProductModal);
-cancelProductBtn?.addEventListener("click", closeProductModal);
-
-productModal?.addEventListener("click", (event) => {
-  if (event.target === productModal) {
-    closeProductModal();
+  if (result?.error) {
+    setSupplyStatus("Unable to save supply draft. Please try again.");
+    return;
   }
-});
 
-productForm?.addEventListener("submit", saveProduct);
-deleteProductBtn?.addEventListener("click", deleteCurrentProduct);
+  setSupplyStatus("Supply draft saved.");
+}
 
-productUnitInput?.addEventListener("change", updateUnitDescriptionRequirement);
+async function finishSupplySetup() {
+  await saveSupplyDraft();
 
+  if (!products.length) {
+    const continueWithoutProducts = confirm(
+      "You have not added any products yet. Finish setup anyway? You can come back later from your workspace."
+    );
+
+    if (!continueWithoutProducts) return;
+  }
+
+  window.location.href = "supplier.html";
+}
+
+function resetProductView() {
+  if (productSearchInput) productSearchInput.value = "";
+  if (productCategoryFilter) productCategoryFilter.value = "all";
+  if (productAvailabilityFilter) productAvailabilityFilter.value = "all";
+  if (productSortSelect) productSortSelect.value = "custom";
+
+  renderProducts();
+}
+
+async function loadSupplyBuilder() {
+  if (!window.LocalityProfileService || !window.LocalityProductService) {
+    setSupplyStatus("Missing profile or product services. Check script order.");
+    return;
+  }
+
+  setSupplyStatus("Loading your business profile...");
+
+  const profileResult = await window.LocalityProfileService.getMyPrimaryBusinessProfile();
+
+  if (profileResult.error || !profileResult.data) {
+    console.error("Profile load error:", profileResult.error);
+    setSupplyStatus("No business profile found. Please finish your business profile first.");
+    return;
+  }
+
+  currentProfile = profileResult.data;
+  renderBusinessHeader(currentProfile);
+
+  setSupplyStatus("Loading products...");
+
+  const productResult = await window.LocalityProductService.getProductsForBusinessProfile(currentProfile.id);
+
+  if (productResult.error) {
+    console.error("Product load error:", productResult.error);
+    setSupplyStatus("Unable to load products. Please check your product table and policies.");
+    return;
+  }
+
+  products = (productResult.data || [])
+    .map(normalizeProduct)
+    .sort((a, b) => Number(a.sort_order) - Number(b.sort_order))
+    .map((product, index) => ({
+      ...product,
+      sort_order: Number.isFinite(Number(product.sort_order)) ? Number(product.sort_order) : index
+    }));
+
+  refreshFilterOptions();
+  renderProducts();
+  updateSupplyReadiness();
+
+  setSupplyStatus(products.length ? "Supply draft loaded." : "Add your first product to begin.");
+}
+
+productSearchInput?.addEventListener("input", renderProducts);
+productCategoryFilter?.addEventListener("change", renderProducts);
+productAvailabilityFilter?.addEventListener("change", renderProducts);
+productSortSelect?.addEventListener("change", renderProducts);
+
+resetProductViewBtn?.addEventListener("click", resetProductView);
 saveSupplyDraftBtn?.addEventListener("click", saveSupplyDraft);
 finishSupplySetupBtn?.addEventListener("click", finishSupplySetup);
 
-sortProducts();
-renderProducts();
-updateSupplyReadiness();
-updateUnitDescriptionRequirement();
+loadSupplyBuilder();
