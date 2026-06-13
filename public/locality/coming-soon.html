@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Coming Soon | Locality</title>
+
+  <link rel="icon" type="image/png" href="images/Locality Flavicon Spinner.png" />
+  <link rel="apple-touch-icon" href="images/Locality Flavicon Spinner.png" />
+
+  <link rel="stylesheet" href="css/locality.css" />
+
+  <style>
+    body {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 32px;
+      background:
+        radial-gradient(circle at 12% 18%, rgba(8, 196, 100, 0.08), transparent 30%),
+        linear-gradient(180deg, #f7f8f1, #fbfaf6);
+      color: var(--navy);
+    }
+
+    .coming-soon-card {
+      width: min(720px, 100%);
+      padding: 42px;
+      border-radius: 34px;
+      border: 1px solid rgba(12, 33, 66, 0.08);
+      background: rgba(255, 255, 255, 0.86);
+      box-shadow: 0 24px 70px rgba(20, 50, 92, 0.11);
+      text-align: left;
+    }
+
+    .coming-soon-card img {
+      width: 170px;
+      margin-bottom: 34px;
+    }
+
+    .coming-soon-kicker {
+      margin: 0 0 10px;
+      color: var(--green);
+      font-size: 0.78rem;
+      font-weight: 950;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .coming-soon-card h1 {
+      margin: 0;
+      max-width: 560px;
+      color: var(--navy);
+      font-size: clamp(2.4rem, 6vw, 4.4rem);
+      line-height: 0.92;
+      letter-spacing: -0.055em;
+    }
+
+    .coming-soon-card p {
+      margin: 22px 0 0;
+      max-width: 560px;
+      color: var(--muted);
+      font-size: 1rem;
+      font-weight: 780;
+      line-height: 1.6;
+    }
+
+    .coming-soon-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 28px;
+    }
+
+    .coming-soon-actions a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      padding: 11px 18px;
+      border-radius: 999px;
+      text-decoration: none;
+      font-weight: 950;
+    }
+
+    .coming-soon-primary {
+      background: var(--green);
+      color: white;
+    }
+
+    .coming-soon-secondary {
+      background: rgba(12, 33, 66, 0.07);
+      color: var(--navy);
+    }
+  </style>
+</head>
+
+<body>
+  <main class="coming-soon-card">
+    <img src="images/LOCALITY LOGO.png" alt="Locality" />
+
+    <p class="coming-soon-kicker">Coming soon</p>
+    <h1>This page is still growing.</h1>
+
+    <p>
+      We’re building this part of Locality so farms, buyers, and local food partners can coordinate more easily. Check back soon as this feature takes root.
+    </p>
+
+    <div class="coming-soon-actions">
+      <a href="supplier.html" class="coming-soon-primary">Go to workspace</a>
+      <a href="profile-builder.html" class="coming-soon-secondary">Back to profile builder</a>
+    </div>
+  </main>
+</body>
+</html>
