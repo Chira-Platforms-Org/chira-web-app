@@ -626,7 +626,7 @@
 
 .product-add-card,
 .no-products-card {
-  min-height: 390px;
+  min-height: 360px;
   display: grid;
   place-items: center;
   align-content: center;
@@ -642,6 +642,10 @@
 
 .product-add-card {
   cursor: pointer;
+  border-color: rgba(8, 196, 100, 0.2);
+  background:
+    radial-gradient(circle at 50% 20%, rgba(8, 196, 100, 0.12), transparent 34%),
+    rgba(244, 255, 247, 0.72);
   transition:
     transform 0.16s ease,
     border-color 0.16s ease,
