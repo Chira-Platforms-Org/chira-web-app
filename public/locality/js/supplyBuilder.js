@@ -1106,11 +1106,16 @@ async function loadSupplyBuilder() {
   const productResult = await window.LocalityProductService.getProductsForBusinessProfile(currentProfile.id);
 
   if (productResult.error) {
-    console.error("Product load error:", productResult.error);
-    setSupplyStatus("Unable to load products. Please check your product table and policies.");
-    return;
-  }
+  console.error("Product load error:", productResult.error);
 
+  products = [];
+  refreshFilterOptions();
+  renderProducts();
+  updateSupplyReadiness();
+
+  setSupplyStatus("Unable to load saved products. You can still view the builder, but saving may not work until the product table or policies are fixed.");
+  return;
+}
   products = (productResult.data || [])
     .map(normalizeProduct)
     .sort((a, b) => Number(a.sort_order) - Number(b.sort_order))
