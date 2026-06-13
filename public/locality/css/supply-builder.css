@@ -305,12 +305,14 @@
 }
 
 .supply-business-logo img {
-  width: 88%;
-  height: 88%;
-  object-fit: contain;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
   padding: 0;
   display: block;
-  transform: scale(1.08);
+  transform: scale(1.38);
+  transform-origin: center;
 }
 
 .supply-business-logo span {
