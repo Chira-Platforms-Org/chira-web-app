@@ -25,6 +25,9 @@ const productCategoryFilter = document.getElementById("productCategoryFilter");
 const productAvailabilityFilter = document.getElementById("productAvailabilityFilter");
 const productSortSelect = document.getElementById("productSortSelect");
 
+const productEditorModal = document.getElementById("productEditorModal");
+const productEditorMount = document.getElementById("productEditorMount");
+
 const ambiguousUnits = new Set([
   "case",
   "box",
@@ -62,6 +65,9 @@ let products = [];
 let editingProductId = null;
 let isCreatingProduct = false;
 let isSaving = false;
+
+let pendingProductImageFile = null;
+let pendingProductImagePreviewUrl = null;
 
 function setSupplyStatus(message) {
   if (supplyStatusText) {
@@ -526,12 +532,16 @@ function renderProductEditor(product) {
   card.dataset.editorFor = isEdit ? product.id : "new";
 
   card.innerHTML = `
-    <div class="product-editor-heading">
-      <div>
-        <h3>${isEdit ? "Edit product" : "Add a new product"}</h3>
-        <p>${isEdit ? "Update how this product appears on your Supply & Products page." : "Fill out the details buyers need, then save this product to your supply catalog."}</p>
-      </div>
-    </div>
+   <div class="product-editor-heading">
+     <div>
+       <h3>${isEdit ? "Edit product" : "Add a new product"}</h3>
+       <p>${isEdit ? "Update how this product appears on your Supply & Products page." : "Fill out the details buyers need, then save this product to your supply catalog."}</p>
+     </div>
+   
+     <button type="button" class="product-editor-close" data-action="close-editor" aria-label="Close">
+       ×
+     </button>
+   </div>
 
     <form class="product-form">
       <section class="product-form-section">
@@ -556,11 +566,20 @@ function renderProductEditor(product) {
           <textarea name="description" maxlength="700" placeholder="Briefly describe quality, variety, growing approach, best uses, or what makes this product worth noting."></textarea>
         </label>
 
-        <label class="form-field">
-          Image URL for now
-          <input name="image_url" type="url" placeholder="https://..." />
-          <span class="field-note">Temporary for this first version. We can add real image upload after the product builder structure is working.</span>
-        </label>
+         <div class="product-photo-upload-row">
+           <button type="button" class="product-photo-upload-btn" data-action="upload-product-image">
+             <img class="product-photo-preview hidden" alt="" />
+             <span>Add product photo</span>
+           </button>
+         
+           <input name="image_file" type="file" accept="image/png,image/jpeg,image/webp,image/gif" class="hidden" />
+           <input name="image_url" type="hidden" />
+         
+           <div class="product-photo-help">
+             <strong>Product photo</strong>
+             <p>A clear product, harvest, packaging, or display photo helps buyers understand what they are looking at.</p>
+           </div>
+         </div>
       </section>
 
       <section class="product-form-section">
@@ -578,6 +597,8 @@ function renderProductEditor(product) {
               <option value="lb">per lb</option>
               <option value="oz">per oz</option>
               <option value="kg">per kg</option>
+              <option value="gallon">per gallon</option>
+              <option value="liter">per liter</option>
               <option value="each">per each</option>
               <option value="dozen">per dozen</option>
               <option value="bunch">per bunch</option>
@@ -668,6 +689,7 @@ function renderProductEditor(product) {
     category: form.elements.category,
     description: form.elements.description,
     image_url: form.elements.image_url,
+    image_file: form.elements.image_file,
     price_display: form.elements.price_display,
     price_unit: form.elements.price_unit,
     minimum_order: form.elements.minimum_order,
@@ -683,6 +705,38 @@ function renderProductEditor(product) {
   fields.category.value = product?.category || "Produce";
   fields.description.value = product?.description || "";
   fields.image_url.value = product?.image_url || "";
+      const photoUploadBtn = form.querySelector('[data-action="upload-product-image"]');
+      const photoPreview = form.querySelector(".product-photo-preview");
+      
+      if (product?.image_url && photoPreview && photoUploadBtn) {
+        photoPreview.src = product.image_url;
+        photoPreview.classList.remove("hidden");
+        photoUploadBtn.classList.add("has-image");
+      }
+      
+      photoUploadBtn?.addEventListener("click", () => {
+        fields.image_file.click();
+      });
+      
+      fields.image_file?.addEventListener("change", () => {
+        const file = fields.image_file.files?.[0];
+      
+        if (!file) return;
+      
+        pendingProductImageFile = file;
+      
+        if (pendingProductImagePreviewUrl) {
+          URL.revokeObjectURL(pendingProductImagePreviewUrl);
+        }
+      
+        pendingProductImagePreviewUrl = URL.createObjectURL(file);
+      
+        if (photoPreview && photoUploadBtn) {
+          photoPreview.src = pendingProductImagePreviewUrl;
+          photoPreview.classList.remove("hidden");
+          photoUploadBtn.classList.add("has-image");
+        }
+      }); 
   fields.price_display.value = product?.price_display || "";
   fields.price_unit.value = product?.price_unit || "lb";
   fields.minimum_order.value = product?.minimum_order || "";
@@ -700,14 +754,19 @@ function renderProductEditor(product) {
   });
 
   form.addEventListener("submit", async (event) => {
-    event.preventDefault();
-    await saveProductFromForm(form, product, status);
-  });
+  event.preventDefault();
+  await saveProductFromForm(form, product, status);
+});
 
-  form.querySelector('[data-action="cancel"]')?.addEventListener("click", cancelEditing);
-  form.querySelector('[data-action="delete"]')?.addEventListener("click", async () => {
-    await deleteProduct(product.id);
-  });
+card
+  .querySelector('[data-action="close-editor"]')
+  ?.addEventListener("click", cancelEditing);
+
+form.querySelector('[data-action="cancel"]')?.addEventListener("click", cancelEditing);
+
+form.querySelector('[data-action="delete"]')?.addEventListener("click", async () => {
+  await deleteProduct(product.id);
+});
 
   setTimeout(() => {
     fields.name.focus();
@@ -749,6 +808,14 @@ function buildPayloadFromForm(form, existingProduct = null) {
   };
 }
 
+function getProductErrorMessage(error, fallback = "Something went wrong. Please try again.") {
+  if (!error) return fallback;
+  if (typeof error === "string") return error;
+  if (error.message) return error.message;
+  if (error.details) return error.details;
+  return fallback;
+}
+
 async function saveProductFromForm(form, existingProduct, statusElement) {
   if (isSaving) return;
 
@@ -770,6 +837,31 @@ async function saveProductFromForm(form, existingProduct, statusElement) {
   isSaving = true;
   statusElement.textContent = "Saving product...";
 
+   if (pendingProductImageFile) {
+  if (!window.LocalityProfileMediaService?.uploadBusinessProfileMedia) {
+    statusElement.textContent = "Image upload service is unavailable. Please check script order.";
+    isSaving = false;
+    return;
+  }
+
+  statusElement.textContent = "Uploading product photo...";
+
+  const uploadResult = await window.LocalityProfileMediaService.uploadBusinessProfileMedia({
+    file: pendingProductImageFile,
+    businessProfileId: currentProfile.id,
+    mediaType: "products"
+  });
+
+  if (uploadResult.error) {
+    console.error("Product image upload error:", uploadResult.error);
+    statusElement.textContent = getProductErrorMessage(uploadResult.error, "Unable to upload product photo.");
+    isSaving = false;
+    return;
+  }
+
+  payload.image_url = uploadResult.data.url;
+}
+
   let result;
 
   if (existingProduct?.id) {
@@ -780,13 +872,11 @@ async function saveProductFromForm(form, existingProduct, statusElement) {
 
   isSaving = false;
 
-  if (result.error) {
-    console.error("Product save error:", result.error);
-    statusElement.textContent = typeof result.error === "string"
-      ? result.error
-      : "Unable to save this product. Please try again.";
-    return;
-  }
+if (result.error) {
+  console.error("Product save error:", result.error);
+  statusElement.textContent = getProductErrorMessage(result.error, "Unable to save this product. Please try again.");
+  return;
+}
 
   const savedProduct = normalizeProduct(result.data);
 
@@ -805,44 +895,68 @@ async function saveProductFromForm(form, existingProduct, statusElement) {
 
   await persistProductOrder();
 
-  editingProductId = null;
-  isCreatingProduct = false;
+   editingProductId = null;
+   isCreatingProduct = false;
+   
+   closeProductEditorModal();
+   refreshFilterOptions();
+   renderProducts();
+   updateSupplyReadiness();
+   setSupplyStatus("Product saved.");
+}
 
-  refreshFilterOptions();
-  renderProducts();
-  updateSupplyReadiness();
-  setSupplyStatus("Product saved.");
+function openProductEditorModal(product = null) {
+  if (!productEditorModal || !productEditorMount) return;
+
+  pendingProductImageFile = null;
+
+  if (pendingProductImagePreviewUrl) {
+    URL.revokeObjectURL(pendingProductImagePreviewUrl);
+    pendingProductImagePreviewUrl = null;
+  }
+
+  productEditorMount.innerHTML = "";
+  productEditorMount.appendChild(renderProductEditor(product));
+
+  productEditorModal.classList.remove("hidden");
+  productEditorModal.setAttribute("aria-hidden", "false");
+}
+
+function closeProductEditorModal() {
+  if (!productEditorModal || !productEditorMount) return;
+
+  productEditorModal.classList.add("hidden");
+  productEditorModal.setAttribute("aria-hidden", "true");
+  productEditorMount.innerHTML = "";
+
+  pendingProductImageFile = null;
+
+  if (pendingProductImagePreviewUrl) {
+    URL.revokeObjectURL(pendingProductImagePreviewUrl);
+    pendingProductImagePreviewUrl = null;
+  }
 }
 
 function startCreatingProduct() {
   editingProductId = null;
   isCreatingProduct = true;
-  renderProducts();
-
-  setTimeout(() => {
-    document.querySelector(".product-editor-card")?.scrollIntoView({
-      behavior: "smooth",
-      block: "center"
-    });
-  }, 60);
+  openProductEditorModal(null);
 }
 
 function startEditingProduct(productId) {
+  const product = products.find((item) => item.id === productId);
+
+  if (!product) return;
+
   editingProductId = productId;
   isCreatingProduct = false;
-  renderProducts();
-
-  setTimeout(() => {
-    document.querySelector(".product-editor-card")?.scrollIntoView({
-      behavior: "smooth",
-      block: "center"
-    });
-  }, 60);
+  openProductEditorModal(product);
 }
 
 function cancelEditing() {
   editingProductId = null;
   isCreatingProduct = false;
+  closeProductEditorModal();
   renderProducts();
 }
 
@@ -978,26 +1092,22 @@ function renderProducts() {
 
   const visibleProducts = getVisibleProducts();
 
-  if (!products.length && !isCreatingProduct) {
+  if (!products.length) {
     productGrid.appendChild(renderAddProductCard());
     return;
   }
 
-  if (!visibleProducts.length && !isCreatingProduct) {
+  if (!visibleProducts.length) {
     productGrid.appendChild(renderNoMatchingProductsCard());
     productGrid.appendChild(renderAddProductCard());
     return;
   }
 
-  visibleProducts.forEach((product) => {
-    if (editingProductId === product.id) {
-      productGrid.appendChild(renderProductEditor(product));
-    } else {
-      productGrid.appendChild(renderProductCard(product));
-    }
-  });
+visibleProducts.forEach((product) => {
+  productGrid.appendChild(renderProductCard(product));
+});
 
-  productGrid.appendChild(renderAddProductCard());
+productGrid.appendChild(renderAddProductCard());
 }
 
 function setReadinessStatus(key, status) {
@@ -1130,6 +1240,12 @@ async function loadSupplyBuilder() {
 
   setSupplyStatus(products.length ? "Supply draft loaded." : "Add your first product to begin.");
 }
+
+productEditorModal?.addEventListener("click", (event) => {
+  if (event.target === productEditorModal) {
+    cancelEditing();
+  }
+});
 
 productSearchInput?.addEventListener("input", renderProducts);
 productCategoryFilter?.addEventListener("change", renderProducts);
