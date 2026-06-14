@@ -382,9 +382,53 @@ function renderProductImage(product) {
   return frame;
 }
 
+function getProductIconSvg(iconName) {
+  const icons = {
+    edit: `
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M4 20h4.2L19.1 9.1c.6-.6.9-1.3.9-2.1s-.3-1.5-.9-2.1l-.1-.1c-.6-.6-1.3-.9-2.1-.9s-1.5.3-2.1.9L4 15.8V20Zm2-2v-1.4l7.8-7.8 1.4 1.4L7.4 18H6Zm10.6-9.2-1.4-1.4 1-1c.2-.2.4-.3.7-.3.3 0 .5.1.7.3l.1.1c.2.2.3.4.3.7 0 .3-.1.5-.3.7l-1.1.9Z" />
+      </svg>
+    `,
+    star: `
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="m12 2.7 2.8 5.7 6.3.9-4.6 4.5 1.1 6.3L12 17.1l-5.6 3 1.1-6.3-4.6-4.5 6.3-.9L12 2.7Z" />
+      </svg>
+    `,
+    arrowLeft: `
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M10.8 19.3 3.5 12l7.3-7.3 1.4 1.4L7.3 11H21v2H7.3l4.9 4.9-1.4 1.4Z" />
+      </svg>
+    `,
+    arrowRight: `
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="m13.2 19.3-1.4-1.4 4.9-4.9H3v-2h13.7l-4.9-4.9 1.4-1.4 7.3 7.3-7.3 7.3Z" />
+      </svg>
+    `,
+    trash: `
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M7 21c-.6 0-1.1-.2-1.4-.6C5.2 20.1 5 19.6 5 19V7H4V5h5V4c0-.6.2-1.1.6-1.4C9.9 2.2 10.4 2 11 2h2c.6 0 1.1.2 1.4.6.4.3.6.8.6 1.4v1h5v2h-1v12c0 .6-.2 1.1-.6 1.4-.3.4-.8.6-1.4.6H7ZM17 7H7v12h10V7Zm-6 10h2V9h-2v8Zm-3 0h2V9H8v8Zm6 0h2V9h-2v8Zm-3-12h2V4h-2v1Z" />
+      </svg>
+    `
+  };
+
+  return icons[iconName] || "";
+}
+
+function createProductIconButton(iconName, label, extraClass = "") {
+  const button = document.createElement("button");
+  button.type = "button";
+  button.className = `product-icon-btn ${extraClass}`.trim();
+  button.title = label;
+  button.setAttribute("aria-label", label);
+  button.innerHTML = getProductIconSvg(iconName);
+
+  return button;
+}
+
+
 function renderProductCard(product) {
   const card = document.createElement("article");
-  card.className = "product-card";
+  card.className = `product-card${product.featured ? " is-featured-card" : ""}`;
   card.dataset.productId = product.id;
 
   card.appendChild(renderProductImage(product));
@@ -438,33 +482,32 @@ function renderProductCard(product) {
   const actions = document.createElement("div");
   actions.className = "product-card-actions";
 
-  const editButton = document.createElement("button");
-  editButton.type = "button";
-  editButton.textContent = "Edit";
-  editButton.addEventListener("click", () => startEditingProduct(product.id));
-
-  const moveEarlierButton = document.createElement("button");
-  moveEarlierButton.type = "button";
-  moveEarlierButton.textContent = "Move earlier";
-  moveEarlierButton.disabled = !canMoveProduct(product.id, -1);
-  moveEarlierButton.addEventListener("click", () => moveProduct(product.id, -1));
-
-  const moveLaterButton = document.createElement("button");
-  moveLaterButton.type = "button";
-  moveLaterButton.textContent = "Move later";
-  moveLaterButton.disabled = !canMoveProduct(product.id, 1);
-  moveLaterButton.addEventListener("click", () => moveProduct(product.id, 1));
-
-  const featureButton = document.createElement("button");
-  featureButton.type = "button";
-  featureButton.className = `feature-toggle${product.featured ? " is-featured" : ""}`;
-  featureButton.textContent = product.featured ? "Featured" : "Feature";
-  featureButton.addEventListener("click", () => toggleFeatured(product.id));
-
-  actions.appendChild(editButton);
-  actions.appendChild(moveEarlierButton);
-  actions.appendChild(moveLaterButton);
-  actions.appendChild(featureButton);
+   const editButton = createProductIconButton("edit", "Edit product");
+   editButton.addEventListener("click", () => startEditingProduct(product.id));
+   
+   const moveEarlierButton = createProductIconButton("arrowLeft", "Move earlier");
+   moveEarlierButton.disabled = !canMoveProduct(product.id, -1);
+   moveEarlierButton.addEventListener("click", () => moveProduct(product.id, -1));
+   
+   const moveLaterButton = createProductIconButton("arrowRight", "Move later");
+   moveLaterButton.disabled = !canMoveProduct(product.id, 1);
+   moveLaterButton.addEventListener("click", () => moveProduct(product.id, 1));
+   
+   const featureButton = createProductIconButton(
+     "star",
+     product.featured ? "Remove featured status" : "Feature on profile",
+     product.featured ? "is-featured" : ""
+   );
+   featureButton.addEventListener("click", () => toggleFeatured(product.id));
+   
+   const deleteButton = createProductIconButton("trash", "Remove product", "danger");
+   deleteButton.addEventListener("click", () => deleteProduct(product.id));
+   
+   actions.appendChild(editButton);
+   actions.appendChild(moveEarlierButton);
+   actions.appendChild(moveLaterButton);
+   actions.appendChild(featureButton);
+   actions.appendChild(deleteButton);
 
   body.appendChild(actions);
   card.appendChild(body);
