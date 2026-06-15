@@ -1223,7 +1223,7 @@ async function finishSupplySetup() {
     if (!continueWithoutProducts) return;
   }
 
-  window.location.href = "supplier.html";
+  window.location.href = "supply.html";
 }
 
 function resetProductView() {
