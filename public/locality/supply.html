@@ -1,1 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+  <title>Supply & Products | Locality</title>
+
+  <link rel="icon" type="image/png" href="images/Locality Flavicon Spinner.png" />
+  <link rel="apple-touch-icon" href="images/Locality Flavicon Spinner.png" />
+
+  <link rel="stylesheet" href="css/locality.css" />
+  <link rel="stylesheet" href="css/supply.css" />
+</head>
+
+<body class="supply-page">
+  <header class="supply-topbar">
+    <a href="index.html" class="supply-logo">
+      <img src="images/LOCALITY LOGO.png" alt="Locality" />
+    </a>
+
+    <div class="supply-topbar-copy">
+      <strong>Supply & Products</strong>
+      <span>Buyer-facing preview of your product catalog.</span>
+    </div>
+
+    <nav class="supply-topbar-actions" aria-label="Supply page actions">
+      <a href="public-profile.html" class="supply-secondary-btn">Back to profile</a>
+      <a href="supply-builder.html" class="supply-primary-btn">Edit products</a>
+    </nav>
+  </header>
+
+  <main class="supply-shell">
+    <section class="supply-public-canvas">
+      <nav class="supply-page-tabs" aria-label="Business profile sections">
+        <a href="public-profile.html" class="supply-page-tab">
+          <span>Business Profile</span>
+          <small>Story, trust, and identity</small>
+        </a>
+
+        <a href="supply.html" class="supply-page-tab active">
+          <span>Supply & Products</span>
+          <small>Products, pricing, and availability</small>
+        </a>
+      </nav>
+
+      <section class="supply-business-header">
+        <div id="supplyBusinessLogo" class="supply-business-logo">
+          <span>?</span>
+        </div>
+
+        <div class="supply-business-copy">
+          <p class="supply-kicker">Supply & Products</p>
+          <h1 id="supplyBusinessName">Loading business...</h1>
+          <p id="supplyBusinessMeta">Preparing product catalog.</p>
+          <p id="supplyBusinessIntro" class="supply-business-intro">
+            Browse available products, seasonal items, and ordering details.
+          </p>
+        </div>
+      </section>
+
+      <section class="supply-tools-row" aria-label="Product browsing controls">
+        <label class="supply-tool-field search">
+          <span>Search</span>
+          <input id="productSearchInput" type="search" placeholder="Search products..." />
+        </label>
+
+        <label class="supply-tool-field">
+          <span>Category</span>
+          <select id="productCategoryFilter">
+            <option value="all">All categories</option>
+          </select>
+        </label>
+
+        <label class="supply-tool-field">
+          <span>Availability</span>
+          <select id="productAvailabilityFilter">
+            <option value="all">All availability</option>
+          </select>
+        </label>
+
+        <label class="supply-tool-field">
+          <span>Sort by</span>
+          <select id="productSortSelect">
+            <option value="custom">Default order</option>
+            <option value="featured">Featured first</option>
+            <option value="name">Name A–Z</option>
+            <option value="newest">Newest first</option>
+          </select>
+        </label>
+      </section>
+
+      <section class="supply-products-section">
+        <div class="supply-section-heading">
+          <div>
+            <p class="supply-kicker">Products</p>
+            <h2>Available supply</h2>
+          </div>
+
+          <button id="resetProductViewBtn" type="button" class="supply-mini-btn">
+            Reset view
+          </button>
+        </div>
+
+        <p id="supplyStatusText" class="supply-section-description">
+          Loading products...
+        </p>
+
+        <div id="productGrid" class="product-grid" aria-live="polite"></div>
+      </section>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabaseConfig.js"></script>
+  <script src="js/supabaseClient.js"></script>
+  <script src="js/authService.js"></script>
+  <script src="js/profileService.js"></script>
+  <script src="js/productService.js"></script>
+  <script src="js/supply.js"></script>
+</body>
+</html>
