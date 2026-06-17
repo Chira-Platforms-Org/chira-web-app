@@ -329,12 +329,58 @@ function createDetailBlock(label, value) {
   return block;
 }
 
+function getExpandIconSvg(isExpanded) {
+  if (isExpanded) {
+    return `
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M9.2 4.2v4.6H4.6V6.8h2.2L3.8 3.8 5.2 2.4l3 3V4.2h1Zm5.6 0h1v1.2l3-3 1.4 1.4-3 3h2.2v2h-4.6V4.2ZM4.6 15.2h4.6v4.6h-1v-1.2l-3 3-1.4-1.4 3-3H4.6v-2Zm10.2 0h4.6v2h-2.2l3 3-1.4 1.4-3-3v1.2h-1v-4.6Z" />
+      </svg>
+    `;
+  }
+
+  return `
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M4.2 9.2h-1V3.2h6v1H5.9l4.4 4.4-1.4 1.4L4.2 5.3v3.9Zm15.6 0h-1V5.3l-4.7 4.7-1.4-1.4 4.4-4.4h-3.3v-1h6v6ZM9.2 20.8h-6v-6h1v3.3l4.7-4.7 1.4 1.4-4.4 4.4h3.3v1Zm11.6 0h-6v-1h3.3l-4.4-4.4 1.4-1.4 4.7 4.7v-3.3h1v6Z" />
+    </svg>
+  `;
+}
+
+function toggleProductExpansion(productId) {
+  expandedProductId = expandedProductId === productId ? null : productId;
+  renderProducts();
+
+  const selectedCard = productGrid?.querySelector(`[data-product-id="${productId}"]`);
+
+  if (selectedCard && expandedProductId === productId) {
+    selectedCard.scrollIntoView({
+      behavior: "smooth",
+      block: "nearest"
+    });
+  }
+}
+
 function renderProductCard(product) {
   const isExpanded = expandedProductId === product.id;
 
   const card = document.createElement("article");
   card.className = `product-card${product.featured ? " is-featured-card" : ""}${isExpanded ? " expanded" : ""}`;
   card.dataset.productId = product.id;
+
+   const expandButton = document.createElement("button");
+   expandButton.type = "button";
+   expandButton.className = "product-expand-toggle";
+   expandButton.title = isExpanded ? "Minimize product details" : "Expand product details";
+   expandButton.setAttribute(
+     "aria-label",
+     isExpanded ? "Minimize product details" : "Expand product details"
+   );
+   expandButton.innerHTML = getExpandIconSvg(isExpanded);
+   expandButton.addEventListener("click", (event) => {
+     event.stopPropagation();
+     toggleProductExpansion(product.id);
+   });
+
+card.appendChild(expandButton);
 
   card.appendChild(renderProductImage(product));
 
@@ -413,12 +459,11 @@ function renderProductCard(product) {
 
   card.appendChild(body);
 
-  card.addEventListener("click", (event) => {
-    if (event.target.closest("a, button")) return;
+card.addEventListener("click", (event) => {
+  if (event.target.closest("a, button")) return;
 
-    expandedProductId = isExpanded ? null : product.id;
-    renderProducts();
-  });
+  toggleProductExpansion(product.id);
+});
 
   return card;
 }
