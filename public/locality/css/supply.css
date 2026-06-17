@@ -339,6 +339,7 @@
 }
 
 .product-card {
+  position: relative;
   display: grid;
   cursor: pointer;
   transition:
@@ -763,4 +764,45 @@
   .mode-switch-knob span {
     font-size: 0.72rem;
   }
+}
+
+
+.product-expand-toggle {
+  position: absolute;
+  z-index: 8;
+  right: 24px;
+  bottom: auto;
+  top: 24px;
+  width: 38px;
+  height: 38px;
+  border: 0;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--navy);
+  box-shadow: 0 10px 24px rgba(12, 33, 66, 0.12);
+  cursor: pointer;
+  backdrop-filter: blur(12px);
+  transition:
+    transform 0.14s ease,
+    background 0.14s ease,
+    color 0.14s ease;
+}
+
+.product-expand-toggle:hover {
+  transform: translateY(-1px);
+  background: var(--navy);
+  color: white;
+}
+
+.product-expand-toggle svg {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+}
+
+.product-card.expanded .product-expand-toggle {
+  background: var(--navy);
+  color: white;
 }
