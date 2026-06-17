@@ -290,13 +290,6 @@ function renderProductImage(product) {
   availabilityBadge.textContent = product.availability_status || "Availability";
   badgeRow.appendChild(availabilityBadge);
 
-  if (product.featured) {
-    const featuredBadge = document.createElement("span");
-    featuredBadge.className = "product-badge featured";
-    featuredBadge.textContent = "Featured";
-    badgeRow.appendChild(featuredBadge);
-  }
-
   if (product.image_url) {
     const image = document.createElement("img");
     image.src = product.image_url;
