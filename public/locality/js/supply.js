@@ -485,6 +485,37 @@ function renderNoProductsCard(message = "No products are available yet.") {
   return card;
 }
 
+function getCurrentProductColumnCount() {
+  if (window.matchMedia("(max-width: 760px)").matches) return 1;
+  if (window.matchMedia("(max-width: 980px)").matches) return 2;
+  return 3;
+}
+
+function placeExpandedProductAtRowStart(list = []) {
+  if (!expandedProductId) return list;
+
+  const currentIndex = list.findIndex((product) => product.id === expandedProductId);
+
+  if (currentIndex < 0) {
+    expandedProductId = null;
+    return list;
+  }
+
+  const columnCount = getCurrentProductColumnCount();
+  const rowStartIndex = Math.floor(currentIndex / columnCount) * columnCount;
+
+  if (currentIndex === rowStartIndex) {
+    return list;
+  }
+
+  const reorderedProducts = [...list];
+  const [expandedProduct] = reorderedProducts.splice(currentIndex, 1);
+
+  reorderedProducts.splice(rowStartIndex, 0, expandedProduct);
+
+  return reorderedProducts;
+}
+
 function renderProducts() {
   if (!productGrid) return;
 
@@ -495,12 +526,14 @@ function renderProducts() {
     return;
   }
 
-  const visibleProducts = getVisibleProducts();
+  let visibleProducts = getVisibleProducts();
 
   if (!visibleProducts.length) {
     productGrid.appendChild(renderNoProductsCard("No products match this view."));
     return;
   }
+
+visibleProducts = placeExpandedProductAtRowStart(visibleProducts);
 
   visibleProducts.forEach((product) => {
     productGrid.appendChild(renderProductCard(product));
@@ -561,6 +594,12 @@ async function loadSupplyPage() {
       : "No public products are available yet."
   );
 }
+
+window.addEventListener("resize", () => {
+  if (expandedProductId) {
+    renderProducts();
+  }
+});
 
 productSearchInput?.addEventListener("input", renderProducts);
 productCategoryFilter?.addEventListener("change", renderProducts);
