@@ -176,6 +176,22 @@
       <!-- STEP 2 — Business -->
     <form class="auth-form signup-step" id="businessStep" data-step="2">
       <h2>Set up your business identity</h2>
+
+      <label class="personal-buyer-option">
+        <input id="personalBuyerModeInput" type="checkbox" />
+        <span>
+          <strong>I’m buying personally, not on behalf of a business.</strong>
+          <small>
+            Skip business profile setup for now. You can still explore local farms, products, markets, and saved items.
+          </small>
+        </span>
+      </label>
+      
+      <p id="businessStepHelperText" class="auth-helper-text">
+        If you represent a farm, restaurant, market, grocer, institution, or food business, complete the business details below. If you are buying personally, check the box above.
+      </p>
+      
+      <div id="businessFieldsShell" class="business-fields-shell">
     
       <label>
         Business name
@@ -268,6 +284,7 @@
         Product or sourcing focus
         <input id="productFocusInput" type="text" placeholder="Leafy greens, tomatoes, herbs" />
       </label>
+    </div>
       
       <button id="businessSetupSubmit" type="submit" class="auth-primary-btn">
         Continue to location
@@ -370,9 +387,9 @@
           Your business profile has been created.
         </p>
 
-        <a href="supplier.html" class="auth-primary-link">
-          Enter workspace
-        </a>
+      <a id="enterWorkspaceLink" href="supplier.html" class="auth-primary-link">
+        Enter workspace
+      </a>
 
         <a href="contracts.html" class="auth-secondary-link">
           Open Contract Studio
