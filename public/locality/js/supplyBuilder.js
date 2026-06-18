@@ -28,6 +28,52 @@ const productSortSelect = document.getElementById("productSortSelect");
 const productEditorModal = document.getElementById("productEditorModal");
 const productEditorMount = document.getElementById("productEditorMount");
 
+const supplyModeSwitch = document.getElementById("supplyModeSwitch");
+const supplyBackToProfileBtn = document.getElementById("supplyBackToProfileBtn");
+const supplySetupCompleteModal = document.getElementById("supplySetupCompleteModal");
+
+const supplyBuilderUrlParams = new URLSearchParams(window.location.search);
+const isSupplySetupMode =
+  supplyBuilderUrlParams.get("setup") === "1" ||
+  supplyBuilderUrlParams.get("mode") === "setup";
+
+function applySupplyBuilderMode() {
+  document.body.classList.toggle("setup-mode", isSupplySetupMode);
+  document.body.classList.toggle("editor-mode", !isSupplySetupMode);
+
+  if (finishSupplySetupBtn) {
+    finishSupplySetupBtn.textContent = isSupplySetupMode
+      ? "Finish setup"
+      : "Save changes";
+  }
+
+  if (saveSupplyDraftBtn) {
+    saveSupplyDraftBtn.textContent = isSupplySetupMode
+      ? "Save draft"
+      : "Save";
+  }
+
+  if (supplyBackToProfileBtn) {
+    supplyBackToProfileBtn.href = isSupplySetupMode
+      ? "profile-builder.html?setup=1"
+      : "profile-builder.html";
+  }
+
+  if (supplyModeSwitch) {
+    supplyModeSwitch.href = "supply.html";
+  }
+}
+
+function openSupplySetupCompleteModal() {
+  if (!supplySetupCompleteModal) {
+    window.location.href = "supplier.html";
+    return;
+  }
+
+  supplySetupCompleteModal.classList.remove("hidden");
+  supplySetupCompleteModal.setAttribute("aria-hidden", "false");
+}
+
 const ambiguousUnits = new Set([
   "case",
   "box",
@@ -1215,6 +1261,11 @@ async function saveSupplyDraft() {
 async function finishSupplySetup() {
   await saveSupplyDraft();
 
+  if (!isSupplySetupMode) {
+    setSupplyStatus("Supply changes saved.");
+    return;
+  }
+
   if (!products.length) {
     const continueWithoutProducts = confirm(
       "You have not added any products yet. Finish setup anyway? You can come back later from your workspace."
@@ -1223,7 +1274,24 @@ async function finishSupplySetup() {
     if (!continueWithoutProducts) return;
   }
 
-  window.location.href = "supply.html";
+  if (currentProfile?.id && window.LocalityProfileService?.updateBusinessProfile) {
+    const { error } = await window.LocalityProfileService.updateBusinessProfile(
+      currentProfile.id,
+      {
+        supply_setup_completed: true,
+        onboarding_completed: true,
+        onboarding_step: "setup_completed",
+        updated_at: new Date().toISOString()
+      }
+    );
+
+    if (error) {
+      console.error("Unable to mark setup complete:", error);
+      setSupplyStatus("Products saved, but setup completion could not be marked. You can still continue.");
+    }
+  }
+
+  openSupplySetupCompleteModal();
 }
 
 function resetProductView() {
@@ -1299,4 +1367,5 @@ resetProductViewBtn?.addEventListener("click", resetProductView);
 saveSupplyDraftBtn?.addEventListener("click", saveSupplyDraft);
 finishSupplySetupBtn?.addEventListener("click", finishSupplySetup);
 
+applySupplyBuilderMode();
 loadSupplyBuilder();
