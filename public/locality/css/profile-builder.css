@@ -2434,3 +2434,7 @@
   text-transform: uppercase;
   letter-spacing: 0.06em;
 }
+
+.setup-mode .editor-only {
+  display: none !important;
+}
