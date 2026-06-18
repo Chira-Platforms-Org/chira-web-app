@@ -481,20 +481,20 @@
     </div>
   </section>
 
-      <section class="profile-page-section profile-product-preview-section">
+      <section id="profileProductPreviewSection" class="profile-page-section profile-product-preview-section">
         <div class="section-heading-row">
           <div>
             <p class="section-kicker recommended">Recommended later</p>
-            <h2>Product preview</h2>
+            <h2 id="profileProductPreviewTitle">Product preview</h2>
           </div>
-          <span class="section-status-pill muted">Supply page coming next</span>
+          <span id="profileProductPreviewPill" class="section-status-pill muted">Supply page</span>
         </div>
       
-        <p class="section-description">
+        <p id="profileProductPreviewDescription" class="section-description">
           Your business profile helps buyers understand who you are. Your supply page will show what buyers can order, including products, availability, unit sizes, pricing, minimum orders, and request details.
         </p>
       
-        <div class="product-preview-row">
+        <div id="profileProductPreviewRow" class="product-preview-row">
           <div class="product-preview-tile">
             <strong>Featured products</strong>
             <span>Highlight a few key goods from your full supply page.</span>
@@ -512,9 +512,9 @@
         </div>
       
         <div class="product-preview-action-row">
-          <button type="button" class="builder-secondary-btn product-preview-disabled-btn" disabled>
-            Set up supply page later
-          </button>
+          <a id="profileProductPreviewCta" href="supply-builder.html" class="builder-secondary-btn">
+            Edit Supply & Products
+          </a>
         </div>
       </section>
 
@@ -705,6 +705,7 @@
   <script src="js/authService.js"></script>
   <script src="js/profileService.js"></script>
   <script src="js/profileMediaService.js"></script>
+  <script src="js/productService.js"></script>
   <script src="js/profileBuilder.js"></script>
 </body>
 </html>
