@@ -25,7 +25,7 @@
     </div>
 
     <div class="supply-builder-topbar-actions">
-      <a href="supply.html" class="profile-mode-switch to-edit" aria-label="Preview supply page">
+      <a id="supplyModeSwitch" href="supply.html" class="profile-mode-switch to-edit" aria-label="Preview supply page">
         <span class="mode-switch-track">
           <span class="mode-switch-option mode-switch-option-left">Edit Mode</span>
           <span class="mode-switch-option mode-switch-option-right">Preview Mode</span>
@@ -35,7 +35,7 @@
         </span>
       </a>
     
-      <a href="profile-builder.html" class="supply-secondary-btn">
+      <a id="supplyBackToProfileBtn" href="profile-builder.html" class="supply-secondary-btn">
         Back to profile
       </a>
 
@@ -161,6 +161,30 @@
       </section>
     </section>
   </main>
+
+  <div id="supplySetupCompleteModal" class="supply-modal hidden" aria-hidden="true">
+  <div class="product-editor-card setup-complete-card">
+    <div class="product-editor-heading">
+      <div>
+        <p class="supply-kicker">Welcome to Locality</p>
+        <h3>Your setup is ready.</h3>
+        <p>
+          Your business profile and Supply & Products page are saved. You can come back anytime to update your story, products, pricing, availability, and ordering details from your workspace.
+        </p>
+      </div>
+    </div>
+
+    <div class="editor-actions">
+      <a href="supply.html" class="supply-secondary-btn">
+        Preview supply page
+      </a>
+
+      <a href="supplier.html" class="supply-primary-btn">
+        Go to workspace
+      </a>
+    </div>
+  </div>
+</div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/supabaseConfig.js"></script>
