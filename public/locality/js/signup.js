@@ -39,6 +39,12 @@ const businessCategoryInput = document.getElementById("businessCategoryInput");
 const websiteInput = document.getElementById("websiteInput");
 const productFocusInput = document.getElementById("productFocusInput");
 
+const personalBuyerModeInput = document.getElementById("personalBuyerModeInput");
+const businessFieldsShell = document.getElementById("businessFieldsShell");
+const businessStepHelperText = document.getElementById("businessStepHelperText");
+const businessSetupSubmit = document.getElementById("businessSetupSubmit");
+const enterWorkspaceLink = document.getElementById("enterWorkspaceLink");
+
 const locationStep = document.getElementById("locationStep");
 const streetAddressInput = document.getElementById("streetAddressInput");
 const addressLine2Input = document.getElementById("addressLine2Input");
@@ -136,6 +142,76 @@ function getMarketplaceRoles(value) {
 
 function getCleanValue(input) {
   return input?.value?.trim() || "";
+}
+
+function isPersonalBuyerMode() {
+  return Boolean(personalBuyerModeInput?.checked);
+}
+
+function applyPersonalBuyerMode() {
+  const personalMode = isPersonalBuyerMode();
+
+  businessFieldsShell?.classList.toggle("is-disabled", personalMode);
+
+  businessFieldsShell
+    ?.querySelectorAll("input, select, textarea")
+    .forEach((field) => {
+      field.disabled = personalMode;
+    });
+
+  if (businessStepHelperText) {
+    businessStepHelperText.textContent = personalMode
+      ? "You can skip business setup for now. Locality will create a simple personal buyer account so you can explore local goods nearby."
+      : "If you represent a farm, restaurant, market, grocer, institution, or food business, complete the business details below. If you are buying personally, check the box above.";
+  }
+
+  if (businessSetupSubmit) {
+    businessSetupSubmit.textContent = personalMode
+      ? "Continue as personal buyer"
+      : "Continue to location";
+  }
+}
+
+function setCompletionForPersonalBuyer(displayName) {
+  if (profileSummaryText) {
+    profileSummaryText.textContent =
+      `${displayName || "Your"} personal buyer account is ready. You can start exploring local farms, products, and markets.`;
+  }
+
+  if (enterWorkspaceLink) {
+    enterWorkspaceLink.href = "map.html";
+    enterWorkspaceLink.textContent = "Start exploring";
+  }
+}
+
+async function savePersonalBuyerProfile() {
+  const user = await getSignedInUserOrRedirect();
+
+  if (!user) {
+    return { data: null, error: "No authenticated user." };
+  }
+
+  const displayName = getCleanValue(fullNameInput) || user.email || "Locality buyer";
+
+  const { data, error } = await window.LocalitySupabase
+    .from("user_profiles")
+    .upsert({
+      id: user.id,
+      full_name: displayName,
+      buyer_display_name: displayName,
+      phone: getPhoneDigits(personalPhoneInput?.value) || null,
+      locality_account_type: "personal_buyer",
+      buyer_interests: [],
+      buyer_radius_miles: 25,
+      onboarding_completed: true,
+      onboarding_step: "personal_buyer_ready",
+      notification_preferences: buildNotificationPreferences(),
+      updated_at: new Date().toISOString()
+    })
+    .select()
+    .single();
+
+  return { data, error };
 }
 
 function getPhoneDigits(value) {
@@ -809,6 +885,9 @@ async function saveBusinessProfileProgress(stepName, updates = {}) {
   return { data, error };
 }
 
+personalBuyerModeInput?.addEventListener("change", applyPersonalBuyerMode);
+applyPersonalBuyerMode();
+
 async function resumeOnboardingIfNeeded() {
   const user = await window.LocalityAuthService.getCurrentUser();
 
@@ -818,6 +897,18 @@ async function resumeOnboardingIfNeeded() {
   }
 
   createdUser = user;
+
+   const { data: userProfile, error: userProfileError } = await window.LocalitySupabase
+  .from("user_profiles")
+  .select("full_name, locality_account_type, onboarding_completed, onboarding_step, buyer_display_name")
+  .eq("id", user.id)
+  .maybeSingle();
+
+if (!userProfileError && userProfile?.locality_account_type === "personal_buyer") {
+  setCompletionForPersonalBuyer(userProfile.buyer_display_name || userProfile.full_name);
+  setStep(5);
+  return;
+}
 
   const { data, error } = await window.LocalitySupabase
     .from("business_profiles")
@@ -943,15 +1034,18 @@ accountStep?.addEventListener("submit", async (event) => {
     return;
   }
 
-  await window.LocalitySupabase
-  .from("user_profiles")
-  .upsert({
-    id: createdUser.id,
-    full_name: fullName,
-    phone: getPhoneDigits(personalPhoneInput?.value) || null,
-    notification_preferences: buildNotificationPreferences(),
-    updated_at: new Date().toISOString()
-  });
+   await window.LocalitySupabase
+     .from("user_profiles")
+     .upsert({
+       id: createdUser.id,
+       full_name: fullName,
+       phone: getPhoneDigits(personalPhoneInput?.value) || null,
+       locality_account_type: "business_seller",
+       onboarding_completed: false,
+       onboarding_step: "account_created",
+       notification_preferences: buildNotificationPreferences(),
+       updated_at: new Date().toISOString()
+     });
 
    prefillBusinessContactFromAccount();
    setStatus(signupStatus, "Account created. Continue with your business profile.", "success");
@@ -960,6 +1054,20 @@ accountStep?.addEventListener("submit", async (event) => {
 
 businessStep?.addEventListener("submit", async (event) => {
   event.preventDefault();
+
+if (isPersonalBuyerMode()) {
+  const { data, error } = await savePersonalBuyerProfile();
+
+  if (error) {
+    console.error("Unable to save personal buyer profile:", error);
+    alert(error.message || "Unable to continue as a personal buyer.");
+    return;
+  }
+
+  setCompletionForPersonalBuyer(data?.buyer_display_name || data?.full_name || getCleanValue(fullNameInput));
+  setStep(5);
+  return;
+}
 
   const businessName = getCleanValue(businessNameInput);
   const businessEmail = getCleanValue(businessEmailInput);
@@ -1120,7 +1228,7 @@ profileStep?.addEventListener("submit", async (event) => {
     setActiveBusinessProfileId(data.id);
   }
 
-  window.location.href = "profile-builder.html";
+  window.location.href = "profile-builder.html?setup=1";
 });
 
 skipProfileBuilderBtn?.addEventListener("click", async () => {
