@@ -54,12 +54,11 @@
           <small>Story, trust, and identity</small>
         </a>
 
-        <a href="#" class="public-profile-tab disabled" aria-disabled="true">
-          <span>Supply & Products</span>
-          <small>Products, pricing, and availability</small>
-          <em>Coming next</em>
-        </a>
-      </nav>
+      <a href="supply.html" class="public-profile-tab">
+        <span>Supply & Products</span>
+        <small>Products, pricing, and availability</small>
+      </a>
+    </nav>
 
       <section class="public-hero-section">
         <div id="publicBanner" class="public-banner">
@@ -184,31 +183,31 @@
         <div id="publicCertificationsList" class="public-certifications-list"></div>
       </section>
 
-      <section class="public-profile-section public-products-preview-section">
+      <section id="publicProductsPreviewSection" class="public-profile-section public-products-preview-section">
         <div class="public-section-heading">
           <div>
             <p class="public-section-kicker">Supply</p>
-            <h2>Products and availability</h2>
+            <h2 id="publicProductsPreviewTitle">Products and availability</h2>
           </div>
-
-          <span class="public-coming-pill">Coming next</span>
+      
+          <span id="publicProductsPreviewPill" class="public-coming-pill">Supply page</span>
         </div>
-
-        <p class="public-section-description">
-          Visit the business’s Supply & Products page to explore what they offer, including availability, unit sizes, pricing, minimum orders, and request details.
+      
+        <p id="publicProductsPreviewDescription" class="public-section-description">
+          Explore a preview of what this business offers, including availability, unit sizes, pricing, minimum orders, and request details.
         </p>
-
-        <div class="public-product-preview-row">
+      
+        <div id="publicProductPreviewRow" class="public-product-preview-row">
           <div class="public-product-preview-card">
             <strong>Featured products</strong>
             <span>Preview key goods from the full supply page.</span>
           </div>
-
+      
           <div class="public-product-preview-card">
             <strong>Availability</strong>
             <span>Show what is current, seasonal, or upcoming.</span>
           </div>
-
+      
           <div class="public-product-preview-card">
             <strong>Ordering terms</strong>
             <span>Clarify units, minimums, pricing, and request details.</span>
@@ -226,7 +225,7 @@
         </div>
 
         <div class="public-cta-actions">
-          <a href="#" class="public-primary-cta disabled" aria-disabled="true">View Supply & Products</a>
+         <a id="publicSupplyCta" href="supply.html" class="public-primary-cta">View Supply & Products</a>
           <a id="publicContactCta" href="#" class="public-secondary-cta hidden">Contact business</a>
         </div>
       </section>
@@ -238,6 +237,7 @@
   <script src="js/supabaseClient.js"></script>
   <script src="js/authService.js"></script>
   <script src="js/profileService.js"></script>
+  <script src="js/productService.js"></script>
   <script src="js/publicProfile.js"></script>
 </body>
 </html>
