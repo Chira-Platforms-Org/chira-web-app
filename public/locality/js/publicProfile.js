@@ -45,6 +45,13 @@ const publicCertificationsList = document.getElementById("publicCertificationsLi
 
 const publicContactCta = document.getElementById("publicContactCta");
 
+const publicProductsPreviewSection = document.getElementById("publicProductsPreviewSection");
+const publicProductsPreviewTitle = document.getElementById("publicProductsPreviewTitle");
+const publicProductsPreviewPill = document.getElementById("publicProductsPreviewPill");
+const publicProductsPreviewDescription = document.getElementById("publicProductsPreviewDescription");
+const publicProductPreviewRow = document.getElementById("publicProductPreviewRow");
+const publicSupplyCta = document.getElementById("publicSupplyCta");
+
 function showState(state) {
   publicProfileLoading?.classList.toggle("hidden", state !== "loading");
   publicProfileEmpty?.classList.toggle("hidden", state !== "empty");
@@ -452,13 +459,171 @@ async function getProfileForThisPage() {
   return data;
 }
 
-function renderPublicProfile(profile) {
+function getProductUnitLabel(unit) {
+  if (!unit) return "unit";
+  if (unit === "custom") return "custom unit";
+  return unit;
+}
+
+function normalizePreviewProduct(product = {}) {
+  return {
+    id: product.id,
+    name: product.name || "",
+    category: product.category || "Product",
+    description: product.description || "",
+    image_url: product.image_url || "",
+    price_display: product.price_display || "",
+    price_unit: product.price_unit || "",
+    unit_description: product.unit_description || "",
+    minimum_order: product.minimum_order || "",
+    availability_status: product.availability_status || "",
+    featured: Boolean(product.featured),
+    visibility: product.visibility || "draft",
+    sort_order: Number.isFinite(Number(product.sort_order)) ? Number(product.sort_order) : 0,
+    created_at: product.created_at || null
+  };
+}
+
+function sortProfilePreviewProducts(productList = []) {
+  return [...productList].sort((a, b) => {
+    if (Number(b.featured) !== Number(a.featured)) {
+      return Number(b.featured) - Number(a.featured);
+    }
+
+    const orderA = Number.isFinite(Number(a.sort_order)) ? Number(a.sort_order) : 0;
+    const orderB = Number.isFinite(Number(b.sort_order)) ? Number(b.sort_order) : 0;
+
+    if (orderA !== orderB) return orderA - orderB;
+
+    return new Date(a.created_at || 0) - new Date(b.created_at || 0);
+  });
+}
+
+function createPublicPreviewProductCard(product) {
+  const card = document.createElement("a");
+  card.className = `public-product-preview-card real-product${product.featured ? " is-featured" : ""}`;
+  card.href = "supply.html";
+
+  const imageFrame = document.createElement("div");
+  imageFrame.className = "public-product-preview-image";
+
+  if (product.image_url) {
+    const image = document.createElement("img");
+    image.src = product.image_url;
+    image.alt = `${product.name || "Product"} image`;
+    imageFrame.appendChild(image);
+  } else {
+    const placeholder = document.createElement("span");
+    placeholder.textContent = product.category || "Product";
+    imageFrame.appendChild(placeholder);
+  }
+
+  const title = document.createElement("strong");
+  title.textContent = product.name || "Unnamed product";
+
+  const description = document.createElement("span");
+  description.textContent = product.description || product.availability_status || "Product details available on the Supply & Products page.";
+
+  const meta = document.createElement("div");
+  meta.className = "public-product-preview-meta";
+
+  const priceLabel = document.createElement("small");
+  priceLabel.textContent = "Price";
+
+  const priceValue = document.createElement("div");
+  priceValue.textContent = product.price_display
+    ? `${product.price_display} / ${getProductUnitLabel(product.price_unit)}`
+    : "Request quote";
+
+  meta.appendChild(priceLabel);
+  meta.appendChild(priceValue);
+
+  card.appendChild(imageFrame);
+  card.appendChild(title);
+  card.appendChild(description);
+  card.appendChild(meta);
+
+  return card;
+}
+
+async function renderProductsPreview(profile) {
+  if (!publicProductsPreviewSection || !publicProductPreviewRow || !profile?.id) return;
+
+  if (!window.LocalityProductService?.getProductsForBusinessProfile) {
+    console.warn("LocalityProductService is not available for product preview.");
+    return;
+  }
+
+  const { data, error } = await window.LocalityProductService.getProductsForBusinessProfile(profile.id);
+
+  if (error) {
+    console.error("Unable to load products for profile preview:", error);
+    return;
+  }
+
+  const publicProducts = (data || [])
+    .map(normalizePreviewProduct)
+    .filter((product) => product.visibility === "public");
+
+  const previewProducts = sortProfilePreviewProducts(publicProducts).slice(0, 3);
+
+  if (!previewProducts.length) {
+    publicProductsPreviewSection.classList.remove("has-products");
+
+    if (publicProductsPreviewPill) {
+      publicProductsPreviewPill.textContent = "Supply page";
+    }
+
+    if (publicProductsPreviewTitle) {
+      publicProductsPreviewTitle.textContent = "Products and availability";
+    }
+
+    if (publicProductsPreviewDescription) {
+      publicProductsPreviewDescription.textContent =
+        "Visit the business’s Supply & Products page to explore what they offer, including availability, unit sizes, pricing, minimum orders, and request details.";
+    }
+
+    return;
+  }
+
+  publicProductsPreviewSection.classList.add("has-products");
+
+  if (publicProductsPreviewPill) {
+    publicProductsPreviewPill.textContent = "Live supply";
+  }
+
+  if (publicProductsPreviewTitle) {
+    publicProductsPreviewTitle.textContent = previewProducts.some((product) => product.featured)
+      ? "Featured supply"
+      : "Available supply";
+  }
+
+  if (publicProductsPreviewDescription) {
+    publicProductsPreviewDescription.textContent =
+      "A few products from this business’s Supply & Products page. View the full catalog for availability, unit sizes, pricing, minimums, and request details.";
+  }
+
+  if (publicSupplyCta) {
+    publicSupplyCta.href = "supply.html";
+    publicSupplyCta.classList.remove("disabled");
+    publicSupplyCta.removeAttribute("aria-disabled");
+  }
+
+  publicProductPreviewRow.innerHTML = "";
+
+  previewProducts.forEach((product) => {
+    publicProductPreviewRow.appendChild(createPublicPreviewProductCard(product));
+  });
+}
+
+async function renderPublicProfile(profile) {
   renderIdentity(profile);
   renderSummary(profile);
   renderGallery(profile);
   renderStorySections(profile);
   renderTeam(profile);
   renderCertifications(profile);
+  await renderProductsPreview(profile);
 
   showState("profile");
 }
@@ -473,7 +638,7 @@ async function loadPublicProfilePreview() {
     return;
   }
 
-  renderPublicProfile(profile);
+  await renderPublicProfile(profile);
 }
 
 publicGalleryLeftBtn?.addEventListener("click", () => {
