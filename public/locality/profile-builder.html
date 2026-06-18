@@ -25,7 +25,7 @@
     </div>
 
     <div class="profile-builder-topbar-actions">
-      <a href="public-profile.html" class="profile-mode-switch to-edit" aria-label="Switch to public profile preview">
+      <a id="profileModeSwitch" href="public-profile.html" class="profile-mode-switch to-edit" aria-label="Switch to public profile preview">
         <span class="mode-switch-track">
           <span class="mode-switch-option mode-switch-option-left">Edit Mode</span>
           <span class="mode-switch-option mode-switch-option-right">Preview Mode</span>
@@ -79,10 +79,10 @@
           <small>Story, trust, and identity</small>
         </a>
     
-        <a href="#" class="profile-page-tab disabled" aria-disabled="true">
+        <a id="profileSupplyTab" href="#" class="profile-page-tab disabled" aria-disabled="true">
           <span>Supply & Products</span>
-          <small>Set up after completing your profile</small>
-          <em>Next step</em>
+          <small id="profileSupplyTabSubtext">Set up after completing your profile</small>
+          <em id="profileSupplyTabBadge">Next step</em>
         </a>
       </nav>
     
@@ -586,12 +586,12 @@
       </p>
 
       <div class="setup-choice-grid">
-        <a href="supply-builder.html" class="setup-choice-card primary">
+       <a id="profileSetupSupplyChoice" href="supply-builder.html?setup=1" class="setup-choice-card primary">
           <strong>Add products now</strong>
           <span>Start entering products, unit sizes, availability, pricing, minimum orders, and fulfillment notes.</span>
         </a>
 
-        <a href="supplier.html" class="setup-choice-card">
+        <a id="profileSetupSkipChoice" href="supplier.html" class="setup-choice-card">
           <strong>Skip for now</strong>
           <span>Finish setup and come back later from your workspace when you are ready to add products.</span>
         </a>
