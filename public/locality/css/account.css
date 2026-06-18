@@ -1523,3 +1523,56 @@
   display: grid;
   gap: 12px;
 }
+
+.personal-buyer-option {
+  display: grid !important;
+  grid-template-columns: auto 1fr;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 16px;
+  border-radius: 20px;
+  border: 1px solid rgba(8, 196, 100, 0.18);
+  background:
+    radial-gradient(circle at 92% 12%, rgba(8, 196, 100, 0.08), transparent 34%),
+    rgba(244, 255, 247, 0.72);
+  cursor: pointer;
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+}
+
+.personal-buyer-option input {
+  width: 18px !important;
+  height: 18px !important;
+  min-height: 18px !important;
+  margin-top: 3px;
+  accent-color: var(--green);
+}
+
+.personal-buyer-option span {
+  display: grid;
+  gap: 4px;
+}
+
+.personal-buyer-option strong {
+  color: var(--navy);
+  font-size: 0.96rem;
+  font-weight: 950;
+}
+
+.personal-buyer-option small {
+  color: var(--muted);
+  font-size: 0.84rem;
+  font-weight: 750;
+  line-height: 1.4;
+}
+
+.business-fields-shell {
+  display: grid;
+  gap: 16px;
+}
+
+.business-fields-shell.is-disabled {
+  opacity: 0.42;
+  filter: grayscale(0.1);
+  pointer-events: none;
+}
