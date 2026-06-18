@@ -1199,3 +1199,7 @@
     font-size: 0.72rem;
   }
 }
+
+.setup-mode .editor-only {
+  display: none !important;
+}
