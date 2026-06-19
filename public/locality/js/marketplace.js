@@ -314,7 +314,7 @@ function createProductCard(product) {
       <div class="result-actions">
         <a href="coming-soon.html" class="primary-result-action">Reserve</a>
         <button type="button" class="gold-result-action" data-action="add-routine">
-          Add to routine
+          Remind me
         </button>
         <button type="button" class="secondary-result-action" data-action="view-producer">
           View producer
@@ -333,10 +333,19 @@ function createProductCard(product) {
     toggleStoredItem(SAVED_PRODUCTS_KEY, product.id);
   });
 
-  card.querySelector('[data-action="add-routine"]')?.addEventListener("click", (event) => {
-    event.stopPropagation();
-    toggleStoredItem(ROUTINE_KEY, getCategoryGroup(product.category));
-  });
+   card.querySelector('[data-action="add-routine"]')?.addEventListener("click", (event) => {
+     event.stopPropagation();
+   
+     toggleStoredItem(ROUTINE_KEY, getCategoryGroup(product.category));
+   
+     const button = event.currentTarget;
+     button.textContent = "Reminder added";
+     button.classList.add("is-added");
+   
+     setTimeout(() => {
+       button.textContent = "Remind me";
+     }, 1400);
+   });
 
   card.querySelector('[data-action="view-producer"]')?.addEventListener("click", (event) => {
     event.stopPropagation();
