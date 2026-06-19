@@ -27,170 +27,292 @@
   </header>
 
   <main class="my-locality-shell">
-    <section class="my-locality-hero compact-hero">
-      <div class="hero-main-copy">
-        <p class="my-locality-kicker">My Locality</p>
-
-        <h1 id="buyerWelcomeTitle">Welcome to your local food home.</h1>
-
+    <section class="local-week-hero">
+      <div class="local-week-copy">
+        <p class="page-kicker">My Locality</p>
+        <h1 id="buyerWelcomeTitle">Your local food week.</h1>
         <p id="buyerWelcomeText">
-          Discover local food nearby, save farms and products you care about, and keep future orders organized in one simple place.
+          See what is fresh nearby, follow trusted farms, reserve limited goods, and build local food into your normal routine.
         </p>
       </div>
 
-      <div class="hero-action-panel">
-        <aside class="my-locality-location-card">
+      <div class="local-week-actions">
+        <a href="map.html?view=products&fresh=true" class="primary-action">Browse Fresh This Week</a>
+        <a href="map.html?pickup=nearby" class="secondary-action">Find Pickup Near Me</a>
+        <a href="map.html?view=farms" class="ghost-action">Follow More Farms</a>
+      </div>
+
+      <div class="local-week-stats" aria-label="Locality weekly snapshot">
+        <div class="week-stat-card">
+          <span>Fresh nearby</span>
+          <strong>24</strong>
+          <small>items this week</small>
+        </div>
+
+        <div class="week-stat-card">
+          <span>Following</span>
+          <strong>3</strong>
+          <small>farms & producers</small>
+        </div>
+
+        <div class="week-stat-card">
+          <span>Pickup windows</span>
+          <strong>5</strong>
+          <small>near your area</small>
+        </div>
+
+        <div class="week-stat-card location">
           <span>Current area</span>
           <strong id="buyerLocationLabel">Loading...</strong>
           <small id="buyerRadiusLabel">Personal buyer account</small>
-        </aside>
-
-        <div class="my-locality-actions">
-          <a href="map.html" class="my-locality-primary-btn">Explore marketplace</a>
-          <a href="account.html" class="my-locality-secondary-btn">Account settings</a>
         </div>
       </div>
     </section>
 
-    <section class="locality-pulse-row" aria-label="My Locality snapshot">
-      <a href="coming-soon.html" class="pulse-card messages">
-        <span>Messages</span>
-        <strong>2 new messages</strong>
-        <small>Recent updates from nearby farms and food businesses.</small>
-      </a>
+    <section class="quick-buy-section" aria-label="Quick buy categories">
+      <div class="section-heading compact">
+        <div>
+          <p class="page-kicker green">Quick buy</p>
+          <h2>Start with what you need.</h2>
+        </div>
 
-      <a href="coming-soon.html" class="pulse-card">
-        <span>Orders</span>
-        <strong>No active orders</strong>
-        <small>Future pickups, requests, and deliveries will appear here.</small>
-      </a>
+        <a href="map.html?view=products" class="section-link">Browse all products</a>
+      </div>
 
-      <a href="coming-soon.html" class="pulse-card">
-        <span>Saved</span>
-        <strong>Saved items</strong>
-        <small>Keep track of farms and products you want to revisit.</small>
-      </a>
+      <div class="quick-buy-rail">
+        <a href="map.html?category=eggs" class="quick-buy-chip">Eggs</a>
+        <a href="map.html?category=produce" class="quick-buy-chip">Produce</a>
+        <a href="map.html?category=beef" class="quick-buy-chip">Beef</a>
+        <a href="map.html?category=dairy" class="quick-buy-chip">Dairy</a>
+        <a href="map.html?category=honey" class="quick-buy-chip">Honey</a>
+        <a href="map.html?category=baked-goods" class="quick-buy-chip">Baked goods</a>
+        <a href="map.html?category=flowers" class="quick-buy-chip">Flowers</a>
+        <a href="map.html?category=pantry" class="quick-buy-chip">Pantry</a>
+      </div>
     </section>
 
-    <section class="my-locality-layout">
-      <div class="my-locality-main-column">
-        <section class="fresh-this-week-card">
-          <div class="section-heading-row">
+    <section class="locality-command-grid">
+      <div class="main-feed-column">
+        <section class="fresh-this-week-panel">
+          <div class="section-heading">
             <div>
-              <p class="my-locality-kicker green">Fresh this week</p>
-              <h2>Popular local goods near you.</h2>
+              <p class="page-kicker green">Fresh this week</p>
+              <h2>Available from nearby farms and producers.</h2>
             </div>
 
-            <a href="map.html" class="section-mini-link">View marketplace</a>
+            <a href="map.html?fresh=true" class="section-link">View fresh listings</a>
           </div>
 
-          <div class="fresh-product-strip">
-            <a href="map.html?category=dairy" class="fresh-product-card featured-product">
-              <div class="fresh-product-image dairy"></div>
-              <span>Dairy</span>
-              <strong>Fresh milk</strong>
-              <small>Local dairy, butter, cheese, and farm goods.</small>
+          <div class="fresh-card-grid">
+            <article class="fresh-card featured">
+              <div class="fresh-image produce"></div>
+
+              <div class="fresh-card-body">
+                <span class="availability-pill">Available now</span>
+                <h3>Heirloom tomatoes</h3>
+                <p>Fresh-picked tomatoes from farms around your area.</p>
+
+                <div class="fresh-meta-row">
+                  <span>Queen Creek Harvest</span>
+                  <span>Pickup Fri–Sat</span>
+                </div>
+
+                <div class="fresh-actions">
+                  <a href="map.html?search=tomatoes" class="mini-primary">Reserve</a>
+                  <a href="map.html?farm=queen-creek-harvest" class="mini-secondary">View farm</a>
+                </div>
+              </div>
+            </article>
+
+            <article class="fresh-card">
+              <div class="fresh-image dairy"></div>
+
+              <div class="fresh-card-body">
+                <span class="availability-pill">Limited</span>
+                <h3>Fresh milk</h3>
+                <p>Weekly dairy availability from nearby producers.</p>
+
+                <div class="fresh-meta-row">
+                  <span>Bishkek Foods</span>
+                  <span>Pickup window open</span>
+                </div>
+
+                <div class="fresh-actions">
+                  <a href="map.html?category=dairy" class="mini-primary">Reserve</a>
+                  <a href="map.html?category=dairy" class="mini-secondary">Save</a>
+                </div>
+              </div>
+            </article>
+
+            <article class="fresh-card">
+              <div class="fresh-image eggs"></div>
+
+              <div class="fresh-card-body">
+                <span class="availability-pill">Weekly</span>
+                <h3>Farm eggs</h3>
+                <p>Recurring egg availability from farms near your area.</p>
+
+                <div class="fresh-meta-row">
+                  <span>Desert Ridge Farms</span>
+                  <span>Sunday pickup</span>
+                </div>
+
+                <div class="fresh-actions">
+                  <a href="map.html?category=eggs" class="mini-primary">Reserve</a>
+                  <a href="map.html?category=eggs" class="mini-secondary">Save</a>
+                </div>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="pickup-panel">
+          <div class="section-heading">
+            <div>
+              <p class="page-kicker green">Pickup opportunities</p>
+              <h2>Where local food is available near you.</h2>
+            </div>
+
+            <a href="map.html?pickup=nearby" class="section-link">View pickup map</a>
+          </div>
+
+          <div class="pickup-list">
+            <a href="map.html?pickup=farm-stand" class="pickup-row">
+              <span class="pickup-dot"></span>
+              <div>
+                <strong>Saturday farm stand pickup</strong>
+                <small>Queen Creek Harvest · 9:00 AM–1:00 PM · Produce, eggs, herbs</small>
+              </div>
+              <em>12 mi</em>
             </a>
 
-            <a href="map.html?category=produce" class="fresh-product-card">
-              <div class="fresh-product-image produce"></div>
-              <span>Produce</span>
-              <strong>Tomatoes & greens</strong>
-              <small>Seasonal produce from farms and markets nearby.</small>
+            <a href="map.html?pickup=market" class="pickup-row">
+              <span class="pickup-dot gold"></span>
+              <div>
+                <strong>Downtown market pickup</strong>
+                <small>Multiple producers · Sunday morning · Dairy, bread, flowers</small>
+              </div>
+              <em>7 mi</em>
             </a>
 
-            <a href="map.html?category=eggs" class="fresh-product-card">
-              <div class="fresh-product-image eggs"></div>
-              <span>Eggs</span>
-              <strong>Local eggs</strong>
-              <small>Fresh weekly options from nearby farms.</small>
+            <a href="map.html?pickup=community-drop" class="pickup-row">
+              <span class="pickup-dot blue"></span>
+              <div>
+                <strong>Community drop window</strong>
+                <small>Preorders close Thursday · Pickup Friday evening</small>
+              </div>
+              <em>4 mi</em>
             </a>
           </div>
         </section>
 
-        <section class="wide-discovery-card">
-          <div>
-            <p class="my-locality-kicker green">Nearby</p>
-            <h2>Explore farms, markets, and local food businesses around your area.</h2>
-            <p>
-              Use the marketplace to browse nearby farms, compare available products, and discover what is active around your region.
-            </p>
+        <section class="updates-panel">
+          <div class="section-heading">
+            <div>
+              <p class="page-kicker green">Followed farms</p>
+              <h2>Updates from farms you follow.</h2>
+            </div>
+
+            <a href="map.html?view=farms" class="section-link">Find more farms</a>
           </div>
 
-          <a href="map.html" class="my-locality-primary-btn">Open marketplace</a>
-        </section>
+          <div class="farm-update-grid">
+            <article class="farm-update-card">
+              <span>Restock alert</span>
+              <strong>Bishkek Foods added fresh dairy availability.</strong>
+              <small>Milk, butter, and goat cheese are available for pickup this week.</small>
+            </article>
 
-        <section class="personal-tools-grid">
-          <a href="coming-soon.html" class="tool-card saved-card">
-            <span>Saved</span>
-            <strong>Saved farms & products</strong>
-            <small>Items you save from the marketplace will appear here.</small>
-          </a>
-
-          <a href="coming-soon.html" class="tool-card orders-card">
-            <span>Orders</span>
-            <strong>Current orders</strong>
-            <small>Track pickup details, order status, and future requests.</small>
-          </a>
-
-          <a href="coming-soon.html" class="tool-card preferences-card">
-            <span>Preferences</span>
-            <strong>Food preferences</strong>
-            <small>Update your interests, location radius, and favorite categories.</small>
-          </a>
-
-          <a href="coming-soon.html" class="tool-card messages-card">
-            <span>Messages</span>
-            <strong>Conversations</strong>
-            <small>Manage messages with farms and local food businesses.</small>
-          </a>
+            <article class="farm-update-card">
+              <span>Preorder deadline</span>
+              <strong>Queen Creek Harvest closes tomato reservations Thursday.</strong>
+              <small>Reserve before the weekend pickup window fills up.</small>
+            </article>
+          </div>
         </section>
       </div>
 
-      <aside class="quick-buy-rail">
-        <div class="quick-buy-header">
-          <p class="my-locality-kicker green">Quick buy</p>
-          <h2>Start with what you need.</h2>
-          <p>Jump into common local food categories and browse nearby listings.</p>
-        </div>
+      <aside class="side-rail-column">
+        <section class="messages-card">
+          <div>
+            <p class="page-kicker green">Messages</p>
+            <h2>2 new messages</h2>
+            <p>Recent updates from farms and food businesses you follow.</p>
+          </div>
 
-        <div class="quick-buy-list">
-          <a href="map.html?category=dairy" class="quick-buy-item">
-            <span>Dairy</span>
-            <small>Milk, butter, cheese</small>
-          </a>
+          <a href="coming-soon.html" class="side-card-link">Open messages</a>
+        </section>
 
-          <a href="map.html?category=eggs" class="quick-buy-item">
-            <span>Eggs</span>
-            <small>Weekly farm eggs</small>
-          </a>
+        <section class="watchlist-card">
+          <div class="section-heading small">
+            <div>
+              <p class="page-kicker green">Coming soon</p>
+              <h2>Seasonal watchlist</h2>
+            </div>
+          </div>
 
-          <a href="map.html?category=produce" class="quick-buy-item">
-            <span>Produce</span>
-            <small>Greens, tomatoes, vegetables</small>
-          </a>
+          <div class="watchlist-list">
+            <a href="map.html?watch=strawberries" class="watchlist-item">
+              <strong>Strawberries</strong>
+              <small>Expected in 2–3 weeks</small>
+              <span>Notify me</span>
+            </a>
 
-          <a href="map.html?category=meat" class="quick-buy-item">
-            <span>Meat</span>
-            <small>Beef, poultry, goat, lamb</small>
-          </a>
+            <a href="map.html?watch=beef-share" class="watchlist-item">
+              <strong>Beef shares</strong>
+              <small>Interest list open</small>
+              <span>Join list</span>
+            </a>
 
-          <a href="map.html?category=fruit" class="quick-buy-item">
-            <span>Fruit</span>
-            <small>Seasonal local fruit</small>
-          </a>
+            <a href="map.html?watch=flowers" class="watchlist-item">
+              <strong>Spring flowers</strong>
+              <small>Limited weekly bunches</small>
+              <span>Watch</span>
+            </a>
+          </div>
+        </section>
 
-          <a href="map.html?category=prepared" class="quick-buy-item">
-            <span>Prepared foods</span>
-            <small>Baked goods, meals, pantry</small>
-          </a>
-        </div>
+        <section class="routine-card">
+          <p class="page-kicker green">Routine</p>
+          <h2>Build your local food routine.</h2>
+          <p>
+            Tell Locality what you buy regularly so future farm updates, pickup windows, and product suggestions are easier to find.
+          </p>
 
-        <div class="buyer-note-card">
-          <span>Your area</span>
-          <strong id="buyerAreaMiniLabel">Local results near you</strong>
-          <small>Marketplace filters will become more personalized as Locality grows.</small>
-        </div>
+          <div class="routine-options">
+            <a href="coming-soon.html">Weekly eggs</a>
+            <a href="coming-soon.html">Produce box</a>
+            <a href="coming-soon.html">Monthly meat share</a>
+            <a href="coming-soon.html">Seasonal fruit</a>
+          </div>
+        </section>
+
+        <section class="recommended-farms-card">
+          <div class="section-heading small">
+            <div>
+              <p class="page-kicker green">Recommended</p>
+              <h2>Farms to follow</h2>
+            </div>
+          </div>
+
+          <div class="recommended-farm-list">
+            <a href="map.html?farm=queen-creek-harvest" class="farm-mini-row">
+              <span></span>
+              <div>
+                <strong>Queen Creek Harvest</strong>
+                <small>Produce · eggs · pickup nearby</small>
+              </div>
+            </a>
+
+            <a href="map.html?farm=bishkek-foods" class="farm-mini-row">
+              <span class="gold"></span>
+              <div>
+                <strong>Bishkek Foods</strong>
+                <small>Dairy · prepared foods · local pickup</small>
+              </div>
+            </a>
+          </div>
+        </section>
       </aside>
     </section>
   </main>
