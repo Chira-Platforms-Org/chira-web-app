@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>My Locality | Locality</title>
+
+  <link rel="icon" type="image/png" href="images/Locality Flavicon Spinner.png" />
+  <link rel="apple-touch-icon" href="images/Locality Flavicon Spinner.png" />
+
+  <link rel="stylesheet" href="css/locality.css" />
+  <link rel="stylesheet" href="css/my-locality.css" />
+</head>
+
+<body class="my-locality-page">
+  <header class="my-locality-topbar">
+    <a href="index.html" class="my-locality-brand">
+      <img src="images/LOCALITY LOGO.png" alt="Locality" />
+    </a>
+
+    <nav class="my-locality-nav" aria-label="My Locality navigation">
+      <a href="map.html">Marketplace</a>
+      <a href="my-locality.html" class="active">My Locality</a>
+      <a href="account.html">Account</a>
+    </nav>
+  </header>
+
+  <main class="my-locality-shell">
+    <section class="my-locality-hero">
+      <div>
+        <p class="my-locality-kicker">My Locality</p>
+        <h1 id="buyerWelcomeTitle">Welcome to your local food home.</h1>
+        <p id="buyerWelcomeText">
+          Discover nearby farms, save products you care about, and keep track of local orders in one place.
+        </p>
+
+        <div class="my-locality-actions">
+          <a href="map.html" class="my-locality-primary-btn">Explore marketplace</a>
+          <a href="account.html" class="my-locality-secondary-btn">Account settings</a>
+        </div>
+      </div>
+
+      <aside class="my-locality-location-card">
+        <span>Current area</span>
+        <strong id="buyerLocationLabel">Loading...</strong>
+        <small id="buyerRadiusLabel">Personal buyer account</small>
+      </aside>
+    </section>
+
+    <section class="my-locality-grid">
+      <a href="map.html" class="my-locality-card featured">
+        <span>Discover</span>
+        <strong>Find food near you</strong>
+        <small>Browse nearby farms, products, markets, and seasonal availability.</small>
+      </a>
+
+      <a href="coming-soon.html" class="my-locality-card">
+        <span>Saved</span>
+        <strong>Saved farms & products</strong>
+        <small>Keep track of items and businesses you want to come back to.</small>
+      </a>
+
+      <a href="coming-soon.html" class="my-locality-card">
+        <span>Orders</span>
+        <strong>Current orders</strong>
+        <small>Review order status, pickup details, and future requests.</small>
+      </a>
+
+      <a href="coming-soon.html" class="my-locality-card">
+        <span>Messages</span>
+        <strong>Conversations</strong>
+        <small>Manage messages with farms and local food businesses.</small>
+      </a>
+
+      <a href="coming-soon.html" class="my-locality-card">
+        <span>Preferences</span>
+        <strong>Food preferences</strong>
+        <small>Update your interests, location radius, and preferred product categories.</small>
+      </a>
+
+      <a href="map.html" class="my-locality-card">
+        <span>Nearby</span>
+        <strong>Regional activity</strong>
+        <small>See what farms, markets, and food businesses are active around you.</small>
+      </a>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabaseConfig.js"></script>
+  <script src="js/supabaseClient.js"></script>
+  <script src="js/authService.js"></script>
+  <script src="js/myLocality.js"></script>
+</body>
+</html>
