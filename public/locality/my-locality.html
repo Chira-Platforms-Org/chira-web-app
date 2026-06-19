@@ -27,63 +27,171 @@
   </header>
 
   <main class="my-locality-shell">
-    <section class="my-locality-hero">
-      <div>
+    <section class="my-locality-hero compact-hero">
+      <div class="hero-main-copy">
         <p class="my-locality-kicker">My Locality</p>
+
         <h1 id="buyerWelcomeTitle">Welcome to your local food home.</h1>
+
         <p id="buyerWelcomeText">
-          Discover nearby farms, save products you care about, and keep track of local orders in one place.
+          Discover local food nearby, save farms and products you care about, and keep future orders organized in one simple place.
         </p>
+      </div>
+
+      <div class="hero-action-panel">
+        <aside class="my-locality-location-card">
+          <span>Current area</span>
+          <strong id="buyerLocationLabel">Loading...</strong>
+          <small id="buyerRadiusLabel">Personal buyer account</small>
+        </aside>
 
         <div class="my-locality-actions">
           <a href="map.html" class="my-locality-primary-btn">Explore marketplace</a>
           <a href="account.html" class="my-locality-secondary-btn">Account settings</a>
         </div>
       </div>
-
-      <aside class="my-locality-location-card">
-        <span>Current area</span>
-        <strong id="buyerLocationLabel">Loading...</strong>
-        <small id="buyerRadiusLabel">Personal buyer account</small>
-      </aside>
     </section>
 
-    <section class="my-locality-grid">
-      <a href="map.html" class="my-locality-card featured">
-        <span>Discover</span>
-        <strong>Find food near you</strong>
-        <small>Browse nearby farms, products, markets, and seasonal availability.</small>
-      </a>
-
-      <a href="coming-soon.html" class="my-locality-card">
-        <span>Saved</span>
-        <strong>Saved farms & products</strong>
-        <small>Keep track of items and businesses you want to come back to.</small>
-      </a>
-
-      <a href="coming-soon.html" class="my-locality-card">
-        <span>Orders</span>
-        <strong>Current orders</strong>
-        <small>Review order status, pickup details, and future requests.</small>
-      </a>
-
-      <a href="coming-soon.html" class="my-locality-card">
+    <section class="locality-pulse-row" aria-label="My Locality snapshot">
+      <a href="coming-soon.html" class="pulse-card messages">
         <span>Messages</span>
-        <strong>Conversations</strong>
-        <small>Manage messages with farms and local food businesses.</small>
+        <strong>2 new messages</strong>
+        <small>Recent updates from nearby farms and food businesses.</small>
       </a>
 
-      <a href="coming-soon.html" class="my-locality-card">
-        <span>Preferences</span>
-        <strong>Food preferences</strong>
-        <small>Update your interests, location radius, and preferred product categories.</small>
+      <a href="coming-soon.html" class="pulse-card">
+        <span>Orders</span>
+        <strong>No active orders</strong>
+        <small>Future pickups, requests, and deliveries will appear here.</small>
       </a>
 
-      <a href="map.html" class="my-locality-card">
-        <span>Nearby</span>
-        <strong>Regional activity</strong>
-        <small>See what farms, markets, and food businesses are active around you.</small>
+      <a href="coming-soon.html" class="pulse-card">
+        <span>Saved</span>
+        <strong>Saved items</strong>
+        <small>Keep track of farms and products you want to revisit.</small>
       </a>
+    </section>
+
+    <section class="my-locality-layout">
+      <div class="my-locality-main-column">
+        <section class="fresh-this-week-card">
+          <div class="section-heading-row">
+            <div>
+              <p class="my-locality-kicker green">Fresh this week</p>
+              <h2>Popular local goods near you.</h2>
+            </div>
+
+            <a href="map.html" class="section-mini-link">View marketplace</a>
+          </div>
+
+          <div class="fresh-product-strip">
+            <a href="map.html?category=dairy" class="fresh-product-card featured-product">
+              <div class="fresh-product-image dairy"></div>
+              <span>Dairy</span>
+              <strong>Fresh milk</strong>
+              <small>Local dairy, butter, cheese, and farm goods.</small>
+            </a>
+
+            <a href="map.html?category=produce" class="fresh-product-card">
+              <div class="fresh-product-image produce"></div>
+              <span>Produce</span>
+              <strong>Tomatoes & greens</strong>
+              <small>Seasonal produce from farms and markets nearby.</small>
+            </a>
+
+            <a href="map.html?category=eggs" class="fresh-product-card">
+              <div class="fresh-product-image eggs"></div>
+              <span>Eggs</span>
+              <strong>Local eggs</strong>
+              <small>Fresh weekly options from nearby farms.</small>
+            </a>
+          </div>
+        </section>
+
+        <section class="wide-discovery-card">
+          <div>
+            <p class="my-locality-kicker green">Nearby</p>
+            <h2>Explore farms, markets, and local food businesses around your area.</h2>
+            <p>
+              Use the marketplace to browse nearby farms, compare available products, and discover what is active around your region.
+            </p>
+          </div>
+
+          <a href="map.html" class="my-locality-primary-btn">Open marketplace</a>
+        </section>
+
+        <section class="personal-tools-grid">
+          <a href="coming-soon.html" class="tool-card saved-card">
+            <span>Saved</span>
+            <strong>Saved farms & products</strong>
+            <small>Items you save from the marketplace will appear here.</small>
+          </a>
+
+          <a href="coming-soon.html" class="tool-card orders-card">
+            <span>Orders</span>
+            <strong>Current orders</strong>
+            <small>Track pickup details, order status, and future requests.</small>
+          </a>
+
+          <a href="coming-soon.html" class="tool-card preferences-card">
+            <span>Preferences</span>
+            <strong>Food preferences</strong>
+            <small>Update your interests, location radius, and favorite categories.</small>
+          </a>
+
+          <a href="coming-soon.html" class="tool-card messages-card">
+            <span>Messages</span>
+            <strong>Conversations</strong>
+            <small>Manage messages with farms and local food businesses.</small>
+          </a>
+        </section>
+      </div>
+
+      <aside class="quick-buy-rail">
+        <div class="quick-buy-header">
+          <p class="my-locality-kicker green">Quick buy</p>
+          <h2>Start with what you need.</h2>
+          <p>Jump into common local food categories and browse nearby listings.</p>
+        </div>
+
+        <div class="quick-buy-list">
+          <a href="map.html?category=dairy" class="quick-buy-item">
+            <span>Dairy</span>
+            <small>Milk, butter, cheese</small>
+          </a>
+
+          <a href="map.html?category=eggs" class="quick-buy-item">
+            <span>Eggs</span>
+            <small>Weekly farm eggs</small>
+          </a>
+
+          <a href="map.html?category=produce" class="quick-buy-item">
+            <span>Produce</span>
+            <small>Greens, tomatoes, vegetables</small>
+          </a>
+
+          <a href="map.html?category=meat" class="quick-buy-item">
+            <span>Meat</span>
+            <small>Beef, poultry, goat, lamb</small>
+          </a>
+
+          <a href="map.html?category=fruit" class="quick-buy-item">
+            <span>Fruit</span>
+            <small>Seasonal local fruit</small>
+          </a>
+
+          <a href="map.html?category=prepared" class="quick-buy-item">
+            <span>Prepared foods</span>
+            <small>Baked goods, meals, pantry</small>
+          </a>
+        </div>
+
+        <div class="buyer-note-card">
+          <span>Your area</span>
+          <strong id="buyerAreaMiniLabel">Local results near you</strong>
+          <small>Marketplace filters will become more personalized as Locality grows.</small>
+        </div>
+      </aside>
     </section>
   </main>
 
