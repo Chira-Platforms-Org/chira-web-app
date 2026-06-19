@@ -20,13 +20,12 @@
         <img src="images/LOCALITY LOGO.png" alt="Locality" />
       </a>
 
-      <p class="login-eyebrow">Create your Locality workspace</p>
+      <p class="login-eyebrow">Create your Locality account</p>
 
-      <h1>Set up your local food network account.</h1>
-
+      <h1>Find local food or bring your business online.</h1>
+      
       <p class="auth-subtitle">
-        Create your account, tell us how your business participates in the local
-        food network, and start building regional sourcing relationships.
+        Set up Locality as a private buyer, farm, food business, market, restaurant, or local sourcing organization.
       </p>
 
       <div class="signup-progress">
@@ -37,22 +36,27 @@
       
         <div class="progress-step" data-step-indicator="2">
           <span>2</span>
-          Business
+          Use
         </div>
       
         <div class="progress-step" data-step-indicator="3">
           <span>3</span>
-          Location
+          Details
         </div>
       
         <div class="progress-step" data-step-indicator="4">
           <span>4</span>
-          Profile
+          Location
         </div>
       
         <div class="progress-step" data-step-indicator="5">
           <span>5</span>
-          Workspace
+          Profile
+        </div>
+      
+        <div class="progress-step" data-step-indicator="6">
+          <span>6</span>
+          Ready
         </div>
       </div>
 
@@ -165,7 +169,7 @@
         </fieldset>
       
         <button id="createAccountSubmit" type="submit" class="auth-primary-btn">
-          Continue to business setup
+          Continue
         </button>
       
         <p id="signupStatus" class="auth-status">
@@ -173,23 +177,45 @@
         </p>
       </form>
 
-      <!-- STEP 2 — Business -->
-    <form class="auth-form signup-step" id="businessStep" data-step="2">
+
+      <!-- STEP 2 — Account Type -->
+    <form class="auth-form signup-step" id="accountTypeStep" data-step="2">
+      <h2>How will you use Locality?</h2>
+    
+      <p class="auth-helper-text">
+        Choose the path that best fits you. You can update your account later if your needs change.
+      </p>
+    
+      <div class="account-type-grid">
+        <button type="button" class="account-type-card" data-account-type-choice="personal_buyer">
+          <span class="account-type-pill">Private buyer</span>
+          <strong>Buy local food for myself</strong>
+          <small>
+            For households and individuals discovering nearby farms, markets, prepared foods, seasonal goods, and local products.
+          </small>
+        </button>
+    
+        <button type="button" class="account-type-card" data-account-type-choice="business">
+          <span class="account-type-pill business">Business account</span>
+          <strong>Use Locality for a farm or business</strong>
+          <small>
+            For farms, restaurants, grocers, markets, producers, food hubs, institutions, and local sourcing organizations.
+          </small>
+        </button>
+      </div>
+    
+      <button type="button" class="auth-secondary-btn signup-back-btn" data-back-step="1">
+        Back to account
+      </button>
+    </form>
+
+      <!-- STEP 3 — Business -->
+    <form class="auth-form signup-step" id="businessStep" data-step="3">
       <h2>Set up your business identity</h2>
 
-      <label class="personal-buyer-option">
-        <input id="personalBuyerModeInput" type="checkbox" />
-        <span>
-          <strong>I’m buying personally, not on behalf of a business.</strong>
-          <small>
-            Skip business profile setup for now. You can still explore local farms, products, markets, and saved items.
-          </small>
-        </span>
-      </label>
-      
-      <p id="businessStepHelperText" class="auth-helper-text">
-        If you represent a farm, restaurant, market, grocer, institution, or food business, complete the business details below. If you are buying personally, check the box above.
-      </p>
+    <p id="businessStepHelperText" class="auth-helper-text">
+      Tell buyers and partners what kind of organization you represent. Private buyers can skip this step by choosing the private buyer path earlier.
+    </p>
       
       <div id="businessFieldsShell" class="business-fields-shell">
     
@@ -291,9 +317,9 @@
       </button>
     </form>
 
-    <!-- STEP 3 — Location Check -->
-      <form class="auth-form signup-step" id="locationStep" data-step="3">
-        <h2>Confirm your business location</h2>
+    <!-- STEP 4 — Location Check -->
+      <form class="auth-form signup-step" id="locationStep" data-step="4">
+        <h2>Confirm your location</h2>
       
         <label>
           Street address
@@ -329,12 +355,12 @@
           </label>
         </div>
       
-        <p class="auth-helper-text">
-          Locality is currently available to businesses in the United States. Map pin confirmation will be added next.
+        <p id="locationStepHelperText" class="auth-helper-text">
+          Locality uses your location to show relevant farms, products, buyers, and regional opportunities nearby.
         </p>
       
-        <button type="button" class="auth-secondary-btn signup-back-btn" data-back-step="2">
-          Back to business
+        <button id="locationBackBtn" type="button" class="auth-secondary-btn signup-back-btn" data-back-step="3">
+          Back
         </button>
         
         <button id="locationSetupSubmit" type="submit" class="auth-primary-btn">
@@ -342,8 +368,8 @@
         </button>
       </form>
       
-      <!-- STEP 4 — Profile Builder Transition -->
-      <form class="auth-form signup-step" id="profileStep" data-step="4">
+      <!-- STEP 5 — Profile Builder Transition -->
+      <form class="auth-form signup-step" id="profileStep" data-step="5">
         <h2>Build your public Locality profile</h2>
       
         <p class="auth-helper-text">
@@ -381,18 +407,18 @@
         </button>
       </form>
 
-      <div class="signup-step completion-card" id="completionStep" data-step="5">
+      <div class="signup-step completion-card" id="completionStep" data-step="6">
         <h2>Your workspace is ready.</h2>
         <p id="profileSummaryText">
           Your business profile has been created.
         </p>
 
       <a id="enterWorkspaceLink" href="supplier.html" class="auth-primary-link">
-        Enter workspace
+        Enter Locality
       </a>
 
-        <a href="contracts.html" class="auth-secondary-link">
-          Open Contract Studio
+        <a id="secondaryCompletionLink" href="map.html" class="auth-secondary-link">
+          Explore marketplace
         </a>
       </div>
 
