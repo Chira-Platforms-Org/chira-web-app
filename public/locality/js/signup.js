@@ -4,6 +4,8 @@
 ========================= */
 
 const accountStep = document.getElementById("accountStep");
+const accountTypeStep = document.getElementById("accountTypeStep");
+const accountTypeChoiceButtons = document.querySelectorAll("[data-account-type-choice]");
 const businessStep = document.getElementById("businessStep");
 const profileStep = document.getElementById("profileStep");
 const completionStep = document.getElementById("completionStep");
@@ -52,6 +54,11 @@ const cityInput = document.getElementById("cityInput");
 const stateInput = document.getElementById("stateInput");
 const zipInput = document.getElementById("zipInput");
 const countryInput = document.getElementById("countryInput");
+const locationStepTitle = document.getElementById("locationStepTitle");
+const locationStepHelperText = document.getElementById("locationStepHelperText");
+const locationBackBtn = document.getElementById("locationBackBtn");
+const locationSetupSubmit = document.getElementById("locationSetupSubmit");
+const secondaryCompletionLink = document.getElementById("secondaryCompletionLink");
 
 const logoUrlInput = document.getElementById("logoUrlInput");
 const bannerImageUrlInput = document.getElementById("bannerImageUrlInput");
@@ -105,6 +112,9 @@ let profileSectionStatus = {};
 
 let createdUser = null;
 
+const ONBOARDING_ACCOUNT_PATH_KEY = "locality_onboarding_account_path";
+let selectedAccountPath = localStorage.getItem(ONBOARDING_ACCOUNT_PATH_KEY) || null;
+
 const startProfileBuilderBtn = document.getElementById("startProfileBuilderBtn");
 const skipProfileBuilderBtn = document.getElementById("skipProfileBuilderBtn");
 const ONBOARDING_PROFILE_ID_KEY = "locality_onboarding_business_profile_id";
@@ -142,6 +152,148 @@ function getMarketplaceRoles(value) {
 
 function getCleanValue(input) {
   return input?.value?.trim() || "";
+}
+
+function setAccountPath(path) {
+  selectedAccountPath = path;
+
+  if (path) {
+    localStorage.setItem(ONBOARDING_ACCOUNT_PATH_KEY, path);
+  } else {
+    localStorage.removeItem(ONBOARDING_ACCOUNT_PATH_KEY);
+  }
+
+  applyLocationStepMode();
+}
+
+function isPrivateBuyerPath() {
+  return selectedAccountPath === "personal_buyer";
+}
+
+function getBusinessAccountTypeFromRole(role) {
+  if (role === "buyer") return "business_buyer";
+  if (role === "buyer_seller") return "business_buyer_seller";
+  return "business_seller";
+}
+
+function applyLocationStepMode() {
+  const privateBuyer = isPrivateBuyerPath();
+
+  if (locationStepTitle) {
+    locationStepTitle.textContent = privateBuyer
+      ? "Where should we show local food near you?"
+      : "Confirm your business location";
+  }
+
+  if (locationStepHelperText) {
+    locationStepHelperText.textContent = privateBuyer
+      ? "Add your general location so Locality can show nearby farms, markets, products, and local food options. You can update this anytime."
+      : "Locality uses your location to place your business in the regional network and help nearby buyers understand where you operate.";
+  }
+
+  if (locationBackBtn) {
+    locationBackBtn.dataset.backStep = privateBuyer ? "2" : "3";
+    locationBackBtn.textContent = privateBuyer ? "Back to account type" : "Back to business";
+  }
+
+  if (locationSetupSubmit) {
+    locationSetupSubmit.textContent = privateBuyer
+      ? "Finish setup"
+      : "Continue";
+  }
+
+  if (streetAddressInput) {
+    streetAddressInput.placeholder = privateBuyer
+      ? "Street address optional for now"
+      : "123 Main Street";
+  }
+}
+
+function setCompletionForPrivateBuyer(displayName) {
+  if (profileSummaryText) {
+    profileSummaryText.textContent =
+      `${displayName || "Your"} Locality account is ready. You can explore local products, save farms, manage orders, and update your preferences from My Locality.`;
+  }
+
+  if (enterWorkspaceLink) {
+    enterWorkspaceLink.href = "my-locality.html";
+    enterWorkspaceLink.textContent = "Go to My Locality";
+  }
+
+  if (secondaryCompletionLink) {
+    secondaryCompletionLink.href = "map.html";
+    secondaryCompletionLink.textContent = "Explore marketplace";
+  }
+}
+
+async function updateUserProfile(updates = {}) {
+  const user = await getSignedInUserOrRedirect();
+
+  if (!user) {
+    return { data: null, error: "No authenticated user." };
+  }
+
+  const { data, error } = await window.LocalitySupabase
+    .from("user_profiles")
+    .upsert({
+      id: user.id,
+      ...updates,
+      updated_at: new Date().toISOString()
+    })
+    .select()
+    .single();
+
+  return { data, error };
+}
+
+async function savePrivateBuyerLocation() {
+  const user = await getSignedInUserOrRedirect();
+
+  if (!user) {
+    return { data: null, error: "No authenticated user." };
+  }
+
+  const address = buildAddressPayload();
+  const locationLabel = formatLocationLabel(address);
+
+  if (!address.city) {
+    return { data: null, error: "Please enter your city." };
+  }
+
+  if (!address.state || address.state.length !== 2) {
+    return { data: null, error: "Please enter a valid 2-letter state abbreviation." };
+  }
+
+  if (!address.zip_code || !/^\d{5}(-\d{4})?$/.test(address.zip_code)) {
+    return { data: null, error: "Please enter a valid ZIP code." };
+  }
+
+  const displayName = getCleanValue(fullNameInput) || user.email || "Locality buyer";
+
+  const { data, error } = await window.LocalitySupabase
+    .from("user_profiles")
+    .upsert({
+      id: user.id,
+      full_name: displayName,
+      buyer_display_name: displayName,
+      phone: getPhoneDigits(personalPhoneInput?.value) || null,
+      locality_account_type: "personal_buyer",
+      buyer_location_label: locationLabel,
+      buyer_city: address.city,
+      buyer_state: address.state,
+      buyer_zip_code: address.zip_code,
+      buyer_address: address,
+      buyer_radius_miles: 25,
+      buyer_interests: [],
+      onboarding_completed: true,
+      onboarding_step: "personal_buyer_ready",
+      notification_preferences: buildNotificationPreferences(),
+      updated_at: new Date().toISOString()
+    })
+    .select()
+    .single();
+
+  return { data, error };
 }
 
 function isPersonalBuyerMode() {
@@ -888,6 +1040,48 @@ async function saveBusinessProfileProgress(stepName, updates = {}) {
 personalBuyerModeInput?.addEventListener("change", applyPersonalBuyerMode);
 applyPersonalBuyerMode();
 
+accountTypeChoiceButtons.forEach((button) => {
+  button.addEventListener("click", async () => {
+    const choice = button.dataset.accountTypeChoice;
+
+    if (choice === "personal_buyer") {
+      setAccountPath("personal_buyer");
+
+      const { error } = await updateUserProfile({
+        locality_account_type: "personal_buyer",
+        onboarding_completed: false,
+        onboarding_step: "buyer_location"
+      });
+
+      if (error) {
+        console.error("Unable to save account type:", error);
+        alert(error.message || "Unable to save your account type.");
+        return;
+      }
+
+      setStep(4);
+      return;
+    }
+
+    setAccountPath("business");
+
+    const { error } = await updateUserProfile({
+      locality_account_type: "business_seller",
+      onboarding_completed: false,
+      onboarding_step: "business_identity"
+    });
+
+    if (error) {
+      console.error("Unable to save account type:", error);
+      alert(error.message || "Unable to save your account type.");
+      return;
+    }
+
+    prefillBusinessContactFromAccount();
+    setStep(3);
+  });
+});
+
 async function resumeOnboardingIfNeeded() {
   const user = await window.LocalityAuthService.getCurrentUser();
 
@@ -905,8 +1099,15 @@ async function resumeOnboardingIfNeeded() {
   .maybeSingle();
 
 if (!userProfileError && userProfile?.locality_account_type === "personal_buyer") {
-  setCompletionForPersonalBuyer(userProfile.buyer_display_name || userProfile.full_name);
-  setStep(5);
+  setAccountPath("personal_buyer");
+
+  if (userProfile.onboarding_completed === true) {
+    setCompletionForPrivateBuyer(userProfile.buyer_display_name || userProfile.full_name);
+    setStep(6);
+    return;
+  }
+
+  setStep(4);
   return;
 }
 
@@ -947,15 +1148,18 @@ if (!userProfileError && userProfile?.locality_account_type === "personal_buyer"
 
   const stepName = profile.onboarding_step;
 
-  if (stepName === "business_identity") {
-    setStep(3);
-  } else if (stepName === "location") {
-    setStep(4);
-  } else if (stepName === "profile_created") {
-    setStep(4);
-  } else {
-    setStep(2);
-  }
+   if (stepName === "business_identity") {
+     setAccountPath("business");
+     setStep(3);
+   } else if (stepName === "location") {
+     setAccountPath("business");
+     setStep(4);
+   } else if (stepName === "profile_created") {
+     setAccountPath("business");
+     setStep(5);
+   } else {
+     setStep(2);
+   }
 
   setStatus(signupStatus, "Welcome back. We restored your setup progress.", "success");
 }
@@ -1040,7 +1244,7 @@ accountStep?.addEventListener("submit", async (event) => {
        id: createdUser.id,
        full_name: fullName,
        phone: getPhoneDigits(personalPhoneInput?.value) || null,
-       locality_account_type: "business_seller",
+       locality_account_type: "pending",
        onboarding_completed: false,
        onboarding_step: "account_created",
        notification_preferences: buildNotificationPreferences(),
@@ -1048,7 +1252,7 @@ accountStep?.addEventListener("submit", async (event) => {
      });
 
    prefillBusinessContactFromAccount();
-   setStatus(signupStatus, "Account created. Continue with your business profile.", "success");
+   setStatus(signupStatus, "Account created. Choose how you want to use Locality.", "success");
    setStep(2);
 });
 
@@ -1072,6 +1276,7 @@ if (isPersonalBuyerMode()) {
   const businessName = getCleanValue(businessNameInput);
   const businessEmail = getCleanValue(businessEmailInput);
   const marketplaceRole = marketplaceRoleInput?.value || "seller";
+  const businessAccountType = getBusinessAccountTypeFromRole(marketplaceRole);
   const businessCategory = businessCategoryInput?.value || "other";
 
   const personalPhoneDigits = getPhoneDigits(personalPhoneInput?.value);
@@ -1132,14 +1337,41 @@ if (isPersonalBuyerMode()) {
   }
 
   if (data?.id) {
-    setActiveBusinessProfileId(data.id);
-  }
-
-  setStep(3);
+  setActiveBusinessProfileId(data.id);
+   }
+   
+   const { error: userProfileUpdateError } = await updateUserProfile({
+     locality_account_type: businessAccountType,
+     onboarding_completed: false,
+     onboarding_step: "location"
+   });
+   
+   if (userProfileUpdateError) {
+     console.error("Unable to update user account type:", userProfileUpdateError);
+     alert(userProfileUpdateError.message || "Unable to save your account type.");
+     return;
+   }
+   
+   setAccountPath("business");
+   setStep(4);
 });
 
 locationStep?.addEventListener("submit", async (event) => {
   event.preventDefault();
+
+   if (isPrivateBuyerPath()) {
+     const { data, error } = await savePrivateBuyerLocation();
+   
+     if (error) {
+       alert(error.message || error || "Unable to save your location.");
+       return;
+     }
+   
+     setCompletionForPrivateBuyer(data?.buyer_display_name || data?.full_name || getCleanValue(fullNameInput));
+     setActiveBusinessProfileId(null);
+     setStep(6);
+     return;
+   }
 
   const address = buildAddressPayload();
 
@@ -1181,7 +1413,7 @@ locationStep?.addEventListener("submit", async (event) => {
     setActiveBusinessProfileId(data.id);
   }
 
-  setStep(4);
+  setStep(5);
 });
 
 profileStep?.addEventListener("submit", async (event) => {
