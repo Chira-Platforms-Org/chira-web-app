@@ -4,246 +4,192 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>Locality Map | Chira Platforms</title>
+  <title>Marketplace | Locality</title>
 
-<link rel="icon" type="image/png" href="images/Locality Flavicon Spinner.png" />
-<link rel="apple-touch-icon" href="images/Locality Flavicon Spinner.png" />
+  <link rel="icon" type="image/png" href="images/Locality Flavicon Spinner.png" />
+  <link rel="apple-touch-icon" href="images/Locality Flavicon Spinner.png" />
 
-  <!-- Leaflet Map CSS -->
   <link
     rel="stylesheet"
     href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
   />
 
   <link rel="stylesheet" href="css/locality.css" />
+  <link rel="stylesheet" href="css/marketplace.css" />
 </head>
 
-<body class="map-page">
-
-  <div id="mapLoader" class="map-loader">
-  <div class="loader-card">
-    <img src="images/LOCALITY LOGO.png" alt="Locality loading" />
-    <div class="loader-pulse"></div>
-    <p>Loading Phoenix Regional Network...</p>
-  </div>
-</div>
-
-  <header class="map-topbar">
-    <a href="index.html" class="map-brand">
+<body class="marketplace-page">
+  <header class="marketplace-topbar">
+    <a href="index.html" class="marketplace-brand">
       <img src="images/LOCALITY LOGO.png" alt="Locality" />
     </a>
 
-    <div class="map-search">
-      <input type="text" placeholder="Search farms, buyers, products..." />
+    <div class="marketplace-search-shell">
+      <input
+        id="marketplaceSearchInput"
+        type="search"
+        placeholder="Search milk, eggs, tomatoes, producers, pickup windows..."
+      />
     </div>
 
-    <nav class="map-nav">
-      <a href="index.html">Home</a>
-      <a href="map.html">Marketplace</a>
-      <a href="supplier.html">Supplier Hub</a>
-      <a href="buyer.html">Sourcing Hub</a>
-      <a href="analytics.html">Analytics</a>
+    <nav class="marketplace-nav" aria-label="Marketplace navigation">
+      <a href="map.html" class="active">Marketplace</a>
+      <a href="my-locality.html">My Locality</a>
+      <a href="supplier.html">Business Center</a>
+      <a href="account.html">Account</a>
     </nav>
-    
   </header>
 
-  <main class="map-layout">
+  <main class="marketplace-shell">
+    <section class="marketplace-panel">
+      <div class="marketplace-panel-scroll" id="marketplacePanelScroll">
+        <section class="marketplace-intro-card">
+          <p class="marketplace-kicker">Locality Marketplace</p>
+          <h1>Build your local food routine.</h1>
+          <p>
+            Find nearby farms, food producers, pickup windows, and staples you can come back to every week.
+          </p>
 
-    <aside class="map-sidebar">
-      <div class="sidebar-section">
-        <p class="sidebar-eyebrow">Marketplace</p>
-        <h2>Phoenix Regional Network</h2>
-        <p>
-          Explore sample farms, buyers, sourcing activity, and regional supply opportunities.
-        </p>
-      </div>
-
-      <div class="sidebar-section">
-        <h3>Filters</h3>
-
-        <label class="filter-label">Profile Type</label>
-        <select id="typeFilter">
-          <option value="all">All profiles</option>
-          <option value="farm">Farms / Suppliers</option>
-          <option value="buyer">Buyers / Businesses</option>
-        </select>
-
-        <label class="filter-label">Product Focus</label>
-        <select id="productFilter">
-          <option value="all">All products</option>
-          <option value="produce">Produce</option>
-          <option value="dairy">Dairy</option>
-          <option value="meat">Meat</option>
-          <option value="specialty">Specialty</option>
-        </select>
-
-        <label class="filter-toggle">
-          <input type="checkbox" id="organicFilter" />
-          <span>Organic certified only</span>
-        </label>
-      </div>
-
-      <div class="sidebar-section">
-        <h3>Regional Snapshot</h3>
-
-        <div class="stat-grid">
-          <div>
-            <strong>12</strong>
-            <span>farms</span>
+          <div class="marketplace-mode-tabs" aria-label="Marketplace view mode">
+            <button class="active" type="button" data-marketplace-mode="products">
+              Products
+            </button>
+            <button type="button" data-marketplace-mode="producers">
+              Producers
+            </button>
+            <button type="button" data-marketplace-mode="routine">
+              Routine
+            </button>
           </div>
-          <div>
-            <strong>18</strong>
-            <span>buyers</span>
+        </section>
+
+        <section class="marketplace-filter-card">
+          <div class="filter-row">
+            <label>
+              Category
+              <select id="marketplaceCategoryFilter">
+                <option value="all">All categories</option>
+                <option value="produce">Produce</option>
+                <option value="dairy">Dairy</option>
+                <option value="eggs">Eggs</option>
+                <option value="meat">Meat</option>
+                <option value="bakery">Bakery</option>
+                <option value="pantry">Pantry</option>
+                <option value="specialty">Specialty</option>
+              </select>
+            </label>
+
+            <label>
+              Pickup
+              <select id="marketplacePickupFilter">
+                <option value="all">All pickup options</option>
+                <option value="farm-stand">Farm stand</option>
+                <option value="market">Market pickup</option>
+                <option value="community-drop">Community drop</option>
+                <option value="delivery">Delivery available</option>
+              </select>
+            </label>
           </div>
-          <div>
-            <strong>4</strong>
-            <span>coalitions</span>
+
+          <div class="quick-filter-row" aria-label="Quick category filters">
+            <button type="button" data-quick-category="dairy">Dairy</button>
+            <button type="button" data-quick-category="eggs">Eggs</button>
+            <button type="button" data-quick-category="produce">Produce</button>
+            <button type="button" data-quick-category="meat">Meat</button>
+            <button type="button" data-quick-category="bakery">Bakery</button>
           </div>
+        </section>
+
+        <section class="marketplace-results-header">
           <div>
-            <strong>6</strong>
-            <span>regions</span>
+            <p class="marketplace-kicker green" id="resultsKicker">Products</p>
+            <h2 id="resultsTitle">Fresh listings near you</h2>
           </div>
-        </div>
+
+          <span id="resultsCount">0 results</span>
+        </section>
+
+        <section id="routineBuilderPanel" class="routine-builder-panel hidden">
+          <div>
+            <p class="marketplace-kicker green">Routine builder</p>
+            <h2>Replace a grocery run with local sources.</h2>
+            <p>
+              Choose staples you buy often. Locality will help you find producers, pickup options, and reminder-style routines without locking you into a subscription.
+            </p>
+          </div>
+
+          <div class="routine-card-grid">
+            <button type="button" data-routine-category="eggs" class="routine-choice-card">
+              <span>Weekly</span>
+              <strong>Eggs</strong>
+              <small>Find farms with recurring egg availability.</small>
+            </button>
+
+            <button type="button" data-routine-category="produce" class="routine-choice-card">
+              <span>Weekly</span>
+              <strong>Produce</strong>
+              <small>Build a produce routine around greens, tomatoes, herbs, and seasonal vegetables.</small>
+            </button>
+
+            <button type="button" data-routine-category="dairy" class="routine-choice-card">
+              <span>Weekly</span>
+              <strong>Dairy</strong>
+              <small>Find milk, butter, cheese, and local dairy pickup windows.</small>
+            </button>
+
+            <button type="button" data-routine-category="meat" class="routine-choice-card">
+              <span>Monthly</span>
+              <strong>Meat share</strong>
+              <small>Watch for beef, poultry, lamb, or butcher availability.</small>
+            </button>
+
+            <button type="button" data-routine-category="bakery" class="routine-choice-card">
+              <span>Weekly</span>
+              <strong>Bread & grains</strong>
+              <small>Follow bakeries and grain producers for recurring staples.</small>
+            </button>
+
+            <button type="button" data-routine-category="fruit" class="routine-choice-card">
+              <span>Seasonal</span>
+              <strong>Fruit</strong>
+              <small>Get notified when seasonal fruit opens for preorder.</small>
+            </button>
+          </div>
+        </section>
+
+        <section id="marketplaceResultsList" class="marketplace-results-list" aria-live="polite"></section>
       </div>
 
-      <div class="sidebar-section">
-        <h3>Legend</h3>
+      <aside id="marketplacePreviewPanel" class="marketplace-preview-panel" aria-hidden="true">
+        <button id="previewBackBtn" type="button" class="preview-back-btn">
+          ← Back to results
+        </button>
 
-        <div class="legend-row">
-          <span class="legend-dot farm"></span>
-          Farms / suppliers
-        </div>
+        <div id="previewPanelContent" class="preview-panel-content"></div>
+      </aside>
+    </section>
 
-        <div class="legend-row">
-          <span class="legend-dot buyer"></span>
-          Buyers / businesses
-        </div>
+    <section class="marketplace-map-shell">
+      <div id="localityMap"></div>
 
-        <div class="legend-row">
-          <span class="legend-region"></span>
-          Regional demand area
-        </div>
+      <div class="map-floating-card">
+        <span>Map view</span>
+        <strong id="mapFloatingTitle">Products and producers near you</strong>
+        <small>Click a pin or result to preview details.</small>
       </div>
-    </aside>
-
-<section class="map-main">
-  <div id="localityMap"></div>
-
-  <aside id="profilePanel" class="profile-panel">
-    <div id="profileCover" class="profile-cover"></div>
-
-    <div class="profile-content">
-      <button class="profile-close" id="profileClose">×</button>
-
-      <div class="profile-logo" id="profileLogo">LC</div>
-
-      <p class="profile-type" id="profileType">Supplier profile</p>
-
-      <h2 id="profileName">Select a profile</h2>
-
-      <p class="profile-location" id="profileLocation">Phoenix Metro</p>
-
-      <p class="profile-description" id="profileDescription">
-        Click a farm or buyer on the map to view profile details.
-      </p>
-
-      <div class="profile-tags" id="profileTags"></div>
-
-      <div class="profile-stat-list" id="profileStats"></div>
-
-      <div class="profile-actions">
-        <button>View full profile</button>
-        <button class="secondary">Message</button>
-      </div>
-    </div>
-  </aside>
-
-  <div id="messageModal" class="message-modal">
-  <div class="message-card">
-    <button class="message-close" id="messageClose">×</button>
-
-    <div class="message-header">
-      <div class="message-logo" id="messageLogo">LC</div>
-      <div>
-        <p id="messageType">Supplier conversation</p>
-        <h3 id="messageName">Profile name</h3>
-        <span id="messageStatus">Typically responds within 1 day</span>
-      </div>
-    </div>
-
-    <div class="message-thread" id="messageThread">
-      <div class="chat-bubble system">
-        Start a sourcing conversation using a quick prompt or write your own message.
-      </div>
-    </div>
-
-    <div class="message-prompts">
-      <button data-prompt="Ask about bulk pricing">Bulk pricing</button>
-      <button data-prompt="Request delivery schedule">Delivery schedule</button>
-      <button data-prompt="Check seasonal availability">Seasonal availability</button>
-      <button data-prompt="Ask for sample order">Sample order</button>
-      <button data-prompt="Discuss recurring supply">Recurring supply</button>
-    </div>
-
-    <div class="message-input-row">
-
-    <input
-      type="text"
-      id="messageInput"
-      placeholder="Ask about availability, delivery, pricing..."
-    />
-
-      <button class="draft-button" id="saveDraftButton">
-    Save Draft
-  </button>
-
-  <button id="messageSend">
-    Send
-  </button>
-
-</div>
-</div>
-    </div>
-
-  <div class="activity-feed">
-  <div class="activity-feed-header">
-    <div>
-      <span>Live Network</span>
-      <strong>Recent activity</strong>
-    </div>
-    <span class="activity-live-dot"></span>
-  </div>
-
-  <div class="activity-list">
-    <div class="activity-item faint">
-      <span>32m ago</span>
-      <p>Verde Citrus updated seasonal availability.</p>
-    </div>
-
-    <div class="activity-item soft">
-      <span>24m ago</span>
-      <p>Copper Creek Dairy added bulk order notes.</p>
-    </div>
-
-    <div class="activity-item">
-      <span>12m ago</span>
-      <p>Queen Creek Harvest listed new leafy greens.</p>
-    </div>
-
-    <div class="activity-item newest">
-      <span>Just now</span>
-      <p>Roosevelt Row requested produce suppliers nearby.</p>
-    </div>
-  </div>
-</div>
-</section>
-
+    </section>
   </main>
 
-  <!-- Leaflet Map JS -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabaseConfig.js"></script>
+  <script src="js/supabaseClient.js"></script>
+  <script src="js/authService.js"></script>
+  <script src="js/profileService.js"></script>
+  <script src="js/productService.js"></script>
+
   <script src="data/profiles.js"></script>
-  <script src="js/locality.js"></script>
+  <script src="js/marketplace.js"></script>
 </body>
 </html>
