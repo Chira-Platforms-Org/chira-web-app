@@ -448,16 +448,42 @@ function renderMarketplace() {
     return;
   }
 
-  const producers = getVisibleProducers();
-
-  resultsKicker.textContent = "Routine";
-  resultsTitle.textContent = "Build recurring local staples";
-  resultsCount.textContent = `${producers.length} producers`;
-  mapFloatingTitle.textContent = "Routine-friendly producers";
-
-  producers.slice(0, 8).forEach((producer) => marketplaceResultsList.appendChild(createProducerCard(producer)));
-  renderMarkers(producers, "producers");
-}
+   const producers = getVisibleProducers();
+   
+   resultsKicker.textContent = "Routine";
+   resultsTitle.textContent = "Set up soft reminders";
+   resultsCount.textContent = "No automatic orders";
+   mapFloatingTitle.textContent = "Routine-friendly producers";
+   
+   marketplaceResultsList.innerHTML = `
+     <article class="routine-explainer-card">
+       <span>How routines work</span>
+       <strong>Routines help you repeat local buying without committing to automatic orders.</strong>
+       <p>
+         Choose staples you buy often. Locality can help you remember pickup windows,
+         follow relevant producers, and find fresh availability when it comes back around.
+       </p>
+   
+       <div class="routine-meaning-grid">
+         <div>
+           <strong>Save</strong>
+           <small>Bookmark a product or producer for later.</small>
+         </div>
+   
+         <div>
+           <strong>Routine</strong>
+           <small>Tell Locality this is something you buy regularly.</small>
+         </div>
+   
+         <div>
+           <strong>Reserve</strong>
+           <small>Actively request or hold available goods.</small>
+         </div>
+       </div>
+     </article>
+   `;
+   
+   renderMarkers(producers, "producers");
 
 function initializeMap() {
   const mapElement = document.getElementById("localityMap");
