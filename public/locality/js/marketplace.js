@@ -494,7 +494,8 @@ function renderMarketplace() {
      </article>
    `;
    
-   renderMarkers(producers, "producers");
+      renderMarkers(producers, "producers");
+}
 
 function initializeMap() {
   const mapElement = document.getElementById("localityMap");
