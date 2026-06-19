@@ -51,227 +51,57 @@
 }
 
 .my-locality-shell {
-  width: min(1280px, calc(100% - 72px));
+  width: min(1360px, calc(100% - 88px));
   margin: 0 auto;
   padding: 28px 0 76px;
 }
 
-/* =========================
-   HERO
-========================= */
-
-.my-locality-hero {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 350px;
-  gap: 28px;
-  align-items: stretch;
-  padding: clamp(26px, 4vw, 42px);
-  border-radius: 36px;
-  border: 1px solid rgba(12, 33, 66, 0.08);
-  background:
-    radial-gradient(circle at 88% 14%, rgba(8, 196, 100, 0.2), transparent 34%),
-    linear-gradient(135deg, #12305a, #0d4b34);
-  box-shadow: 0 28px 80px rgba(20, 50, 92, 0.16);
-  color: white;
-}
-
-.compact-hero {
-  min-height: 320px;
-}
-
-.hero-main-copy {
-  display: grid;
-  align-content: center;
-}
-
-.my-locality-kicker {
+.page-kicker {
   margin: 0;
   color: rgba(255, 255, 255, 0.72);
-  font-size: 0.76rem;
+  font-size: 0.74rem;
   font-weight: 950;
   text-transform: uppercase;
   letter-spacing: 0.1em;
 }
 
-.my-locality-kicker.green {
+.page-kicker.green {
   color: var(--green);
 }
 
-.my-locality-hero h1 {
-  max-width: 720px;
-  margin: 10px 0 0;
-  font-size: clamp(2.6rem, 5vw, 4.6rem);
-  line-height: 0.92;
-  letter-spacing: -0.065em;
-}
-
-.my-locality-hero p {
-  max-width: 720px;
-  margin: 18px 0 0;
-  color: rgba(255, 255, 255, 0.78);
-  font-size: 1rem;
-  font-weight: 760;
-  line-height: 1.55;
-}
-
-.hero-action-panel {
-  display: grid;
-  gap: 14px;
-  align-content: center;
-}
-
-.my-locality-location-card {
-  display: grid;
-  gap: 8px;
-  padding: 22px;
-  border-radius: 28px;
-  background: rgba(255, 255, 255, 0.13);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14);
-}
-
-.my-locality-location-card span {
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 0.72rem;
-  font-weight: 950;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-}
-
-.my-locality-location-card strong {
-  color: white;
-  font-size: 1.32rem;
-  line-height: 1.1;
-  font-weight: 950;
-}
-
-.my-locality-location-card small {
-  color: rgba(255, 255, 255, 0.68);
-  font-size: 0.84rem;
-  font-weight: 800;
-}
-
-.my-locality-actions {
+.section-heading {
   display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.my-locality-primary-btn,
-.my-locality-secondary-btn {
-  min-height: 44px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 999px;
-  padding: 10px 18px;
-  text-decoration: none;
-  font-weight: 950;
-}
-
-.my-locality-primary-btn {
-  background: var(--green);
-  color: white;
-  box-shadow: 0 16px 36px rgba(8, 196, 100, 0.24);
-}
-
-.my-locality-secondary-btn {
-  background: rgba(255, 255, 255, 0.13);
-  color: white;
-  border: 1px solid rgba(255, 255, 255, 0.18);
-}
-
-/* =========================
-   PULSE ROW
-========================= */
-
-.locality-pulse-row {
-  display: grid;
-  grid-template-columns: 1.1fr 1fr 1fr;
-  gap: 16px;
-  margin-top: 18px;
-}
-
-.pulse-card {
-  min-height: 118px;
-  display: grid;
-  align-content: start;
-  gap: 6px;
-  padding: 18px;
-  border-radius: 24px;
-  border: 1px solid rgba(12, 33, 66, 0.08);
-  background: rgba(255, 255, 255, 0.82);
-  color: var(--navy);
-  text-decoration: none;
-  box-shadow: 0 18px 42px rgba(20, 50, 92, 0.06);
-}
-
-.pulse-card.messages {
-  background:
-    radial-gradient(circle at 90% 10%, rgba(8, 196, 100, 0.12), transparent 34%),
-    rgba(244, 255, 247, 0.86);
-  border-color: rgba(8, 196, 100, 0.18);
-}
-
-.pulse-card span {
-  color: var(--green);
-  font-size: 0.7rem;
-  font-weight: 950;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-}
-
-.pulse-card strong {
-  color: var(--navy);
-  font-size: 1.15rem;
-  line-height: 1.08;
-  letter-spacing: -0.025em;
-  font-weight: 950;
-}
-
-.pulse-card small {
-  color: var(--muted);
-  font-size: 0.82rem;
-  font-weight: 760;
-  line-height: 1.42;
-}
-
-/* =========================
-   MAIN LAYOUT
-========================= */
-
-.my-locality-layout {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 330px;
-  gap: 22px;
-  margin-top: 22px;
-  align-items: start;
-}
-
-.my-locality-main-column {
-  display: grid;
-  gap: 22px;
-}
-
-.section-heading-row {
-  display: flex;
-  align-items: flex-start;
   justify-content: space-between;
+  align-items: flex-start;
   gap: 18px;
 }
 
-.section-heading-row h2,
-.fresh-this-week-card h2,
-.wide-discovery-card h2,
-.quick-buy-header h2 {
-  margin: 6px 0 0;
-  color: var(--navy);
-  font-size: clamp(1.7rem, 2.5vw, 2.5rem);
-  line-height: 1;
-  letter-spacing: -0.045em;
+.section-heading.compact {
+  align-items: center;
 }
 
-.section-mini-link {
+.section-heading.small h2 {
+  font-size: 1.32rem;
+}
+
+.section-heading h2,
+.local-week-hero h1,
+.messages-card h2,
+.watchlist-card h2,
+.routine-card h2,
+.recommended-farms-card h2 {
+  margin: 6px 0 0;
+  color: var(--navy);
+  font-weight: 950;
+  letter-spacing: -0.05em;
+}
+
+.section-heading h2 {
+  font-size: clamp(1.7rem, 2.6vw, 2.65rem);
+  line-height: 1;
+}
+
+.section-link {
   min-height: 38px;
   display: inline-flex;
   align-items: center;
@@ -285,313 +115,524 @@
   white-space: nowrap;
 }
 
-/* =========================
-   FRESH THIS WEEK
-========================= */
+/* HERO */
 
-.fresh-this-week-card,
-.wide-discovery-card,
-.quick-buy-rail,
-.tool-card {
+.local-week-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 22px;
+  align-items: center;
+  padding: clamp(24px, 4vw, 42px);
+  border-radius: 36px;
   border: 1px solid rgba(12, 33, 66, 0.08);
-  background: rgba(255, 255, 255, 0.82);
+  background:
+    radial-gradient(circle at 88% 14%, rgba(8, 196, 100, 0.2), transparent 34%),
+    linear-gradient(135deg, #12305a, #0d4b34);
+  box-shadow: 0 28px 80px rgba(20, 50, 92, 0.16);
+  color: white;
+}
+
+.local-week-copy {
+  max-width: 760px;
+}
+
+.local-week-hero h1 {
+  color: white;
+  margin-top: 10px;
+  font-size: clamp(2.7rem, 5vw, 4.6rem);
+  line-height: 0.92;
+}
+
+.local-week-hero p {
+  max-width: 740px;
+  margin: 16px 0 0;
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 1rem;
+  font-weight: 760;
+  line-height: 1.5;
+}
+
+.local-week-actions {
+  display: grid;
+  gap: 10px;
+  min-width: 250px;
+}
+
+.primary-action,
+.secondary-action,
+.ghost-action,
+.mini-primary,
+.mini-secondary,
+.side-card-link {
+  min-height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  padding: 9px 15px;
+  text-decoration: none;
+  font-weight: 950;
+}
+
+.primary-action,
+.mini-primary,
+.side-card-link {
+  background: var(--green);
+  color: white;
+  box-shadow: 0 16px 36px rgba(8, 196, 100, 0.22);
+}
+
+.secondary-action,
+.mini-secondary {
+  background: rgba(255, 255, 255, 0.14);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.ghost-action {
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.88);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.local-week-stats {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.week-stat-card {
+  display: grid;
+  gap: 5px;
+  padding: 16px;
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+.week-stat-card span {
+  color: rgba(255, 255, 255, 0.66);
+  font-size: 0.68rem;
+  font-weight: 950;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.week-stat-card strong {
+  color: white;
+  font-size: 1.55rem;
+  line-height: 1;
+  font-weight: 950;
+}
+
+.week-stat-card.location strong {
+  font-size: 1.05rem;
+  line-height: 1.15;
+}
+
+.week-stat-card small {
+  color: rgba(255, 255, 255, 0.68);
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+/* QUICK BUY */
+
+.quick-buy-section {
+  display: grid;
+  gap: 14px;
+  margin-top: 20px;
+  padding: 20px;
+  border-radius: 30px;
+  border: 1px solid rgba(12, 33, 66, 0.08);
+  background: rgba(255, 255, 255, 0.78);
+  box-shadow: 0 18px 42px rgba(20, 50, 92, 0.06);
+}
+
+.quick-buy-rail {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.quick-buy-chip {
+  min-height: 42px;
+  display: inline-flex;
+  align-items: center;
+  padding: 9px 15px;
+  border-radius: 999px;
+  border: 1px solid rgba(12, 33, 66, 0.08);
+  background:
+    radial-gradient(circle at 80% 10%, rgba(8, 196, 100, 0.1), transparent 34%),
+    rgba(255, 255, 255, 0.82);
+  color: var(--navy);
+  text-decoration: none;
+  font-size: 0.86rem;
+  font-weight: 950;
+  white-space: nowrap;
+}
+
+/* MAIN GRID */
+
+.locality-command-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 360px;
+  gap: 22px;
+  margin-top: 22px;
+  align-items: start;
+}
+
+.main-feed-column,
+.side-rail-column {
+  display: grid;
+  gap: 22px;
+}
+
+.side-rail-column {
+  position: sticky;
+  top: 104px;
+}
+
+.fresh-this-week-panel,
+.pickup-panel,
+.updates-panel,
+.messages-card,
+.watchlist-card,
+.routine-card,
+.recommended-farms-card {
+  border: 1px solid rgba(12, 33, 66, 0.08);
+  background: rgba(255, 255, 255, 0.84);
   box-shadow: 0 20px 48px rgba(20, 50, 92, 0.07);
 }
 
-.fresh-this-week-card {
+.fresh-this-week-panel,
+.pickup-panel,
+.updates-panel {
   display: grid;
-  gap: 20px;
+  gap: 22px;
   padding: 24px;
   border-radius: 34px;
 }
 
-.fresh-product-strip {
+.fresh-card-grid {
   display: grid;
-  grid-template-columns: 1.15fr 1fr 1fr;
+  grid-template-columns: 1.18fr 1fr 1fr;
   gap: 16px;
 }
 
-.fresh-product-card {
+.fresh-card {
+  overflow: hidden;
   display: grid;
-  align-content: start;
-  gap: 8px;
-  min-height: 260px;
-  padding: 14px;
-  border-radius: 26px;
+  border-radius: 28px;
   border: 1px solid rgba(12, 33, 66, 0.08);
   background: rgba(255, 255, 255, 0.78);
-  color: var(--navy);
-  text-decoration: none;
-  transition:
-    transform 0.16s ease,
-    border-color 0.16s ease,
-    box-shadow 0.16s ease;
+  box-shadow: 0 18px 42px rgba(20, 50, 92, 0.05);
 }
 
-.fresh-product-card:hover,
-.tool-card:hover,
-.quick-buy-item:hover,
-.pulse-card:hover {
-  transform: translateY(-2px);
-  border-color: rgba(8, 196, 100, 0.22);
-  box-shadow: 0 24px 54px rgba(20, 50, 92, 0.11);
-}
-
-.featured-product {
-  border-color: rgba(238, 181, 42, 0.38);
+.fresh-card.featured {
+  border-color: rgba(238, 181, 42, 0.4);
   box-shadow:
-    0 18px 40px rgba(20, 50, 92, 0.05),
+    0 18px 42px rgba(20, 50, 92, 0.06),
     0 0 0 4px rgba(238, 181, 42, 0.06);
 }
 
-.fresh-product-image {
-  width: 100%;
-  aspect-ratio: 16 / 10;
-  border-radius: 20px;
+.fresh-image {
+  min-height: 178px;
   background:
     radial-gradient(circle at 30% 25%, rgba(8, 196, 100, 0.22), transparent 34%),
     linear-gradient(135deg, rgba(239, 246, 236, 1), rgba(255, 252, 245, 1));
-  border: 1px solid rgba(12, 33, 66, 0.06);
 }
 
-.fresh-product-image.dairy {
-  background:
-    radial-gradient(circle at 50% 28%, rgba(255, 255, 255, 0.9), transparent 22%),
-    radial-gradient(circle at 72% 20%, rgba(8, 196, 100, 0.16), transparent 34%),
-    linear-gradient(135deg, #edf7e8, #fffaf0);
-}
-
-.fresh-product-image.produce {
+.fresh-image.produce {
   background:
     radial-gradient(circle at 24% 28%, rgba(8, 196, 100, 0.28), transparent 26%),
     radial-gradient(circle at 70% 34%, rgba(238, 181, 42, 0.24), transparent 24%),
     linear-gradient(135deg, #edf9ed, #fffaf0);
 }
 
-.fresh-product-image.eggs {
+.fresh-image.dairy {
+  background:
+    radial-gradient(circle at 50% 28%, rgba(255, 255, 255, 0.9), transparent 22%),
+    radial-gradient(circle at 72% 20%, rgba(8, 196, 100, 0.16), transparent 34%),
+    linear-gradient(135deg, #edf7e8, #fffaf0);
+}
+
+.fresh-image.eggs {
   background:
     radial-gradient(circle at 36% 35%, rgba(255, 255, 255, 0.95), transparent 22%),
     radial-gradient(circle at 62% 42%, rgba(255, 255, 255, 0.88), transparent 20%),
     linear-gradient(135deg, #f4f4e8, #fff7e6);
 }
 
-.fresh-product-card span,
-.tool-card span {
-  color: var(--green);
-  font-size: 0.72rem;
-  font-weight: 950;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-}
-
-.fresh-product-card strong,
-.tool-card strong {
-  color: var(--navy);
-  font-size: 1.24rem;
-  line-height: 1.08;
-  letter-spacing: -0.035em;
-  font-weight: 950;
-}
-
-.fresh-product-card small,
-.tool-card small {
-  color: var(--muted);
-  font-size: 0.84rem;
-  line-height: 1.45;
-  font-weight: 760;
-}
-
-/* =========================
-   WIDE DISCOVERY
-========================= */
-
-.wide-discovery-card {
+.fresh-card-body {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 24px;
-  align-items: center;
-  padding: 28px;
-  border-radius: 34px;
-  background:
-    radial-gradient(circle at 92% 12%, rgba(8, 196, 100, 0.12), transparent 30%),
-    rgba(255, 255, 255, 0.82);
-}
-
-.wide-discovery-card p {
-  max-width: 720px;
-  margin: 12px 0 0;
-  color: var(--muted);
-  font-size: 0.95rem;
-  line-height: 1.5;
-  font-weight: 760;
-}
-
-/* =========================
-   TOOL GRID
-========================= */
-
-.personal-tools-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 16px;
-}
-
-.tool-card {
-  min-height: 190px;
-  display: grid;
-  align-content: start;
   gap: 9px;
-  padding: 22px;
-  border-radius: 28px;
+  padding: 18px;
+}
+
+.availability-pill {
+  width: fit-content;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(8, 196, 100, 0.1);
+  color: var(--green);
+  font-size: 0.7rem;
+  font-weight: 950;
+}
+
+.fresh-card h3 {
+  margin: 0;
   color: var(--navy);
-  text-decoration: none;
-  transition:
-    transform 0.16s ease,
-    border-color 0.16s ease,
-    box-shadow 0.16s ease;
+  font-size: 1.35rem;
+  line-height: 1.05;
+  letter-spacing: -0.035em;
 }
 
-.saved-card {
-  background:
-    radial-gradient(circle at 90% 10%, rgba(8, 196, 100, 0.1), transparent 34%),
-    rgba(255, 255, 255, 0.82);
-}
-
-.messages-card {
-  background:
-    radial-gradient(circle at 88% 14%, rgba(8, 196, 100, 0.09), transparent 32%),
-    rgba(255, 255, 255, 0.82);
-}
-
-/* =========================
-   QUICK BUY RAIL
-========================= */
-
-.quick-buy-rail {
-  position: sticky;
-  top: 102px;
-  display: grid;
-  gap: 18px;
-  padding: 22px;
-  border-radius: 34px;
-  background:
-    radial-gradient(circle at 86% 8%, rgba(8, 196, 100, 0.12), transparent 34%),
-    rgba(255, 255, 255, 0.86);
-}
-
-.quick-buy-header {
-  display: grid;
-  gap: 8px;
-}
-
-.quick-buy-header p {
+.fresh-card p,
+.messages-card p,
+.routine-card p {
   margin: 0;
   color: var(--muted);
-  font-size: 0.88rem;
-  font-weight: 760;
+  font-size: 0.86rem;
   line-height: 1.45;
+  font-weight: 760;
 }
 
-.quick-buy-list {
+.fresh-meta-row {
+  display: grid;
+  gap: 5px;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 850;
+}
+
+.fresh-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.fresh-actions .mini-secondary {
+  background: rgba(12, 33, 66, 0.07);
+  color: var(--navy);
+  border: 0;
+}
+
+.pickup-list,
+.watchlist-list,
+.recommended-farm-list {
   display: grid;
   gap: 10px;
 }
 
-.quick-buy-item {
+.pickup-row {
   display: grid;
-  gap: 4px;
+  grid-template-columns: auto 1fr auto;
+  gap: 14px;
+  align-items: center;
+  padding: 16px;
+  border-radius: 22px;
+  border: 1px solid rgba(12, 33, 66, 0.07);
+  background: rgba(255, 255, 255, 0.78);
+  color: var(--navy);
+  text-decoration: none;
+}
+
+.pickup-dot,
+.farm-mini-row span {
+  width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  background: var(--green);
+  box-shadow: 0 0 0 6px rgba(8, 196, 100, 0.1);
+}
+
+.pickup-dot.gold,
+.farm-mini-row span.gold {
+  background: #eeb52a;
+  box-shadow: 0 0 0 6px rgba(238, 181, 42, 0.12);
+}
+
+.pickup-dot.blue {
+  background: #3b82f6;
+  box-shadow: 0 0 0 6px rgba(59, 130, 246, 0.12);
+}
+
+.pickup-row strong,
+.farm-mini-row strong {
+  color: var(--navy);
+  font-weight: 950;
+}
+
+.pickup-row small,
+.farm-mini-row small {
+  display: block;
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-weight: 760;
+}
+
+.pickup-row em {
+  color: var(--green);
+  font-style: normal;
+  font-size: 0.78rem;
+  font-weight: 950;
+}
+
+/* SIDE RAIL */
+
+.messages-card,
+.watchlist-card,
+.routine-card,
+.recommended-farms-card {
+  display: grid;
+  gap: 16px;
+  padding: 22px;
+  border-radius: 30px;
+}
+
+.messages-card {
+  background:
+    radial-gradient(circle at 86% 10%, rgba(8, 196, 100, 0.14), transparent 34%),
+    rgba(244, 255, 247, 0.86);
+  border-color: rgba(8, 196, 100, 0.18);
+}
+
+.messages-card h2,
+.watchlist-card h2,
+.routine-card h2,
+.recommended-farms-card h2 {
+  font-size: 1.45rem;
+  line-height: 1.05;
+}
+
+.watchlist-item,
+.farm-mini-row {
+  display: grid;
+  gap: 5px;
   padding: 14px;
   border-radius: 20px;
   border: 1px solid rgba(12, 33, 66, 0.07);
   background: rgba(255, 255, 255, 0.72);
   color: var(--navy);
   text-decoration: none;
+}
+
+.watchlist-item strong {
+  color: var(--navy);
+  font-size: 0.98rem;
+  font-weight: 950;
+}
+
+.watchlist-item small {
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 780;
+}
+
+.watchlist-item span {
+  width: fit-content;
+  margin-top: 4px;
+  padding: 5px 9px;
+  border-radius: 999px;
+  background: rgba(8, 196, 100, 0.1);
+  color: var(--green);
+  font-size: 0.68rem;
+  font-weight: 950;
+}
+
+.routine-card {
+  background:
+    radial-gradient(circle at 88% 12%, rgba(238, 181, 42, 0.11), transparent 34%),
+    rgba(255, 252, 245, 0.88);
+  border-color: rgba(238, 181, 42, 0.18);
+}
+
+.routine-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.routine-options a {
+  min-height: 34px;
+  display: inline-flex;
+  align-items: center;
+  padding: 7px 11px;
+  border-radius: 999px;
+  background: rgba(12, 33, 66, 0.07);
+  color: var(--navy);
+  text-decoration: none;
+  font-size: 0.76rem;
+  font-weight: 950;
+}
+
+.farm-mini-row {
+  grid-template-columns: auto 1fr;
+  align-items: center;
+}
+
+/* INTERACTIONS */
+
+.quick-buy-chip,
+.fresh-card,
+.pickup-row,
+.watchlist-item,
+.farm-mini-row,
+.side-card-link {
   transition:
     transform 0.16s ease,
     border-color 0.16s ease,
     box-shadow 0.16s ease;
 }
 
-.quick-buy-item span {
-  color: var(--navy);
-  font-size: 0.98rem;
-  font-weight: 950;
+.quick-buy-chip:hover,
+.fresh-card:hover,
+.pickup-row:hover,
+.watchlist-item:hover,
+.farm-mini-row:hover {
+  transform: translateY(-2px);
+  border-color: rgba(8, 196, 100, 0.22);
+  box-shadow: 0 24px 54px rgba(20, 50, 92, 0.11);
 }
 
-.quick-buy-item small {
-  color: var(--muted);
-  font-size: 0.78rem;
-  font-weight: 760;
-  line-height: 1.35;
-}
+/* RESPONSIVE */
 
-.buyer-note-card {
-  display: grid;
-  gap: 6px;
-  padding: 18px;
-  border-radius: 24px;
-  background:
-    radial-gradient(circle at 80% 12%, rgba(238, 181, 42, 0.12), transparent 32%),
-    rgba(255, 252, 245, 0.82);
-  border: 1px solid rgba(238, 181, 42, 0.18);
-}
-
-.buyer-note-card span {
-  color: var(--green);
-  font-size: 0.7rem;
-  font-weight: 950;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-}
-
-.buyer-note-card strong {
-  color: var(--navy);
-  font-size: 1rem;
-  line-height: 1.1;
-  font-weight: 950;
-}
-
-.buyer-note-card small {
-  color: var(--muted);
-  font-size: 0.8rem;
-  line-height: 1.42;
-  font-weight: 760;
-}
-
-/* =========================
-   RESPONSIVE
-========================= */
-
-@media (max-width: 1100px) {
-  .my-locality-layout {
+@media (max-width: 1150px) {
+  .locality-command-grid {
     grid-template-columns: 1fr;
   }
 
-  .quick-buy-rail {
+  .side-rail-column {
     position: static;
-  }
-
-  .quick-buy-list {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
-@media (max-width: 920px) {
-  .my-locality-hero {
+@media (max-width: 900px) {
+  .local-week-hero {
     grid-template-columns: 1fr;
   }
 
-  .locality-pulse-row,
-  .fresh-product-strip {
-    grid-template-columns: 1fr;
+  .local-week-actions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .wide-discovery-card {
-    grid-template-columns: 1fr;
+  .local-week-stats,
+  .fresh-card-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .fresh-card.featured {
+    grid-column: 1 / -1;
   }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 680px) {
   .my-locality-topbar {
     display: grid;
     justify-items: start;
@@ -603,21 +644,31 @@
   }
 
   .my-locality-shell {
-    width: min(100% - 28px, 1280px);
+    width: min(100% - 28px, 1360px);
     padding-top: 20px;
   }
 
-  .compact-hero {
-    min-height: 0;
+  .local-week-hero h1 {
+    font-size: clamp(2.35rem, 13vw, 3.5rem);
   }
 
-  .my-locality-hero h1 {
-    font-size: clamp(2.4rem, 13vw, 3.6rem);
-  }
-
-  .locality-pulse-row,
-  .personal-tools-grid,
-  .quick-buy-list {
+  .local-week-actions,
+  .local-week-stats,
+  .fresh-card-grid,
+  .side-rail-column {
     grid-template-columns: 1fr;
+  }
+
+  .section-heading,
+  .section-heading.compact {
+    display: grid;
+  }
+
+  .pickup-row {
+    grid-template-columns: auto 1fr;
+  }
+
+  .pickup-row em {
+    grid-column: 2;
   }
 }
