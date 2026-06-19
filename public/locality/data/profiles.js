@@ -388,3 +388,5 @@ const profiles = [
   lng: -111.7890
 }
 ];
+
+window.LocalityStaticProfiles = profiles;
