@@ -136,11 +136,13 @@ function getPickupType(product = {}, producer = {}) {
 }
 
 function normalizeStaticProfiles() {
-  const sourceProfiles = Array.isArray(window.profiles)
-    ? window.profiles
-    : typeof profiles !== "undefined"
-      ? profiles
+  const sourceProfiles = Array.isArray(window.LocalityStaticProfiles)
+    ? window.LocalityStaticProfiles
+    : Array.isArray(window.profiles)
+      ? window.profiles
       : [];
+
+  console.log("Loaded marketplace profiles:", sourceProfiles.length);
 
   return sourceProfiles.map((profile) => ({
     ...profile,
