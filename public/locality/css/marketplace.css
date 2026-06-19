@@ -68,6 +68,10 @@
   color: var(--green);
 }
 
+.hidden {
+  display: none !important;
+}
+
 .marketplace-shell {
   height: calc(100vh - 78px);
   display: grid;
@@ -123,26 +127,23 @@
 }
 
 .marketplace-intro-card,
-.marketplace-filter-card,
-.routine-builder-panel {
-  border-radius: 28px;
-  border: 1px solid rgba(12, 33, 66, 0.08);
-  background:
-    radial-gradient(circle at 92% 10%, rgba(8, 196, 100, 0.08), transparent 34%),
-    rgba(255, 255, 255, 0.82);
-  box-shadow: 0 14px 34px rgba(20, 50, 92, 0.055);
+.marketplace-filter-card {
+  border-radius: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
 }
 
 .marketplace-intro-card {
-  padding: 22px;
+  padding: 8px 4px 10px;
 }
 
 .marketplace-intro-card h1 {
   margin: 8px 0 0;
   color: var(--navy);
-  font-size: clamp(2rem, 3.2vw, 3.35rem);
-  line-height: 0.94;
-  letter-spacing: -0.06em;
+  font-size: clamp(1.85rem, 2.7vw, 2.7rem);
+  line-height: 0.96;
+  letter-spacing: -0.055em;
 }
 
 .marketplace-intro-card p {
@@ -156,15 +157,15 @@
 .marketplace-mode-tabs {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
-  margin-top: 18px;
-  padding: 5px;
+  gap: 6px;
+  margin-top: 16px;
+  padding: 4px;
   border-radius: 999px;
   background: rgba(12, 33, 66, 0.055);
 }
 
 .marketplace-mode-tabs button {
-  min-height: 38px;
+  min-height: 34px;
   border: 0;
   border-radius: 999px;
   background: transparent;
@@ -182,9 +183,11 @@
 }
 
 .marketplace-filter-card {
-  padding: 16px;
+  padding: 12px 0 14px;
   display: grid;
   gap: 12px;
+  border-top: 1px solid rgba(12, 33, 66, 0.07);
+  border-bottom: 1px solid rgba(12, 33, 66, 0.07);
 }
 
 .filter-row {
