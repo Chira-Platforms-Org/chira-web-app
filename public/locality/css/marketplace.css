@@ -946,3 +946,8 @@
     min-height: 140px;
   }
 }
+
+.gold-result-action.is-added {
+  background: rgba(8, 196, 100, 0.12);
+  color: var(--green);
+}
