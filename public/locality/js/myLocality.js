@@ -2,6 +2,15 @@ const buyerWelcomeTitle = document.getElementById("buyerWelcomeTitle");
 const buyerWelcomeText = document.getElementById("buyerWelcomeText");
 const buyerLocationLabel = document.getElementById("buyerLocationLabel");
 const buyerRadiusLabel = document.getElementById("buyerRadiusLabel");
+const buyerAreaMiniLabel = document.getElementById("buyerAreaMiniLabel");
+
+function getFirstName(name = "") {
+  const cleanName = String(name || "").trim();
+
+  if (!cleanName) return "there";
+
+  return cleanName.split(/\s+/)[0];
+}
 
 async function loadMyLocality() {
   if (!window.LocalityAuthService?.getCurrentUser || !window.LocalitySupabase) {
@@ -26,11 +35,12 @@ async function loadMyLocality() {
   }
 
   const displayName = data?.buyer_display_name || data?.full_name || "there";
+  const firstName = getFirstName(displayName);
   const location = data?.buyer_location_label || "Set your location";
   const radius = data?.buyer_radius_miles || 25;
 
   if (buyerWelcomeTitle) {
-    buyerWelcomeTitle.textContent = `Welcome, ${displayName}.`;
+    buyerWelcomeTitle.textContent = `Welcome, ${firstName}.`;
   }
 
   if (buyerWelcomeText) {
@@ -44,6 +54,10 @@ async function loadMyLocality() {
 
   if (buyerRadiusLabel) {
     buyerRadiusLabel.textContent = `${radius} mile discovery radius`;
+  }
+
+  if (buyerAreaMiniLabel) {
+    buyerAreaMiniLabel.textContent = location;
   }
 }
 
