@@ -2,7 +2,6 @@ const buyerWelcomeTitle = document.getElementById("buyerWelcomeTitle");
 const buyerWelcomeText = document.getElementById("buyerWelcomeText");
 const buyerLocationLabel = document.getElementById("buyerLocationLabel");
 const buyerRadiusLabel = document.getElementById("buyerRadiusLabel");
-const buyerAreaMiniLabel = document.getElementById("buyerAreaMiniLabel");
 
 function getFirstName(name = "") {
   const cleanName = String(name || "").trim();
@@ -40,12 +39,12 @@ async function loadMyLocality() {
   const radius = data?.buyer_radius_miles || 25;
 
   if (buyerWelcomeTitle) {
-    buyerWelcomeTitle.textContent = `Welcome, ${firstName}.`;
+    buyerWelcomeTitle.textContent = `Your local food week, ${firstName}.`;
   }
 
   if (buyerWelcomeText) {
     buyerWelcomeText.textContent =
-      "Discover local food nearby, save farms and products you care about, and keep future orders organized in one simple place.";
+      "See what is fresh nearby, follow trusted farms, reserve limited goods, and build local food into your normal routine.";
   }
 
   if (buyerLocationLabel) {
@@ -54,10 +53,6 @@ async function loadMyLocality() {
 
   if (buyerRadiusLabel) {
     buyerRadiusLabel.textContent = `${radius} mile discovery radius`;
-  }
-
-  if (buyerAreaMiniLabel) {
-    buyerAreaMiniLabel.textContent = location;
   }
 }
 
