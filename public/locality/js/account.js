@@ -123,9 +123,9 @@ async function routeAfterSignIn() {
   }
 
   if (userProfile?.locality_account_type === "personal_buyer") {
-    window.location.href = "map.html";
-    return;
-  }
+  window.location.href = "my-locality.html";
+  return;
+}
 
   if (!window.LocalityProfileService?.getMyPrimaryBusinessProfile) {
     setStatus("Profile service is unavailable. Please refresh and try again.", "error");
