@@ -50,6 +50,43 @@
     };
   }
 
+   async function getPublicMarketplaceProfiles() {
+  const supabase = getClient();
+
+  if (!supabase) {
+    return {
+      data: [],
+      error: "Supabase client is unavailable."
+    };
+  }
+
+  return await supabase
+    .from("business_profiles")
+    .select("*")
+    .eq("profile_visibility", "public")
+    .not("latitude", "is", null)
+    .not("longitude", "is", null)
+    .order("updated_at", { ascending: false });
+}
+
+async function getPublicBusinessProfileById(profileId) {
+  const supabase = getClient();
+
+  if (!supabase || !profileId) {
+    return {
+      data: null,
+      error: "Missing Supabase client or public business profile ID."
+    };
+  }
+
+  return await supabase
+    .from("business_profiles")
+    .select("*")
+    .eq("id", profileId)
+    .eq("profile_visibility", "public")
+    .maybeSingle();
+}
+
   async function createBusinessProfile(profile) {
     const supabase = getClient();
     const user = await getCurrentUser();
@@ -93,10 +130,14 @@
       .single();
   }
 
-  window.LocalityProfileService = {
-    getMyBusinessProfiles,
-    getMyPrimaryBusinessProfile,
-    createBusinessProfile,
-    updateBusinessProfile
-  };
+   window.LocalityProfileService = {
+     getMyBusinessProfiles,
+     getMyPrimaryBusinessProfile,
+   
+     getPublicMarketplaceProfiles,
+     getPublicBusinessProfileById,
+   
+     createBusinessProfile,
+     updateBusinessProfile
+   };
 })();
