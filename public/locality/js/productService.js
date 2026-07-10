@@ -68,6 +68,45 @@
       .order("created_at", { ascending: true });
   }
 
+
+   async function getPublicProductsForBusinessProfile(businessProfileId) {
+  const supabase = getClient();
+
+  if (!supabase || !businessProfileId) {
+    return {
+      data: [],
+      error: "Missing Supabase client or business profile ID."
+    };
+  }
+
+  return await supabase
+    .from("business_products")
+    .select("*")
+    .eq("business_profile_id", businessProfileId)
+    .eq("visibility", "public")
+    .order("featured", { ascending: false })
+    .order("sort_order", { ascending: true })
+    .order("created_at", { ascending: true });
+}
+
+async function getPublicMarketplaceProducts() {
+  const supabase = getClient();
+
+  if (!supabase) {
+    return {
+      data: [],
+      error: "Supabase client is unavailable."
+    };
+  }
+
+  return await supabase
+    .from("business_products")
+    .select("*")
+    .eq("visibility", "public")
+    .order("featured", { ascending: false })
+    .order("updated_at", { ascending: false });
+}
+
   async function createProduct(product = {}) {
     const supabase = getClient();
     const user = await getCurrentUser();
@@ -213,12 +252,16 @@
     };
   }
 
-  window.LocalityProductService = {
-    getProductsForBusinessProfile,
-    createProduct,
-    updateProduct,
-    deleteProduct,
-    updateProductSortOrder,
-    reorderProducts
-  };
+    window.LocalityProductService = {
+     getProductsForBusinessProfile,
+   
+     getPublicProductsForBusinessProfile,
+     getPublicMarketplaceProducts,
+   
+     createProduct,
+     updateProduct,
+     deleteProduct,
+     updateProductSortOrder,
+     reorderProducts
+   };
 })();
