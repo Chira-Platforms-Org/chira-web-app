@@ -431,17 +431,42 @@ function scrollPublicGallery(direction) {
 }
 
 async function getProfileForThisPage() {
-  if (!window.LocalityAuthService?.getCurrentUser) {
-    console.error("LocalityAuthService is not available.");
-    return null;
+  const params =
+    new URLSearchParams(window.location.search);
+
+  const publicProfileId = params.get("id");
+
+  if (publicProfileId) {
+    const method =
+      window.LocalityProfileService
+        ?.getPublicBusinessProfileById;
+
+    if (!method) {
+      console.error(
+        "Public profile service is unavailable."
+      );
+
+      return null;
+    }
+
+    const { data, error } =
+      await method(publicProfileId);
+
+    if (error) {
+      console.error(
+        "Unable to load public business profile:",
+        error
+      );
+
+      return null;
+    }
+
+    return data;
   }
 
-  if (!window.LocalityProfileService?.getMyPrimaryBusinessProfile) {
-    console.error("LocalityProfileService is not available.");
-    return null;
-  }
-
-  const user = await window.LocalityAuthService.getCurrentUser();
+  const user =
+    await window.LocalityAuthService
+      ?.getCurrentUser?.();
 
   if (!user) {
     window.location.href = "account.html";
@@ -449,10 +474,15 @@ async function getProfileForThisPage() {
   }
 
   const { data, error } =
-    await window.LocalityProfileService.getMyPrimaryBusinessProfile();
+    await window.LocalityProfileService
+      .getMyPrimaryBusinessProfile();
 
   if (error) {
-    console.error("Unable to load public profile preview:", error);
+    console.error(
+      "Unable to load owner profile preview:",
+      error
+    );
+
     return null;
   }
 
@@ -502,10 +532,15 @@ function sortProfilePreviewProducts(productList = []) {
 function createPublicPreviewProductCard(product) {
   const card = document.createElement("a");
   card.className = `public-product-preview-card real-product${product.featured ? " is-featured" : ""}`;
-  card.href = "supply.html";
-
-  const imageFrame = document.createElement("div");
-  imageFrame.className = "public-product-preview-image";
+  const params = new URLSearchParams(window.location.search);
+  const publicProfileId = params.get("id");
+   
+   card.href = publicProfileId
+     ? `supply.html?id=${encodeURIComponent(publicProfileId)}`
+     : "supply.html";
+   
+     const imageFrame = document.createElement("div");
+     imageFrame.className = "public-product-preview-image";
 
   if (product.image_url) {
     const image = document.createElement("img");
@@ -549,12 +584,21 @@ function createPublicPreviewProductCard(product) {
 async function renderProductsPreview(profile) {
   if (!publicProductsPreviewSection || !publicProductPreviewRow || !profile?.id) return;
 
-  if (!window.LocalityProductService?.getProductsForBusinessProfile) {
-    console.warn("LocalityProductService is not available for product preview.");
-    return;
-  }
-
-  const { data, error } = await window.LocalityProductService.getProductsForBusinessProfile(profile.id);
+ const params = new URLSearchParams(window.location.search);
+ const isPublicRoute = Boolean(params.get("id"));
+   
+   const productMethod = isPublicRoute
+     ? window.LocalityProductService?.getPublicProductsForBusinessProfile
+     : window.LocalityProductService?.getProductsForBusinessProfile;
+   
+   if (!productMethod) {
+     console.error(
+       "Required product-loading method is unavailable."
+     );
+     return;
+   }
+   
+   const { data, error } = await productMethod(profile.id);
 
   if (error) {
     console.error("Unable to load products for profile preview:", error);
@@ -603,11 +647,17 @@ async function renderProductsPreview(profile) {
       "A few products from this business’s Supply & Products page. View the full catalog for availability, unit sizes, pricing, minimums, and request details.";
   }
 
-  if (publicSupplyCta) {
-    publicSupplyCta.href = "supply.html";
-    publicSupplyCta.classList.remove("disabled");
-    publicSupplyCta.removeAttribute("aria-disabled");
-  }
+ if (publicSupplyCta) {
+  const params = new URLSearchParams(window.location.search);
+  const publicProfileId = params.get("id");
+
+  publicSupplyCta.href = publicProfileId
+    ? `supply.html?id=${encodeURIComponent(publicProfileId)}`
+    : "supply.html";
+
+  publicSupplyCta.classList.remove("disabled");
+  publicSupplyCta.removeAttribute("aria-disabled");
+ }
 
   publicProductPreviewRow.innerHTML = "";
 
