@@ -544,18 +544,45 @@ function resetProductView() {
 }
 
 async function loadSupplyPage() {
-  if (!window.LocalityProfileService || !window.LocalityProductService) {
-    setSupplyStatus("Unable to load services. Check script order.");
+  if (
+    !window.LocalityProfileService ||
+    !window.LocalityProductService
+  ) {
+    setSupplyStatus(
+      "Unable to load services. Check script order."
+    );
+
     return;
   }
 
+  const params =
+    new URLSearchParams(window.location.search);
+
+  const publicProfileId = params.get("id");
+
   setSupplyStatus("Loading business profile...");
 
-  const profileResult = await window.LocalityProfileService.getMyPrimaryBusinessProfile();
+  const profileResult = publicProfileId
+    ? await window.LocalityProfileService
+        .getPublicBusinessProfileById(publicProfileId)
+    : await window.LocalityProfileService
+        .getMyPrimaryBusinessProfile();
 
-  if (profileResult.error || !profileResult.data) {
-    console.error("Profile load error:", profileResult.error);
-    setSupplyStatus("No business profile found. Please finish your business profile first.");
+  if (
+    profileResult.error ||
+    !profileResult.data
+  ) {
+    console.error(
+      "Profile load error:",
+      profileResult.error
+    );
+
+    setSupplyStatus(
+      publicProfileId
+        ? "This public business profile is unavailable."
+        : "No business profile found. Please finish your business profile first."
+    );
+
     return;
   }
 
@@ -564,19 +591,35 @@ async function loadSupplyPage() {
 
   setSupplyStatus("Loading products...");
 
-  const productResult = await window.LocalityProductService.getProductsForBusinessProfile(currentProfile.id);
+  const productResult = publicProfileId
+    ? await window.LocalityProductService
+        .getPublicProductsForBusinessProfile(
+          currentProfile.id
+        )
+    : await window.LocalityProductService
+        .getProductsForBusinessProfile(
+          currentProfile.id
+        );
 
   if (productResult.error) {
-    console.error("Product load error:", productResult.error);
-    setSupplyStatus("Unable to load products. Please check your product table and policies.");
+    console.error(
+      "Product load error:",
+      productResult.error
+    );
+
+    setSupplyStatus("Unable to load products.");
     return;
   }
 
   products = (productResult.data || [])
     .map(normalizeProduct)
-    .filter((product) => product.visibility === "public");
+    .filter(
+      (product) =>
+        product.visibility === "public"
+    );
 
-  products = getProductsInCustomOrder(products);
+  products =
+    getProductsInCustomOrder(products);
 
   refreshFilterOptions();
   renderProducts();
