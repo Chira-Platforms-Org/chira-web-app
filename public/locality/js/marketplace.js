@@ -72,6 +72,124 @@ function formatCategory(category = "") {
     .replace(/\b\w/g, (char) => char.toUpperCase());
 }
 
+function parseJsonValue(value, fallback) {
+  if (value === null || value === undefined || value === "") {
+    return fallback;
+  }
+
+  if (typeof value === "object") {
+    return value;
+  }
+
+  try {
+    return JSON.parse(value);
+  } catch {
+    return fallback;
+  }
+}
+
+function parseArray(value) {
+  const parsed = parseJsonValue(value, []);
+  return Array.isArray(parsed) ? parsed : [];
+}
+
+function profileHasSellerRole(profile = {}) {
+  const roles = parseArray(profile.marketplace_roles);
+
+  return (
+    roles.includes("seller") ||
+    roles.includes("buyer_seller") ||
+    (roles.includes("buyer") && roles.includes("seller"))
+  );
+}
+
+function getPrimaryBusinessCategory(profile = {}) {
+  const categories = parseArray(profile.business_categories);
+  return categories[0] || "other";
+}
+
+function getProfileDescription(profile = {}) {
+  return (
+    profile.short_intro ||
+    profile.description ||
+    profile.about_us ||
+    "Local products and pickup opportunities."
+  );
+}
+
+function getPublicProfileUrl(profile = {}) {
+  if (!profile.id) return "public-profile.html";
+
+  return `public-profile.html?id=${encodeURIComponent(profile.id)}`;
+}
+
+function getPublicSupplyUrl(profile = {}) {
+  if (!profile.id) return "supply.html";
+
+  return `supply.html?id=${encodeURIComponent(profile.id)}`;
+}
+
+function getPublicProductPrice(product = {}) {
+  const price = String(product.price_display || "").trim();
+  const unit = String(product.price_unit || "").trim();
+
+  if (!price) return "Request quote";
+  if (!unit) return price;
+
+  const readableUnit =
+    unit === "custom"
+      ? product.unit_description || "custom unit"
+      : unit;
+
+  return `${price} / ${readableUnit}`;
+}
+
+function inferPickupTypeFromProduct(product = {}) {
+  const text = [
+    product.fulfillment_notes,
+    product.season_notes,
+    product.description
+  ]
+    .filter(Boolean)
+    .join(" ")
+    .toLowerCase();
+
+  if (text.includes("deliver")) {
+    return "delivery";
+  }
+
+  if (
+    text.includes("community") ||
+    text.includes("drop point") ||
+    text.includes("drop-off") ||
+    text.includes("drop off")
+  ) {
+    return "community-drop";
+  }
+
+  if (
+    text.includes("market") ||
+    text.includes("farmers market") ||
+    text.includes("farmer's market")
+  ) {
+    return "market";
+  }
+
+  return "farm-stand";
+}
+
+function getPublicPickupLabel(product = {}) {
+  const fulfillment = String(product.fulfillment_notes || "").trim();
+
+  if (!fulfillment) {
+    return "Pickup details available";
+  }
+
+  return fulfillment.length > 46
+    ? `${fulfillment.slice(0, 43)}...`
+    : fulfillment;
+}
+
 function getProducerTypeLabel(profile = {}) {
   const category = String(profile.businessCategory || profile.productType || "").toLowerCase();
 
@@ -152,6 +270,93 @@ function normalizeStaticProfiles() {
   }));
 }
 
+function normalizeSupabaseProfile(profile = {}) {
+  const category = getPrimaryBusinessCategory(profile);
+
+  const normalizedProfile = {
+    ...profile,
+
+    id: profile.id,
+    name: profile.name || "Local producer",
+
+    type: "producer",
+
+    businessCategory: category,
+    productType: category,
+
+    product: getProfileDescription(profile),
+    description: getProfileDescription(profile),
+
+    location: profile.location_label || "Local area",
+
+    lat: Number(profile.latitude),
+    lng: Number(profile.longitude),
+
+    logo_url: profile.logo_url || "",
+    banner_image_url: profile.banner_image_url || "",
+
+    productsAvailable: []
+  };
+
+  normalizedProfile.sellerTypeLabel =
+    getProducerTypeLabel(normalizedProfile);
+
+  normalizedProfile.organic =
+    parseArray(profile.certifications).some((certification) => {
+      const name =
+        typeof certification === "string"
+          ? certification
+          : certification?.name;
+
+      return String(name || "")
+        .toLowerCase()
+        .includes("organic");
+    });
+
+  return normalizedProfile;
+}
+
+function normalizeSupabaseProduct(product = {}, producer = {}) {
+  const category =
+    product.category ||
+    producer.productType ||
+    "specialty";
+
+  return {
+    id: product.id,
+
+    name: product.name || "Local product",
+    category,
+
+    description: product.description || "",
+    image_url: product.image_url || "",
+
+    price: getPublicProductPrice(product),
+    note: product.availability_status || "Availability available",
+
+    minimumOrder: product.minimum_order || "",
+    seasonNotes: product.season_notes || "",
+    fulfillmentNotes: product.fulfillment_notes || "",
+
+    featured: Boolean(product.featured),
+    organic: Boolean(producer.organic),
+
+    producerId: producer.id,
+    producerName: producer.name,
+    producerLocation: producer.location,
+    producerTypeLabel: producer.sellerTypeLabel,
+
+    pickupLabel: getPublicPickupLabel(product),
+    pickupType: inferPickupTypeFromProduct(product),
+
+    lat: producer.lat,
+    lng: producer.lng,
+
+    sourceProfile: producer,
+    sourceProduct: product
+  };
+}
+
 function normalizeStaticProducts(profileList = []) {
   return profileList
     .filter(isSellerProfile)
@@ -192,8 +397,122 @@ function normalizeStaticProducts(profileList = []) {
   - latitude/longitude from business_profiles
 */
 async function loadMarketplaceData() {
-  marketplaceProfiles = normalizeStaticProfiles();
-  marketplaceProducts = normalizeStaticProducts(marketplaceProfiles);
+  const profileMethod =
+    window.LocalityProfileService?.getPublicMarketplaceProfiles;
+
+  const productMethod =
+    window.LocalityProductService?.getPublicMarketplaceProducts;
+
+  if (!profileMethod || !productMethod) {
+    console.warn(
+      "Public marketplace services are unavailable. Using static fallback data."
+    );
+
+    marketplaceProfiles = normalizeStaticProfiles();
+    marketplaceProducts =
+      normalizeStaticProducts(marketplaceProfiles);
+
+    return {
+      source: "static-fallback",
+      error: null
+    };
+  }
+
+  const [profileResult, productResult] =
+    await Promise.all([
+      profileMethod(),
+      productMethod()
+    ]);
+
+  if (profileResult.error || productResult.error) {
+    console.error(
+      "Public profile query failed:",
+      profileResult.error
+    );
+
+    console.error(
+      "Public product query failed:",
+      productResult.error
+    );
+
+    throw (
+      profileResult.error ||
+      productResult.error ||
+      new Error("Marketplace query failed.")
+    );
+  }
+
+  const normalizedProfiles =
+    (profileResult.data || [])
+      .filter(profileHasSellerRole)
+      .map(normalizeSupabaseProfile)
+      .filter((profile) => {
+        return (
+          profile.id &&
+          Number.isFinite(profile.lat) &&
+          Number.isFinite(profile.lng)
+        );
+      });
+
+  const producerById = new Map(
+    normalizedProfiles.map((profile) => [
+      profile.id,
+      profile
+    ])
+  );
+
+  const normalizedProducts =
+    (productResult.data || [])
+      .map((product) => {
+        const producer = producerById.get(
+          product.business_profile_id
+        );
+
+        if (!producer) return null;
+
+        return normalizeSupabaseProduct(
+          product,
+          producer
+        );
+      })
+      .filter(Boolean);
+
+  normalizedProducts.forEach((product) => {
+    const producer = producerById.get(
+      product.producerId
+    );
+
+    if (!producer) return;
+
+    producer.productsAvailable.push({
+      id: product.id,
+      name: product.name,
+      category: product.category,
+      price: product.price,
+      note: product.note,
+      description: product.description,
+      image_url: product.image_url,
+      organic: product.organic
+    });
+  });
+
+  marketplaceProfiles = normalizedProfiles;
+  marketplaceProducts = normalizedProducts;
+
+  console.log(
+    "Loaded Supabase marketplace profiles:",
+    marketplaceProfiles.length
+  );
+
+  console.log(
+    "Loaded Supabase marketplace products:",
+    marketplaceProducts.length
+  );
+
+  return {
+    source: "supabase",
+    error: null
+  };
 }
 
 function getSearchValue() {
@@ -424,6 +743,58 @@ function createProducerCard(profile) {
   return card;
 }
 
+function renderMarketplaceLoading() {
+  if (!marketplaceResultsList) return;
+
+  resultsKicker.textContent = "Marketplace";
+  resultsTitle.textContent = "Loading nearby listings";
+  resultsCount.textContent = "Loading";
+
+  marketplaceResultsList.innerHTML = `
+    <div class="marketplace-state-card">
+      <strong>Loading public products and producers...</strong>
+      <span>
+        Locality is checking current marketplace availability.
+      </span>
+    </div>
+  `;
+}
+
+function renderMarketplaceError(error) {
+  if (!marketplaceResultsList) return;
+
+  resultsKicker.textContent = "Marketplace";
+  resultsTitle.textContent = "Marketplace unavailable";
+  resultsCount.textContent = "Error";
+
+  marketplaceResultsList.innerHTML = `
+    <div class="marketplace-state-card is-error">
+      <strong>We could not load marketplace listings.</strong>
+      <span>
+        Refresh the page or check the Supabase read policies.
+      </span>
+      ${
+        error?.message
+          ? `<small>${String(error.message)}</small>`
+          : ""
+      }
+    </div>
+  `;
+}
+
+function renderNoMarketplaceResults() {
+  if (!marketplaceResultsList) return;
+
+  marketplaceResultsList.innerHTML = `
+    <div class="marketplace-state-card">
+      <strong>No listings match this view.</strong>
+      <span>
+        Try clearing the search or changing the category and pickup filters.
+      </span>
+    </div>
+  `;
+}
+
 function renderMarketplace() {
   if (!marketplaceResultsList) return;
 
@@ -433,31 +804,52 @@ function renderMarketplace() {
 
   routineBuilderPanel?.classList.toggle("hidden", !isRoutine);
 
-  if (activeMode === "products") {
-    const products = getVisibleProducts();
-
-    resultsKicker.textContent = "Products";
-    resultsTitle.textContent = "Fresh listings near you";
-    resultsCount.textContent = `${products.length} results`;
-    mapFloatingTitle.textContent = "Product availability near you";
-
-    products.forEach((product) => marketplaceResultsList.appendChild(createProductCard(product)));
-    renderMarkers(products, "products");
-    return;
-  }
-
-  if (activeMode === "producers") {
-    const producers = getVisibleProducers();
-
-    resultsKicker.textContent = "Producers";
-    resultsTitle.textContent = "Farms and food producers";
-    resultsCount.textContent = `${producers.length} results`;
-    mapFloatingTitle.textContent = "Producers near you";
-
-    producers.forEach((producer) => marketplaceResultsList.appendChild(createProducerCard(producer)));
-    renderMarkers(producers, "producers");
-    return;
-  }
+     if (activeMode === "products") {
+     const products = getVisibleProducts();
+   
+     resultsKicker.textContent = "Products";
+     resultsTitle.textContent = "Fresh listings near you";
+     resultsCount.textContent = `${products.length} results`;
+     mapFloatingTitle.textContent = "Product availability near you";
+   
+     if (!products.length) {
+       renderNoMarketplaceResults();
+       renderMarkers([], "products");
+       return;
+     }
+   
+     products.forEach((product) => {
+       marketplaceResultsList.appendChild(
+         createProductCard(product)
+       );
+     });
+   
+     renderMarkers(products, "products");
+     return;
+   }
+   if (activeMode === "producers") {
+     const producers = getVisibleProducers();
+   
+     resultsKicker.textContent = "Producers";
+     resultsTitle.textContent = "Farms and food producers";
+     resultsCount.textContent = `${producers.length} results`;
+     mapFloatingTitle.textContent = "Producers near you";
+   
+     if (!producers.length) {
+       renderNoMarketplaceResults();
+       renderMarkers([], "producers");
+       return;
+     }
+   
+     producers.forEach((producer) => {
+       marketplaceResultsList.appendChild(
+         createProducerCard(producer)
+       );
+     });
+   
+     renderMarkers(producers, "producers");
+     return;
+   }
 
    const producers = getVisibleProducers();
    
@@ -807,27 +1199,52 @@ function attachEventListeners() {
 }
 
 async function initializeMarketplace() {
-  initializeMap();
-  attachEventListeners();
-  await loadMarketplaceData();
+  try {
+    initializeMap();
+    attachEventListeners();
+    renderMarketplaceLoading();
 
-  const params = new URLSearchParams(window.location.search);
-  const category = params.get("category");
-  const view = params.get("view");
+    await loadMarketplaceData();
 
-  if (category && marketplaceCategoryFilter) {
-    marketplaceCategoryFilter.value = category;
+    const params =
+      new URLSearchParams(window.location.search);
+
+    const category = params.get("category");
+    const view = params.get("view");
+
+    if (category && marketplaceCategoryFilter) {
+      const categoryExists =
+        [...marketplaceCategoryFilter.options].some(
+          (option) => option.value === category
+        );
+
+      if (categoryExists) {
+        marketplaceCategoryFilter.value = category;
+      }
+    }
+
+    if (
+      view === "farms" ||
+      view === "producers"
+    ) {
+      activeMode = "producers";
+    }
+
+    if (view === "routine") {
+      activeMode = "routine";
+    }
+
+    setMode(activeMode);
+
+    window.setTimeout(() => {
+      marketplaceMap?.invalidateSize();
+    }, 120);
+  } catch (error) {
+    console.error(
+      "Marketplace initialization failed:",
+      error
+    );
+
+    renderMarketplaceError(error);
   }
-
-  if (view === "farms" || view === "producers") {
-    activeMode = "producers";
-  }
-
-  if (view === "routine") {
-    activeMode = "routine";
-  }
-
-  setMode(activeMode);
 }
-
-initializeMarketplace();
