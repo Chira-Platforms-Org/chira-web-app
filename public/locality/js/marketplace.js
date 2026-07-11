@@ -683,40 +683,60 @@ function createProducerCard(profile) {
   const card = document.createElement("article");
   card.className = "marketplace-result-card producer-card";
   card.innerHTML = `
-    <div class="producer-card-header">
-      <div class="producer-logo">${getProducerLogoHtml(profile)}</div>
-
-      <div>
-        <span class="result-type-pill">${getProducerTypeLabel(profile)}</span>
-        <h3>${profile.name}</h3>
-        <p>${profile.location}</p>
-      </div>
-
-      <button type="button" class="save-action ${followed ? "is-saved" : ""}" aria-label="Follow producer" title="Follow producer">
-        ★
-      </button>
-    </div>
-
-    <p>${profile.product || "Local products and pickup options."}</p>
-
-    <div class="producer-tags">
-      <span>${listedProducts.length} listed items</span>
-      <span>${profile.availability || "Weekly availability"}</span>
-      <span>${profile.deliveryRadius || "Regional pickup"}</span>
-    </div>
-
-    <div class="result-actions">
-      <button type="button" class="primary-result-action" data-action="see-products">
-        See products
-      </button>
-      <button type="button" class="gold-result-action" data-action="follow">
-        ${followed ? "Following" : "Follow producer"}
-      </button>
-      <a href="public-profile.html" target="_blank" rel="noopener" class="secondary-result-action">
-        Full profile
-      </a>
-    </div>
-  `;
+     <div class="producer-card-header">
+       <div class="producer-logo">${getProducerLogoHtml(profile)}</div>
+   
+       <div>
+         <span class="result-type-pill">${getProducerTypeLabel(profile)}</span>
+         <h3>${profile.name}</h3>
+         <p>${profile.location}</p>
+       </div>
+   
+       <button
+         type="button"
+         class="save-action ${followed ? "is-saved" : ""}"
+         aria-label="Follow producer"
+         title="Follow producer"
+       >
+         ★
+       </button>
+     </div>
+   
+     <p>${profile.product || "Local products and pickup options."}</p>
+   
+     <div class="producer-tags">
+       <span>${listedProducts.length} listed items</span>
+       <span>${profile.availability || "Weekly availability"}</span>
+       <span>${profile.deliveryRadius || "Regional pickup"}</span>
+     </div>
+   
+     <div class="result-actions">
+       <button
+         type="button"
+         class="primary-result-action"
+         data-action="see-products"
+       >
+         See products
+       </button>
+   
+       <button
+         type="button"
+         class="gold-result-action"
+         data-action="follow"
+       >
+         ${followed ? "Following" : "Follow producer"}
+       </button>
+   
+       <a
+         href="${getPublicProfileUrl(profile)}"
+         target="_blank"
+         rel="noopener"
+         class="secondary-result-action"
+       >
+         Full profile
+       </a>
+     </div>
+   `;
 
   card.addEventListener("click", (event) => {
     if (event.target.closest("a, button")) return;
@@ -1127,9 +1147,14 @@ function openPreviewForProducer(profile) {
           <button type="button" class="preview-action-primary" data-preview-products>
             See products
           </button>
-          <a href="public-profile.html" target="_blank" rel="noopener" class="preview-action-secondary">
-            Open full profile
-          </a>
+          <a
+           href="${getPublicProfileUrl(profile)}"
+           target="_blank"
+           rel="noopener"
+           class="preview-action-secondary"
+         >
+           Open full profile
+         </a>
         </div>
 
         <div>
