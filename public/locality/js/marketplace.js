@@ -1273,3 +1273,12 @@ async function initializeMarketplace() {
     renderMarketplaceError(error);
   }
 }
+
+if (document.readyState === "loading") {
+  document.addEventListener(
+    "DOMContentLoaded",
+    initializeMarketplace
+  );
+} else {
+  initializeMarketplace();
+}
