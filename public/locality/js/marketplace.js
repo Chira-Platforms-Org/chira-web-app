@@ -611,7 +611,19 @@ function createProductCard(product) {
   const card = document.createElement("article");
   card.className = "marketplace-result-card product-result-card";
   card.innerHTML = `
-    <div class="result-image ${getCategoryGroup(product.category)}"></div>
+   <div class="result-image ${getCategoryGroup(product.category)}">
+  ${
+    product.image_url
+      ? `
+        <img
+          src="${product.image_url}"
+          alt="${product.name || "Local product"}"
+          loading="lazy"
+        />
+      `
+      : ""
+  }
+</div>
 
     <div class="result-content">
       <div class="result-topline">
