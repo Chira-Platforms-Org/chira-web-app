@@ -2,353 +2,878 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<link rel="icon" type="image/png" href="images/Locality Flavicon Spinner.png" />
-<link rel="apple-touch-icon" href="images/Locality Flavicon Spinner.png" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
 
-  <title>Supplier Hub | Locality</title>
+  <title>My Locality | Business Center</title>
 
-  <link rel="stylesheet" href="css/locality.css" />
+  <link
+    rel="icon"
+    type="image/png"
+    href="images/Locality Flavicon Spinner.png"
+  />
+
+  <link
+    rel="apple-touch-icon"
+    href="images/Locality Flavicon Spinner.png"
+  />
+
+  <link
+    rel="stylesheet"
+    href="css/locality.css"
+  />
+
+  <link
+    rel="stylesheet"
+    href="css/business-center.css"
+  />
 </head>
 
-<body class="hub-page supplier-hub-page">
-
-  <header class="hub-topbar">
-    <a href="index.html" class="hub-brand">
-      <img src="images/LOCALITY LOGO.png" alt="Locality" />
+<body class="business-center-page">
+  <header class="bc-topbar">
+    <a href="index.html" class="bc-brand">
+      <img
+        src="images/LOCALITY LOGO.png"
+        alt="Locality"
+      />
     </a>
 
-    <div class="hub-search">
-      <input type="text" placeholder="Search requests, buyers, products..." />
-    </div>
+    <nav
+      class="bc-main-nav"
+      aria-label="Locality navigation"
+    >
+      <a href="map.html">
+        Marketplace
+      </a>
 
-    <nav class="hub-nav">
-      <a href="map.html">Marketplace</a>
-      <a href="supplier.html" class="active">Supplier Hub</a>
-      <a href="buyer.html">Sourcing Hub</a>
-      <a href="analytics.html">Analytics</a>
+      <a
+        href="supplier.html"
+        class="active"
+      >
+        My Locality
+      </a>
+
+      <details class="bc-tools-menu">
+        <summary>
+          Tools
+        </summary>
+
+        <div class="bc-tools-dropdown">
+          <a href="supply-builder.html">
+            Products & Availability
+          </a>
+
+          <a href="contracts.html">
+            Contract Studio
+          </a>
+
+          <a href="profile-builder.html">
+            Business Profile Editor
+          </a>
+
+          <a href="public-profile.html">
+            View Public Profile
+          </a>
+
+          <a
+            href="coming-soon.html"
+            data-business-coming-soon=
+              "Orders and fulfillment are being prepared."
+          >
+            Orders & Fulfillment
+          </a>
+
+          <a
+            href="coming-soon.html"
+            data-business-coming-soon=
+              "Messages are being prepared."
+          >
+            Messages
+          </a>
+
+          <a
+            href="coming-soon.html"
+            data-business-coming-soon=
+              "Payments are being prepared."
+          >
+            Payments
+          </a>
+        </div>
+      </details>
     </nav>
+
+    <div class="bc-account-wrap">
+      <button
+        id="bcAccountToggle"
+        class="bc-account-toggle"
+        type="button"
+        aria-expanded="false"
+        aria-controls="bcAccountMenu"
+      >
+        <span class="bc-account-avatar">
+          <img
+            id="bcAccountLogoImage"
+            alt=""
+            hidden
+          />
+
+          <span id="bcAccountInitials">
+            LC
+          </span>
+        </span>
+
+        <span
+          id="bcAccountName"
+          class="bc-account-name"
+        >
+          Loading...
+        </span>
+
+        <span aria-hidden="true">
+          ▾
+        </span>
+      </button>
+
+      <div
+        id="bcAccountMenu"
+        class="bc-account-menu"
+        hidden
+      >
+        <a href="supplier.html">
+          My Locality
+        </a>
+
+        <a href="public-profile.html">
+          View public profile
+        </a>
+
+        <a href="profile-builder.html">
+          Edit business profile
+        </a>
+
+        <a href="supply-builder.html">
+          Manage products
+        </a>
+
+        <a href="account.html">
+          Account settings
+        </a>
+
+        <button
+          id="bcSignOutBtn"
+          class="bc-logout"
+          type="button"
+        >
+          Log out
+        </button>
+      </div>
+    </div>
   </header>
 
-  <main class="hub-shell">
-
-    <aside class="hub-sidebar">
-      <div class="hub-profile-card">
-        <div class="hub-avatar">
-          <img src="images/logos/Queen Creek Harvest Logo.png" alt="Queen Creek Harvest" />
-        </div>
-
-        <p class="hub-eyebrow">Supplier workspace</p>
-        <h2>Queen Creek Harvest</h2>
-        <span>Queen Creek, AZ</span>
-      </div>
-
-      <nav class="hub-side-nav">
-        <a class="active" href="#">Overview</a>
-        <a href="#">Listings</a>
-        <a href="#">Buyer Requests</a>
-        <a href="#">Messages</a>
-        <a href="#">Deliveries</a>
-        <a href="#">Coalitions</a>
-        <a href="#">Data Hub</a>
-        <a href="#">Settings</a>
-      </nav>
-    </aside>
-
-    <section class="hub-main">
-
-      <section class="hub-hero-card">
-        <div>
-          <p class="hub-eyebrow">Good morning</p>
-          <h1>Your regional supply workspace is active.</h1>
-          <p>
-            Manage listings, respond to nearby buyer demand, coordinate deliveries,
-            and review Locality insights from one warm operational hub.
-          </p>
-
-        <div class="hub-hero-actions">
-          <button class="hub-primary-btn">
-            Add available product
-          </button>
-
-        <button class="hub-secondary-btn">
-          View marketplace profile
-        </button>
-
-        <a href="contracts.html" class="hub-contract-btn">
-            Open Contract Studio
-        </a>
-        </div>
-      </div>
-
-        <div class="hub-pulse-card">
-          <span class="pulse-dot"></span>
-          <p>Live Network</p>
-          <strong>6 nearby buyer requests</strong>
-          <small>2 match your current listed products</small>
-        </div>
-      </section>
-
-      <section class="fulfillment-panel">
-  <div class="fulfillment-header">
-    <div>
-      <p class="hub-eyebrow">Contracts & Fulfillment</p>
-      <h2>Active order status</h2>
-      <p>
-        Track current commitments, incoming order requests, and fulfillment deadlines.
-      </p>
+  <main class="bc-shell">
+    <div
+      id="bcPageStatus"
+      class="bc-page-status"
+    >
+      Loading your business workspace...
     </div>
 
-    <a href="#" class="fulfillment-view-all">View all current orders</a>
-  </div>
+    <section class="bc-command-strip">
+      <div class="bc-business-identity">
+        <div class="bc-business-logo">
+          <img
+            id="bcBusinessLogoImage"
+            alt=""
+            hidden
+          />
 
-  <div class="fulfillment-list">
-    <a href="#" class="fulfillment-row delayed">
-      <div class="fulfillment-status">
-        <span></span>
-        Delayed
-      </div>
-
-      <div class="fulfillment-main">
-        <strong>Arcadia Table</strong>
-        <p>Rainbow carrots · 100 lbs · weekly contract</p>
-      </div>
-
-      <div class="fulfillment-progress">
-        <div class="progress-track">
-          <span style="width: 72%"></span>
+          <span id="bcBusinessLogoFallback">
+            LC
+          </span>
         </div>
-        <small>72% fulfilled</small>
-      </div>
 
-      <div class="fulfillment-deadline urgent">
-        1 day overdue
-      </div>
-    </a>
-
-    <a href="#" class="fulfillment-row due-soon">
-      <div class="fulfillment-status">
-        <span></span>
-        Due soon
-      </div>
-
-      <div class="fulfillment-main">
-        <strong>Mesa Fresh Market</strong>
-        <p>Leafy greens bundle · recurring order</p>
-      </div>
-
-      <div class="fulfillment-progress">
-        <div class="progress-track">
-          <span style="width: 58%"></span>
-        </div>
-        <small>58% fulfilled</small>
-      </div>
-
-      <div class="fulfillment-deadline warning">
-        2 days left
-      </div>
-    </a>
-
-    <a href="#" class="fulfillment-row new-request">
-      <div class="fulfillment-status">
-        <span></span>
-        New request
-      </div>
-
-      <div class="fulfillment-main">
-        <strong>Roosevelt Row Market</strong>
-        <p>Rainbow carrots · 100 lbs/week · pending review</p>
-      </div>
-
-      <div class="fulfillment-progress">
-        <div class="progress-track empty">
-          <span style="width: 0%"></span>
-        </div>
-        <small>Awaiting response</small>
-      </div>
-
-      <div class="fulfillment-deadline new">
-        Review order
-      </div>
-    </a>
-
-    <a href="#" class="fulfillment-row on-track">
-      <div class="fulfillment-status">
-        <span></span>
-        On track
-      </div>
-
-      <div class="fulfillment-main">
-        <strong>Scottsdale Grocer</strong>
-        <p>Heirloom tomatoes · 60 lbs · delivery scheduled</p>
-      </div>
-
-      <div class="fulfillment-progress">
-        <div class="progress-track">
-          <span style="width: 92%"></span>
-        </div>
-        <small>92% fulfilled</small>
-      </div>
-
-      <div class="fulfillment-deadline">
-        5 days left
-      </div>
-    </a>
-  </div>
-</section>
-
-      
-      <section class="hub-metrics-grid">
-        <article class="hub-metric-card green">
-          <span>Active listings</span>
-          <strong>14</strong>
-          <p>3 products marked low inventory</p>
-        </article>
-
-        <article class="hub-metric-card beige">
-          <span>Weekly demand fit</span>
-          <strong>82%</strong>
-          <p>Strong match in East Valley produce</p>
-        </article>
-
-        <article class="hub-metric-card brown">
-          <span>Lead time</span>
-          <strong>10–14d</strong>
-          <p>Above regional average on herbs</p>
-        </article>
-
-        <article class="hub-metric-card navy">
-          <span>Open messages</span>
-          <strong>4</strong>
-          <p>2 buyer conversations need reply</p>
-        </article>
-      </section>
-
-      <section class="hub-grid">
-
-        <article class="hub-card large">
-          <div class="card-heading">
-            <div>
-              <p class="hub-eyebrow">Buyer demand</p>
-              <h3>Nearby requests</h3>
-            </div>
-            <button>View all</button>
-          </div>
-
-          <div class="request-list">
-            <div class="request-row">
-              <span class="request-icon">🥕</span>
-              <div>
-                <strong>Roosevelt Row Market</strong>
-                <p>100 lbs rainbow carrots · weekly · Phoenix</p>
-              </div>
-              <em>High fit</em>
-            </div>
-
-            <div class="request-row">
-              <span class="request-icon">🥬</span>
-              <div>
-                <strong>Tempe Kitchen Co.</strong>
-                <p>Leafy greens bundle · recurring · Tempe</p>
-              </div>
-              <em>Match</em>
-            </div>
-
-            <div class="request-row">
-              <span class="request-icon">🌿</span>
-              <div>
-                <strong>Arcadia Table</strong>
-                <p>Fresh herbs · sample order · Phoenix</p>
-              </div>
-              <em>New</em>
-            </div>
-          </div>
-        </article>
-
-        <article class="hub-card">
-          <div class="card-heading">
-            <div>
-              <p class="hub-eyebrow">Listings</p>
-              <h3>Product status</h3>
-            </div>
-          </div>
-
-          <div class="supply-stack">
-            <div>
-              <span>Red Cabbage</span>
-              <strong>Available</strong>
-            </div>
-            <div>
-              <span>Rainbow Carrots</span>
-              <strong class="warning">Low inventory</strong>
-            </div>
-            <div>
-              <span>Heirloom Tomatoes</span>
-              <strong>High availability</strong>
-            </div>
-          </div>
-        </article>
-
-        <article class="hub-card gradient-card">
-          <p class="hub-eyebrow">Locality insight</p>
-          <h3>Demand for organic leafy greens is rising in nearby buyer clusters.</h3>
+        <div class="bc-business-copy">
           <p>
-            Consider updating available quantities before this week’s marketplace activity window.
+            My Locality · Business workspace
           </p>
-        </article>
 
-        <article class="hub-card">
-          <div class="card-heading">
-            <div>
-              <p class="hub-eyebrow">Messages</p>
-              <h3>Recent conversations</h3>
-            </div>
+          <h1 id="bcBusinessName">
+            Your business
+          </h1>
+
+          <div
+            id="bcBusinessMeta"
+            class="bc-business-meta"
+          >
+            Loading business details...
           </div>
 
-          <div class="message-preview-list">
-            <div>
-              <strong>Mesa Fresh Market</strong>
-              <p>Asked about recurring produce availability.</p>
-            </div>
-            <div>
-              <strong>Scottsdale Grocer</strong>
-              <p>Requested delivery radius confirmation.</p>
-            </div>
-          </div>
-        </article>
+          <div class="bc-status-chips">
+            <span
+              id="bcVisibilityChip"
+              class="bc-status-chip"
+            >
+              Checking visibility
+            </span>
 
-        <article class="hub-card large map-preview-card">
+            <span
+              id="bcRoleChip"
+              class="bc-status-chip"
+            >
+              Checking role
+            </span>
+
+            <span
+              id="bcLocationChip"
+              class="bc-status-chip"
+            >
+              Checking location
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="bc-command-actions">
+        <a
+          href="supply-builder.html"
+          class="bc-action-primary"
+        >
+          Add or update product
+        </a>
+
+        <a
+          href="profile-builder.html"
+          class="bc-action-secondary"
+        >
+          Edit profile
+        </a>
+
+        <a
+          href="public-profile.html"
+          class="bc-action-quiet"
+        >
+          View public profile
+        </a>
+      </div>
+    </section>
+
+    <section
+      class="bc-dashboard-grid"
+      aria-label="Business dashboard"
+    >
+      <!-- ATTENTION -->
+      <article
+        class="
+          bc-dashboard-card
+          bc-span-4
+          is-gold
+        "
+      >
+        <div class="bc-card-header">
           <div>
-            <p class="hub-eyebrow">Regional position</p>
-            <h3>East Valley supplier activity</h3>
-            <p>
-              Your farm sits near several active buyer clusters with current demand for seasonal vegetables.
+            <p class="bc-card-kicker">
+              Attention
             </p>
+
+            <h2>
+              What needs you now
+            </h2>
+          </div>
+        </div>
+
+        <p class="bc-card-description">
+          Profile, product, and setup items that
+          may need action.
+        </p>
+
+        <div
+          id="bcAttentionList"
+          class="bc-attention-list"
+        ></div>
+      </article>
+
+      <!-- ORDERS -->
+      <article
+        class="
+          bc-dashboard-card
+          bc-span-8
+        "
+      >
+        <div class="bc-card-header">
+          <div>
+            <p class="bc-card-kicker">
+              Operations
+            </p>
+
+            <h2 id="bcOrdersTitle">
+              Orders and fulfillment
+            </h2>
           </div>
 
-          <div class="mini-region-map">
-            <span class="farm-orbit"></span>
-            <span class="buyer-dot one"></span>
-            <span class="buyer-dot two"></span>
-            <span class="buyer-dot three"></span>
-            <span class="route-line one"></span>
-            <span class="route-line two"></span>
+          <a
+            href="coming-soon.html"
+            class="bc-card-link"
+            data-business-coming-soon=
+              "The full Orders & Fulfillment workspace is being prepared."
+          >
+            View all →
+          </a>
+        </div>
+
+        <p
+          id="bcOrdersDescription"
+          class="bc-card-description"
+        >
+          Track direct orders, contract-generated
+          orders, deadlines, preparation, pickup,
+          and delivery.
+        </p>
+
+        <div class="bc-metric-strip">
+          <div class="bc-mini-metric">
+            <span>
+              New
+            </span>
+
+            <strong>
+              0
+            </strong>
           </div>
-        </article>
 
-        <article class="hub-card data-hub-card">
-          <p class="hub-eyebrow">Locality Data Hub</p>
-          <h3>Autodata preview</h3>
-          <p>
-            Supply trends, lead-time patterns, and buyer demand signals will connect here as the data layer expands.
-          </p>
-          <button class="hub-secondary-btn">Open Data Hub</button>
-        </article>
+          <div class="bc-mini-metric">
+            <span>
+              Due soon
+            </span>
 
-      </section>
+            <strong>
+              0
+            </strong>
+          </div>
+
+          <div class="bc-mini-metric">
+            <span>
+              Needs attention
+            </span>
+
+            <strong>
+              0
+            </strong>
+          </div>
+        </div>
+
+        <div class="bc-empty-state">
+          <strong>
+            No live order records are connected yet
+          </strong>
+
+          <span>
+            Direct orders and individual obligations
+            generated from contracts will appear here
+            as operational tickets.
+          </span>
+        </div>
+      </article>
+
+      <!-- PRODUCTS -->
+      <article
+        id="bcProductsCard"
+        class="
+          bc-dashboard-card
+          bc-span-4
+          is-sage
+        "
+      >
+        <div class="bc-card-header">
+          <div>
+            <p class="bc-card-kicker">
+              Supply
+            </p>
+
+            <h3>
+              Products & availability
+            </h3>
+          </div>
+
+          <a
+            href="supply-builder.html"
+            class="bc-card-link"
+          >
+            Manage →
+          </a>
+        </div>
+
+        <p
+          id="bcProductSummary"
+          class="bc-card-description"
+        >
+          Loading products...
+        </p>
+
+        <div
+          id="bcProductList"
+          class="bc-product-list"
+        ></div>
+      </article>
+
+      <!-- MESSAGES -->
+      <article
+        class="
+          bc-dashboard-card
+          bc-span-4
+        "
+      >
+        <div class="bc-card-header">
+          <div>
+            <p class="bc-card-kicker">
+              Messages
+            </p>
+
+            <h3>
+              Recent conversations
+            </h3>
+          </div>
+
+          <a
+            href="coming-soon.html"
+            class="bc-card-link"
+            data-business-coming-soon=
+              "The full Messages workspace is being prepared."
+          >
+            Open →
+          </a>
+        </div>
+
+        <div class="bc-empty-state">
+          <strong>
+            No connected conversations yet
+          </strong>
+
+          <span>
+            Recent messages and conversations awaiting
+            a reply will appear above the quick draft.
+          </span>
+        </div>
+
+        <div class="bc-message-form">
+          <input
+            id="bcMessageRecipient"
+            type="text"
+            placeholder="Recipient or business name"
+          />
+
+          <textarea
+            id="bcMessageDraft"
+            placeholder="Draft a quick message..."
+          ></textarea>
+
+          <div class="bc-message-actions">
+            <button
+              id="bcSaveMessageDraft"
+              type="button"
+              class="bc-action-primary"
+            >
+              Save draft
+            </button>
+
+            <button
+              type="button"
+              class="bc-action-quiet"
+              data-business-coming-soon=
+                "Sending will become available when Locality messaging is connected."
+            >
+              Continue in Messages
+            </button>
+          </div>
+
+          <div
+            id="bcDraftStatus"
+            class="bc-inline-status"
+          >
+            Drafts currently save on this device.
+          </div>
+        </div>
+      </article>
+
+      <!-- PAYMENTS -->
+      <article
+        class="
+          bc-dashboard-card
+          bc-span-4
+          is-gold
+        "
+      >
+        <div class="bc-card-header">
+          <div>
+            <p class="bc-card-kicker">
+              Payments
+            </p>
+
+            <h3>
+              Money in and out
+            </h3>
+          </div>
+
+          <a
+            href="coming-soon.html"
+            class="bc-card-link"
+            data-business-coming-soon=
+              "The Payments workspace is being prepared."
+          >
+            View activity →
+          </a>
+        </div>
+
+        <p class="bc-card-description">
+          Manage payout information, purchasing
+          methods, incoming payments, and payments made.
+        </p>
+
+        <div class="bc-setting-stack">
+          <div class="bc-setting-row">
+            <div>
+              <strong>
+                Payout account
+              </strong>
+
+              <span>
+                Receive seller payments
+              </span>
+            </div>
+
+            <span class="bc-setting-state">
+              Not connected
+            </span>
+          </div>
+
+          <div class="bc-setting-row">
+            <div>
+              <strong>
+                Payment method
+              </strong>
+
+              <span>
+                Pay for business purchases
+              </span>
+            </div>
+
+            <span class="bc-setting-state">
+              Not added
+            </span>
+          </div>
+        </div>
+
+        <div class="bc-message-actions">
+          <button
+            type="button"
+            class="bc-action-primary"
+            data-business-coming-soon=
+              "Secure payout-account connection will be added with the payment provider integration."
+          >
+            Connect payout account
+          </button>
+
+          <button
+            type="button"
+            class="bc-action-quiet"
+            data-business-coming-soon=
+              "Payment methods will be added with the payment provider integration."
+          >
+            Add payment method
+          </button>
+        </div>
+
+        <div class="bc-empty-state">
+          <strong>
+            No recent payments
+          </strong>
+
+          <span>
+            Payments received and payments made will
+            appear here once transaction processing is
+            connected.
+          </span>
+        </div>
+      </article>
+
+      <!-- CONTRACTS -->
+      <article
+        class="
+          bc-dashboard-card
+          bc-span-4
+        "
+      >
+        <div class="bc-card-header">
+          <div>
+            <p class="bc-card-kicker">
+              Agreements
+            </p>
+
+            <h3>
+              Contracts
+            </h3>
+          </div>
+
+          <a
+            href="contracts.html"
+            class="bc-card-link"
+          >
+            Open Studio →
+          </a>
+        </div>
+
+        <p class="bc-card-description">
+          Draft, review, negotiate, and manage the
+          commercial rules behind recurring work.
+        </p>
+
+        <div class="bc-metric-strip">
+          <div class="bc-mini-metric">
+            <span>
+              Active
+            </span>
+
+            <strong>
+              —
+            </strong>
+          </div>
+
+          <div class="bc-mini-metric">
+            <span>
+              Review
+            </span>
+
+            <strong>
+              —
+            </strong>
+          </div>
+
+          <div class="bc-mini-metric">
+            <span>
+              Drafts
+            </span>
+
+            <strong>
+              —
+            </strong>
+          </div>
+        </div>
+
+        <div class="bc-empty-state">
+          <strong>
+            Contract summaries will connect here
+          </strong>
+
+          <span>
+            Contract Studio remains the place for terms.
+            Individual fulfillment obligations will
+            appear in Orders.
+          </span>
+        </div>
+      </article>
+
+      <!-- BUSINESS PROFILE -->
+      <article
+        class="
+          bc-dashboard-card
+          bc-span-4
+          is-sage
+        "
+      >
+        <div class="bc-card-header">
+          <div>
+            <p class="bc-card-kicker">
+              Business presence
+            </p>
+
+            <h3>
+              Marketplace profile
+            </h3>
+          </div>
+
+          <a
+            href="profile-builder.html"
+            class="bc-card-link"
+          >
+            Edit →
+          </a>
+        </div>
+
+        <strong id="bcProfileScore">
+          0% complete
+        </strong>
+
+        <div class="bc-profile-progress">
+          <span id="bcProfileProgressBar"></span>
+        </div>
+
+        <div class="bc-profile-stat-grid">
+          <div class="bc-profile-stat">
+            <span>
+              Visibility
+            </span>
+
+            <strong id="bcProfileVisibility">
+              Loading
+            </strong>
+          </div>
+
+          <div class="bc-profile-stat">
+            <span>
+              Location
+            </span>
+
+            <strong id="bcProfileLocation">
+              Loading
+            </strong>
+          </div>
+
+          <div class="bc-profile-stat">
+            <span>
+              Public products
+            </span>
+
+            <strong id="bcPublicProductCount">
+              0
+            </strong>
+          </div>
+
+          <div class="bc-profile-stat">
+            <span>
+              Draft products
+            </span>
+
+            <strong id="bcDraftProductCount">
+              0
+            </strong>
+          </div>
+        </div>
+
+        <div class="bc-message-actions">
+          <a
+            href="public-profile.html"
+            class="bc-action-quiet"
+          >
+            View profile
+          </a>
+
+          <a
+            href="supply.html"
+            class="bc-action-quiet"
+          >
+            View supply
+          </a>
+        </div>
+      </article>
+
+      <!-- BUYING -->
+      <article
+        id="bcBuyingCard"
+        class="
+          bc-dashboard-card
+          bc-span-4
+        "
+      >
+        <div class="bc-card-header">
+          <div>
+            <p class="bc-card-kicker">
+              Buying
+            </p>
+
+            <h3>
+              Sourcing activity
+            </h3>
+          </div>
+
+          <a
+            href="map.html"
+            class="bc-card-link"
+          >
+            Marketplace →
+          </a>
+        </div>
+
+        <p class="bc-card-description">
+          Supplier relationships, purchase requests,
+          saved products, pickups, and buying contracts.
+        </p>
+
+        <div class="bc-empty-state">
+          <strong>
+            No active sourcing records yet
+          </strong>
+
+          <span>
+            Saved producers, outgoing orders, and open
+            sourcing requests will appear here.
+          </span>
+        </div>
+      </article>
+
+      <!-- INSIGHTS -->
+      <article
+        class="
+          bc-dashboard-card
+          bc-span-8
+          is-navy
+        "
+      >
+        <div class="bc-card-header">
+          <div>
+            <p class="bc-card-kicker">
+              Locality intelligence
+            </p>
+
+            <h2>
+              Demand and network signals
+            </h2>
+          </div>
+
+          <a
+            href="coming-soon.html"
+            class="bc-card-link"
+            data-business-coming-soon=
+              "Business insights will become available as marketplace activity data grows."
+          >
+            Explore insights →
+          </a>
+        </div>
+
+        <p class="bc-card-description">
+          Product interest, repeat buyer activity,
+          regional requests, supply patterns, and
+          marketplace performance will be summarized here.
+        </p>
+
+        <div class="bc-insight-preview">
+          <div class="bc-insight-line"></div>
+
+          <strong>
+            Your first real demand signals will appear
+            as customers save, follow, request, and buy.
+          </strong>
+        </div>
+      </article>
     </section>
   </main>
 
+  <div
+    id="bcToast"
+    class="bc-toast"
+    hidden
+  ></div>
+
+  <script
+    src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
+  ></script>
+
+  <script src="js/supabaseConfig.js"></script>
+  <script src="js/supabaseClient.js"></script>
+  <script src="js/authService.js"></script>
+  <script src="js/profileService.js"></script>
+  <script src="js/productService.js"></script>
+  <script src="js/businessCenter.js"></script>
 </body>
 </html>
