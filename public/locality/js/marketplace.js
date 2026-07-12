@@ -1072,7 +1072,18 @@ function openPreviewForProduct(product) {
 
   previewPanelContent.innerHTML = `
     <article class="preview-hero-card">
-      <div class="preview-cover"></div>
+      <div class="preview-cover">
+  ${
+    product.image_url
+      ? `
+        <img
+          src="${product.image_url}"
+          alt="${product.name || "Local product"}"
+        />
+      `
+      : ""
+  }
+</div>
 
       <div class="preview-body">
         <div class="preview-logo">${getProducerLogoHtml(producer || {})}</div>
