@@ -1295,25 +1295,33 @@ body[data-workspace-mode="buyer-only"]
 }
 
 /* =========================
-   DASHBOARD CLEANUP
+   DASHBOARD ROW ALIGNMENT
 ========================= */
 
 /*
-  Allow cards with little content to remain compact
-  instead of stretching to the tallest card in the row.
+  Keep mixed card widths, but align every card
+  to the height of the tallest card in its row.
+  This preserves a structured bento layout
+  rather than creating a loose masonry layout.
 */
 .bc-dashboard-grid {
-  align-items: start;
+  align-items: stretch;
+}
+
+.bc-dashboard-grid > .bc-dashboard-card {
+  align-self: stretch;
 }
 
 .bc-compact-card {
-  align-self: start;
+  align-self: stretch;
 }
 
-/* Combined account/location utility card */
-
 .bc-account-location-card {
-  align-self: start;
+  align-self: stretch;
+}
+
+.bc-compact-card .bc-compact-stat {
+  margin-top: auto;
 }
 
 .bc-account-tool-grid {
