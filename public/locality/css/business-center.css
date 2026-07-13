@@ -1293,3 +1293,87 @@ body[data-workspace-mode="buyer-only"]
     flex-direction: column;
   }
 }
+
+/* =========================
+   DASHBOARD CLEANUP
+========================= */
+
+/*
+  Allow cards with little content to remain compact
+  instead of stretching to the tallest card in the row.
+*/
+.bc-dashboard-grid {
+  align-items: start;
+}
+
+.bc-compact-card {
+  align-self: start;
+}
+
+/* Combined account/location utility card */
+
+.bc-account-location-card {
+  align-self: start;
+}
+
+.bc-account-tool-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.bc-account-tool {
+  min-height: 118px;
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 16px;
+  box-sizing: border-box;
+  padding: 15px;
+  border: 1px solid var(--bc-border);
+  border-radius: 17px;
+  background: rgba(12, 33, 66, 0.04);
+  color: var(--bc-navy);
+  text-decoration: none;
+  transition:
+    transform 0.16s ease,
+    background 0.16s ease,
+    border-color 0.16s ease;
+}
+
+.bc-account-tool:hover {
+  transform: translateY(-2px);
+  border-color: rgba(8, 196, 100, 0.22);
+  background: rgba(8, 196, 100, 0.065);
+}
+
+.bc-account-tool strong,
+.bc-account-tool span {
+  display: block;
+}
+
+.bc-account-tool strong {
+  font-size: 0.86rem;
+  font-weight: 950;
+}
+
+.bc-account-tool span {
+  max-width: 330px;
+  margin-top: 6px;
+  color: var(--bc-muted);
+  font-size: 0.7rem;
+  font-weight: 720;
+  line-height: 1.45;
+}
+
+.bc-account-tool b {
+  flex: 0 0 auto;
+  font-size: 1rem;
+}
+
+@media (max-width: 720px) {
+  .bc-account-tool-grid {
+    grid-template-columns: 1fr;
+  }
+}
