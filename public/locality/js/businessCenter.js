@@ -55,6 +55,12 @@ const sellerWorkspace =
 const buyerWorkspace =
   document.getElementById("buyerWorkspace");
 
+const bcWorkspaceStack =
+  document.getElementById("bcWorkspaceStack");
+
+const sharedWorkspace =
+  document.getElementById("sharedWorkspace");
+
 const bcSourcingJump =
   document.getElementById("bcSourcingJump");
 
@@ -81,6 +87,24 @@ const bcPrimaryPerformanceTitle =
 const bcPrimaryPerformanceDescription =
   document.getElementById(
     "bcPrimaryPerformanceDescription"
+  );
+
+const bcPaymentsTitle =
+  document.getElementById("bcPaymentsTitle");
+
+const bcPaymentsDescription =
+  document.getElementById(
+    "bcPaymentsDescription"
+  );
+
+const bcContractsDescription =
+  document.getElementById(
+    "bcContractsDescription"
+  );
+
+const bcProfileCardTitle =
+  document.getElementById(
+    "bcProfileCardTitle"
   );
 
 const bcPrimaryMetricOneLabel =
@@ -268,6 +292,10 @@ function applyWorkspaceCapabilities(profile = {}) {
       ? "seller-primary"
       : "buyer-only";
 
+  /* =========================
+     SHOW / HIDE WORKSPACES
+  ========================= */
+
   if (sellerWorkspace) {
     sellerWorkspace.hidden = !canSell;
   }
@@ -296,13 +324,52 @@ function applyWorkspaceCapabilities(profile = {}) {
       element.hidden = !canSell;
     });
 
+  /* =========================
+     REORDER WORKSPACES
+  ========================= */
+
+  if (
+    bcWorkspaceStack &&
+    buyerWorkspace &&
+    sharedWorkspace
+  ) {
+    if (canSell) {
+      /*
+        Seller:
+        Overview
+        Seller operations
+        Shared tools
+        Buying & sourcing
+      */
+      bcWorkspaceStack.insertBefore(
+        sharedWorkspace,
+        buyerWorkspace
+      );
+    } else {
+      /*
+        Buyer:
+        Overview
+        Buying & sourcing
+        Shared tools
+      */
+      bcWorkspaceStack.insertBefore(
+        buyerWorkspace,
+        sharedWorkspace
+      );
+    }
+  }
+
+  /* =========================
+     PERFORMANCE
+  ========================= */
+
   if (bcPurchasingPerformanceCard) {
     /*
-      Dual-role businesses see a separate purchasing
-      overview below their seller workspace.
+      Dual-role businesses receive a second,
+      sourcing-specific purchasing card.
 
-      Buyer-only businesses already receive purchasing
-      performance in the main overview card.
+      Buyer-only businesses already see purchasing
+      performance in the main overview.
     */
     bcPurchasingPerformanceCard.hidden =
       !canSell;
@@ -343,6 +410,10 @@ function applyWorkspaceCapabilities(profile = {}) {
         : "Deliveries received";
   }
 
+  /* =========================
+     BUYING WORKSPACE
+  ========================= */
+
   if (bcBuyerWorkspaceTitle) {
     bcBuyerWorkspaceTitle.textContent =
       canSell
@@ -355,6 +426,46 @@ function applyWorkspaceCapabilities(profile = {}) {
       canSell
         ? "Find suppliers, manage purchases, and coordinate incoming goods."
         : "Find local businesses and products, manage purchases, and coordinate incoming goods.";
+  }
+
+  /* =========================
+     PAYMENTS
+  ========================= */
+
+  if (bcPaymentsTitle) {
+    bcPaymentsTitle.textContent =
+      canSell
+        ? "Money in and out"
+        : "Purchasing payments";
+  }
+
+  if (bcPaymentsDescription) {
+    bcPaymentsDescription.textContent =
+      canSell
+        ? "Manage payouts, purchasing methods, incoming payments, and payments made."
+        : "Manage purchasing methods, outgoing payments, refunds, and purchase-related activity.";
+  }
+
+  /* =========================
+     CONTRACTS
+  ========================= */
+
+  if (bcContractsDescription) {
+    bcContractsDescription.textContent =
+      canSell
+        ? "Draft, review, negotiate, and manage buying and selling agreements."
+        : "Manage supplier agreements, purchasing terms, and recurring sourcing commitments.";
+  }
+
+  /* =========================
+     BUSINESS PROFILE
+  ========================= */
+
+  if (bcProfileCardTitle) {
+    bcProfileCardTitle.textContent =
+      canSell
+        ? "Marketplace profile"
+        : "Business profile";
   }
 }
 
@@ -460,6 +571,9 @@ function renderBusinessIdentity(profile) {
   const visibility =
     profile.profile_visibility || "draft";
 
+  const { canSell } =
+   getBusinessCapabilities(profile);
+
   const location =
     profile.location_label || "Location not set";
 
@@ -482,8 +596,10 @@ function renderBusinessIdentity(profile) {
     bcRoleChip.textContent = roleLabel;
   }
 
-  if (bcVisibilityChip) {
-    const isPublic = visibility === "public";
+ if (bcVisibilityChip) {
+  if (canSell) {
+    const isPublic =
+      visibility === "public";
 
     bcVisibilityChip.textContent = isPublic
       ? "Public in Marketplace"
@@ -498,7 +614,19 @@ function renderBusinessIdentity(profile) {
       "is-warning",
       !isPublic
     );
+  } else {
+    bcVisibilityChip.textContent =
+      "Business profile active";
+
+    bcVisibilityChip.classList.add(
+      "is-public"
+    );
+
+    bcVisibilityChip.classList.remove(
+      "is-warning"
+    );
   }
+}
 
   if (bcLocationChip) {
   const isConfirmed =
@@ -646,6 +774,9 @@ function renderProfileStatus(profile) {
     profile.profile_completion_score || 0
   );
 
+  const { canSell } =
+    getBusinessCapabilities(profile);
+
   if (bcProfileScore) {
     bcProfileScore.textContent =
       `${score}% complete`;
@@ -660,10 +791,15 @@ function renderProfileStatus(profile) {
   }
 
   if (bcProfileVisibility) {
-    bcProfileVisibility.textContent =
-      profile.profile_visibility === "public"
-        ? "Public"
-        : "Draft";
+    if (canSell) {
+      bcProfileVisibility.textContent =
+        profile.profile_visibility === "public"
+          ? "Public"
+          : "Draft";
+    } else {
+      bcProfileVisibility.textContent =
+        "Active";
+    }
   }
 
   if (bcProfileLocation) {
@@ -677,16 +813,16 @@ function renderProfileStatus(profile) {
 function buildAttentionItems(profile) {
   const items = [];
 
-  const publicProducts = getPublicProducts();
-  const roles = parseArray(
-    profile.marketplace_roles
-  );
+  const publicProducts =
+    getPublicProducts();
 
-  const isSeller =
-    roles.includes("seller") ||
-    roles.includes("buyer_seller");
+  const { canSell } =
+    getBusinessCapabilities(profile);
 
-  if (profile.profile_visibility !== "public") {
+  if (
+    canSell &&
+    profile.profile_visibility !== "public"
+  ) {
     items.push({
       type: "warning",
       title: "Profile is still a draft",
@@ -699,8 +835,9 @@ function buildAttentionItems(profile) {
     items.push({
       type: "warning",
       title: "Confirm the business location",
-      detail:
-        "A confirmed map location helps buyers find your business."
+      detail: canSell
+        ? "A confirmed map location helps buyers find your business."
+        : "A confirmed location improves nearby sourcing results and pickup planning."
     });
   }
 
@@ -712,12 +849,16 @@ function buildAttentionItems(profile) {
     items.push({
       type: "warning",
       title: `Profile is ${score}% complete`,
-      detail:
-        "Complete the remaining profile sections to strengthen your public presence."
+      detail: canSell
+        ? "Complete the remaining profile sections to strengthen your public presence."
+        : "Complete the remaining business details to improve sourcing and account setup."
     });
   }
 
-  if (isSeller && !publicProducts.length) {
+  if (
+    canSell &&
+    !publicProducts.length
+  ) {
     items.push({
       type: "danger",
       title: "No public products",
@@ -729,9 +870,12 @@ function buildAttentionItems(profile) {
   if (!items.length) {
     items.push({
       type: "success",
-      title: "Your business presence looks ready",
-      detail:
-        "No immediate profile or product issues were detected."
+      title: canSell
+        ? "Your business presence looks ready"
+        : "Your business workspace looks ready",
+      detail: canSell
+        ? "No immediate profile or product issues were detected."
+        : "No immediate account or sourcing setup issues were detected."
     });
   }
 
