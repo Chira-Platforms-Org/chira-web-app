@@ -457,16 +457,13 @@ function applyWorkspaceCapabilities(profile = {}) {
         : "Manage supplier agreements, purchasing terms, and recurring sourcing commitments.";
   }
 
-  /* =========================
-     BUSINESS PROFILE
-  ========================= */
+/* =========================
+   BUSINESS PROFILE
+========================= */
 
-  if (bcProfileCardTitle) {
-    bcProfileCardTitle.textContent =
-      canSell
-        ? "Marketplace profile"
-        : "Business profile";
-  }
+if (bcProfileCardTitle) {
+  bcProfileCardTitle.textContent =
+    "Marketplace profile";
 }
 
 function showToast(message) {
@@ -571,9 +568,6 @@ function renderBusinessIdentity(profile) {
   const visibility =
     profile.profile_visibility || "draft";
 
-  const { canSell } =
-   getBusinessCapabilities(profile);
-
   const location =
     profile.location_label || "Location not set";
 
@@ -596,36 +590,23 @@ function renderBusinessIdentity(profile) {
     bcRoleChip.textContent = roleLabel;
   }
 
- if (bcVisibilityChip) {
-  if (canSell) {
-    const isPublic =
-      visibility === "public";
+if (bcVisibilityChip) {
+  const isPublic =
+    visibility === "public";
 
-    bcVisibilityChip.textContent = isPublic
-      ? "Public in Marketplace"
-      : "Draft profile";
+  bcVisibilityChip.textContent = isPublic
+    ? "Public in Marketplace"
+    : "Draft profile";
 
-    bcVisibilityChip.classList.toggle(
-      "is-public",
-      isPublic
-    );
+  bcVisibilityChip.classList.toggle(
+    "is-public",
+    isPublic
+  );
 
-    bcVisibilityChip.classList.toggle(
-      "is-warning",
-      !isPublic
-    );
-  } else {
-    bcVisibilityChip.textContent =
-      "Business profile active";
-
-    bcVisibilityChip.classList.add(
-      "is-public"
-    );
-
-    bcVisibilityChip.classList.remove(
-      "is-warning"
-    );
-  }
+  bcVisibilityChip.classList.toggle(
+    "is-warning",
+    !isPublic
+  );
 }
 
   if (bcLocationChip) {
@@ -774,9 +755,6 @@ function renderProfileStatus(profile) {
     profile.profile_completion_score || 0
   );
 
-  const { canSell } =
-    getBusinessCapabilities(profile);
-
   if (bcProfileScore) {
     bcProfileScore.textContent =
       `${score}% complete`;
@@ -791,15 +769,10 @@ function renderProfileStatus(profile) {
   }
 
   if (bcProfileVisibility) {
-    if (canSell) {
-      bcProfileVisibility.textContent =
-        profile.profile_visibility === "public"
-          ? "Public"
-          : "Draft";
-    } else {
-      bcProfileVisibility.textContent =
-        "Active";
-    }
+    bcProfileVisibility.textContent =
+      profile.profile_visibility === "public"
+        ? "Public"
+        : "Draft";
   }
 
   if (bcProfileLocation) {
@@ -819,15 +792,19 @@ function buildAttentionItems(profile) {
   const { canSell } =
     getBusinessCapabilities(profile);
 
+  /*
+    Every business can publish a Marketplace profile.
+    Only sellers need public product listings.
+  */
   if (
-    canSell &&
     profile.profile_visibility !== "public"
   ) {
     items.push({
       type: "warning",
       title: "Profile is still a draft",
-      detail:
-        "Publish the profile when it is ready to appear in Marketplace."
+      detail: canSell
+        ? "Publish the profile when it is ready for buyers and other businesses to discover."
+        : "Publish the profile when it is ready for nearby suppliers and other businesses to discover."
     });
   }
 
@@ -836,8 +813,8 @@ function buildAttentionItems(profile) {
       type: "warning",
       title: "Confirm the business location",
       detail: canSell
-        ? "A confirmed map location helps buyers find your business."
-        : "A confirmed location improves nearby sourcing results and pickup planning."
+        ? "A confirmed location helps buyers find your business and products."
+        : "A confirmed location helps nearby suppliers find your business and improves sourcing results."
     });
   }
 
@@ -850,11 +827,15 @@ function buildAttentionItems(profile) {
       type: "warning",
       title: `Profile is ${score}% complete`,
       detail: canSell
-        ? "Complete the remaining profile sections to strengthen your public presence."
-        : "Complete the remaining business details to improve sourcing and account setup."
+        ? "Complete the remaining profile sections to strengthen your Marketplace presence."
+        : "Complete the remaining business details so suppliers can better understand your organization."
     });
   }
 
+  /*
+    Product requirements only apply when
+    selling capability is enabled.
+  */
   if (
     canSell &&
     !publicProducts.length
@@ -863,19 +844,18 @@ function buildAttentionItems(profile) {
       type: "danger",
       title: "No public products",
       detail:
-        "Publish at least one product so buyers can discover current supply."
+        "Publish at least one product so buyers can discover your current supply."
     });
   }
 
   if (!items.length) {
     items.push({
       type: "success",
-      title: canSell
-        ? "Your business presence looks ready"
-        : "Your business workspace looks ready",
+      title:
+        "Your Marketplace presence looks ready",
       detail: canSell
         ? "No immediate profile or product issues were detected."
-        : "No immediate account or sourcing setup issues were detected."
+        : "No immediate profile or sourcing setup issues were detected."
     });
   }
 
