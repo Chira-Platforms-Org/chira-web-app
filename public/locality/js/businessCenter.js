@@ -464,6 +464,7 @@ function applyWorkspaceCapabilities(profile = {}) {
 if (bcProfileCardTitle) {
   bcProfileCardTitle.textContent =
     "Marketplace profile";
+   }
 }
 
 function showToast(message) {
