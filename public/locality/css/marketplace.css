@@ -1013,3 +1013,27 @@
   display: block;
   object-fit: cover;
 }
+
+
+/* =========================
+   SHARED HEADER HEIGHT FIX
+========================= */
+
+@media (max-width: 1180px) {
+  .marketplace-shell {
+    height: calc(100vh - 142px);
+  }
+}
+
+@media (max-width: 820px) {
+  .marketplace-page {
+    height: auto;
+    min-height: 100vh;
+    overflow: auto;
+  }
+
+  .marketplace-shell {
+    height: auto;
+    min-height: calc(100vh - 150px);
+  }
+}
