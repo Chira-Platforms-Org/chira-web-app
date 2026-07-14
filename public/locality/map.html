@@ -15,30 +15,16 @@
   />
 
   <link rel="stylesheet" href="css/locality.css" />
+  <link rel="stylesheet" href="css/app-shell.css" />
   <link rel="stylesheet" href="css/marketplace.css" />
 </head>
 
 <body class="marketplace-page">
-  <header class="marketplace-topbar">
-    <a href="index.html" class="marketplace-brand">
-      <img src="images/LOCALITY LOGO.png" alt="Locality" />
-    </a>
-
-    <div class="marketplace-search-shell">
-      <input
-        id="marketplaceSearchInput"
-        type="search"
-        placeholder="Search milk, eggs, tomatoes, producers, pickup windows..."
-      />
-    </div>
-
-    <nav class="marketplace-nav" aria-label="Marketplace navigation">
-      <a href="map.html" class="active">Marketplace</a>
-      <a href="my-locality.html">My Locality</a>
-      <a href="supplier.html">Business Center</a>
-      <a href="account.html">Account</a>
-    </nav>
-  </header>
+  <header
+    id="localityAppHeader"
+    data-active-page="marketplace"
+    data-marketplace-search="true"
+  ></header>
 
   <main class="marketplace-shell">
     <section class="marketplace-panel">
@@ -188,6 +174,8 @@
   <script src="js/authService.js"></script>
   <script src="js/profileService.js"></script>
   <script src="js/productService.js"></script>
+
+  <script src="js/appShell.js"></script>
 
   <script src="data/profiles.js"></script>
   <script src="js/marketplace.js"></script>
