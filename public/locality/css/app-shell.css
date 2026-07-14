@@ -1,0 +1,553 @@
+/* =========================
+   LOCALITY SHARED APP SHELL
+========================= */
+
+:root {
+  --app-shell-navy: #0c2142;
+  --app-shell-green: #08c464;
+  --app-shell-green-dark: #087b49;
+  --app-shell-muted: #6b788c;
+  --app-shell-border: rgba(12, 33, 66, 0.09);
+  --app-shell-amber: #e5a329;
+  --app-shell-red: #d84a3b;
+}
+
+.locality-app-shell {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  min-height: 78px;
+  display: grid;
+  grid-template-columns:
+    auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 22px;
+  box-sizing: border-box;
+  padding: 12px 24px;
+  border-bottom: 1px solid var(--app-shell-border);
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(20px);
+}
+
+.locality-app-shell.has-marketplace-search {
+  grid-template-columns:
+    auto minmax(270px, 1fr) auto auto;
+}
+
+.app-shell-brand {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+.app-shell-brand img {
+  width: 150px;
+  max-height: 50px;
+  display: block;
+  object-fit: contain;
+}
+
+.app-shell-search {
+  min-width: 0;
+}
+
+.app-shell-search input {
+  width: 100%;
+  min-height: 46px;
+  box-sizing: border-box;
+  border: 1px solid var(--app-shell-border);
+  border-radius: 999px;
+  padding: 11px 18px;
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--app-shell-navy);
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 760;
+  outline: none;
+}
+
+.app-shell-search input:focus {
+  border-color: rgba(8, 196, 100, 0.4);
+  box-shadow: 0 0 0 4px rgba(8, 196, 100, 0.08);
+}
+
+.app-shell-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.app-shell-nav > a,
+.app-shell-tools > summary {
+  min-height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  border-radius: 999px;
+  padding: 8px 13px;
+  color: var(--app-shell-navy);
+  text-decoration: none;
+  font-size: 0.83rem;
+  font-weight: 900;
+  white-space: nowrap;
+  cursor: pointer;
+  list-style: none;
+}
+
+.app-shell-tools > summary::-webkit-details-marker {
+  display: none;
+}
+
+.app-shell-nav > a:hover,
+.app-shell-tools > summary:hover {
+  background: rgba(12, 33, 66, 0.055);
+}
+
+.app-shell-nav > a.active {
+  background: rgba(8, 196, 100, 0.11);
+  color: var(--app-shell-green-dark);
+}
+
+.app-shell-tools {
+  position: relative;
+}
+
+.app-shell-tools-menu {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 50%;
+  z-index: 1010;
+  width: 245px;
+  display: grid;
+  gap: 4px;
+  padding: 9px;
+  transform: translateX(-50%);
+  border: 1px solid var(--app-shell-border);
+  border-radius: 18px;
+  background: white;
+  box-shadow: 0 22px 58px rgba(20, 45, 76, 0.16);
+}
+
+.app-shell-tools-menu a {
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  border-radius: 12px;
+  padding: 9px 11px;
+  color: var(--app-shell-navy);
+  text-decoration: none;
+  font-size: 0.78rem;
+  font-weight: 820;
+}
+
+.app-shell-tools-menu a:hover {
+  background: rgba(8, 196, 100, 0.075);
+}
+
+/* =========================
+   HEADER UTILITY BUTTONS
+========================= */
+
+.app-shell-utilities {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.app-shell-icon-link,
+.app-shell-icon-button {
+  position: relative;
+  width: 43px;
+  height: 43px;
+  display: grid;
+  place-items: center;
+  box-sizing: border-box;
+  border: 1px solid var(--app-shell-border);
+  border-radius: 50%;
+  background: white;
+  color: var(--app-shell-navy);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.app-shell-icon-link:hover,
+.app-shell-icon-button:hover {
+  background: rgba(12, 33, 66, 0.045);
+}
+
+.app-shell-icon-link svg,
+.app-shell-icon-button svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+}
+
+.app-shell-indicator {
+  position: absolute;
+  top: -2px;
+  right: -1px;
+  min-width: 11px;
+  height: 11px;
+  display: grid;
+  place-items: center;
+  box-sizing: border-box;
+  border: 2px solid white;
+  border-radius: 999px;
+  background: var(--app-shell-amber);
+  color: white;
+  font-size: 0;
+  box-shadow: 0 0 0 3px rgba(229, 163, 41, 0.12);
+}
+
+.app-shell-indicator.has-count {
+  min-width: 18px;
+  height: 18px;
+  top: -5px;
+  right: -5px;
+  border-width: 2px;
+  padding: 0 4px;
+  font-size: 0.58rem;
+  font-weight: 950;
+}
+
+.app-shell-indicator.is-urgent {
+  background: var(--app-shell-red);
+  box-shadow: 0 0 0 3px rgba(216, 74, 59, 0.12);
+}
+
+.app-shell-indicator.is-new {
+  animation: appShellIndicatorPulse 1.45s ease-out 2;
+}
+
+/* =========================
+   TRANSIENT NOTIFICATION
+========================= */
+
+.app-shell-notification-toast {
+  position: absolute;
+  top: 50%;
+  right: 102px;
+  z-index: 1020;
+  min-width: 118px;
+  max-width: 210px;
+  transform: translateY(-50%);
+  transform-origin: right center;
+  padding: 10px 13px;
+  border: 1px solid rgba(229, 163, 41, 0.32);
+  border-radius: 14px;
+  background: #fff9eb;
+  color: #7c4a00;
+  box-shadow: 0 16px 40px rgba(30, 44, 63, 0.16);
+  font-size: 0.71rem;
+  font-weight: 900;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.app-shell-notification-toast.is-visible {
+  animation:
+    appShellToastSlideIn 0.34s
+    cubic-bezier(0.22, 1, 0.36, 1)
+    both;
+}
+
+.app-shell-notification-toast.is-leaving {
+  animation:
+    appShellToastFadeOut 0.32s ease both;
+}
+
+.app-shell-notification-toast.is-urgent {
+  border-color: rgba(216, 74, 59, 0.34);
+  background: #fff1ef;
+  color: #9f2e24;
+}
+
+/* =========================
+   NOTIFICATION DROPDOWN
+========================= */
+
+.app-shell-notification-wrap,
+.app-shell-account-wrap {
+  position: relative;
+}
+
+.app-shell-notification-menu,
+.app-shell-account-menu {
+  position: absolute;
+  top: calc(100% + 11px);
+  right: 0;
+  z-index: 1030;
+  border: 1px solid var(--app-shell-border);
+  border-radius: 19px;
+  background: white;
+  box-shadow: 0 24px 64px rgba(20, 45, 76, 0.18);
+}
+
+.app-shell-notification-menu {
+  width: min(360px, calc(100vw - 28px));
+  overflow: hidden;
+}
+
+.app-shell-notification-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  padding: 14px 15px 11px;
+  border-bottom: 1px solid var(--app-shell-border);
+}
+
+.app-shell-notification-header strong {
+  color: var(--app-shell-navy);
+  font-size: 0.9rem;
+}
+
+.app-shell-notification-header span {
+  color: var(--app-shell-muted);
+  font-size: 0.65rem;
+  font-weight: 780;
+}
+
+.app-shell-notification-list {
+  max-height: 330px;
+  overflow-y: auto;
+  display: grid;
+}
+
+.app-shell-notification-empty {
+  padding: 24px 16px;
+  color: var(--app-shell-muted);
+  text-align: center;
+  font-size: 0.74rem;
+  font-weight: 740;
+}
+
+.app-shell-notification-item {
+  display: grid;
+  grid-template-columns: 9px minmax(0, 1fr);
+  gap: 10px;
+  padding: 12px 15px;
+  border-bottom: 1px solid rgba(12, 33, 66, 0.055);
+}
+
+.app-shell-notification-item:last-child {
+  border-bottom: 0;
+}
+
+.app-shell-notification-dot {
+  width: 9px;
+  height: 9px;
+  margin-top: 4px;
+  border-radius: 50%;
+  background: var(--app-shell-amber);
+}
+
+.app-shell-notification-item.is-urgent
+  .app-shell-notification-dot {
+  background: var(--app-shell-red);
+}
+
+.app-shell-notification-item strong,
+.app-shell-notification-item span,
+.app-shell-notification-item small {
+  display: block;
+}
+
+.app-shell-notification-item strong {
+  color: var(--app-shell-navy);
+  font-size: 0.76rem;
+}
+
+.app-shell-notification-item span {
+  margin-top: 3px;
+  color: var(--app-shell-muted);
+  font-size: 0.7rem;
+  line-height: 1.4;
+}
+
+.app-shell-notification-item small {
+  margin-top: 5px;
+  color: #98a1ae;
+  font-size: 0.61rem;
+}
+
+/* =========================
+   ACCOUNT CHIP
+========================= */
+
+.app-shell-account-toggle {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  box-sizing: border-box;
+  border: 1px solid var(--app-shell-border);
+  border-radius: 999px;
+  padding: 5px 11px 5px 6px;
+  background: white;
+  color: var(--app-shell-navy);
+  font: inherit;
+  cursor: pointer;
+}
+
+.app-shell-avatar {
+  width: 33px;
+  height: 33px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border-radius: 50%;
+  background: rgba(8, 196, 100, 0.1);
+  color: var(--app-shell-green-dark);
+  font-size: 0.68rem;
+  font-weight: 950;
+}
+
+.app-shell-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.app-shell-account-name {
+  max-width: 145px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.78rem;
+  font-weight: 900;
+}
+
+.app-shell-account-menu {
+  width: 250px;
+  display: grid;
+  gap: 4px;
+  padding: 9px;
+}
+
+.app-shell-account-menu a,
+.app-shell-account-menu button {
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  border: 0;
+  border-radius: 12px;
+  padding: 9px 11px;
+  background: transparent;
+  color: var(--app-shell-navy);
+  text-decoration: none;
+  text-align: left;
+  font: inherit;
+  font-size: 0.77rem;
+  font-weight: 820;
+  cursor: pointer;
+}
+
+.app-shell-account-menu a:hover,
+.app-shell-account-menu button:hover {
+  background: rgba(8, 196, 100, 0.075);
+}
+
+.app-shell-account-menu .is-logout {
+  color: var(--app-shell-red);
+}
+
+@keyframes appShellIndicatorPulse {
+  0% {
+    box-shadow:
+      0 0 0 0 rgba(229, 163, 41, 0.42);
+  }
+
+  100% {
+    box-shadow:
+      0 0 0 9px rgba(229, 163, 41, 0);
+  }
+}
+
+@keyframes appShellToastSlideIn {
+  from {
+    opacity: 0;
+    transform:
+      translate(18px, -50%)
+      scaleX(0.72);
+  }
+
+  to {
+    opacity: 1;
+    transform:
+      translate(0, -50%)
+      scaleX(1);
+  }
+}
+
+@keyframes appShellToastFadeOut {
+  from {
+    opacity: 1;
+    transform: translate(0, -50%);
+  }
+
+  to {
+    opacity: 0;
+    transform: translate(8px, -50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-shell-indicator.is-new,
+  .app-shell-notification-toast.is-visible,
+  .app-shell-notification-toast.is-leaving {
+    animation: none;
+  }
+}
+
+@media (max-width: 1180px) {
+  .locality-app-shell,
+  .locality-app-shell.has-marketplace-search {
+    grid-template-columns: auto 1fr auto;
+    gap: 12px;
+  }
+
+  .locality-app-shell.has-marketplace-search
+    .app-shell-search {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+
+  .locality-app-shell.has-marketplace-search {
+    padding-bottom: 11px;
+  }
+}
+
+@media (max-width: 820px) {
+  .locality-app-shell,
+  .locality-app-shell.has-marketplace-search {
+    grid-template-columns: auto auto;
+    padding: 10px 13px;
+  }
+
+  .app-shell-nav {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    justify-content: flex-start;
+    overflow-x: auto;
+  }
+
+  .app-shell-utilities {
+    justify-self: end;
+  }
+
+  .app-shell-notification-toast {
+    display: none;
+  }
+
+  .app-shell-account-name {
+    display: none;
+  }
+}
