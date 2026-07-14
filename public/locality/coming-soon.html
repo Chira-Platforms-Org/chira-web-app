@@ -72,15 +72,20 @@
       margin-top: 28px;
     }
 
-    .coming-soon-actions a {
+    .coming-soon-actions a,
+    .coming-soon-actions button {
       display: inline-flex;
       align-items: center;
       justify-content: center;
       min-height: 44px;
+      box-sizing: border-box;
+      border: 0;
       padding: 11px 18px;
       border-radius: 999px;
       text-decoration: none;
+      font: inherit;
       font-weight: 950;
+      cursor: pointer;
     }
 
     .coming-soon-primary {
@@ -107,9 +112,46 @@
     </p>
 
     <div class="coming-soon-actions">
-      <a href="supplier.html" class="coming-soon-primary">Go to workspace</a>
-      <a href="profile-builder.html" class="coming-soon-secondary">Back to profile builder</a>
+      <button
+        id="comingSoonBackBtn"
+        type="button"
+        class="coming-soon-primary"
+      >
+        Go back
+      </button>
+    
+      <a
+        href="my-locality.html"
+        class="coming-soon-secondary"
+      >
+        Go to My Locality
+      </a>
     </div>
   </main>
+
+  <script>
+  const comingSoonBackBtn =
+    document.getElementById("comingSoonBackBtn");
+
+  comingSoonBackBtn?.addEventListener("click", () => {
+    let hasLocalReferrer = false;
+
+    try {
+      hasLocalReferrer =
+        Boolean(document.referrer) &&
+        new URL(document.referrer).origin ===
+          window.location.origin;
+    } catch {
+      hasLocalReferrer = false;
+    }
+
+    if (hasLocalReferrer) {
+      window.history.back();
+      return;
+    }
+
+    window.location.href = "my-locality.html";
+  });
+</script>
 </body>
 </html>
