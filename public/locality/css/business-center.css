@@ -1385,3 +1385,88 @@ body[data-workspace-mode="buyer-only"]
     grid-template-columns: 1fr;
   }
 }
+
+/* =========================
+   COMING SOON TOOL COVER
+========================= */
+
+.bc-coming-soon-card {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.bc-coming-soon-card
+  > *:not(.bc-coming-soon-cover) {
+  opacity: 0.2;
+  filter: saturate(0.55);
+  pointer-events: none;
+  user-select: none;
+}
+
+.bc-coming-soon-cover {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: grid;
+  place-items: center;
+  padding: 22px;
+  border-radius: inherit;
+  background:
+    linear-gradient(
+      135deg,
+      rgba(10, 38, 68, 0.86),
+      rgba(10, 78, 62, 0.82)
+    );
+  backdrop-filter: blur(5px);
+}
+
+.bc-coming-soon-content {
+  width: min(100%, 470px);
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  padding: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 20px;
+  background: rgba(8, 28, 49, 0.52);
+  color: white;
+  text-align: center;
+  box-shadow: 0 22px 54px rgba(0, 0, 0, 0.15);
+}
+
+.bc-construction-icon {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border-radius: 14px;
+  background: rgba(240, 171, 45, 0.17);
+  color: #ffc65e;
+}
+
+.bc-construction-icon svg {
+  width: 23px;
+  height: 23px;
+}
+
+.bc-coming-soon-eyebrow {
+  color: #ffc65e;
+  font-size: 0.67rem;
+  font-weight: 950;
+  text-transform: uppercase;
+  letter-spacing: 0.11em;
+}
+
+.bc-coming-soon-content strong {
+  font-size: 1.42rem;
+  letter-spacing: -0.035em;
+}
+
+.bc-coming-soon-content p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.76);
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1.48;
+}
