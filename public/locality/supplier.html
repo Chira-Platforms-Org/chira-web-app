@@ -27,6 +27,11 @@
   />
 
   <link
+  rel="stylesheet"
+  href="css/app-shell.css"
+  />
+
+  <link
     rel="stylesheet"
     href="css/business-center.css"
   />
@@ -38,146 +43,10 @@
 </head>
 
 <body class="business-center-page">
-  <header class="bc-topbar">
-    <a href="index.html" class="bc-brand">
-      <img
-        src="images/LOCALITY LOGO.png"
-        alt="Locality"
-      />
-    </a>
-
-    <nav
-      class="bc-main-nav"
-      aria-label="Locality navigation"
-    >
-      <a href="map.html">
-        Marketplace
-      </a>
-
-      <a
-        href="supplier.html"
-        class="active"
-      >
-        My Locality
-      </a>
-
-      <details class="bc-tools-menu">
-        <summary>
-          Tools
-        </summary>
-
-        <div class="bc-tools-dropdown">
-          <a href="supply-builder.html">
-            Products & Availability
-          </a>
-
-          <a href="contracts.html">
-            Contract Studio
-          </a>
-
-          <a href="profile-builder.html">
-            Business Profile Editor
-          </a>
-
-          <a href="public-profile.html">
-            View Public Profile
-          </a>
-
-          <a
-            href="coming-soon.html"
-            data-business-coming-soon=
-              "Orders and fulfillment are being prepared."
-          >
-            Orders & Fulfillment
-          </a>
-
-          <a
-            href="coming-soon.html"
-            data-business-coming-soon=
-              "Messages are being prepared."
-          >
-            Messages
-          </a>
-
-          <a
-            href="coming-soon.html"
-            data-business-coming-soon=
-              "Payments are being prepared."
-          >
-            Payments
-          </a>
-        </div>
-      </details>
-    </nav>
-
-    <div class="bc-account-wrap">
-      <button
-        id="bcAccountToggle"
-        class="bc-account-toggle"
-        type="button"
-        aria-expanded="false"
-        aria-controls="bcAccountMenu"
-      >
-        <span class="bc-account-avatar">
-          <img
-            id="bcAccountLogoImage"
-            alt=""
-            hidden
-          />
-
-          <span id="bcAccountInitials">
-            LC
-          </span>
-        </span>
-
-        <span
-          id="bcAccountName"
-          class="bc-account-name"
-        >
-          Loading...
-        </span>
-
-        <span aria-hidden="true">
-          ▾
-        </span>
-      </button>
-
-      <div
-        id="bcAccountMenu"
-        class="bc-account-menu"
-        hidden
-      >
-        <a href="supplier.html">
-          My Locality
-        </a>
-
-        <a href="public-profile.html">
-          View public profile
-        </a>
-
-        <a href="profile-builder.html">
-          Edit business profile
-        </a>
-
-        <a href="supply-builder.html">
-          Manage products
-        </a>
-
-        <a href="account.html">
-          Account settings
-        </a>
-
-        <button
-          id="bcSignOutBtn"
-          class="bc-logout"
-          type="button"
-        >
-          Log out
-        </button>
-      </div>
-    </div>
-  </header>
-
+  <header
+    id="localityAppHeader"
+    data-active-page="my-locality"
+  ></header>
   <main class="bc-shell">
     <div
       id="bcPageStatus"
@@ -1481,6 +1350,8 @@
   <script src="js/authService.js"></script>
   <script src="js/profileService.js"></script>
   <script src="js/productService.js"></script>
+
+  <script src="js/appShell.js"></script>
   
   <script
     src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
