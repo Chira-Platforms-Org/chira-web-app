@@ -12,6 +12,11 @@
   --app-shell-red: #d84a3b;
 }
 
+/* Always respect dynamically hidden shell elements. */
+.locality-app-shell [hidden] {
+  display: none !important;
+}
+
 .locality-app-shell {
   position: sticky;
   top: 0;
