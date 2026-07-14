@@ -23,6 +23,37 @@ async function loadMyLocality() {
     return;
   }
 
+  /*
+  My Locality is the universal workspace route.
+
+  Business accounts are redirected to the
+  role-aware business dashboard. Personal
+  accounts remain on this page.
+*/
+if (
+  window.LocalityProfileService
+    ?.getMyPrimaryBusinessProfile
+) {
+  const businessResult =
+    await window.LocalityProfileService
+      .getMyPrimaryBusinessProfile();
+
+  if (businessResult.error) {
+    console.warn(
+      "Unable to check business workspace:",
+      businessResult.error
+    );
+  }
+
+  if (businessResult.data) {
+    window.location.replace(
+      "supplier.html"
+    );
+
+    return;
+  }
+}
+
   const { data, error } = await window.LocalitySupabase
     .from("user_profiles")
     .select("full_name, buyer_display_name, buyer_location_label, buyer_radius_miles, locality_account_type")
