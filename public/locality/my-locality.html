@@ -10,21 +10,15 @@
   <link rel="apple-touch-icon" href="images/Locality Flavicon Spinner.png" />
 
   <link rel="stylesheet" href="css/locality.css" />
+  <link rel="stylesheet" href="css/app-shell.css" />
   <link rel="stylesheet" href="css/my-locality.css" />
 </head>
 
 <body class="my-locality-page">
-  <header class="my-locality-topbar">
-    <a href="index.html" class="my-locality-brand">
-      <img src="images/LOCALITY LOGO.png" alt="Locality" />
-    </a>
-
-    <nav class="my-locality-nav" aria-label="My Locality navigation">
-      <a href="map.html">Marketplace</a>
-      <a href="my-locality.html" class="active">My Locality</a>
-      <a href="account.html">Account</a>
-    </nav>
-  </header>
+  <header
+    id="localityAppHeader"
+    data-active-page="my-locality"
+  ></header>
 
   <main class="my-locality-shell">
     <section class="local-week-hero">
@@ -317,10 +311,16 @@
     </section>
   </main>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script
+    src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
+  ></script>
+  
   <script src="js/supabaseConfig.js"></script>
   <script src="js/supabaseClient.js"></script>
   <script src="js/authService.js"></script>
+  <script src="js/profileService.js"></script>
+  
+  <script src="js/appShell.js"></script>
   <script src="js/myLocality.js"></script>
 </body>
 </html>
