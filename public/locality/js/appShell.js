@@ -22,8 +22,9 @@
     canSell: false
   };
 
-  let notificationDismissTimer = null;
-  let notificationRemoveTimer = null;
+   let notificationDismissTimer = null;
+   let notificationRemoveTimer = null;
+   let notificationBellTimer = null;
 
   function parseArray(value) {
     if (!value) return [];
@@ -207,29 +208,13 @@
       </nav>
 
       <div class="app-shell-utilities">
-        <div
-          id="appShellNotificationToast"
-          class="app-shell-notification-toast"
-          hidden
-        ></div>
-
-        <a
-          id="appShellMessagesButton"
-          href="coming-soon.html"
-          class="app-shell-icon-link"
-          aria-label="Messages"
-          title="Messages"
-        >
-          ${messageIconSvg()}
-
-          <span
-            id="appShellMessageIndicator"
-            class="app-shell-indicator"
-            hidden
-          ></span>
-        </a>
-
         <div class="app-shell-notification-wrap">
+          <div
+            id="appShellNotificationToast"
+            class="app-shell-notification-toast"
+            hidden
+          ></div>
+
           <button
             id="appShellNotificationButton"
             type="button"
@@ -274,6 +259,22 @@
             </div>
           </div>
         </div>
+
+        <a
+          id="appShellMessagesButton"
+          href="coming-soon.html"
+          class="app-shell-icon-link"
+          aria-label="Messages"
+          title="Messages"
+        >
+          ${messageIconSvg()}
+
+          <span
+            id="appShellMessageIndicator"
+            class="app-shell-indicator"
+            hidden
+          ></span>
+        </a>
 
         <div class="app-shell-account-wrap">
           <button
@@ -467,94 +468,191 @@
     }
   }
 
-  function setUnreadNotifications(
-    count = 0,
-    urgent = false
+function setUnreadNotifications(
+  count = 0,
+  urgent = false,
+  animate = false
+) {
+  const number =
+    Number(count) || 0;
+
+  updateIndicator(
+    notificationIndicator,
+    number,
+    urgent
+  );
+
+  notificationButton?.classList.toggle(
+    "has-unread",
+    number > 0
+  );
+
+  notificationButton?.classList.toggle(
+    "is-urgent",
+    number > 0 && urgent
+  );
+
+  if (
+    number > 0 &&
+    animate
   ) {
-    updateIndicator(
-      notificationIndicator,
-      count,
+    animateNotificationBell(
       urgent
-    );
-
-    if (notificationSummary) {
-      notificationSummary.textContent =
-        count > 0
-          ? `${count} unread`
-          : "No unread notifications";
-    }
-
-    notificationButton?.setAttribute(
-      "aria-label",
-      count > 0
-        ? `${count} unread ${
-            count === 1
-              ? "notification"
-              : "notifications"
-          }`
-        : "Notifications"
     );
   }
 
-  function showNotificationPreview(
-    shortLabel,
-    urgent = false
-  ) {
-    if (
-      !notificationToast ||
-      !shortLabel
-    ) {
-      return;
-    }
-
+  if (number <= 0) {
     window.clearTimeout(
-      notificationDismissTimer
+      notificationBellTimer
     );
 
-    window.clearTimeout(
-      notificationRemoveTimer
+    notificationButton?.classList.remove(
+      "has-unread",
+      "is-ringing",
+      "is-urgent"
     );
-
-    notificationToast.textContent =
-      shortLabel;
-
-    notificationToast.classList.remove(
-      "is-leaving"
-    );
-
-    notificationToast.classList.toggle(
-      "is-urgent",
-      urgent
-    );
-
-    notificationToast.hidden = false;
-
-    void notificationToast.offsetWidth;
-
-    notificationToast.classList.add(
-      "is-visible"
-    );
-
-    notificationDismissTimer =
-      window.setTimeout(() => {
-        notificationToast.classList.remove(
-          "is-visible"
-        );
-
-        notificationToast.classList.add(
-          "is-leaving"
-        );
-
-        notificationRemoveTimer =
-          window.setTimeout(() => {
-            notificationToast.hidden = true;
-
-            notificationToast.classList.remove(
-              "is-leaving"
-            );
-          }, 340);
-      }, 5500);
   }
+
+  if (notificationSummary) {
+    notificationSummary.textContent =
+      number > 0
+        ? `${number} unread`
+        : "No unread notifications";
+  }
+
+  notificationButton?.setAttribute(
+    "aria-label",
+    number > 0
+      ? `${number} unread ${
+          number === 1
+            ? "notification"
+            : "notifications"
+        }`
+      : "Notifications"
+  );
+}
+
+function hideNotificationPreview() {
+  window.clearTimeout(
+    notificationDismissTimer
+  );
+
+  window.clearTimeout(
+    notificationRemoveTimer
+  );
+
+  if (!notificationToast) return;
+
+  notificationToast.hidden = true;
+
+  notificationToast.classList.remove(
+    "is-visible",
+    "is-leaving",
+    "is-urgent"
+  );
+}
+
+function animateNotificationBell(
+  urgent = false
+) {
+  if (!notificationButton) return;
+
+  window.clearTimeout(
+    notificationBellTimer
+  );
+
+  notificationButton.classList.remove(
+    "is-ringing"
+  );
+
+  notificationButton.classList.toggle(
+    "is-urgent",
+    urgent
+  );
+
+  /*
+    Force the browser to restart the animation
+    when multiple notifications arrive.
+  */
+  void notificationButton.offsetWidth;
+
+  notificationButton.classList.add(
+    "is-ringing"
+  );
+
+  notificationBellTimer =
+    window.setTimeout(() => {
+      notificationButton.classList.remove(
+        "is-ringing"
+      );
+    }, 1100);
+}
+   
+function showNotificationPreview(
+  shortLabel,
+  urgent = false
+) {
+  if (
+    !notificationToast ||
+    !shortLabel
+  ) {
+    return;
+  }
+
+  window.clearTimeout(
+    notificationDismissTimer
+  );
+
+  window.clearTimeout(
+    notificationRemoveTimer
+  );
+
+  notificationToast.textContent =
+    shortLabel;
+
+  notificationToast.classList.remove(
+    "is-visible",
+    "is-leaving"
+  );
+
+  notificationToast.classList.toggle(
+    "is-urgent",
+    urgent
+  );
+
+  notificationToast.hidden = false;
+
+  /*
+    Restart the slide-out animation when
+    notifications arrive close together.
+  */
+  void notificationToast.offsetWidth;
+
+  notificationToast.classList.add(
+    "is-visible"
+  );
+
+  notificationDismissTimer =
+    window.setTimeout(() => {
+      notificationToast.classList.remove(
+        "is-visible"
+      );
+
+      notificationToast.classList.add(
+        "is-leaving"
+      );
+
+      notificationRemoveTimer =
+        window.setTimeout(() => {
+          notificationToast.hidden = true;
+
+          notificationToast.classList.remove(
+            "is-leaving",
+            "is-urgent"
+          );
+        }, 320);
+    }, 5500);
+}
 
   function addNotification({
     label = "New notification",
@@ -617,10 +715,11 @@
         String(currentCount);
     }
 
-    setUnreadNotifications(
-      currentCount,
-      urgent
-    );
+      setUnreadNotifications(
+        currentCount,
+        urgent,
+        true
+      );
 
     if (showPreview) {
       showNotificationPreview(
@@ -1000,6 +1099,7 @@
     "click",
     (event) => {
       event.stopPropagation();
+      hideNotificationPreview();
 
       const willOpen =
         notificationMenu?.hidden;
