@@ -1037,3 +1037,201 @@
     min-height: calc(100vh - 150px);
   }
 }
+
+/* =========================
+   BUSINESS ROLE FILTER
+========================= */
+
+.marketplace-business-role-filters {
+  display: grid;
+  gap: 10px;
+  padding: 12px 0 14px;
+  border-top:
+    1px solid rgba(12, 33, 66, 0.07);
+  border-bottom:
+    1px solid rgba(12, 33, 66, 0.07);
+}
+
+.business-role-filter-heading strong {
+  display: block;
+  margin-top: 4px;
+  color: var(--navy);
+  font-size: 0.88rem;
+  font-weight: 950;
+}
+
+.business-role-segmented {
+  display: grid;
+  grid-template-columns:
+    repeat(4, minmax(0, 1fr));
+  gap: 5px;
+  padding: 4px;
+  border-radius: 17px;
+  background: rgba(12, 33, 66, 0.055);
+}
+
+.business-role-segmented button {
+  min-height: 36px;
+  border: 0;
+  border-radius: 13px;
+  padding: 7px 9px;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.69rem;
+  font-weight: 950;
+  cursor: pointer;
+}
+
+.business-role-segmented button.active {
+  background: white;
+  color: var(--navy);
+  box-shadow:
+    0 7px 20px rgba(20, 50, 92, 0.09);
+}
+
+/* =========================
+   BUSINESS ROLE LABELS
+========================= */
+
+.business-card-labels,
+.result-label-stack {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.result-type-pill.is-role-buyer {
+  background: rgba(40, 100, 196, 0.1);
+  color: #285faa;
+}
+
+.result-type-pill.is-role-seller {
+  background: rgba(238, 181, 42, 0.15);
+  color: #8a5907;
+}
+
+.result-type-pill.is-role-both {
+  background: rgba(8, 196, 100, 0.11);
+  color: #087b49;
+}
+
+.ownership-badge {
+  width: fit-content;
+  min-height: 24px;
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: rgba(12, 33, 66, 0.08);
+  color: var(--navy);
+  font-size: 0.62rem;
+  font-weight: 950;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+
+.marketplace-result-card.is-own-result {
+  border-color:
+    rgba(8, 196, 100, 0.32);
+  box-shadow:
+    0 0 0 3px rgba(8, 196, 100, 0.055),
+    0 16px 38px rgba(20, 50, 92, 0.075);
+}
+
+/* =========================
+   BUSINESS MAP LEGEND
+========================= */
+
+.marketplace-map-legend {
+  position: absolute;
+  top: 18px;
+  left: 18px;
+  z-index: 500;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.91);
+  box-shadow:
+    0 14px 34px rgba(20, 50, 92, 0.13);
+  backdrop-filter: blur(14px);
+}
+
+.marketplace-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--navy);
+  font-size: 0.66rem;
+  font-weight: 900;
+}
+
+.legend-marker {
+  width: 10px;
+  height: 10px;
+  display: block;
+  border: 2px solid white;
+  border-radius: 50%;
+  box-shadow:
+    0 2px 7px rgba(12, 33, 66, 0.18);
+}
+
+.legend-marker.is-buyer {
+  background: #2864c4;
+}
+
+.legend-marker.is-seller {
+  background: #eeb52a;
+}
+
+.legend-marker.is-both {
+  background: var(--green);
+}
+
+/* =========================
+   BUSINESS MAP PINS
+========================= */
+
+.locality-pin.business-buyer-pin {
+  background: #2864c4;
+  box-shadow:
+    0 16px 34px
+    rgba(40, 100, 196, 0.29);
+}
+
+.locality-pin.business-seller-pin {
+  background: #eeb52a;
+  box-shadow:
+    0 16px 34px
+    rgba(238, 181, 42, 0.29);
+}
+
+.locality-pin.business-both-pin {
+  background: var(--green);
+  box-shadow:
+    0 16px 34px
+    rgba(8, 196, 100, 0.29);
+}
+
+.locality-pin.is-own-pin {
+  box-shadow:
+    0 0 0 6px
+      rgba(12, 33, 66, 0.14),
+    0 16px 34px
+      rgba(20, 50, 92, 0.24);
+}
+
+@media (max-width: 680px) {
+  .business-role-segmented {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+  .marketplace-map-legend {
+    right: 14px;
+    left: 14px;
+  }
+}
