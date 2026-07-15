@@ -32,24 +32,85 @@
         <section class="marketplace-intro-card">
           <p class="marketplace-kicker">Locality Marketplace</p>
           <h1>Build your local food routine.</h1>
-          <p>
-            Find nearby farms, food producers, pickup windows, and staples you can come back to every week.
-          </p>
+            <p>
+              Discover nearby products, farms, buyers, food businesses,
+              pickup windows, and local sourcing opportunities.
+            </p>
 
           <div class="marketplace-mode-tabs" aria-label="Marketplace view mode">
             <button class="active" type="button" data-marketplace-mode="products">
               Products
             </button>
-            <button type="button" data-marketplace-mode="producers">
-              Producers
-            </button>
+             <button type="button" data-marketplace-mode="businesses">
+              Businesses
+             </button>
             <button type="button" data-marketplace-mode="routine">
               Routine
             </button>
           </div>
         </section>
 
-        <section class="marketplace-filter-card">
+        <section
+          id="marketplaceBusinessRoleFilters"
+          class="marketplace-business-role-filters hidden"
+          aria-label="Filter businesses by role"
+        >
+          <div class="business-role-filter-heading">
+            <div>
+              <p class="marketplace-kicker green">
+                Business role
+              </p>
+        
+              <strong>
+                Who would you like to discover?
+              </strong>
+            </div>
+          </div>
+        
+          <div
+            class="business-role-segmented"
+            role="group"
+            aria-label="Business role"
+          >
+            <button
+              type="button"
+              class="active"
+              data-business-role="all"
+              aria-pressed="true"
+            >
+              All businesses
+            </button>
+        
+            <button
+              type="button"
+              data-business-role="buyer"
+              aria-pressed="false"
+            >
+              Buyers
+            </button>
+        
+            <button
+              type="button"
+              data-business-role="seller"
+              aria-pressed="false"
+            >
+              Sellers
+            </button>
+        
+            <button
+              type="button"
+              data-business-role="both"
+              aria-pressed="false"
+            >
+              Buyer & seller
+            </button>
+          </div>
+        </section>
+
+        <section
+          id="marketplaceProductFilters"
+          class="marketplace-filter-card"
+        >
           <div class="filter-row">
             <label>
               Category
@@ -158,9 +219,30 @@
     <section class="marketplace-map-shell">
       <div id="localityMap"></div>
 
+      <div
+        id="marketplaceBusinessLegend"
+        class="marketplace-map-legend hidden"
+        aria-label="Business marker legend"
+      >
+        <span class="marketplace-legend-item">
+          <i class="legend-marker is-buyer"></i>
+          Buyer
+        </span>
+      
+        <span class="marketplace-legend-item">
+          <i class="legend-marker is-seller"></i>
+          Seller
+        </span>
+      
+        <span class="marketplace-legend-item">
+          <i class="legend-marker is-both"></i>
+          Buyer & seller
+        </span>
+      </div>
+
       <div class="map-floating-card">
         <span>Map view</span>
-        <strong id="mapFloatingTitle">Products and producers near you</strong>
+        <strong id="mapFloatingTitle">Products and businesses near you</strong>
         <small>Click a pin or result to preview details.</small>
       </div>
     </section>
