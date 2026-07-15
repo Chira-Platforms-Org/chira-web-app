@@ -16,14 +16,33 @@ const previewPanelContent = document.getElementById("previewPanelContent");
 const previewBackBtn = document.getElementById("previewBackBtn");
 const mapFloatingTitle = document.getElementById("mapFloatingTitle");
 
+const marketplaceProductFilters =
+  document.getElementById(
+    "marketplaceProductFilters"
+  );
+
+const marketplaceBusinessRoleFilters =
+  document.getElementById(
+    "marketplaceBusinessRoleFilters"
+  );
+
+const marketplaceBusinessLegend =
+  document.getElementById(
+    "marketplaceBusinessLegend"
+  );
+
 let marketplaceMap = null;
 let activeMarkers = [];
 let activeMode = "products";
 let marketplaceProfiles = [];
 let marketplaceProducts = [];
 
+let activeBusinessRole = "all";
+let currentBusinessProfileId = null;
+let marketplaceIsReady = false;
+
 const SAVED_PRODUCTS_KEY = "locality_saved_products";
-const FOLLOWED_PRODUCERS_KEY = "locality_followed_producers";
+const SAVED_BUSINESSES_KEY = "locality_saved_businesses";
 const ROUTINE_KEY = "locality_routine_categories";
 
 const pickupOptions = [
@@ -93,15 +112,127 @@ function parseArray(value) {
   return Array.isArray(parsed) ? parsed : [];
 }
 
-function profileHasSellerRole(profile = {}) {
-  const roles = parseArray(profile.marketplace_roles);
+function getProfileRoleInfo(profile = {}) {
+  const roles = parseArray(
+    profile.marketplace_roles
+  ).map((role) =>
+    String(role).toLowerCase()
+  );
 
-  return (
+  let canBuy =
+    roles.includes("buyer") ||
+    roles.includes("buyer_seller");
+
+  let canSell =
     roles.includes("seller") ||
-    roles.includes("buyer_seller") ||
-    (roles.includes("buyer") && roles.includes("seller"))
+    roles.includes("buyer_seller");
+
+  /*
+    Support older static Marketplace profiles that
+    do not yet contain marketplace_roles.
+  */
+  if (!roles.length) {
+    const legacyType =
+      String(profile.type || "")
+        .toLowerCase();
+
+    if (legacyType === "buyer") {
+      canBuy = true;
+    }
+
+    if (
+      legacyType === "farm" ||
+      legacyType === "producer" ||
+      Array.isArray(profile.productsAvailable)
+    ) {
+      canSell = true;
+    }
+  }
+
+  let roleType = "business";
+
+  if (canBuy && canSell) {
+    roleType = "both";
+  } else if (canSell) {
+    roleType = "seller";
+  } else if (canBuy) {
+    roleType = "buyer";
+  }
+
+  return {
+    canBuy,
+    canSell,
+    roleType
+  };
+}
+
+function profileHasSellerRole(profile = {}) {
+  return getProfileRoleInfo(profile).canSell;
+}
+
+function getBusinessRoleLabel(profile = {}) {
+  const { roleType } =
+    getProfileRoleInfo(profile);
+
+  if (roleType === "both") {
+    return "Buyer and seller";
+  }
+
+  if (roleType === "seller") {
+    return "Seller";
+  }
+
+  if (roleType === "buyer") {
+    return "Business buyer";
+  }
+
+  return "Local business";
+}
+
+function getBusinessTypeLabel(profile = {}) {
+  const category =
+    profile.businessCategory ||
+    profile.productType ||
+    getPrimaryBusinessCategory(profile) ||
+    "other";
+
+  return formatCategory(category);
+}
+
+function isOwnBusiness(profile = {}) {
+  return Boolean(
+    currentBusinessProfileId &&
+    profile.id === currentBusinessProfileId
   );
 }
+
+function isOwnProduct(product = {}) {
+  return Boolean(
+    currentBusinessProfileId &&
+    product.producerId ===
+      currentBusinessProfileId
+  );
+}
+
+function syncCurrentBusinessContext(
+  context = {}
+) {
+  currentBusinessProfileId =
+    context.businessProfile?.id || null;
+
+  if (marketplaceIsReady) {
+    renderMarketplace();
+  }
+}
+
+window.addEventListener(
+  "locality:app-context-ready",
+  (event) => {
+    syncCurrentBusinessContext(
+      event.detail || {}
+    );
+  }
+);
 
 function getPrimaryBusinessCategory(profile = {}) {
   const categories = parseArray(profile.business_categories);
@@ -109,11 +240,19 @@ function getPrimaryBusinessCategory(profile = {}) {
 }
 
 function getProfileDescription(profile = {}) {
+  const { canSell, canBuy } =
+    getProfileRoleInfo(profile);
+
+  const fallback =
+    canBuy && !canSell
+      ? "A local business participating in the regional food network."
+      : "Local products, partnerships, and pickup opportunities.";
+
   return (
     profile.short_intro ||
     profile.description ||
     profile.about_us ||
-    "Local products and pickup opportunities."
+    fallback
   );
 }
 
@@ -254,55 +393,123 @@ function getPickupType(product = {}, producer = {}) {
 }
 
 function normalizeStaticProfiles() {
-  const sourceProfiles = Array.isArray(window.LocalityStaticProfiles)
-    ? window.LocalityStaticProfiles
-    : Array.isArray(window.profiles)
-      ? window.profiles
-      : [];
+  const sourceProfiles =
+    Array.isArray(
+      window.LocalityStaticProfiles
+    )
+      ? window.LocalityStaticProfiles
+      : Array.isArray(window.profiles)
+        ? window.profiles
+        : [];
 
-  console.log("Loaded marketplace profiles:", sourceProfiles.length);
+  console.log(
+    "Loaded marketplace profiles:",
+    sourceProfiles.length
+  );
 
-  return sourceProfiles.map((profile) => ({
-    ...profile,
-    id: profile.id || slugify(profile.name),
-    businessCategory: profile.businessCategory || profile.productType,
-    sellerTypeLabel: getProducerTypeLabel(profile)
-  }));
+  return sourceProfiles.map((profile) => {
+    const roleInfo =
+      getProfileRoleInfo(profile);
+
+    const normalizedProfile = {
+      ...profile,
+
+      id:
+        profile.id ||
+        slugify(profile.name),
+
+      businessCategory:
+        profile.businessCategory ||
+        profile.productType ||
+        "other",
+
+      canBuy: roleInfo.canBuy,
+      canSell: roleInfo.canSell,
+
+      marketplaceRoleType:
+        roleInfo.roleType
+    };
+
+    normalizedProfile.businessTypeLabel =
+      getBusinessTypeLabel(
+        normalizedProfile
+      );
+
+    normalizedProfile.sellerTypeLabel =
+      getProducerTypeLabel(
+        normalizedProfile
+      );
+
+    return normalizedProfile;
+  });
 }
 
-function normalizeSupabaseProfile(profile = {}) {
-  const category = getPrimaryBusinessCategory(profile);
+function normalizeSupabaseProfile(
+  profile = {}
+) {
+  const category =
+    getPrimaryBusinessCategory(profile);
+
+  const roleInfo =
+    getProfileRoleInfo(profile);
 
   const normalizedProfile = {
     ...profile,
 
     id: profile.id,
-    name: profile.name || "Local producer",
 
-    type: "producer",
+    name:
+      profile.name ||
+      "Local business",
+
+    type:
+      roleInfo.roleType === "buyer"
+        ? "buyer"
+        : "business",
 
     businessCategory: category,
     productType: category,
 
-    product: getProfileDescription(profile),
-    description: getProfileDescription(profile),
+    businessTypeLabel:
+      formatCategory(category),
 
-    location: profile.location_label || "Local area",
+    canBuy: roleInfo.canBuy,
+    canSell: roleInfo.canSell,
+
+    marketplaceRoleType:
+      roleInfo.roleType,
+
+    product:
+      getProfileDescription(profile),
+
+    description:
+      getProfileDescription(profile),
+
+    location:
+      profile.location_label ||
+      "Local area",
 
     lat: Number(profile.latitude),
     lng: Number(profile.longitude),
 
-    logo_url: profile.logo_url || "",
-    banner_image_url: profile.banner_image_url || "",
+    logo_url:
+      profile.logo_url || "",
+
+    banner_image_url:
+      profile.banner_image_url || "",
 
     productsAvailable: []
   };
 
   normalizedProfile.sellerTypeLabel =
-    getProducerTypeLabel(normalizedProfile);
+    getProducerTypeLabel(
+      normalizedProfile
+    );
 
   normalizedProfile.organic =
-    parseArray(profile.certifications).some((certification) => {
+    parseArray(
+      profile.certifications
+    ).some((certification) => {
       const name =
         typeof certification === "string"
           ? certification
@@ -442,10 +649,9 @@ async function loadMarketplaceData() {
     );
   }
 
-  const normalizedProfiles =
-    (profileResult.data || [])
-      .filter(profileHasSellerRole)
-      .map(normalizeSupabaseProfile)
+const normalizedProfiles =
+  (profileResult.data || [])
+    .map(normalizeSupabaseProfile)
       .filter((profile) => {
         return (
           profile.id &&
@@ -551,30 +757,48 @@ function productMatchesFilters(product) {
   );
 }
 
-function producerMatchesFilters(profile) {
+function businessMatchesSearch(
+  profile = {}
+) {
   const search = getSearchValue();
-  const category = getSelectedCategory();
-  const pickup = getSelectedPickup();
+
+  if (!search) return true;
 
   const searchableText = [
     profile.name,
     profile.location,
     profile.product,
+    profile.description,
     profile.productType,
-    profile.sellerTypeLabel,
-    ...(profile.productsAvailable || []).map((item) => item.name)
-  ].join(" ").toLowerCase();
+    profile.businessCategory,
+    profile.businessTypeLabel,
+    getBusinessRoleLabel(profile),
 
-  const hasCategory = category === "all" ||
-    profile.productType === category ||
-    (profile.productsAvailable || []).some((product) => {
-      const group = getCategoryGroup(product.category);
-      return product.category === category || group === category;
-    });
+    ...(profile.productsAvailable || [])
+      .map((item) => item.name)
+  ]
+    .filter(Boolean)
+    .join(" ")
+    .toLowerCase();
 
-  const hasPickup = pickup === "all" || pickupOptions.includes(pickup);
+  return searchableText.includes(search);
+}
 
-  return (!search || searchableText.includes(search)) && hasCategory && hasPickup;
+function businessMatchesFilters(
+  profile = {}
+) {
+  if (!businessMatchesSearch(profile)) {
+    return false;
+  }
+
+  const roleType =
+    profile.marketplaceRoleType ||
+    getProfileRoleInfo(profile).roleType;
+
+  return (
+    activeBusinessRole === "all" ||
+    roleType === activeBusinessRole
+  );
 }
 
 function getCategoryGroup(category = "") {
@@ -591,51 +815,170 @@ function getVisibleProducts() {
   return marketplaceProducts.filter(productMatchesFilters).slice(0, 60);
 }
 
-function getVisibleProducers() {
-  return marketplaceProfiles.filter(isSellerProfile).filter(producerMatchesFilters).slice(0, 40);
+function getVisibleBusinesses() {
+  return marketplaceProfiles
+    .filter(businessMatchesFilters)
+    .slice(0, 60);
+}
+
+function getVisibleRoutineBusinesses() {
+  return marketplaceProfiles
+    .filter(profileHasSellerRole)
+    .filter(businessMatchesSearch)
+    .slice(0, 40);
 }
 
 function setMode(mode) {
   activeMode = mode;
 
-  document.querySelectorAll("[data-marketplace-mode]").forEach((button) => {
-    button.classList.toggle("active", button.dataset.marketplaceMode === mode);
-  });
+  document
+    .querySelectorAll(
+      "[data-marketplace-mode]"
+    )
+    .forEach((button) => {
+      button.classList.toggle(
+        "active",
+        button.dataset.marketplaceMode ===
+          mode
+      );
+    });
+
+  marketplaceProductFilters
+    ?.classList.toggle(
+      "hidden",
+      mode !== "products"
+    );
+
+  marketplaceBusinessRoleFilters
+    ?.classList.toggle(
+      "hidden",
+      mode !== "businesses"
+    );
+
+  marketplaceBusinessLegend
+    ?.classList.toggle(
+      "hidden",
+      mode !== "businesses"
+    );
+
+  renderMarketplace();
+}
+
+function setBusinessRole(role) {
+  activeBusinessRole =
+    role || "all";
+
+  document
+    .querySelectorAll(
+      "[data-business-role]"
+    )
+    .forEach((button) => {
+      const isActive =
+        button.dataset.businessRole ===
+        activeBusinessRole;
+
+      button.classList.toggle(
+        "active",
+        isActive
+      );
+
+      button.setAttribute(
+        "aria-pressed",
+        String(isActive)
+      );
+    });
 
   renderMarketplace();
 }
 
 function createProductCard(product) {
-  const saved = isStored(SAVED_PRODUCTS_KEY, product.id);
+  const saved =
+    isStored(
+      SAVED_PRODUCTS_KEY,
+      product.id
+    );
 
-  const card = document.createElement("article");
-  card.className = "marketplace-result-card product-result-card";
+  const ownListing =
+    isOwnProduct(product);
+
+  const card =
+    document.createElement("article");
+
+  card.className =
+    `marketplace-result-card product-result-card${
+      ownListing ? " is-own-result" : ""
+    }`;
+
   card.innerHTML = `
-   <div class="result-image ${getCategoryGroup(product.category)}">
-  ${
-    product.image_url
-      ? `
-        <img
-          src="${product.image_url}"
-          alt="${product.name || "Local product"}"
-          loading="lazy"
-        />
-      `
-      : ""
-  }
-</div>
+    <div
+      class="result-image ${getCategoryGroup(
+        product.category
+      )}"
+    >
+      ${
+        product.image_url
+          ? `
+            <img
+              src="${product.image_url}"
+              alt="${
+                product.name ||
+                "Local product"
+              }"
+              loading="lazy"
+            />
+          `
+          : ""
+      }
+    </div>
 
     <div class="result-content">
       <div class="result-topline">
-        <span class="result-type-pill">${formatCategory(product.category)}</span>
-        <button type="button" class="save-action ${saved ? "is-saved" : ""}" aria-label="Save product" title="Save product">
-          ★
-        </button>
+        <div class="result-label-stack">
+          <span class="result-type-pill">
+            ${formatCategory(
+              product.category
+            )}
+          </span>
+
+          ${
+            ownListing
+              ? `
+                <span class="ownership-badge">
+                  Your listing
+                </span>
+              `
+              : ""
+          }
+        </div>
+
+        ${
+          ownListing
+            ? ""
+            : `
+              <button
+                type="button"
+                class="save-action ${
+                  saved
+                    ? "is-saved"
+                    : ""
+                }"
+                aria-label="Save product"
+                title="Save product"
+              >
+                ★
+              </button>
+            `
+        }
       </div>
 
       <div>
         <h3>${product.name}</h3>
-        <p>${product.producerName} · ${product.producerTypeLabel}</p>
+
+        <p>
+          ${product.producerName}
+          ·
+          ${product.producerTypeLabel}
+        </p>
       </div>
 
       <div class="result-meta-row">
@@ -645,132 +988,411 @@ function createProductCard(product) {
       </div>
 
       <div class="result-actions">
-        <a href="coming-soon.html" class="primary-result-action">Reserve</a>
-        <button type="button" class="gold-result-action" data-action="add-routine">
-          Remind me
-        </button>
-        <button type="button" class="secondary-result-action" data-action="view-producer">
-          View producer
-        </button>
+        ${
+          ownListing
+            ? `
+              <a
+                href="supply-builder.html"
+                class="primary-result-action"
+              >
+                Manage listing
+              </a>
+
+              <a
+                href="${getPublicSupplyUrl(
+                  product.sourceProfile || {}
+                )}"
+                target="_blank"
+                rel="noopener"
+                class="secondary-result-action"
+              >
+                View public supply
+              </a>
+            `
+            : `
+              <a
+                href="coming-soon.html"
+                class="primary-result-action"
+              >
+                Reserve
+              </a>
+
+              <button
+                type="button"
+                class="gold-result-action"
+                data-action="add-routine"
+              >
+                Remind me
+              </button>
+
+              <button
+                type="button"
+                class="secondary-result-action"
+                data-action="view-business"
+              >
+                View business
+              </button>
+            `
+        }
       </div>
     </div>
   `;
 
-  card.addEventListener("click", (event) => {
-    if (event.target.closest("a, button")) return;
-    openPreviewForProduct(product);
-  });
+  card.addEventListener(
+    "click",
+    (event) => {
+      if (
+        event.target.closest("a, button")
+      ) {
+        return;
+      }
 
-  card.querySelector(".save-action")?.addEventListener("click", (event) => {
-    event.stopPropagation();
-    toggleStoredItem(SAVED_PRODUCTS_KEY, product.id);
-  });
+      openPreviewForProduct(product);
+    }
+  );
 
-   card.querySelector('[data-action="add-routine"]')?.addEventListener("click", (event) => {
-     event.stopPropagation();
-   
-     toggleStoredItem(ROUTINE_KEY, getCategoryGroup(product.category));
-   
-     const button = event.currentTarget;
-     button.textContent = "Reminder added";
-     button.classList.add("is-added");
-   
-     setTimeout(() => {
-       button.textContent = "Remind me";
-     }, 1400);
-   });
+  card
+    .querySelector(".save-action")
+    ?.addEventListener(
+      "click",
+      (event) => {
+        event.stopPropagation();
 
-  card.querySelector('[data-action="view-producer"]')?.addEventListener("click", (event) => {
-    event.stopPropagation();
-    openPreviewForProducer(product.sourceProfile);
-  });
+        toggleStoredItem(
+          SAVED_PRODUCTS_KEY,
+          product.id
+        );
+      }
+    );
+
+  card
+    .querySelector(
+      '[data-action="add-routine"]'
+    )
+    ?.addEventListener(
+      "click",
+      (event) => {
+        event.stopPropagation();
+
+        toggleStoredItem(
+          ROUTINE_KEY,
+          getCategoryGroup(
+            product.category
+          )
+        );
+
+        const button =
+          event.currentTarget;
+
+        button.textContent =
+          "Reminder added";
+
+        button.classList.add(
+          "is-added"
+        );
+
+        setTimeout(() => {
+          button.textContent =
+            "Remind me";
+        }, 1400);
+      }
+    );
+
+  card
+    .querySelector(
+      '[data-action="view-business"]'
+    )
+    ?.addEventListener(
+      "click",
+      (event) => {
+        event.stopPropagation();
+
+        openPreviewForBusiness(
+          product.sourceProfile
+        );
+      }
+    );
 
   return card;
 }
 
-function createProducerCard(profile) {
-  const followed = isStored(FOLLOWED_PRODUCERS_KEY, profile.id);
-  const listedProducts = profile.productsAvailable || [];
+function createBusinessCard(profile) {
+  const saved =
+    isStored(
+      SAVED_BUSINESSES_KEY,
+      profile.id
+    );
 
-  const card = document.createElement("article");
-  card.className = "marketplace-result-card producer-card";
+  const ownBusiness =
+    isOwnBusiness(profile);
+
+  const roleInfo =
+    getProfileRoleInfo(profile);
+
+  const listedProducts =
+    profile.productsAvailable || [];
+
+  const roleClass =
+    `is-role-${roleInfo.roleType}`;
+
+  const card =
+    document.createElement("article");
+
+  card.className =
+    `marketplace-result-card producer-card business-card ${
+      roleClass
+    }${
+      ownBusiness
+        ? " is-own-result"
+        : ""
+    }`;
+
   card.innerHTML = `
-     <div class="producer-card-header">
-       <div class="producer-logo">${getProducerLogoHtml(profile)}</div>
-   
-       <div>
-         <span class="result-type-pill">${getProducerTypeLabel(profile)}</span>
-         <h3>${profile.name}</h3>
-         <p>${profile.location}</p>
-       </div>
-   
-       <button
-         type="button"
-         class="save-action ${followed ? "is-saved" : ""}"
-         aria-label="Follow producer"
-         title="Follow producer"
-       >
-         ★
-       </button>
-     </div>
-   
-     <p>${profile.product || "Local products and pickup options."}</p>
-   
-     <div class="producer-tags">
-       <span>${listedProducts.length} listed items</span>
-       <span>${profile.availability || "Weekly availability"}</span>
-       <span>${profile.deliveryRadius || "Regional pickup"}</span>
-     </div>
-   
-     <div class="result-actions">
-       <button
-         type="button"
-         class="primary-result-action"
-         data-action="see-products"
-       >
-         See products
-       </button>
-   
-       <button
-         type="button"
-         class="gold-result-action"
-         data-action="follow"
-       >
-         ${followed ? "Following" : "Follow producer"}
-       </button>
-   
-       <a
-         href="${getPublicProfileUrl(profile)}"
-         target="_blank"
-         rel="noopener"
-         class="secondary-result-action"
-       >
-         Full profile
-       </a>
-     </div>
-   `;
+    <div class="producer-card-header">
+      <div class="producer-logo">
+        ${getProducerLogoHtml(profile)}
+      </div>
 
-  card.addEventListener("click", (event) => {
-    if (event.target.closest("a, button")) return;
-    openPreviewForProducer(profile);
-  });
+      <div>
+        <div class="business-card-labels">
+          <span
+            class="result-type-pill ${roleClass}"
+          >
+            ${getBusinessRoleLabel(profile)}
+          </span>
 
-  card.querySelector(".save-action")?.addEventListener("click", (event) => {
-    event.stopPropagation();
-    toggleStoredItem(FOLLOWED_PRODUCERS_KEY, profile.id);
-  });
+          ${
+            ownBusiness
+              ? `
+                <span class="ownership-badge">
+                  Your business
+                </span>
+              `
+              : ""
+          }
+        </div>
 
-  card.querySelector('[data-action="follow"]')?.addEventListener("click", (event) => {
-    event.stopPropagation();
-    toggleStoredItem(FOLLOWED_PRODUCERS_KEY, profile.id);
-  });
+        <h3>${profile.name}</h3>
 
-  card.querySelector('[data-action="see-products"]')?.addEventListener("click", (event) => {
-    event.stopPropagation();
-    activeMode = "products";
-    marketplaceCategoryFilter.value = profile.productType || "all";
-    setMode("products");
-  });
+        <p>
+          ${getBusinessTypeLabel(profile)}
+          ·
+          ${profile.location}
+        </p>
+      </div>
+
+      ${
+        ownBusiness
+          ? ""
+          : `
+            <button
+              type="button"
+              class="save-action ${
+                saved
+                  ? "is-saved"
+                  : ""
+              }"
+              aria-label="Save business"
+              title="Save business"
+            >
+              ★
+            </button>
+          `
+      }
+    </div>
+
+    <p>
+      ${
+        profile.description ||
+        profile.product ||
+        "A local business in the Locality network."
+      }
+    </p>
+
+    <div class="producer-tags">
+      <span>
+        ${getBusinessTypeLabel(profile)}
+      </span>
+
+      <span>
+        ${getBusinessRoleLabel(profile)}
+      </span>
+
+      ${
+        roleInfo.canSell
+          ? `
+            <span>
+              ${listedProducts.length}
+              ${
+                listedProducts.length === 1
+                  ? "public product"
+                  : "public products"
+              }
+            </span>
+          `
+          : `
+            <span>
+              Local sourcing profile
+            </span>
+          `
+      }
+    </div>
+
+    <div class="result-actions">
+      ${
+        ownBusiness
+          ? `
+            <a
+              href="profile-builder.html"
+              class="primary-result-action"
+            >
+              Edit profile
+            </a>
+
+            ${
+              roleInfo.canSell
+                ? `
+                  <a
+                    href="supply-builder.html"
+                    class="gold-result-action"
+                  >
+                    Manage products
+                  </a>
+                `
+                : ""
+            }
+
+            <a
+              href="${getPublicProfileUrl(
+                profile
+              )}"
+              target="_blank"
+              rel="noopener"
+              class="secondary-result-action"
+            >
+              View public profile
+            </a>
+          `
+          : `
+            ${
+              roleInfo.canSell &&
+              listedProducts.length
+                ? `
+                  <button
+                    type="button"
+                    class="primary-result-action"
+                    data-action="see-products"
+                  >
+                    See products
+                  </button>
+                `
+                : ""
+            }
+
+            <a
+              href="coming-soon.html"
+              class="secondary-result-action"
+            >
+              Message
+            </a>
+
+            <button
+              type="button"
+              class="gold-result-action"
+              data-action="save-business"
+            >
+              ${
+                saved
+                  ? "Saved"
+                  : "Save business"
+              }
+            </button>
+
+            <a
+              href="${getPublicProfileUrl(
+                profile
+              )}"
+              target="_blank"
+              rel="noopener"
+              class="secondary-result-action"
+            >
+              Full profile
+            </a>
+          `
+      }
+    </div>
+  `;
+
+  card.addEventListener(
+    "click",
+    (event) => {
+      if (
+        event.target.closest("a, button")
+      ) {
+        return;
+      }
+
+      openPreviewForBusiness(profile);
+    }
+  );
+
+  card
+    .querySelector(".save-action")
+    ?.addEventListener(
+      "click",
+      (event) => {
+        event.stopPropagation();
+
+        toggleStoredItem(
+          SAVED_BUSINESSES_KEY,
+          profile.id
+        );
+      }
+    );
+
+  card
+    .querySelector(
+      '[data-action="save-business"]'
+    )
+    ?.addEventListener(
+      "click",
+      (event) => {
+        event.stopPropagation();
+
+        toggleStoredItem(
+          SAVED_BUSINESSES_KEY,
+          profile.id
+        );
+      }
+    );
+
+  card
+    .querySelector(
+      '[data-action="see-products"]'
+    )
+    ?.addEventListener(
+      "click",
+      (event) => {
+        event.stopPropagation();
+
+        if (marketplaceSearchInput) {
+          marketplaceSearchInput.value =
+            profile.name;
+        }
+
+        if (marketplaceCategoryFilter) {
+          marketplaceCategoryFilter.value =
+            "all";
+        }
+
+        if (marketplacePickupFilter) {
+          marketplacePickupFilter.value =
+            "all";
+        }
+
+        setMode("products");
+      }
+    );
 
   return card;
 }
@@ -784,7 +1406,7 @@ function renderMarketplaceLoading() {
 
   marketplaceResultsList.innerHTML = `
     <div class="marketplace-state-card">
-      <strong>Loading public products and producers...</strong>
+      <strong>Loading public products and businesses...</strong>
       <span>
         Locality is checking current marketplace availability.
       </span>
@@ -814,14 +1436,24 @@ function renderMarketplaceError(error) {
   `;
 }
 
-function renderNoMarketplaceResults() {
+function renderNoMarketplaceResults(
+  mode = activeMode
+) {
   if (!marketplaceResultsList) return;
+
+  const message =
+    mode === "businesses"
+      ? "Try changing the business role or clearing the Marketplace search."
+      : "Try clearing the search or changing the category and pickup filters.";
 
   marketplaceResultsList.innerHTML = `
     <div class="marketplace-state-card">
-      <strong>No listings match this view.</strong>
+      <strong>
+        No results match this view.
+      </strong>
+
       <span>
-        Try clearing the search or changing the category and pickup filters.
+        ${message}
       </span>
     </div>
   `;
@@ -832,93 +1464,163 @@ function renderMarketplace() {
 
   marketplaceResultsList.innerHTML = "";
 
-  const isRoutine = activeMode === "routine";
+  const isRoutine =
+    activeMode === "routine";
 
-  routineBuilderPanel?.classList.toggle("hidden", !isRoutine);
+  routineBuilderPanel
+    ?.classList.toggle(
+      "hidden",
+      !isRoutine
+    );
 
-     if (activeMode === "products") {
-     const products = getVisibleProducts();
-   
-     resultsKicker.textContent = "Products";
-     resultsTitle.textContent = "Fresh listings near you";
-     resultsCount.textContent = `${products.length} results`;
-     mapFloatingTitle.textContent = "Product availability near you";
-   
-     if (!products.length) {
-       renderNoMarketplaceResults();
-       renderMarkers([], "products");
-       return;
-     }
-   
-     products.forEach((product) => {
-       marketplaceResultsList.appendChild(
-         createProductCard(product)
-       );
-     });
-   
-     renderMarkers(products, "products");
-     return;
-   }
-   if (activeMode === "producers") {
-     const producers = getVisibleProducers();
-   
-     resultsKicker.textContent = "Producers";
-     resultsTitle.textContent = "Farms and food producers";
-     resultsCount.textContent = `${producers.length} results`;
-     mapFloatingTitle.textContent = "Producers near you";
-   
-     if (!producers.length) {
-       renderNoMarketplaceResults();
-       renderMarkers([], "producers");
-       return;
-     }
-   
-     producers.forEach((producer) => {
-       marketplaceResultsList.appendChild(
-         createProducerCard(producer)
-       );
-     });
-   
-     renderMarkers(producers, "producers");
-     return;
-   }
+  if (activeMode === "products") {
+    const products =
+      getVisibleProducts();
 
-   const producers = getVisibleProducers();
-   
-   resultsKicker.textContent = "Routine";
-   resultsTitle.textContent = "Set up soft reminders";
-   resultsCount.textContent = "No automatic orders";
-   mapFloatingTitle.textContent = "Routine-friendly producers";
-   
-   marketplaceResultsList.innerHTML = `
-     <article class="routine-explainer-card">
-       <span>How routines work</span>
-       <strong>Routines help you repeat local buying without committing to automatic orders.</strong>
-       <p>
-         Choose staples you buy often. Locality can help you remember pickup windows,
-         follow relevant producers, and find fresh availability when it comes back around.
-       </p>
-   
-       <div class="routine-meaning-grid">
-         <div>
-           <strong>Save</strong>
-           <small>Bookmark a product or producer for later.</small>
-         </div>
-   
-         <div>
-           <strong>Routine</strong>
-           <small>Tell Locality this is something you buy regularly.</small>
-         </div>
-   
-         <div>
-           <strong>Reserve</strong>
-           <small>Actively request or hold available goods.</small>
-         </div>
-       </div>
-     </article>
-   `;
-   
-      renderMarkers(producers, "producers");
+    resultsKicker.textContent =
+      "Products";
+
+    resultsTitle.textContent =
+      "Fresh listings near you";
+
+    resultsCount.textContent =
+      `${products.length} results`;
+
+    mapFloatingTitle.textContent =
+      "Product availability near you";
+
+    if (!products.length) {
+      renderNoMarketplaceResults(
+        "products"
+      );
+
+      renderMarkers([], "products");
+      return;
+    }
+
+    products.forEach((product) => {
+      marketplaceResultsList.appendChild(
+        createProductCard(product)
+      );
+    });
+
+    renderMarkers(
+      products,
+      "products"
+    );
+
+    return;
+  }
+
+  if (activeMode === "businesses") {
+    const businesses =
+      getVisibleBusinesses();
+
+    resultsKicker.textContent =
+      "Businesses";
+
+    resultsTitle.textContent =
+      "Local food businesses near you";
+
+    resultsCount.textContent =
+      `${businesses.length} results`;
+
+    mapFloatingTitle.textContent =
+      "Buyers and sellers near you";
+
+    if (!businesses.length) {
+      renderNoMarketplaceResults(
+        "businesses"
+      );
+
+      renderMarkers(
+        [],
+        "businesses"
+      );
+
+      return;
+    }
+
+    businesses.forEach((business) => {
+      marketplaceResultsList.appendChild(
+        createBusinessCard(business)
+      );
+    });
+
+    renderMarkers(
+      businesses,
+      "businesses"
+    );
+
+    return;
+  }
+
+  const routineBusinesses =
+    getVisibleRoutineBusinesses();
+
+  resultsKicker.textContent =
+    "Routine";
+
+  resultsTitle.textContent =
+    "Set up soft reminders";
+
+  resultsCount.textContent =
+    "No automatic orders";
+
+  mapFloatingTitle.textContent =
+    "Routine-friendly sellers";
+
+  marketplaceResultsList.innerHTML = `
+    <article class="routine-explainer-card">
+      <span>
+        How routines work
+      </span>
+
+      <strong>
+        Routines help you repeat local buying
+        without committing to automatic orders.
+      </strong>
+
+      <p>
+        Choose staples you buy often. Locality can
+        help you remember pickup windows, follow
+        relevant businesses, and find fresh
+        availability when it comes back around.
+      </p>
+
+      <div class="routine-meaning-grid">
+        <div>
+          <strong>Save</strong>
+
+          <small>
+            Bookmark a product or business for later.
+          </small>
+        </div>
+
+        <div>
+          <strong>Routine</strong>
+
+          <small>
+            Tell Locality this is something you buy
+            regularly.
+          </small>
+        </div>
+
+        <div>
+          <strong>Reserve</strong>
+
+          <small>
+            Actively request or hold available goods.
+          </small>
+        </div>
+      </div>
+    </article>
+  `;
+
+  renderMarkers(
+    routineBusinesses,
+    "businesses"
+  );
 }
 
 function initializeMap() {
@@ -941,27 +1643,57 @@ function initializeMap() {
 }
 
 function getMarkerIcon(item, mode) {
-  const pinClass = mode === "products"
-    ? "product-pin"
-    : item.type === "buyer"
-      ? "buyer-pin"
-      : "producer-pin";
+  let pinClass = "business-both-pin";
 
-  const glyph = mode === "products"
-    ? "●"
-    : item.iconVariant
-      ? getProfileGlyph(item.iconVariant)
-      : "●";
+  if (mode === "products") {
+    pinClass = "product-pin";
+  } else {
+    const roleType =
+      item.marketplaceRoleType ||
+      getProfileRoleInfo(item).roleType;
+
+    if (roleType === "buyer") {
+      pinClass = "business-buyer-pin";
+    } else if (roleType === "seller") {
+      pinClass = "business-seller-pin";
+    } else {
+      pinClass = "business-both-pin";
+    }
+  }
+
+  const ownResult =
+    mode === "products"
+      ? isOwnProduct(item)
+      : isOwnBusiness(item);
+
+  const glyph =
+    mode === "products"
+      ? "●"
+      : item.iconVariant
+        ? getProfileGlyph(
+            item.iconVariant
+          )
+        : "●";
 
   return L.divIcon({
     className: "",
+
     html: `
       <div class="pin-wrap">
-        <div class="locality-pin ${pinClass}">
-          <span class="pin-glyph">${glyph}</span>
+        <div
+          class="locality-pin ${pinClass}${
+            ownResult
+              ? " is-own-pin"
+              : ""
+          }"
+        >
+          <span class="pin-glyph">
+            ${glyph}
+          </span>
         </div>
       </div>
     `,
+
     iconSize: [58, 66],
     iconAnchor: [29, 58],
     popupAnchor: [0, -52]
@@ -1001,14 +1733,28 @@ function getTooltipContent(item, mode) {
     `;
   }
 
-  return `
-    <div class="profile-popup">
-      <h3>${item.name}</h3>
-      <div class="profile-meta">${item.location}</div>
-      <p>${item.product || getProducerTypeLabel(item)}</p>
+return `
+  <div class="profile-popup">
+    <h3>
+      ${item.name}
+      ${
+        isOwnBusiness(item)
+          ? " · Your business"
+          : ""
+      }
+    </h3>
+
+    <div class="profile-meta">
+      ${getBusinessTypeLabel(item)}
+      ·
+      ${item.location}
     </div>
-  `;
-}
+
+    <p>
+      ${getBusinessRoleLabel(item)}
+    </p>
+  </div>
+`;
 
 function renderMarkers(items, mode) {
   if (!marketplaceMap) return;
@@ -1034,7 +1780,7 @@ function renderMarkers(items, mode) {
       if (mode === "products") {
         openPreviewForProduct(item);
       } else {
-        openPreviewForProducer(item);
+        openPreviewForBusiness(item);
       }
     });
 
@@ -1068,153 +1814,497 @@ function closePreviewPanel() {
 }
 
 function openPreviewForProduct(product) {
-  const producer = product.sourceProfile || marketplaceProfiles.find((profile) => profile.id === product.producerId);
+  const business =
+    product.sourceProfile ||
+    marketplaceProfiles.find(
+      (profile) =>
+        profile.id ===
+        product.producerId
+    );
+
+  const ownListing =
+    isOwnProduct(product);
 
   previewPanelContent.innerHTML = `
     <article class="preview-hero-card">
       <div class="preview-cover">
-  ${
-    product.image_url
-      ? `
-        <img
-          src="${product.image_url}"
-          alt="${product.name || "Local product"}"
-        />
-      `
-      : ""
-  }
-</div>
+        ${
+          product.image_url
+            ? `
+              <img
+                src="${product.image_url}"
+                alt="${
+                  product.name ||
+                  "Local product"
+                }"
+              />
+            `
+            : ""
+        }
+      </div>
 
       <div class="preview-body">
-        <div class="preview-logo">${getProducerLogoHtml(producer || {})}</div>
+        <div class="preview-logo">
+          ${getProducerLogoHtml(
+            business || {}
+          )}
+        </div>
 
         <div>
-          <span class="result-type-pill">${formatCategory(product.category)}</span>
+          <div class="business-card-labels">
+            <span class="result-type-pill">
+              ${formatCategory(
+                product.category
+              )}
+            </span>
+
+            ${
+              ownListing
+                ? `
+                  <span class="ownership-badge">
+                    Your listing
+                  </span>
+                `
+                : ""
+            }
+          </div>
+
           <h2>${product.name}</h2>
-          <p>${product.producerName} · ${product.producerTypeLabel}</p>
+
+          <p>
+            ${product.producerName}
+            ·
+            ${product.producerTypeLabel}
+          </p>
         </div>
 
         <div class="preview-chip-row">
           <span>${product.price}</span>
           <span>${product.note}</span>
           <span>${product.pickupLabel}</span>
-          ${product.organic ? "<span>Organic</span>" : ""}
+
+          ${
+            product.organic
+              ? "<span>Organic</span>"
+              : ""
+          }
         </div>
 
         <p>
-          Save this product or add it to a soft routine so Locality can help you remember when similar local goods are available nearby.
+          ${
+            ownListing
+              ? "This is one of your public Marketplace listings."
+              : "Save this product or add it to a soft routine so Locality can help you remember when similar goods are available."
+          }
         </p>
 
         <div class="preview-action-grid">
-          <a href="coming-soon.html" class="preview-action-primary">Reserve</a>
-          <button type="button" class="preview-action-gold" data-preview-save>
-            ${isStored(SAVED_PRODUCTS_KEY, product.id) ? "Saved" : "Save product"}
-          </button>
-          <button type="button" class="preview-action-gold" data-preview-routine>
-            Add ${formatCategory(getCategoryGroup(product.category))} to routine
-          </button>
-          <button type="button" class="preview-action-secondary" data-preview-producer>
-            View producer
-          </button>
+          ${
+            ownListing
+              ? `
+                <a
+                  href="supply-builder.html"
+                  class="preview-action-primary"
+                >
+                  Manage listing
+                </a>
+
+                <a
+                  href="${getPublicSupplyUrl(
+                    business || {}
+                  )}"
+                  target="_blank"
+                  rel="noopener"
+                  class="preview-action-secondary"
+                >
+                  View public supply
+                </a>
+              `
+              : `
+                <a
+                  href="coming-soon.html"
+                  class="preview-action-primary"
+                >
+                  Reserve
+                </a>
+
+                <button
+                  type="button"
+                  class="preview-action-gold"
+                  data-preview-save
+                >
+                  ${
+                    isStored(
+                      SAVED_PRODUCTS_KEY,
+                      product.id
+                    )
+                      ? "Saved"
+                      : "Save product"
+                  }
+                </button>
+
+                <button
+                  type="button"
+                  class="preview-action-gold"
+                  data-preview-routine
+                >
+                  Add ${formatCategory(
+                    getCategoryGroup(
+                      product.category
+                    )
+                  )} to routine
+                </button>
+
+                <button
+                  type="button"
+                  class="preview-action-secondary"
+                  data-preview-business
+                >
+                  View business
+                </button>
+              `
+          }
         </div>
       </div>
     </article>
   `;
 
-  previewPanelContent.querySelector("[data-preview-save]")?.addEventListener("click", () => {
-    toggleStoredItem(SAVED_PRODUCTS_KEY, product.id);
-    openPreviewForProduct(product);
-  });
+  previewPanelContent
+    .querySelector(
+      "[data-preview-save]"
+    )
+    ?.addEventListener(
+      "click",
+      () => {
+        toggleStoredItem(
+          SAVED_PRODUCTS_KEY,
+          product.id
+        );
 
-  previewPanelContent.querySelector("[data-preview-routine]")?.addEventListener("click", () => {
-    toggleStoredItem(ROUTINE_KEY, getCategoryGroup(product.category));
-  });
+        openPreviewForProduct(product);
+      }
+    );
 
-  previewPanelContent.querySelector("[data-preview-producer]")?.addEventListener("click", () => {
-    if (producer) openPreviewForProducer(producer);
-  });
+  previewPanelContent
+    .querySelector(
+      "[data-preview-routine]"
+    )
+    ?.addEventListener(
+      "click",
+      () => {
+        toggleStoredItem(
+          ROUTINE_KEY,
+          getCategoryGroup(
+            product.category
+          )
+        );
+      }
+    );
+
+  previewPanelContent
+    .querySelector(
+      "[data-preview-business]"
+    )
+    ?.addEventListener(
+      "click",
+      () => {
+        if (business) {
+          openPreviewForBusiness(
+            business
+          );
+        }
+      }
+    );
 
   openPreviewPanel();
 }
 
-function openPreviewForProducer(profile) {
-  const followed = isStored(FOLLOWED_PRODUCERS_KEY, profile.id);
-  const products = (profile.productsAvailable || []).slice(0, 5);
+function openPreviewForBusiness(profile) {
+  const saved =
+    isStored(
+      SAVED_BUSINESSES_KEY,
+      profile.id
+    );
+
+  const ownBusiness =
+    isOwnBusiness(profile);
+
+  const roleInfo =
+    getProfileRoleInfo(profile);
+
+  const products =
+    (profile.productsAvailable || [])
+      .slice(0, 5);
 
   previewPanelContent.innerHTML = `
     <article class="preview-hero-card">
-      <div class="preview-cover"></div>
+      <div class="preview-cover">
+        ${
+          profile.banner_image_url
+            ? `
+              <img
+                src="${profile.banner_image_url}"
+                alt="${profile.name} banner"
+              />
+            `
+            : ""
+        }
+      </div>
 
       <div class="preview-body">
-        <div class="preview-logo">${getProducerLogoHtml(profile)}</div>
-
-        <div>
-          <span class="result-type-pill">${getProducerTypeLabel(profile)}</span>
-          <h2>${profile.name}</h2>
-          <p>${profile.location}</p>
+        <div class="preview-logo">
+          ${getProducerLogoHtml(profile)}
         </div>
 
-        <p>${profile.description || profile.product || "Local products, pickup options, and recurring availability."}</p>
+        <div>
+          <div class="business-card-labels">
+            <span
+              class="result-type-pill is-role-${
+                roleInfo.roleType
+              }"
+            >
+              ${getBusinessRoleLabel(profile)}
+            </span>
+
+            ${
+              ownBusiness
+                ? `
+                  <span class="ownership-badge">
+                    Your business
+                  </span>
+                `
+                : ""
+            }
+          </div>
+
+          <h2>${profile.name}</h2>
+
+          <p>
+            ${getBusinessTypeLabel(profile)}
+            ·
+            ${profile.location}
+          </p>
+        </div>
+
+        <p>
+          ${
+            profile.description ||
+            profile.product ||
+            "A local business in the Locality network."
+          }
+        </p>
 
         <div class="preview-chip-row">
-          <span>${products.length} listed items</span>
-          <span>${profile.availability || "Weekly availability"}</span>
-          <span>${profile.deliveryRadius || "Regional pickup"}</span>
-          ${profile.organic ? "<span>Organic</span>" : ""}
+          <span>
+            ${getBusinessRoleLabel(profile)}
+          </span>
+
+          <span>
+            ${getBusinessTypeLabel(profile)}
+          </span>
+
+          ${
+            roleInfo.canSell
+              ? `
+                <span>
+                  ${products.length}
+                  ${
+                    products.length === 1
+                      ? "listed product"
+                      : "listed products"
+                  }
+                </span>
+              `
+              : `
+                <span>
+                  Local sourcing profile
+                </span>
+              `
+          }
+
+          ${
+            profile.organic
+              ? "<span>Organic</span>"
+              : ""
+          }
         </div>
 
         <div class="preview-action-grid">
-          <button type="button" class="preview-action-gold" data-preview-follow>
-            ${followed ? "Following" : "Follow producer"}
-          </button>
-          <button type="button" class="preview-action-primary" data-preview-products>
-            See products
-          </button>
-          <a
-           href="${getPublicProfileUrl(profile)}"
-           target="_blank"
-           rel="noopener"
-           class="preview-action-secondary"
-         >
-           Open full profile
-         </a>
+          ${
+            ownBusiness
+              ? `
+                <a
+                  href="profile-builder.html"
+                  class="preview-action-primary"
+                >
+                  Edit profile
+                </a>
+
+                ${
+                  roleInfo.canSell
+                    ? `
+                      <a
+                        href="supply-builder.html"
+                        class="preview-action-gold"
+                      >
+                        Manage products
+                      </a>
+                    `
+                    : ""
+                }
+
+                <a
+                  href="${getPublicProfileUrl(
+                    profile
+                  )}"
+                  target="_blank"
+                  rel="noopener"
+                  class="preview-action-secondary"
+                >
+                  Open public profile
+                </a>
+              `
+              : `
+                <a
+                  href="coming-soon.html"
+                  class="preview-action-primary"
+                >
+                  Message
+                </a>
+
+                <button
+                  type="button"
+                  class="preview-action-gold"
+                  data-preview-save-business
+                >
+                  ${
+                    saved
+                      ? "Saved"
+                      : "Save business"
+                  }
+                </button>
+
+                ${
+                  roleInfo.canSell &&
+                  products.length
+                    ? `
+                      <button
+                        type="button"
+                        class="preview-action-gold"
+                        data-preview-products
+                      >
+                        See products
+                      </button>
+                    `
+                    : ""
+                }
+
+                <a
+                  href="${getPublicProfileUrl(
+                    profile
+                  )}"
+                  target="_blank"
+                  rel="noopener"
+                  class="preview-action-secondary"
+                >
+                  Open full profile
+                </a>
+              `
+          }
         </div>
 
-        <div>
-          <p class="marketplace-kicker green">Available products</p>
-          <div class="preview-product-list">
-            ${
-              products.length
-                ? products.map((product) => `
-                  <div class="preview-product-row">
-                    <strong>${product.name}</strong>
-                    <span>${product.price || "Request quote"}</span>
-                  </div>
-                `).join("")
-                : `
-                  <div class="preview-product-row">
-                    <strong>No public products yet</strong>
-                    <span>Check back soon</span>
-                  </div>
-                `
-            }
-          </div>
-        </div>
+        ${
+          roleInfo.canSell
+            ? `
+              <div>
+                <p class="marketplace-kicker green">
+                  Available products
+                </p>
+
+                <div class="preview-product-list">
+                  ${
+                    products.length
+                      ? products
+                          .map(
+                            (product) => `
+                              <div class="preview-product-row">
+                                <strong>
+                                  ${product.name}
+                                </strong>
+
+                                <span>
+                                  ${
+                                    product.price ||
+                                    "Request quote"
+                                  }
+                                </span>
+                              </div>
+                            `
+                          )
+                          .join("")
+                      : `
+                        <div class="preview-product-row">
+                          <strong>
+                            No public products yet
+                          </strong>
+
+                          <span>
+                            Check back soon
+                          </span>
+                        </div>
+                      `
+                  }
+                </div>
+              </div>
+            `
+            : ""
+        }
       </div>
     </article>
   `;
 
-  previewPanelContent.querySelector("[data-preview-follow]")?.addEventListener("click", () => {
-    toggleStoredItem(FOLLOWED_PRODUCERS_KEY, profile.id);
-    openPreviewForProducer(profile);
-  });
+  previewPanelContent
+    .querySelector(
+      "[data-preview-save-business]"
+    )
+    ?.addEventListener(
+      "click",
+      () => {
+        toggleStoredItem(
+          SAVED_BUSINESSES_KEY,
+          profile.id
+        );
 
-  previewPanelContent.querySelector("[data-preview-products]")?.addEventListener("click", () => {
-    activeMode = "products";
-    marketplaceCategoryFilter.value = profile.productType || "all";
-    closePreviewPanel();
-    setMode("products");
-  });
+        openPreviewForBusiness(profile);
+      }
+    );
+
+  previewPanelContent
+    .querySelector(
+      "[data-preview-products]"
+    )
+    ?.addEventListener(
+      "click",
+      () => {
+        if (marketplaceSearchInput) {
+          marketplaceSearchInput.value =
+            profile.name;
+        }
+
+        if (marketplaceCategoryFilter) {
+          marketplaceCategoryFilter.value =
+            "all";
+        }
+
+        if (marketplacePickupFilter) {
+          marketplacePickupFilter.value =
+            "all";
+        }
+
+        closePreviewPanel();
+        setMode("products");
+      }
+    );
 
   openPreviewPanel();
 }
@@ -1223,6 +2313,21 @@ function attachEventListeners() {
   document.querySelectorAll("[data-marketplace-mode]").forEach((button) => {
     button.addEventListener("click", () => setMode(button.dataset.marketplaceMode));
   });
+
+   document
+     .querySelectorAll(
+       "[data-business-role]"
+     )
+     .forEach((button) => {
+       button.addEventListener(
+         "click",
+         () => {
+           setBusinessRole(
+             button.dataset.businessRole
+           );
+         }
+       );
+     });
 
   marketplaceSearchInput?.addEventListener("input", renderMarketplace);
   marketplaceCategoryFilter?.addEventListener("change", renderMarketplace);
@@ -1254,6 +2359,13 @@ async function initializeMarketplace() {
 
     await loadMarketplaceData();
 
+     marketplaceIsReady = true;
+
+      syncCurrentBusinessContext(
+        window.LocalityAppShell
+          ?.getContext?.() || {}
+      );
+
     const params =
       new URLSearchParams(window.location.search);
 
@@ -1271,12 +2383,13 @@ async function initializeMarketplace() {
       }
     }
 
-    if (
-      view === "farms" ||
-      view === "producers"
-    ) {
-      activeMode = "producers";
-    }
+   if (
+     view === "farms" ||
+     view === "producers" ||
+     view === "businesses"
+   ) {
+     activeMode = "businesses";
+   }
 
     if (view === "routine") {
       activeMode = "routine";
