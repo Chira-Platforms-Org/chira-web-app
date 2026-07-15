@@ -193,6 +193,89 @@
   stroke: currentColor;
 }
 
+/* =========================
+   ACTIVE NOTIFICATION BELL
+========================= */
+
+#appShellNotificationButton {
+  overflow: visible;
+  transition:
+    color 0.18s ease,
+    background 0.18s ease,
+    border-color 0.18s ease,
+    box-shadow 0.18s ease,
+    transform 0.18s ease;
+}
+
+#appShellNotificationButton.has-unread {
+  border-color:
+    rgba(229, 163, 41, 0.34);
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255, 250, 231, 0.96),
+      rgba(255, 222, 143, 0.62)
+    );
+
+  color: #925800;
+
+  box-shadow:
+    0 0 0 4px
+      rgba(229, 163, 41, 0.08),
+    0 7px 20px
+      rgba(145, 101, 23, 0.1);
+}
+
+#appShellNotificationButton.has-unread::before {
+  content: "";
+  position: absolute;
+  inset: -5px;
+  z-index: -1;
+  border-radius: 50%;
+  background:
+    radial-gradient(
+      circle,
+      rgba(229, 163, 41, 0.15),
+      transparent 70%
+    );
+}
+
+#appShellNotificationButton.has-unread.is-urgent {
+  border-color:
+    rgba(216, 74, 59, 0.34);
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255, 244, 241, 0.97),
+      rgba(255, 191, 179, 0.62)
+    );
+
+  color: #a7342a;
+
+  box-shadow:
+    0 0 0 4px
+      rgba(216, 74, 59, 0.08),
+    0 7px 20px
+      rgba(135, 45, 34, 0.1);
+}
+
+#appShellNotificationButton.is-ringing {
+  animation:
+    appShellBellGlow
+    1.05s ease both;
+}
+
+#appShellNotificationButton.is-ringing svg {
+  transform-origin: 50% 12%;
+  animation:
+    appShellBellRing
+    0.9s
+    cubic-bezier(0.36, 0.07, 0.19, 0.97)
+    both;
+}
+
 .app-shell-indicator {
   position: absolute;
   top: -2px;
@@ -231,46 +314,89 @@
 }
 
 /* =========================
-   TRANSIENT NOTIFICATION
+   NAV-BAR NOTIFICATION PREVIEW
 ========================= */
 
 .app-shell-notification-toast {
   position: absolute;
   top: 50%;
-  right: 102px;
+  right: calc(100% + 9px);
   z-index: 1020;
-  min-width: 118px;
-  max-width: 210px;
-  transform: translateY(-50%);
+
+  min-width: 104px;
+  max-width: 170px;
+
+  box-sizing: border-box;
+  overflow: hidden;
+  padding: 9px 14px;
+
+  transform:
+    translate(13px, -50%)
+    scaleX(0.8);
   transform-origin: right center;
-  padding: 10px 13px;
-  border: 1px solid rgba(229, 163, 41, 0.32);
-  border-radius: 14px;
-  background: #fff9eb;
-  color: #7c4a00;
-  box-shadow: 0 16px 40px rgba(30, 44, 63, 0.16);
-  font-size: 0.71rem;
-  font-weight: 900;
+
+  border-radius: 999px;
+
+  background:
+    linear-gradient(
+      100deg,
+      rgba(255, 248, 222, 0.46),
+      rgba(249, 195, 75, 0.32),
+      rgba(255, 231, 165, 0.63)
+    );
+
+  backdrop-filter:
+    blur(14px)
+    saturate(1.15);
+
+  color: #784700;
+
+  box-shadow:
+    inset 0 0 0 1px
+      rgba(229, 163, 41, 0.12),
+    0 5px 18px
+      rgba(85, 62, 20, 0.07);
+
+  font-size: 0.68rem;
+  font-weight: 950;
+  line-height: 1.2;
+  text-align: center;
+  text-overflow: ellipsis;
   white-space: nowrap;
+
   pointer-events: none;
 }
 
 .app-shell-notification-toast.is-visible {
   animation:
-    appShellToastSlideIn 0.34s
+    appShellToastReveal
+    0.4s
     cubic-bezier(0.22, 1, 0.36, 1)
     both;
 }
 
 .app-shell-notification-toast.is-leaving {
   animation:
-    appShellToastFadeOut 0.32s ease both;
+    appShellToastHide
+    0.3s ease both;
 }
 
 .app-shell-notification-toast.is-urgent {
-  border-color: rgba(216, 74, 59, 0.34);
-  background: #fff1ef;
-  color: #9f2e24;
+  background:
+    linear-gradient(
+      100deg,
+      rgba(255, 241, 237, 0.5),
+      rgba(232, 91, 73, 0.29),
+      rgba(255, 196, 185, 0.67)
+    );
+
+  color: #9b3027;
+
+  box-shadow:
+    inset 0 0 0 1px
+      rgba(216, 74, 59, 0.13),
+    0 5px 18px
+      rgba(105, 35, 27, 0.07);
 }
 
 /* =========================
@@ -280,6 +406,11 @@
 .app-shell-notification-wrap,
 .app-shell-account-wrap {
   position: relative;
+}
+
+.app-shell-notification-wrap {
+  display: flex;
+  align-items: center;
 }
 
 .app-shell-notification-menu,
@@ -476,38 +607,92 @@
   }
 }
 
-@keyframes appShellToastSlideIn {
+@keyframes appShellToastReveal {
   from {
     opacity: 0;
+
     transform:
-      translate(18px, -50%)
-      scaleX(0.72);
+      translate(13px, -50%)
+      scaleX(0.8);
   }
 
   to {
     opacity: 1;
+
     transform:
       translate(0, -50%)
       scaleX(1);
   }
 }
 
-@keyframes appShellToastFadeOut {
+@keyframes appShellToastHide {
   from {
     opacity: 1;
-    transform: translate(0, -50%);
+
+    transform:
+      translate(0, -50%)
+      scaleX(1);
   }
 
   to {
     opacity: 0;
-    transform: translate(8px, -50%);
+
+    transform:
+      translate(8px, -50%)
+      scaleX(0.92);
+  }
+}
+
+@keyframes appShellBellRing {
+  0% {
+    transform: rotate(0);
+  }
+
+  15% {
+    transform: rotate(15deg);
+  }
+
+  30% {
+    transform: rotate(-13deg);
+  }
+
+  45% {
+    transform: rotate(10deg);
+  }
+
+  60% {
+    transform: rotate(-7deg);
+  }
+
+  75% {
+    transform: rotate(4deg);
+  }
+
+  100% {
+    transform: rotate(0);
+  }
+}
+
+@keyframes appShellBellGlow {
+  0% {
+    transform: scale(1);
+  }
+
+  35% {
+    transform: scale(1.08);
+  }
+
+  100% {
+    transform: scale(1);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .app-shell-indicator.is-new,
   .app-shell-notification-toast.is-visible,
-  .app-shell-notification-toast.is-leaving {
+  .app-shell-notification-toast.is-leaving,
+  #appShellNotificationButton.is-ringing,
+  #appShellNotificationButton.is-ringing svg {
     animation: none;
   }
 }
