@@ -901,7 +901,7 @@ function showNotificationPreview(
           My Locality
         </a>
 
-        <a href="coming-soon.html">
+        <a href="account-settings.html">
           Account settings
         </a>
 
@@ -940,7 +940,7 @@ function showNotificationPreview(
           : ""
       }
 
-      <a href="coming-soon.html">
+      <a href="account-settings.html">
         Account settings
       </a>
 
