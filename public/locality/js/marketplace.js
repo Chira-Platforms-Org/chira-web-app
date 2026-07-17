@@ -1725,7 +1725,7 @@ function getProfileGlyph(variant) {
 function getTooltipContent(item, mode) {
   if (mode === "products") {
     return `
-      <div class="profile-popup">
+     
         <h3>${item.name}</h3>
         <div class="profile-meta">${item.producerName}</div>
         <p>${item.price} · ${item.pickupLabel}</p>
@@ -1755,6 +1755,7 @@ return `
     </p>
   </div>
 `;
+}
 
 function renderMarkers(items, mode) {
   if (!marketplaceMap) return;
