@@ -50,7 +50,7 @@
     };
   }
 
-   async function getPublicMarketplaceProfiles() {
+async function getPublicMarketplaceProfiles() {
   const supabase = getClient();
 
   if (!supabase) {
@@ -64,8 +64,10 @@
     .from("business_profiles")
     .select("*")
     .eq("profile_visibility", "public")
+    .eq("location_confirmed", true)
     .not("latitude", "is", null)
     .not("longitude", "is", null)
+    .or("status.is.null,status.eq.active")
     .order("updated_at", { ascending: false });
 }
 
