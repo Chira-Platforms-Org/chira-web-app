@@ -592,21 +592,20 @@ function renderBusinessIdentity(profile) {
   }
 
 if (bcVisibilityChip) {
-  const isPublic =
-    visibility === "public";
+  const marketplaceStatus =
+    getMarketplaceVisibilityStatus(profile);
 
-  bcVisibilityChip.textContent = isPublic
-    ? "Public in Marketplace"
-    : "Draft profile";
+  bcVisibilityChip.textContent =
+    marketplaceStatus.label;
 
   bcVisibilityChip.classList.toggle(
     "is-public",
-    isPublic
+    marketplaceStatus.visible
   );
 
   bcVisibilityChip.classList.toggle(
     "is-warning",
-    !isPublic
+    !marketplaceStatus.visible
   );
 }
 
@@ -769,12 +768,15 @@ function renderProfileStatus(profile) {
       )}%`;
   }
 
-  if (bcProfileVisibility) {
-    bcProfileVisibility.textContent =
-      profile.profile_visibility === "public"
-        ? "Public"
-        : "Draft";
-  }
+   if (bcProfileVisibility) {
+     const marketplaceStatus =
+       getMarketplaceVisibilityStatus(profile);
+   
+     bcProfileVisibility.textContent =
+       marketplaceStatus.visible
+         ? "Visible"
+         : marketplaceStatus.label;
+    }
 
   if (bcProfileLocation) {
     bcProfileLocation.textContent =
@@ -793,31 +795,16 @@ function buildAttentionItems(profile) {
   const { canSell } =
     getBusinessCapabilities(profile);
 
-  /*
-    Every business can publish a Marketplace profile.
-    Only sellers need public product listings.
-  */
-  if (
-    profile.profile_visibility !== "public"
-  ) {
-    items.push({
-      type: "warning",
-      title: "Profile is still a draft",
-      detail: canSell
-        ? "Publish the profile when it is ready for buyers and other businesses to discover."
-        : "Publish the profile when it is ready for nearby suppliers and other businesses to discover."
-    });
-  }
+ const marketplaceStatus =
+  getMarketplaceVisibilityStatus(profile);
 
-  if (profile.location_confirmed !== true) {
-    items.push({
-      type: "warning",
-      title: "Confirm the business location",
-      detail: canSell
-        ? "A confirmed location helps buyers find your business and products."
-        : "A confirmed location helps nearby suppliers find your business and improves sourcing results."
-    });
-  }
+if (!marketplaceStatus.visible) {
+  items.push({
+    type: "warning",
+    title: marketplaceStatus.label,
+    detail: marketplaceStatus.detail
+  });
+}
 
   const score = Number(
     profile.profile_completion_score || 0
@@ -1025,6 +1012,41 @@ function hasValidCoordinates(profile = {}) {
     Number.isFinite(Number(profile.latitude)) &&
     Number.isFinite(Number(profile.longitude))
   );
+}
+
+function getMarketplaceVisibilityStatus(profile = {}) {
+  if (
+    window.LocalityMarketplaceVisibility
+      ?.getStatus
+  ) {
+    return window.LocalityMarketplaceVisibility
+      .getStatus(profile);
+  }
+
+  const isPublic =
+    profile.profile_visibility === "public";
+
+  const hasCoordinates =
+    Number.isFinite(Number(profile.latitude)) &&
+    Number.isFinite(Number(profile.longitude));
+
+  const isConfirmed =
+    profile.location_confirmed === true;
+
+  return {
+    label:
+      isPublic && hasCoordinates && isConfirmed
+        ? "Public in Marketplace"
+        : "Location needs confirmation",
+    visible:
+      isPublic && hasCoordinates && isConfirmed,
+    detail:
+      "Marketplace visibility is being checked.",
+    tone:
+      isPublic && hasCoordinates && isConfirmed
+        ? "success"
+        : "warning"
+  };
 }
 
 function calculateDistanceMiles(
