@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+
+  <title>Account Settings | Locality</title>
+
+  <link rel="stylesheet" href="css/locality.css" />
+  <link rel="stylesheet" href="css/app-shell.css" />
+  <link rel="stylesheet" href="css/account-settings.css" />
+
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  />
+</head>
+
+<body class="account-settings-page">
+  <header
+    id="localityAppHeader"
+    data-active-page="my-locality"
+  ></header>
+
+  <main class="settings-page-shell">
+    <aside
+      class="settings-sidebar"
+      aria-label="Account settings sections"
+    >
+      <div class="settings-sidebar-card">
+        <div class="settings-sidebar-identity">
+          <div class="settings-sidebar-logo">
+            <img
+              id="settingsSidebarLogo"
+              alt=""
+              hidden
+            />
+
+            <span id="settingsSidebarInitials">
+              LC
+            </span>
+          </div>
+
+          <div>
+            <strong id="settingsSidebarName">
+              Account settings
+            </strong>
+
+            <span id="settingsSidebarMeta">
+              Locality business
+            </span>
+          </div>
+        </div>
+
+        <nav class="settings-section-nav">
+          <a
+            href="#business-details"
+            class="settings-nav-item is-active"
+            data-settings-nav="business-details"
+          >
+            <span class="settings-nav-icon">●</span>
+            Business details
+          </a>
+
+          <a
+            href="#marketplace-visibility"
+            class="settings-nav-item"
+            data-settings-nav="marketplace-visibility"
+          >
+            <span class="settings-nav-icon">●</span>
+            Marketplace visibility
+          </a>
+
+          <a
+            href="#map-service-area"
+            class="settings-nav-item"
+            data-settings-nav="map-service-area"
+          >
+            <span class="settings-nav-icon">●</span>
+            Map & service area
+          </a>
+
+          <a
+            href="#login-security"
+            class="settings-nav-item"
+            data-settings-nav="login-security"
+          >
+            <span class="settings-nav-icon">●</span>
+            Login & security
+          </a>
+
+          <a
+            href="#payments"
+            class="settings-nav-item"
+            data-settings-nav="payments"
+          >
+            <span class="settings-nav-icon">●</span>
+            Payments
+          </a>
+
+          <a
+            href="#notifications"
+            class="settings-nav-item"
+            data-settings-nav="notifications"
+          >
+            <span class="settings-nav-icon">●</span>
+            Notifications
+          </a>
+
+          <a
+            href="#team-access"
+            class="settings-nav-item"
+            data-settings-nav="team-access"
+          >
+            <span class="settings-nav-icon">●</span>
+            Team access
+          </a>
+        </nav>
+
+        <button
+          type="button"
+          id="settingsLogoutBtn"
+          class="settings-logout"
+        >
+          Log out
+        </button>
+      </div>
+    </aside>
+
+    <section class="settings-content">
+      <header class="settings-hero">
+        <p>My Locality · Settings</p>
+
+        <h1>Account Settings</h1>
+
+        <span>
+          Manage your business details, Marketplace visibility,
+          map location, access, payments, and preferences.
+        </span>
+      </header>
+
+      <div
+        id="settingsPageStatus"
+        class="settings-page-status"
+        hidden
+      ></div>
+
+      <!-- BUSINESS DETAILS -->
+      <section
+        id="business-details"
+        class="settings-section-card"
+        data-settings-section
+      >
+        <div class="settings-section-heading">
+          <div>
+            <p>Business profile</p>
+
+            <h2>Business details</h2>
+
+            <span>
+              Edit the information used across your account,
+              public profile, dashboard, and Marketplace presence.
+            </span>
+          </div>
+        </div>
+
+        <form
+          id="businessDetailsForm"
+          class="settings-form-grid"
+        >
+          <label>
+            Business name
+            <input
+              id="settingsBusinessName"
+              type="text"
+              autocomplete="organization"
+              required
+            />
+          </label>
+
+          <label>
+            Public location label
+            <input
+              id="settingsLocationLabel"
+              type="text"
+              placeholder="Goodyear, AZ"
+            />
+          </label>
+
+          <label>
+            Business type
+            <select id="settingsBusinessCategory">
+              <option value="farm">Farm</option>
+              <option value="restaurant">Restaurant</option>
+              <option value="grocer">Grocer</option>
+              <option value="food-hub">Food hub</option>
+              <option value="bakery">Bakery</option>
+              <option value="processor">Processor</option>
+              <option value="distributor">Distributor</option>
+              <option value="other">Other</option>
+            </select>
+          </label>
+
+          <label>
+            Website
+            <input
+              id="settingsWebsite"
+              type="url"
+              placeholder="https://example.com"
+            />
+          </label>
+
+          <label>
+            Contact email
+            <input
+              id="settingsContactEmail"
+              type="email"
+              autocomplete="email"
+            />
+          </label>
+
+          <label>
+            Phone
+            <input
+              id="settingsPhone"
+              type="tel"
+              autocomplete="tel"
+            />
+          </label>
+
+          <label class="settings-wide-field">
+            Address
+            <input
+              id="settingsAddress"
+              type="text"
+              autocomplete="street-address"
+              placeholder="Street address or pickup location"
+            />
+          </label>
+
+          <label class="settings-wide-field">
+            Short intro
+            <textarea
+              id="settingsShortIntro"
+              rows="3"
+              placeholder="A short public summary of your business."
+            ></textarea>
+          </label>
+
+          <div class="settings-role-box settings-wide-field">
+            <div>
+              <strong>Business role</strong>
+
+              <span>
+                All business accounts can source and buy.
+                Enable selling when this business should publish
+                products and manage incoming orders.
+              </span>
+            </div>
+
+            <label class="settings-check-row">
+              <input
+                id="settingsCanSell"
+                type="checkbox"
+              />
+
+              <span>
+                Enable selling tools and supply listings
+              </span>
+            </label>
+          </div>
+
+          <div class="settings-form-actions settings-wide-field">
+            <button
+              type="submit"
+              class="settings-primary-btn"
+            >
+              Save business details
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <!-- MARKETPLACE VISIBILITY -->
+      <section
+        id="marketplace-visibility"
+        class="settings-section-card"
+        data-settings-section
+      >
+        <div class="settings-section-heading">
+          <div>
+            <p>Public presence</p>
+
+            <h2>Marketplace visibility</h2>
+
+            <span>
+              See whether your business is actually visible
+              in Marketplace and what is still missing.
+            </span>
+          </div>
+
+          <strong
+            id="settingsMarketplaceStatus"
+            class="settings-status-pill"
+          >
+            Checking status
+          </strong>
+        </div>
+
+        <div
+          id="settingsVisibilityChecklist"
+          class="settings-checklist"
+        ></div>
+
+        <form
+          id="marketplaceVisibilityForm"
+          class="settings-form-grid"
+        >
+          <fieldset class="settings-wide-field">
+            <legend>Profile visibility</legend>
+
+            <label class="settings-radio-row">
+              <input
+                type="radio"
+                name="settingsProfileVisibility"
+                value="public"
+              />
+
+              <span>
+                Public profile
+                <small>
+                  Eligible for Marketplace once location requirements pass.
+                </small>
+              </span>
+            </label>
+
+            <label class="settings-radio-row">
+              <input
+                type="radio"
+                name="settingsProfileVisibility"
+                value="draft"
+              />
+
+              <span>
+                Draft profile
+                <small>
+                  Hidden from public discovery while you continue editing.
+                </small>
+              </span>
+            </label>
+          </fieldset>
+
+          <label class="settings-check-row settings-wide-field">
+            <input
+              id="settingsSupplierOutreach"
+              type="checkbox"
+            />
+
+            <span>
+              Allow nearby businesses to contact us through Locality
+              when messaging becomes available.
+            </span>
+          </label>
+
+          <div class="settings-form-actions settings-wide-field">
+            <button
+              type="submit"
+              class="settings-primary-btn"
+            >
+              Save visibility settings
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <!-- MAP & SERVICE AREA -->
+      <section
+        id="map-service-area"
+        class="settings-section-card"
+        data-settings-section
+      >
+        <div class="settings-section-heading">
+          <div>
+            <p>Location</p>
+
+            <h2>Map & service area</h2>
+
+            <span>
+              Move the map until the fixed pin is over your business
+              or pickup location, then confirm the location.
+            </span>
+          </div>
+        </div>
+
+        <div class="settings-map-wrap">
+          <div id="settingsLocationMap"></div>
+
+          <div
+            class="settings-fixed-map-pin"
+            aria-hidden="true"
+          >
+            <span></span>
+          </div>
+        </div>
+
+        <div class="settings-coordinate-preview">
+          <strong id="settingsCoordinatePreview">
+            Move the map to choose a location.
+          </strong>
+
+          <span>
+            The public Marketplace will use this confirmed map location.
+          </span>
+        </div>
+
+        <form
+          id="locationSettingsForm"
+          class="settings-form-grid"
+        >
+          <label>
+            Public location label
+            <input
+              id="settingsMapLocationLabel"
+              type="text"
+              placeholder="Goodyear, AZ"
+            />
+          </label>
+
+          <label>
+            Service radius
+            <select id="settingsServiceRadius">
+              <option value="10">10 miles</option>
+              <option value="25">25 miles</option>
+              <option value="50">50 miles</option>
+              <option value="100">100 miles</option>
+            </select>
+          </label>
+
+          <label>
+            Address visibility
+            <select id="settingsAddressVisibility">
+              <option value="area_only">
+                Show only city / area publicly
+              </option>
+
+              <option value="full_address">
+                Show full address publicly
+              </option>
+
+              <option value="private">
+                Keep exact address private
+              </option>
+            </select>
+          </label>
+
+          <label>
+            Location notes
+            <input
+              id="settingsLocationNotes"
+              type="text"
+              placeholder="Pickup entrance, service area notes, etc."
+            />
+          </label>
+
+          <div class="settings-form-actions settings-wide-field">
+            <button
+              type="submit"
+              class="settings-primary-btn"
+            >
+              Confirm this location
+            </button>
+
+            <button
+              type="button"
+              id="settingsResetMapBtn"
+              class="settings-secondary-btn"
+            >
+              Recenter map
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <!-- LOGIN -->
+      <section
+        id="login-security"
+        class="settings-section-card"
+        data-settings-section
+      >
+        <div class="settings-section-heading">
+          <div>
+            <p>Access</p>
+
+            <h2>Login & security</h2>
+
+            <span>
+              Review the login email for this account.
+              Password and multi-user security controls will be added later.
+            </span>
+          </div>
+        </div>
+
+        <div class="settings-simple-list">
+          <div>
+            <strong>Login email</strong>
+            <span id="settingsLoginEmail">Loading</span>
+          </div>
+
+          <div>
+            <strong>Password</strong>
+            <span>Managed through the sign-in system</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- PAYMENTS -->
+      <section
+        id="payments"
+        class="settings-section-card"
+        data-settings-section
+      >
+        <div class="settings-section-heading">
+          <div>
+            <p>Money movement</p>
+
+            <h2>Payments</h2>
+
+            <span>
+              Payout accounts, payment methods, and transaction history
+              will connect once payments are integrated.
+            </span>
+          </div>
+        </div>
+
+        <div class="settings-coming-soon-inline">
+          Payment settings are coming soon.
+        </div>
+      </section>
+
+      <!-- NOTIFICATIONS -->
+      <section
+        id="notifications"
+        class="settings-section-card"
+        data-settings-section
+      >
+        <div class="settings-section-heading">
+          <div>
+            <p>Alerts</p>
+
+            <h2>Notifications</h2>
+
+            <span>
+              Choose which message, order, contract, payment,
+              and Marketplace alerts you want to receive.
+            </span>
+          </div>
+        </div>
+
+        <div class="settings-simple-list">
+          <label class="settings-check-row">
+            <input type="checkbox" checked disabled />
+            <span>Messages</span>
+          </label>
+
+          <label class="settings-check-row">
+            <input type="checkbox" checked disabled />
+            <span>Orders and contract updates</span>
+          </label>
+
+          <label class="settings-check-row">
+            <input type="checkbox" checked disabled />
+            <span>Marketplace visibility reminders</span>
+          </label>
+        </div>
+      </section>
+
+      <!-- TEAM -->
+      <section
+        id="team-access"
+        class="settings-section-card"
+        data-settings-section
+      >
+        <div class="settings-section-heading">
+          <div>
+            <p>Organization</p>
+
+            <h2>Team access</h2>
+
+            <span>
+              Invite team members and manage staff access later.
+            </span>
+          </div>
+        </div>
+
+        <div class="settings-coming-soon-inline">
+          Team access is coming soon.
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script src="js/supabaseConfig.js"></script>
+  <script src="js/supabaseClient.js"></script>
+  <script src="js/authService.js"></script>
+  <script src="js/profileService.js"></script>
+  <script src="js/marketplaceVisibility.js"></script>
+  <script src="js/appShell.js"></script>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <script src="js/accountSettings.js"></script>
+</body>
+</html>
