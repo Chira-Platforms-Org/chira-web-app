@@ -44,8 +44,20 @@ const settingsContactEmail =
 const settingsPhone =
   document.getElementById("settingsPhone");
 
-const settingsAddress =
-  document.getElementById("settingsAddress");
+const settingsAddressLine1 =
+  document.getElementById("settingsAddressLine1");
+
+const settingsAddressLine2 =
+  document.getElementById("settingsAddressLine2");
+
+const settingsAddressCity =
+  document.getElementById("settingsAddressCity");
+
+const settingsAddressState =
+  document.getElementById("settingsAddressState");
+
+const settingsAddressZip =
+  document.getElementById("settingsAddressZip");
 
 const settingsShortIntro =
   document.getElementById("settingsShortIntro");
@@ -85,6 +97,12 @@ const settingsResetMapBtn =
 
 const settingsEditLocationBtn =
   document.getElementById("settingsEditLocationBtn");
+
+const settingsSavePinBtn =
+  document.getElementById("settingsSavePinBtn");
+
+const settingsCancelPinBtn =
+  document.getElementById("settingsCancelPinBtn");
 
 const settingsSavePinBtn =
   document.getElementById("settingsSavePinBtn");
@@ -209,27 +227,89 @@ function formatCategory(value = "") {
     );
 }
 
-function formatAddressForInput(value) {
-  if (!value) return "";
+function normalizeAddressObject(value) {
+  const emptyAddress = {
+    street_address: "",
+    address_line_2: "",
+    city: "",
+    state: "",
+    zip_code: "",
+    country: "United States"
+  };
 
-  if (typeof value === "string") {
-    return value;
-  }
+  if (!value) return emptyAddress;
 
   if (typeof value === "object") {
-    return [
-      value.street,
-      value.address,
-      value.city,
-      value.state,
-      value.zip,
-      value.postal_code
-    ]
-      .filter(Boolean)
-      .join(", ");
+    return {
+      street_address:
+        value.street_address ||
+        value.street ||
+        value.address ||
+        "",
+      address_line_2:
+        value.address_line_2 ||
+        value.line_2 ||
+        value.unit ||
+        "",
+      city:
+        value.city || "",
+      state:
+        value.state || "",
+      zip_code:
+        value.zip_code ||
+        value.zip ||
+        value.postal_code ||
+        "",
+      country:
+        value.country ||
+        "United States"
+    };
   }
 
-  return String(value);
+  const raw = String(value || "").trim();
+
+  if (!raw) return emptyAddress;
+
+  const parts = raw
+    .split(",")
+    .map((part) => part.trim())
+    .filter(Boolean);
+
+  const streetAddress = parts[0] || raw;
+  const city = parts[1] || "";
+  const stateZip = parts[2] || "";
+
+  const stateZipMatch =
+    stateZip.match(/^([A-Za-z]{2})\s+(\d{5}(?:-\d{4})?)$/);
+
+  return {
+    street_address: streetAddress,
+    address_line_2: "",
+    city,
+    state: stateZipMatch
+      ? stateZipMatch[1].toUpperCase()
+      : "",
+    zip_code: stateZipMatch
+      ? stateZipMatch[2]
+      : "",
+    country: "United States"
+  };
+}
+
+function getAddressObjectFromFields() {
+  return {
+    street_address:
+      settingsAddressLine1?.value.trim() || "",
+    address_line_2:
+      settingsAddressLine2?.value.trim() || "",
+    city:
+      settingsAddressCity?.value.trim() || "",
+    state:
+      settingsAddressState?.value.trim().toUpperCase() || "",
+    zip_code:
+      settingsAddressZip?.value.trim() || "",
+    country: "United States"
+  };
 }
 
 function getCheckedFulfillmentMethods() {
@@ -544,17 +624,17 @@ function setLocationEditMode(enabled) {
       !enabled
     );
 
-   if (settingsEditLocationBtn) {
-     settingsEditLocationBtn.hidden = enabled;
-   }
-   
-   if (settingsSavePinBtn) {
-     settingsSavePinBtn.hidden = !enabled;
-   }
-   
-   if (settingsCancelPinBtn) {
-     settingsCancelPinBtn.hidden = !enabled;
-   }
+  if (settingsEditLocationBtn) {
+    settingsEditLocationBtn.hidden = enabled;
+  }
+
+  if (settingsSavePinBtn) {
+    settingsSavePinBtn.hidden = !enabled;
+  }
+
+  if (settingsCancelPinBtn) {
+    settingsCancelPinBtn.hidden = !enabled;
+  }
 
   if (enabled) {
     clearMapLocationLayers();
@@ -567,20 +647,20 @@ function setLocationEditMode(enabled) {
       Number(currentBusinessProfile?.longitude) ||
       -112.074;
 
-   settingsMap?.setView([lat, lng], 13);
-   
-   window.setTimeout(() => {
-     settingsMap?.invalidateSize();
-   }, 80);
-   
-   setSectionDirty("map-service-area", true);
-   updateCoordinatePreview();
-   return;
+    settingsMap?.setView([lat, lng], 13);
+
+    refreshSettingsMapLayout();
+
+    setSectionDirty("map-service-area", true);
+    updateCoordinatePreview();
+    return;
   }
 
   renderSavedLocationLayers(
     currentBusinessProfile
   );
+
+  refreshSettingsMapLayout();
   updateCoordinatePreview();
 }
 
@@ -675,18 +755,33 @@ function renderBusinessDetails(profile = {}) {
       profile.phone || "";
   }
 
-   const formattedAddress =
-     formatAddressForInput(profile.address);
-   
-   if (settingsAddress) {
-     settingsAddress.value =
-       formattedAddress;
-   }
-   
-   if (settingsMapAddress) {
-     settingsMapAddress.value =
-       formattedAddress;
-   }
+const normalizedAddress =
+  normalizeAddressObject(profile.address);
+
+if (settingsAddressLine1) {
+  settingsAddressLine1.value =
+    normalizedAddress.street_address;
+}
+
+if (settingsAddressLine2) {
+  settingsAddressLine2.value =
+    normalizedAddress.address_line_2;
+}
+
+if (settingsAddressCity) {
+  settingsAddressCity.value =
+    normalizedAddress.city;
+}
+
+if (settingsAddressState) {
+  settingsAddressState.value =
+    normalizedAddress.state;
+}
+
+if (settingsAddressZip) {
+  settingsAddressZip.value =
+    normalizedAddress.zip_code;
+}
 
   if (settingsShortIntro) {
     settingsShortIntro.value =
@@ -794,6 +889,22 @@ function renderMarketplaceVisibility(profile = {}) {
   }
 }
 
+function refreshSettingsMapLayout() {
+  if (!settingsMap) return;
+
+  window.requestAnimationFrame(() => {
+    settingsMap.invalidateSize();
+
+    window.setTimeout(() => {
+      settingsMap?.invalidateSize();
+    }, 250);
+
+    window.setTimeout(() => {
+      settingsMap?.invalidateSize();
+    }, 900);
+  });
+}
+
 function initSettingsMap(profile = {}) {
   if (
     !settingsLocationMapElement ||
@@ -875,11 +986,11 @@ function initSettingsMap(profile = {}) {
      }
    });
 
-  window.setTimeout(() => {
-   settingsMap?.invalidateSize();
-   renderSavedLocationLayers(profile);
-   updateCoordinatePreview();
-  }, 150);
+   window.setTimeout(() => {
+     refreshSettingsMapLayout();
+     renderSavedLocationLayers(profile);
+     updateCoordinatePreview();
+   }, 150);
 }
 
 async function saveBusinessDetails(event) {
@@ -906,7 +1017,7 @@ async function saveBusinessDetails(event) {
     phone:
       settingsPhone?.value.trim() || "",
     address:
-      settingsAddress?.value.trim() || "",
+      getAddressObjectFromFields(),
     short_intro:
       settingsShortIntro?.value.trim() || ""
   };
@@ -1339,7 +1450,8 @@ function resetSectionChanges(sectionKey) {
 async function savePinLocationOnly() {
   if (!settingsMap) return;
 
-  const center = getMapCenter();
+  const center =
+    getMapCenter();
 
   await saveProfileUpdates(
     {
@@ -1356,6 +1468,7 @@ async function savePinLocationOnly() {
   );
 
   setLocationEditMode(false);
+  refreshSettingsMapLayout();
 }
 
 function attachSettingsEvents() {
@@ -1401,6 +1514,20 @@ function attachSettingsEvents() {
        setLocationEditMode(true);
      }
    );
+
+   settingsSavePinBtn?.addEventListener(
+  "click",
+  savePinLocationOnly
+);
+
+settingsCancelPinBtn?.addEventListener(
+  "click",
+  () => {
+    resetSectionChanges("map-service-area");
+    setLocationEditMode(false);
+    refreshSettingsMapLayout();
+  }
+);
 
    settingsSavePinBtn?.addEventListener(
      "click",
@@ -1502,6 +1629,17 @@ function initializeAccountSettings() {
   attachSettingsEvents();
   setupDirtyTracking();
   setupLeaveProtection();
+
+  window.addEventListener(
+    "load",
+    refreshSettingsMapLayout
+  );
+
+  window.addEventListener(
+    "resize",
+    refreshSettingsMapLayout
+  );
+
   loadAccountSettings();
 }
 
