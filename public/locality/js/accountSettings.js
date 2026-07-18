@@ -1337,6 +1337,7 @@ async function loadAccountSettings() {
    initSettingsMap(currentBusinessProfile);
    
    setSettingsStatus("");
+}
 
 function initializeAccountSettings() {
   setupSectionNavigation();
