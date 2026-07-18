@@ -86,6 +86,15 @@ const settingsResetMapBtn =
 const settingsEditLocationBtn =
   document.getElementById("settingsEditLocationBtn");
 
+const settingsSavePinBtn =
+  document.getElementById("settingsSavePinBtn");
+
+const settingsCancelPinBtn =
+  document.getElementById("settingsCancelPinBtn");
+
+const settingsMapAddress =
+  document.getElementById("settingsMapAddress");
+
 const settingsFulfillmentOther =
   document.getElementById("settingsFulfillmentOther");
 
@@ -535,12 +544,17 @@ function setLocationEditMode(enabled) {
       !enabled
     );
 
-  if (settingsEditLocationBtn) {
-    settingsEditLocationBtn.textContent =
-      enabled
-        ? "Editing map pin"
-        : "Edit map pin";
-  }
+   if (settingsEditLocationBtn) {
+     settingsEditLocationBtn.hidden = enabled;
+   }
+   
+   if (settingsSavePinBtn) {
+     settingsSavePinBtn.hidden = !enabled;
+   }
+   
+   if (settingsCancelPinBtn) {
+     settingsCancelPinBtn.hidden = !enabled;
+   }
 
   if (enabled) {
     clearMapLocationLayers();
@@ -553,10 +567,15 @@ function setLocationEditMode(enabled) {
       Number(currentBusinessProfile?.longitude) ||
       -112.074;
 
-    settingsMap?.setView([lat, lng], 13);
-    setSectionDirty("map-service-area", true);
-    updateCoordinatePreview();
-    return;
+   settingsMap?.setView([lat, lng], 13);
+   
+   window.setTimeout(() => {
+     settingsMap?.invalidateSize();
+   }, 80);
+   
+   setSectionDirty("map-service-area", true);
+   updateCoordinatePreview();
+   return;
   }
 
   renderSavedLocationLayers(
@@ -656,10 +675,18 @@ function renderBusinessDetails(profile = {}) {
       profile.phone || "";
   }
 
-  if (settingsAddress) {
-    settingsAddress.value =
+   const formattedAddress =
      formatAddressForInput(profile.address);
-  }
+   
+   if (settingsAddress) {
+     settingsAddress.value =
+       formattedAddress;
+   }
+   
+   if (settingsMapAddress) {
+     settingsMapAddress.value =
+       formattedAddress;
+   }
 
   if (settingsShortIntro) {
     settingsShortIntro.value =
@@ -932,9 +959,14 @@ async function saveLocationSettings(event) {
       : getMapCenter();
 
   const updates = {
-    latitude: center.lat,
-    longitude: center.lng,
-    location_confirmed: true,
+   latitude: center.lat,
+   longitude: center.lng,
+   location_confirmed: true,
+   address:
+    settingsMapAddress?.value.trim() ||
+    settingsAddress?.value.trim() ||
+    currentBusinessProfile.address ||
+    "",
     location_confirmed_at:
       new Date().toISOString(),
     location_label:
@@ -1304,6 +1336,28 @@ function resetSectionChanges(sectionKey) {
   clearSectionSaveState(sectionKey);
 }
 
+async function savePinLocationOnly() {
+  if (!settingsMap) return;
+
+  const center = getMapCenter();
+
+  await saveProfileUpdates(
+    {
+      latitude: center.lat,
+      longitude: center.lng,
+      location_confirmed: true,
+      location_confirmed_at:
+        new Date().toISOString(),
+      service_radius_miles:
+        Number(settingsServiceRadius?.value) || 25
+    },
+    "Map pin location saved.",
+    "map-service-area"
+  );
+
+  setLocationEditMode(false);
+}
+
 function attachSettingsEvents() {
   businessDetailsForm?.addEventListener(
     "submit",
@@ -1333,20 +1387,32 @@ function attachSettingsEvents() {
         -112.074;
 
       settingsMap?.setView([lat, lng], 13);
-    }
-  );
+     }
+   );
 
-  settingsLogoutBtn?.addEventListener(
-    "click",
-    handleLogout
-  );
+     settingsLogoutBtn?.addEventListener(
+       "click",
+       handleLogout
+     );
+   
+     settingsEditLocationBtn?.addEventListener(
+     "click",
+     () => {
+       setLocationEditMode(true);
+     }
+   );
 
-  settingsEditLocationBtn?.addEventListener(
-  "click",
-  () => {
-    setLocationEditMode(true);
-  }
-);
+   settingsSavePinBtn?.addEventListener(
+     "click",
+     savePinLocationOnly
+   );
+   
+   settingsCancelPinBtn?.addEventListener(
+     "click",
+     () => {
+       resetSectionChanges("map-service-area");
+     }
+   );
 
    settingsServiceRadius?.addEventListener(
      "change",
