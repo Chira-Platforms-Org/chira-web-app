@@ -104,12 +104,6 @@ const settingsSavePinBtn =
 const settingsCancelPinBtn =
   document.getElementById("settingsCancelPinBtn");
 
-const settingsSavePinBtn =
-  document.getElementById("settingsSavePinBtn");
-
-const settingsCancelPinBtn =
-  document.getElementById("settingsCancelPinBtn");
-
 const settingsMapAddress =
   document.getElementById("settingsMapAddress");
 
@@ -1069,18 +1063,13 @@ async function saveLocationSettings(event) {
         }
       : getMapCenter();
 
-  const updates = {
-   latitude: center.lat,
-   longitude: center.lng,
-   location_confirmed: true,
-   address:
-    settingsMapAddress?.value.trim() ||
-    settingsAddress?.value.trim() ||
-    currentBusinessProfile.address ||
-    "",
-    location_confirmed_at:
-      new Date().toISOString(),
-    location_label:
+   const updates = {
+     latitude: center.lat,
+     longitude: center.lng,
+     location_confirmed: true,
+     location_confirmed_at:
+         new Date().toISOString(),
+   location_label:
       settingsMapLocationLabel?.value.trim() ||
       settingsLocationLabel?.value.trim() ||
       currentBusinessProfile.location_label ||
@@ -1105,6 +1094,7 @@ async function saveLocationSettings(event) {
    );
    
    setLocationEditMode(false);
+   refreshSettingsMapLayout();
 }
 
 async function saveProfileUpdates(
