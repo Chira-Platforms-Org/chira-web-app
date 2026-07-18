@@ -817,3 +817,10 @@
   outline: 0 !important;
   box-shadow: none !important;
 }
+
+.settings-map-heading-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 10px;
+}
