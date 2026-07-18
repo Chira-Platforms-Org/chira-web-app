@@ -431,10 +431,6 @@ function updateCoordinatePreview() {
           ? "Saved business map location"
           : "Location has not been confirmed yet.";
   }
-
-  if (locationEditMode) {
-    renderServiceAreaCircle(center);
-  }
 }
 
 function getServiceRadiusMeters() {
@@ -898,7 +894,20 @@ async function saveMarketplaceVisibility(event) {
 async function saveLocationSettings(event) {
   event.preventDefault();
 
-  const center = getMapCenter();
+  const hasSavedCoordinates =
+    window.LocalityMarketplaceVisibility
+      ?.hasValidCoordinates?.(
+        currentBusinessProfile
+      );
+
+  const center = locationEditMode
+    ? getMapCenter()
+    : hasSavedCoordinates
+      ? {
+          lat: Number(currentBusinessProfile.latitude),
+          lng: Number(currentBusinessProfile.longitude)
+        }
+      : getMapCenter();
 
   const updates = {
     latitude: center.lat,
@@ -1215,6 +1224,64 @@ function setupLeaveProtection() {
     );
 }
 
+function clearSectionSaveState(sectionKey) {
+  const actions =
+    getSectionActions(sectionKey);
+
+  const state =
+    getSectionSaveState(sectionKey);
+
+  const button =
+    actions?.querySelector(
+      'button[type="submit"]'
+    );
+
+  setSectionDirty(sectionKey, false);
+
+  if (actions) {
+    actions.hidden = true;
+  }
+
+  if (button) {
+    button.hidden = false;
+  }
+
+  if (state) {
+    state.hidden = true;
+    state.classList.remove(
+      "is-unsaved",
+      "is-saved"
+    );
+    state.textContent = "";
+  }
+}
+
+function resetSectionChanges(sectionKey) {
+  if (!currentBusinessProfile) return;
+
+  isProgrammaticRender = true;
+
+  if (sectionKey === "business-details") {
+    renderBusinessDetails(currentBusinessProfile);
+  }
+
+  if (sectionKey === "marketplace-visibility") {
+    renderBusinessDetails(currentBusinessProfile);
+    renderMarketplaceVisibility(
+      currentBusinessProfile
+    );
+  }
+
+  if (sectionKey === "map-service-area") {
+    renderBusinessDetails(currentBusinessProfile);
+    setLocationEditMode(false);
+  }
+
+  isProgrammaticRender = false;
+
+  clearSectionSaveState(sectionKey);
+}
+
 function attachSettingsEvents() {
   businessDetailsForm?.addEventListener(
     "submit",
@@ -1259,21 +1326,24 @@ function attachSettingsEvents() {
   }
 );
 
-settingsServiceRadius?.addEventListener(
-  "change",
-  () => {
-    if (settingsMap) {
-      const center = locationEditMode
-        ? getMapCenter()
-        : {
-            lat: Number(currentBusinessProfile?.latitude),
-            lng: Number(currentBusinessProfile?.longitude)
-          };
-
-      renderServiceAreaCircle(center);
-    }
-  }
-);
+   settingsServiceRadius?.addEventListener(
+     "change",
+     () => {
+       setSectionDirty("map-service-area", true);
+     }
+   );
+   document
+  .querySelectorAll("[data-cancel-section]")
+  .forEach((button) => {
+    button.addEventListener(
+      "click",
+      () => {
+        resetSectionChanges(
+          button.dataset.cancelSection
+        );
+      }
+    );
+  });
 }
 
 async function loadAccountSettings() {
