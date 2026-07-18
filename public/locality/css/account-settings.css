@@ -585,3 +585,271 @@
     min-height: 340px;
   }
 }
+
+/* =========================
+   SAVE / UNSAVED STATES
+========================= */
+
+.account-settings-page [hidden] {
+  display: none !important;
+}
+
+.settings-section-card.has-unsaved {
+  border-color: rgba(214, 154, 34, 0.32);
+  box-shadow:
+    0 0 0 4px rgba(214, 154, 34, 0.055),
+    0 18px 46px rgba(20, 45, 76, 0.095);
+}
+
+.settings-nav-item.has-unsaved::after {
+  content: "";
+  width: 8px;
+  height: 8px;
+  margin-left: auto;
+  border-radius: 50%;
+  background: var(--settings-warning);
+  box-shadow: 0 0 0 4px rgba(214, 154, 34, 0.12);
+}
+
+.settings-save-state {
+  display: inline-flex;
+  align-items: center;
+  min-height: 46px;
+  border-radius: 999px;
+  padding: 0 13px;
+  font-size: 0.76rem;
+  font-weight: 900;
+}
+
+.settings-save-state.is-saved {
+  background: rgba(8, 196, 100, 0.11);
+  color: var(--settings-green-dark);
+}
+
+.settings-save-state.is-unsaved {
+  background: rgba(214, 154, 34, 0.12);
+  color: #8a5907;
+}
+
+.settings-danger-btn {
+  min-height: 46px;
+  border: 0;
+  border-radius: 999px;
+  padding: 12px 18px;
+  background: rgba(216, 74, 59, 0.1);
+  color: var(--settings-danger);
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 950;
+  cursor: pointer;
+}
+
+.settings-unsaved-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 5000;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(12, 33, 66, 0.32);
+  backdrop-filter: blur(10px);
+}
+
+.settings-unsaved-card {
+  width: min(520px, 100%);
+  border: 1px solid rgba(12, 33, 66, 0.1);
+  border-radius: 28px;
+  padding: 26px;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 28px 80px rgba(12, 33, 66, 0.18);
+}
+
+.settings-unsaved-card p {
+  margin: 0 0 6px;
+  color: var(--settings-warning);
+  font-size: 0.72rem;
+  font-weight: 950;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+.settings-unsaved-card h2 {
+  margin: 0;
+  color: var(--settings-navy);
+  font-size: 1.75rem;
+  letter-spacing: -0.045em;
+}
+
+.settings-unsaved-card span {
+  display: block;
+  margin-top: 8px;
+  color: var(--settings-muted);
+  font-size: 0.86rem;
+  font-weight: 760;
+}
+
+.settings-unsaved-card ul {
+  margin: 18px 0;
+  padding-left: 20px;
+  color: var(--settings-navy);
+  font-size: 0.86rem;
+  font-weight: 850;
+}
+
+.settings-unsaved-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* =========================
+   FULFILLMENT OPTIONS
+========================= */
+
+.settings-fulfillment-box {
+  display: grid;
+  gap: 10px;
+  border: 1px solid var(--settings-border);
+  border-radius: 20px;
+  padding: 16px;
+  background: rgba(12, 33, 66, 0.035);
+}
+
+.settings-fulfillment-box p {
+  margin: 0 0 4px;
+  color: var(--settings-muted);
+  font-size: 0.76rem;
+  font-weight: 760;
+}
+
+.settings-inline-other {
+  display: grid;
+  gap: 7px;
+  margin-top: 4px;
+}
+
+/* =========================
+   IMPROVED MAP PIN MODE
+========================= */
+
+.settings-map-wrap:not(.is-editing) .settings-fixed-map-pin {
+  display: none;
+}
+
+.settings-fixed-map-pin {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 500;
+  width: 36px;
+  height: 58px;
+  pointer-events: none;
+  transform: translate(-50%, -92%);
+  background: transparent;
+}
+
+.settings-fixed-map-pin::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 34px;
+  height: 48px;
+  transform: translateX(-50%);
+  clip-path:
+    polygon(
+      50% 100%,
+      42% 72%,
+      10% 42%,
+      10% 20%,
+      25% 5%,
+      50% 0,
+      75% 5%,
+      90% 20%,
+      90% 42%,
+      58% 72%
+    );
+  background: var(--settings-green);
+  filter:
+    drop-shadow(0 12px 18px rgba(8, 82, 53, 0.24));
+}
+
+.settings-fixed-map-pin::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -7px;
+  width: 16px;
+  height: 16px;
+  transform: translateX(-50%);
+  background:
+    linear-gradient(
+      45deg,
+      transparent 45%,
+      rgba(12, 33, 66, 0.42) 45%,
+      rgba(12, 33, 66, 0.42) 55%,
+      transparent 55%
+    ),
+    linear-gradient(
+      -45deg,
+      transparent 45%,
+      rgba(12, 33, 66, 0.42) 45%,
+      rgba(12, 33, 66, 0.42) 55%,
+      transparent 55%
+    );
+  opacity: 0.52;
+}
+
+.settings-fixed-map-pin span {
+  position: absolute;
+  top: 15px;
+  left: 50%;
+  z-index: 2;
+  width: 9px;
+  height: 9px;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: white;
+}
+
+.settings-saved-map-pin {
+  position: relative;
+  width: 30px;
+  height: 42px;
+  transform: translateY(-2px);
+}
+
+.settings-saved-map-pin::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  clip-path:
+    polygon(
+      50% 100%,
+      42% 72%,
+      10% 42%,
+      10% 20%,
+      25% 5%,
+      50% 0,
+      75% 5%,
+      90% 20%,
+      90% 42%,
+      58% 72%
+    );
+  background: var(--settings-green);
+  border: 3px solid white;
+  filter:
+    drop-shadow(0 10px 16px rgba(8, 82, 53, 0.22));
+}
+
+.settings-saved-map-pin span {
+  position: absolute;
+  top: 13px;
+  left: 50%;
+  z-index: 2;
+  width: 8px;
+  height: 8px;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: white;
+}
