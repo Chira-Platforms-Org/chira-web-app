@@ -913,16 +913,16 @@ async function saveLocationSettings(event) {
       "",
     service_radius_miles:
       Number(settingsServiceRadius?.value) || 25,
-    address_visibility:
-      settingsAddressVisibility?.value ||
-      "area_only",
-    location_notes:
-      settingsLocationNotes?.value.trim() || ""
-   fulfillment_methods:
-     getCheckedFulfillmentMethods(),
-   fulfillment_other:
-     settingsFulfillmentOther?.value.trim() || "",
-  };
+      address_visibility:
+        settingsAddressVisibility?.value ||
+        "area_only",
+      location_notes:
+        settingsLocationNotes?.value.trim() || "",
+      fulfillment_methods:
+        getCheckedFulfillmentMethods(),
+      fulfillment_other:
+        settingsFulfillmentOther?.value.trim() || ""
+   };
 
    await saveProfileUpdates(
      updates,
