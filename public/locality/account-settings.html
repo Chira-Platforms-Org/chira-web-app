@@ -10,6 +10,12 @@
 
   <title>Account Settings | Locality</title>
 
+  <link
+  rel="icon"
+  type="image/png"
+  href="images/Gray%20Locality%20Favicon.png"
+  />
+
   <link rel="stylesheet" href="css/locality.css" />
   <link rel="stylesheet" href="css/app-shell.css" />
   <link rel="stylesheet" href="css/account-settings.css" />
@@ -274,13 +280,23 @@
             </label>
           </div>
 
-          <div class="settings-form-actions settings-wide-field">
+          <div
+            class="settings-form-actions settings-wide-field"
+            data-settings-actions="business-details"
+            hidden
+          >
             <button
               type="submit"
               class="settings-primary-btn"
             >
               Save business details
             </button>
+
+            <span
+              class="settings-save-state"
+              data-save-state="business-details"
+              hidden
+            ></span>
           </div>
         </form>
       </section>
@@ -366,13 +382,23 @@
             </span>
           </label>
 
-          <div class="settings-form-actions settings-wide-field">
+          <div
+            class="settings-form-actions settings-wide-field"
+            data-settings-actions="marketplace-visibility"
+            hidden
+          >
             <button
               type="submit"
               class="settings-primary-btn"
             >
               Save visibility settings
             </button>
+
+            <span
+              class="settings-save-state"
+              data-save-state="marketplace-visibility"
+              hidden
+            ></span>
           </div>
         </form>
       </section>
@@ -386,22 +412,31 @@
         <div class="settings-section-heading">
           <div>
             <p>Location</p>
-
+        
             <h2>Map & service area</h2>
-
+        
             <span>
-              Move the map until the fixed pin is over your business
-              or pickup location, then confirm the location.
+              Confirm the public map location for your business.
+              Pickup, delivery, and shipping options can be managed below.
             </span>
           </div>
+        
+          <button
+            type="button"
+            id="settingsEditLocationBtn"
+            class="settings-secondary-btn"
+          >
+            Edit map pin
+          </button>
         </div>
-
+        
         <div class="settings-map-wrap">
           <div id="settingsLocationMap"></div>
 
           <div
             class="settings-fixed-map-pin"
             aria-hidden="true"
+            hidden
           >
             <span></span>
           </div>
@@ -466,7 +501,88 @@
             />
           </label>
 
-          <div class="settings-form-actions settings-wide-field">
+          <fieldset class="settings-wide-field settings-fulfillment-box">
+            <legend>Pickup, delivery, and shipping options</legend>
+          
+            <p>
+              Select the ways buyers can receive orders from your business.
+            </p>
+          
+            <label class="settings-check-row">
+              <input
+                type="checkbox"
+                name="settingsFulfillmentMethods"
+                value="business_pickup"
+              />
+          
+              <span>
+                Pickup at business location
+              </span>
+            </label>
+          
+            <label class="settings-check-row">
+              <input
+                type="checkbox"
+                name="settingsFulfillmentMethods"
+                value="separate_pickup_area"
+              />
+          
+              <span>
+                Pickup at a separate pickup area
+              </span>
+            </label>
+          
+            <label class="settings-check-row">
+              <input
+                type="checkbox"
+                name="settingsFulfillmentMethods"
+                value="local_delivery"
+              />
+          
+              <span>
+                Local delivery
+              </span>
+            </label>
+          
+            <label class="settings-check-row">
+              <input
+                type="checkbox"
+                name="settingsFulfillmentMethods"
+                value="regional_delivery"
+              />
+          
+              <span>
+                Regional delivery
+              </span>
+            </label>
+          
+            <label class="settings-check-row">
+              <input
+                type="checkbox"
+                name="settingsFulfillmentMethods"
+                value="shipping"
+              />
+          
+              <span>
+                Shipping available
+              </span>
+            </label>
+          
+            <label class="settings-inline-other">
+              Other fulfillment option
+              <input
+                id="settingsFulfillmentOther"
+                type="text"
+                placeholder="Describe another pickup, shipping, or delivery method."
+              />
+            </label>
+          </fieldset>
+
+          <div
+            class="settings-form-actions settings-wide-field"
+            data-settings-actions="map-service-area"
+            hidden
+          >
             <button
               type="submit"
               class="settings-primary-btn"
@@ -481,6 +597,12 @@
             >
               Recenter map
             </button>
+
+            <span
+              class="settings-save-state"
+              data-save-state="map-service-area"
+              hidden
+            ></span>
           </div>
         </form>
       </section>
@@ -602,6 +724,50 @@
       </section>
     </section>
   </main>
+
+  <div
+    id="settingsUnsavedModal"
+    class="settings-unsaved-modal"
+    hidden
+  >
+    <div class="settings-unsaved-card">
+      <p>Unsaved changes</p>
+  
+      <h2>Save changes before leaving?</h2>
+  
+      <span>
+        You have edits that have not been saved yet.
+      </span>
+  
+      <ul id="settingsUnsavedList"></ul>
+  
+      <div class="settings-unsaved-actions">
+        <button
+          type="button"
+          id="settingsStayBtn"
+          class="settings-secondary-btn"
+        >
+          Stay on page
+        </button>
+  
+        <button
+          type="button"
+          id="settingsSaveAndLeaveBtn"
+          class="settings-primary-btn"
+        >
+          Save changes
+        </button>
+  
+        <button
+          type="button"
+          id="settingsLeaveWithoutSavingBtn"
+          class="settings-danger-btn"
+        >
+          Leave without saving
+        </button>
+      </div>
+    </div>
+  </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
