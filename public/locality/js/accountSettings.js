@@ -83,6 +83,27 @@ const settingsLocationNotes =
 const settingsResetMapBtn =
   document.getElementById("settingsResetMapBtn");
 
+const settingsEditLocationBtn =
+  document.getElementById("settingsEditLocationBtn");
+
+const settingsFulfillmentOther =
+  document.getElementById("settingsFulfillmentOther");
+
+const settingsUnsavedModal =
+  document.getElementById("settingsUnsavedModal");
+
+const settingsUnsavedList =
+  document.getElementById("settingsUnsavedList");
+
+const settingsStayBtn =
+  document.getElementById("settingsStayBtn");
+
+const settingsSaveAndLeaveBtn =
+  document.getElementById("settingsSaveAndLeaveBtn");
+
+const settingsLeaveWithoutSavingBtn =
+  document.getElementById("settingsLeaveWithoutSavingBtn");
+
 const settingsLoginEmail =
   document.getElementById("settingsLoginEmail");
 
@@ -92,6 +113,21 @@ const settingsLogoutBtn =
 let currentUser = null;
 let currentBusinessProfile = null;
 let settingsMap = null;
+
+let settingsSavedMarker = null;
+let settingsServiceCircle = null;
+let locationEditMode = false;
+
+let dirtySections = new Set();
+let pendingNavigationHref = null;
+let isProgrammaticRender = false;
+
+const SETTINGS_SECTION_LABELS = {
+  "business-details": "Business details",
+  "marketplace-visibility": "Marketplace visibility",
+  "map-service-area": "Map & service area"
+};
+
 
 function setSettingsStatus(
   message,
@@ -164,6 +200,169 @@ function formatCategory(value = "") {
     );
 }
 
+function formatAddressForInput(value) {
+  if (!value) return "";
+
+  if (typeof value === "string") {
+    return value;
+  }
+
+  if (typeof value === "object") {
+    return [
+      value.street,
+      value.address,
+      value.city,
+      value.state,
+      value.zip,
+      value.postal_code
+    ]
+      .filter(Boolean)
+      .join(", ");
+  }
+
+  return String(value);
+}
+
+function getCheckedFulfillmentMethods() {
+  return [
+    ...document.querySelectorAll(
+      'input[name="settingsFulfillmentMethods"]:checked'
+    )
+  ].map((input) => input.value);
+}
+
+function setCheckedFulfillmentMethods(methods = []) {
+  const normalized = Array.isArray(methods)
+    ? methods
+    : [];
+
+  document
+    .querySelectorAll(
+      'input[name="settingsFulfillmentMethods"]'
+    )
+    .forEach((input) => {
+      input.checked =
+        normalized.includes(input.value);
+    });
+}
+
+function formatSavedTime() {
+  return new Intl.DateTimeFormat(
+    undefined,
+    {
+      month: "short",
+      day: "numeric",
+      hour: "numeric",
+      minute: "2-digit"
+    }
+  ).format(new Date());
+}
+
+function getSectionActions(sectionKey) {
+  return document.querySelector(
+    `[data-settings-actions="${sectionKey}"]`
+  );
+}
+
+function getSectionSaveState(sectionKey) {
+  return document.querySelector(
+    `[data-save-state="${sectionKey}"]`
+  );
+}
+
+function getSectionNav(sectionKey) {
+  return document.querySelector(
+    `[data-settings-nav="${sectionKey}"]`
+  );
+}
+
+function setSectionDirty(sectionKey, dirty = true) {
+  if (isProgrammaticRender) return;
+
+  const section =
+    document.getElementById(sectionKey);
+
+  const actions =
+    getSectionActions(sectionKey);
+
+  const state =
+    getSectionSaveState(sectionKey);
+
+  if (dirty) {
+    dirtySections.add(sectionKey);
+
+    section?.classList.add("has-unsaved");
+    getSectionNav(sectionKey)
+      ?.classList.add("has-unsaved");
+
+    if (actions) {
+      actions.hidden = false;
+    }
+
+    const button =
+      actions?.querySelector(
+        'button[type="submit"]'
+      );
+
+    if (button) {
+      button.hidden = false;
+    }
+
+    if (state) {
+      state.hidden = false;
+      state.classList.add("is-unsaved");
+      state.classList.remove("is-saved");
+      state.textContent = "Unsaved changes";
+    }
+
+    return;
+  }
+
+  dirtySections.delete(sectionKey);
+
+  section?.classList.remove("has-unsaved");
+  getSectionNav(sectionKey)
+    ?.classList.remove("has-unsaved");
+}
+
+function markSectionSaved(sectionKey) {
+  const actions =
+    getSectionActions(sectionKey);
+
+  const state =
+    getSectionSaveState(sectionKey);
+
+  const button =
+    actions?.querySelector(
+      'button[type="submit"]'
+    );
+
+  setSectionDirty(sectionKey, false);
+
+  if (actions) {
+    actions.hidden = false;
+  }
+
+  if (button) {
+    button.hidden = true;
+  }
+
+  if (state) {
+    state.hidden = false;
+    state.classList.remove("is-unsaved");
+    state.classList.add("is-saved");
+    state.textContent =
+      `✓ Saved on ${formatSavedTime()}`;
+  }
+}
+
+function getDirtySectionLabels() {
+  return [...dirtySections].map(
+    (key) =>
+      SETTINGS_SECTION_LABELS[key] || key
+  );
+}
+
 function hasSellerRole(profile = {}) {
   const roles = parseArray(
     profile.marketplace_roles
@@ -226,8 +425,148 @@ function updateCoordinatePreview() {
 
   if (settingsCoordinatePreview) {
     settingsCoordinatePreview.textContent =
-      `Selected pin: ${center.lat.toFixed(5)}, ${center.lng.toFixed(5)}`;
+      locationEditMode
+        ? `Selected pin: ${center.lat.toFixed(5)}, ${center.lng.toFixed(5)}`
+        : currentBusinessProfile?.location_confirmed
+          ? "Saved business map location"
+          : "Location has not been confirmed yet.";
   }
+
+  if (locationEditMode) {
+    renderServiceAreaCircle(center);
+  }
+}
+
+function getServiceRadiusMeters() {
+  const miles =
+    Number(settingsServiceRadius?.value) ||
+    Number(currentBusinessProfile?.service_radius_miles) ||
+    25;
+
+  return miles * 1609.344;
+}
+
+function clearMapLocationLayers() {
+  if (settingsSavedMarker) {
+    settingsMap?.removeLayer(settingsSavedMarker);
+    settingsSavedMarker = null;
+  }
+
+  if (settingsServiceCircle) {
+    settingsMap?.removeLayer(settingsServiceCircle);
+    settingsServiceCircle = null;
+  }
+}
+
+function renderServiceAreaCircle(center) {
+  if (!settingsMap || !center) return;
+
+  if (settingsServiceCircle) {
+    settingsMap.removeLayer(settingsServiceCircle);
+    settingsServiceCircle = null;
+  }
+
+  settingsServiceCircle = window.L.circle(
+    [center.lat, center.lng],
+    {
+      radius: getServiceRadiusMeters(),
+      color: "#08c464",
+      weight: 1,
+      opacity: 0.35,
+      fillColor: "#08c464",
+      fillOpacity: 0.08
+    }
+  ).addTo(settingsMap);
+}
+
+function renderSavedLocationLayers(profile = {}) {
+  if (
+    !settingsMap ||
+    !window.LocalityMarketplaceVisibility
+      ?.hasValidCoordinates?.(profile)
+  ) {
+    return;
+  }
+
+  clearMapLocationLayers();
+
+  const lat =
+    Number(profile.latitude);
+
+  const lng =
+    Number(profile.longitude);
+
+  settingsSavedMarker = window.L.marker(
+    [lat, lng],
+    {
+      interactive: false,
+      icon: window.L.divIcon({
+        className: "",
+        html: `
+          <div class="settings-saved-map-pin">
+            <span></span>
+          </div>
+        `,
+        iconSize: [34, 46],
+        iconAnchor: [17, 43]
+      })
+    }
+  ).addTo(settingsMap);
+
+  renderServiceAreaCircle({
+    lat,
+    lng
+  });
+}
+
+function setLocationEditMode(enabled) {
+  locationEditMode = enabled;
+
+  const mapWrap =
+    settingsLocationMapElement?.closest(
+      ".settings-map-wrap"
+    );
+
+  mapWrap?.classList.toggle(
+    "is-editing",
+    enabled
+  );
+
+  document
+    .querySelector(".settings-fixed-map-pin")
+    ?.toggleAttribute(
+      "hidden",
+      !enabled
+    );
+
+  if (settingsEditLocationBtn) {
+    settingsEditLocationBtn.textContent =
+      enabled
+        ? "Editing map pin"
+        : "Edit map pin";
+  }
+
+  if (enabled) {
+    clearMapLocationLayers();
+
+    const lat =
+      Number(currentBusinessProfile?.latitude) ||
+      33.4484;
+
+    const lng =
+      Number(currentBusinessProfile?.longitude) ||
+      -112.074;
+
+    settingsMap?.setView([lat, lng], 13);
+    setSectionDirty("map-service-area", true);
+    updateCoordinatePreview();
+    return;
+  }
+
+  renderSavedLocationLayers(
+    currentBusinessProfile
+  );
+  updateCoordinatePreview();
 }
 
 function renderSidebar(profile = {}) {
@@ -323,7 +662,7 @@ function renderBusinessDetails(profile = {}) {
 
   if (settingsAddress) {
     settingsAddress.value =
-      profile.address || "";
+     formatAddressForInput(profile.address);
   }
 
   if (settingsShortIntro) {
@@ -377,6 +716,15 @@ function renderBusinessDetails(profile = {}) {
     settingsLoginEmail.textContent =
       currentUser?.email || "Unavailable";
   }
+
+   setCheckedFulfillmentMethods(
+     profile.fulfillment_methods || []
+   );
+   
+   if (settingsFulfillmentOther) {
+     settingsFulfillmentOther.value =
+       profile.fulfillment_other || "";
+   }
 }
 
 function renderMarketplaceVisibility(profile = {}) {
@@ -470,19 +818,22 @@ function initSettingsMap(profile = {}) {
     }
   ).addTo(settingsMap);
 
-  settingsMap.on(
-    "move",
-    updateCoordinatePreview
-  );
-
-  settingsMap.on(
-    "moveend",
-    updateCoordinatePreview
-  );
+   settingsMap.on("move", () => {
+     if (locationEditMode) {
+       updateCoordinatePreview();
+     }
+   });
+   
+   settingsMap.on("moveend", () => {
+     if (locationEditMode) {
+       updateCoordinatePreview();
+     }
+   });
 
   window.setTimeout(() => {
-    settingsMap?.invalidateSize();
-    updateCoordinatePreview();
+   settingsMap?.invalidateSize();
+   renderSavedLocationLayers(profile);
+   updateCoordinatePreview();
   }, 150);
 }
 
@@ -515,10 +866,11 @@ async function saveBusinessDetails(event) {
       settingsShortIntro?.value.trim() || ""
   };
 
-  await saveProfileUpdates(
-    updates,
-    "Business details saved."
-  );
+   await saveProfileUpdates(
+     updates,
+     "Business details saved.",
+     "business-details"
+   );
 }
 
 async function saveMarketplaceVisibility(event) {
@@ -536,10 +888,11 @@ async function saveMarketplaceVisibility(event) {
       settingsSupplierOutreach?.checked !== false
   };
 
-  await saveProfileUpdates(
-    updates,
-    "Marketplace visibility settings saved."
-  );
+   await saveProfileUpdates(
+     updates,
+     "Marketplace visibility settings saved.",
+     "marketplace-visibility"
+   );
 }
 
 async function saveLocationSettings(event) {
@@ -565,17 +918,25 @@ async function saveLocationSettings(event) {
       "area_only",
     location_notes:
       settingsLocationNotes?.value.trim() || ""
+   fulfillment_methods:
+     getCheckedFulfillmentMethods(),
+   fulfillment_other:
+     settingsFulfillmentOther?.value.trim() || "",
   };
 
-  await saveProfileUpdates(
-    updates,
-    "Location confirmed and saved."
-  );
+   await saveProfileUpdates(
+     updates,
+     "Map, service area, and fulfillment options saved.",
+     "map-service-area"
+   );
+   
+   setLocationEditMode(false);
 }
 
 async function saveProfileUpdates(
   updates,
-  successMessage
+  successMessage,
+  sectionKey = null
 ) {
   if (
     !currentBusinessProfile ||
@@ -623,6 +984,10 @@ async function saveProfileUpdates(
   renderMarketplaceVisibility(
     currentBusinessProfile
   );
+
+  if (sectionKey) {
+  markSectionSaved(sectionKey);
+  }
 
   setSettingsStatus(successMessage);
 }
@@ -710,6 +1075,146 @@ async function handleLogout() {
   window.location.href = "index.html";
 }
 
+function setupDirtyTracking() {
+  [
+    {
+      form: businessDetailsForm,
+      section: "business-details"
+    },
+    {
+      form: marketplaceVisibilityForm,
+      section: "marketplace-visibility"
+    },
+    {
+      form: locationSettingsForm,
+      section: "map-service-area"
+    }
+  ].forEach(({ form, section }) => {
+    form?.addEventListener("input", () =>
+      setSectionDirty(section, true)
+    );
+
+    form?.addEventListener("change", () =>
+      setSectionDirty(section, true)
+    );
+  });
+}
+
+function showUnsavedModal(href) {
+  pendingNavigationHref = href;
+
+  if (settingsUnsavedList) {
+    settingsUnsavedList.innerHTML =
+      getDirtySectionLabels()
+        .map((label) => `<li>${label}</li>`)
+        .join("");
+  }
+
+  settingsUnsavedModal.hidden = false;
+}
+
+function hideUnsavedModal() {
+  settingsUnsavedModal.hidden = true;
+  pendingNavigationHref = null;
+}
+
+async function saveDirtySections() {
+  const sections =
+    [...dirtySections];
+
+  for (const section of sections) {
+    if (section === "business-details") {
+      await saveBusinessDetails({
+        preventDefault() {}
+      });
+    }
+
+    if (section === "marketplace-visibility") {
+      await saveMarketplaceVisibility({
+        preventDefault() {}
+      });
+    }
+
+    if (section === "map-service-area") {
+      await saveLocationSettings({
+        preventDefault() {}
+      });
+    }
+  }
+}
+
+function setupLeaveProtection() {
+  window.addEventListener(
+    "beforeunload",
+    (event) => {
+      if (!dirtySections.size) return;
+
+      event.preventDefault();
+      event.returnValue = "";
+    }
+  );
+
+  document.addEventListener(
+    "click",
+    (event) => {
+      const link =
+        event.target.closest("a[href]");
+
+      if (!link || !dirtySections.size) {
+        return;
+      }
+
+      const href =
+        link.getAttribute("href");
+
+      if (
+        !href ||
+        href.startsWith("#") ||
+        link.target === "_blank"
+      ) {
+        return;
+      }
+
+      event.preventDefault();
+      showUnsavedModal(link.href);
+    }
+  );
+
+  settingsStayBtn?.addEventListener(
+    "click",
+    hideUnsavedModal
+  );
+
+  settingsLeaveWithoutSavingBtn
+    ?.addEventListener(
+      "click",
+      () => {
+        const href = pendingNavigationHref;
+        hideUnsavedModal();
+
+        if (href) {
+          window.location.href = href;
+        }
+      }
+    );
+
+  settingsSaveAndLeaveBtn
+    ?.addEventListener(
+      "click",
+      async () => {
+        const href = pendingNavigationHref;
+
+        await saveDirtySections();
+
+        hideUnsavedModal();
+
+        if (href) {
+          window.location.href = href;
+        }
+      }
+    );
+}
+
 function attachSettingsEvents() {
   businessDetailsForm?.addEventListener(
     "submit",
@@ -746,6 +1251,29 @@ function attachSettingsEvents() {
     "click",
     handleLogout
   );
+
+  settingsEditLocationBtn?.addEventListener(
+  "click",
+  () => {
+    setLocationEditMode(true);
+  }
+);
+
+settingsServiceRadius?.addEventListener(
+  "change",
+  () => {
+    if (settingsMap) {
+      const center = locationEditMode
+        ? getMapCenter()
+        : {
+            lat: Number(currentBusinessProfile?.latitude),
+            lng: Number(currentBusinessProfile?.longitude)
+          };
+
+      renderServiceAreaCircle(center);
+    }
+  }
+);
 }
 
 async function loadAccountSettings() {
@@ -793,22 +1321,28 @@ async function loadAccountSettings() {
     return;
   }
 
-  currentBusinessProfile =
-    profileResult.data;
-
-  renderSidebar(currentBusinessProfile);
-  renderBusinessDetails(currentBusinessProfile);
-  renderMarketplaceVisibility(
-    currentBusinessProfile
-  );
-  initSettingsMap(currentBusinessProfile);
-
-  setSettingsStatus("");
-}
+   currentBusinessProfile =
+     profileResult.data;
+   
+   isProgrammaticRender = true;
+   
+   renderSidebar(currentBusinessProfile);
+   renderBusinessDetails(currentBusinessProfile);
+   renderMarketplaceVisibility(
+     currentBusinessProfile
+   );
+   
+   isProgrammaticRender = false;
+   
+   initSettingsMap(currentBusinessProfile);
+   
+   setSettingsStatus("");
 
 function initializeAccountSettings() {
   setupSectionNavigation();
   attachSettingsEvents();
+  setupDirtyTracking();
+  setupLeaveProtection();
   loadAccountSettings();
 }
 
