@@ -853,3 +853,14 @@
   border-radius: 50%;
   background: white;
 }
+
+.settings-saved-map-pin::before {
+  border: 2px solid rgba(255, 255, 255, 0.9);
+  filter:
+    drop-shadow(0 7px 14px rgba(8, 82, 53, 0.2));
+}
+
+.settings-fixed-map-pin::before {
+  filter:
+    drop-shadow(0 8px 14px rgba(8, 82, 53, 0.22));
+}
