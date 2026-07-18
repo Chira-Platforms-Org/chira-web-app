@@ -503,8 +503,8 @@ function renderSavedLocationLayers(profile = {}) {
             <span></span>
           </div>
         `,
-        iconSize: [34, 46],
-        iconAnchor: [17, 43]
+        iconSize: [42, 58],
+        iconAnchor: [21, 58]
       })
     }
   ).addTo(settingsMap);
