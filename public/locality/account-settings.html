@@ -238,13 +238,54 @@
             />
           </label>
 
-          <label class="settings-wide-field">
-            Address
+          <label>
+            Address 1
             <input
-              id="settingsAddress"
+              id="settingsAddressLine1"
               type="text"
-              autocomplete="street-address"
-              placeholder="Street address or pickup location"
+              autocomplete="address-line1"
+              placeholder="1933 S Ballpark Way"
+            />
+          </label>
+          
+          <label>
+            Address 2
+            <input
+              id="settingsAddressLine2"
+              type="text"
+              autocomplete="address-line2"
+              placeholder="Suite, unit, apartment, building, etc."
+            />
+          </label>
+          
+          <label>
+            City
+            <input
+              id="settingsAddressCity"
+              type="text"
+              autocomplete="address-level2"
+              placeholder="Goodyear"
+            />
+          </label>
+          
+          <label>
+            State
+            <input
+              id="settingsAddressState"
+              type="text"
+              autocomplete="address-level1"
+              placeholder="AZ"
+              maxlength="2"
+            />
+          </label>
+          
+          <label>
+            ZIP code
+            <input
+              id="settingsAddressZip"
+              type="text"
+              autocomplete="postal-code"
+              placeholder="85338"
             />
           </label>
 
@@ -437,13 +478,53 @@
             </span>
           </div>
         
-          <button
-            type="button"
-            id="settingsEditLocationBtn"
-            class="settings-secondary-btn"
-          >
-            Edit map pin
-          </button>
+          <div class="settings-map-heading-actions">
+            <div class="settings-map-heading-actions">
+              <button
+                type="button"
+                id="settingsEditLocationBtn"
+                class="settings-secondary-btn"
+              >
+                Edit map pin
+              </button>
+            
+              <button
+                type="button"
+                id="settingsSavePinBtn"
+                class="settings-primary-btn"
+                hidden
+              >
+                Confirm pin location
+              </button>
+            
+              <button
+                type="button"
+                id="settingsCancelPinBtn"
+                class="settings-secondary-btn"
+                hidden
+              >
+                Cancel pin change
+              </button>
+            </div>
+          
+            <button
+              type="button"
+              id="settingsSavePinBtn"
+              class="settings-primary-btn"
+              hidden
+            >
+              Confirm pin location
+            </button>
+          
+            <button
+              type="button"
+              id="settingsCancelPinBtn"
+              class="settings-secondary-btn"
+              hidden
+            >
+              Cancel pin change
+            </button>
+          </div>
         </div>
         
         <div class="settings-map-wrap">
@@ -472,6 +553,15 @@
           id="locationSettingsForm"
           class="settings-form-grid"
         >
+          <label class="settings-wide-field">
+            Address or pickup location
+            <input
+              id="settingsMapAddress"
+              type="text"
+              placeholder="Street address, pickup location, or business address"
+            />
+          </label>
+          
           <label>
             Public location label
             <input
