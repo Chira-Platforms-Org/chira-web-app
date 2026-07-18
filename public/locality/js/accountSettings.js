@@ -805,14 +805,36 @@ function initSettingsMap(profile = {}) {
     hasCoordinates ? 13 : 10
   );
 
-  window.L.tileLayer(
-    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-    {
-      maxZoom: 19,
-      attribution:
-        "&copy; OpenStreetMap contributors"
-    }
-  ).addTo(settingsMap);
+   const primaryTileLayer = window.L.tileLayer(
+     "https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png",
+     {
+       maxZoom: 19,
+       attribution:
+         "&copy; OpenStreetMap contributors"
+     }
+   );
+   
+   primaryTileLayer.on("tileerror", () => {
+     if (
+       !settingsMap ||
+       settingsMap._localityFallbackTiles
+     ) {
+       return;
+     }
+   
+     settingsMap._localityFallbackTiles = true;
+   
+     window.L.tileLayer(
+       "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+       {
+         maxZoom: 19,
+         attribution:
+           "&copy; OpenStreetMap contributors"
+       }
+     ).addTo(settingsMap);
+   });
+   
+   primaryTileLayer.addTo(settingsMap);
 
    settingsMap.on("move", () => {
      if (locationEditMode) {
