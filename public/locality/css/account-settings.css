@@ -769,8 +769,8 @@
   position: absolute;
   top: 4px;
   left: 50%;
-  width: 38px;
-  height: 38px;
+  width: 42px;
+  height: 42px;
   transform: translateX(-50%) rotate(-45deg);
   transform-origin: center;
   border-radius: 50% 50% 50% 10%;
@@ -791,11 +791,11 @@
 .settings-saved-map-pin::after {
   content: "";
   position: absolute;
-  top: 17px;
+  top: 19px;
   left: 50%;
   z-index: 2;
-  width: 11px;
-  height: 11px;
+  width: 12px;
+  height: 12px;
   transform: translateX(-50%);
   border-radius: 50%;
   background: #ffffff;
