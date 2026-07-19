@@ -517,7 +517,7 @@ function renderPrivateBuyerDashboard({
 
   if (buyerWelcomeText) {
     buyerWelcomeText.textContent =
-      "Explore fresh local products, pickup windows, saved businesses, and updates from nearby food producers.";
+      "Browse fresh listings, build a basket, save businesses, and keep track of pickup options near you.";
   }
 
   if (buyerLocationLabel) {
