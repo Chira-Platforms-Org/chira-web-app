@@ -95,7 +95,7 @@ function getBusinessProfileRoute(profile) {
   }
 
   if (onboardingCompleted || profileSetupCompleted) {
-    return "supplier.html";
+    return "/my-locality/business";
   }
 
   return "signup.html";
@@ -123,9 +123,9 @@ async function routeAfterSignIn() {
   }
 
   if (userProfile?.locality_account_type === "personal_buyer") {
-  window.location.href = "my-locality.html";
-  return;
-}
+    window.location.href = "/my-locality";
+    return;
+  }
 
   if (!window.LocalityProfileService?.getMyPrimaryBusinessProfile) {
     setStatus("Profile service is unavailable. Please refresh and try again.", "error");
