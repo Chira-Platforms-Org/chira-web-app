@@ -95,7 +95,7 @@ function getBusinessProfileRoute(profile) {
   }
 
   if (onboardingCompleted || profileSetupCompleted) {
-    return "/my-locality/business";
+    return "supplier.html";
   }
 
   return "signup.html";
@@ -123,7 +123,7 @@ async function routeAfterSignIn() {
   }
 
   if (userProfile?.locality_account_type === "personal_buyer") {
-    window.location.href = "/my-locality";
+    window.location.href = "my-locality.html";
     return;
   }
 
