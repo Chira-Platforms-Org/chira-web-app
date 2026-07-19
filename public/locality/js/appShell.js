@@ -181,7 +181,7 @@
         </a>
 
         <a
-          href="my-locality.html"
+          href="/my-locality"
           class="${
             activePage === "my-locality"
               ? "active"
@@ -200,7 +200,7 @@
             id="appShellToolsMenu"
             class="app-shell-tools-menu"
           >
-            <a href="my-locality.html">
+            <a href="/my-locality">
               Open My Locality
             </a>
           </div>
@@ -826,7 +826,7 @@ function showNotificationPreview(
 
     if (!appContext.isBusiness) {
       toolsMenu.innerHTML = `
-        <a href="my-locality.html">
+        <a href="/my-locality">
           My Locality
         </a>
 
@@ -897,7 +897,7 @@ function showNotificationPreview(
 
     if (!appContext.isBusiness) {
       accountMenu.innerHTML = `
-        <a href="my-locality.html">
+        <a href="/my-locality">
           My Locality
         </a>
 
@@ -918,7 +918,7 @@ function showNotificationPreview(
     }
 
     accountMenu.innerHTML = `
-      <a href="my-locality.html">
+      <a href="/my-locality">
         My Locality
       </a>
 
