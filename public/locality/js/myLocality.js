@@ -2,8 +2,8 @@
    MY LOCALITY ROLE ROUTER
 
    /my-locality decides where the user belongs:
-   - Private buyer → /my-locality/private
-   - Business user → /my-locality/business
+   - Private buyer → my-locality-private.html
+   - Business user → /my-locality/supplier.html
    - Signed out → account.html
 ========================= */
 
@@ -139,14 +139,14 @@ async function routeMyLocality() {
       - seller
       - buyer & seller
     */
-    if (businessProfile) {
-      setRouterStatus(
-        "Opening your business workspace..."
-      );
-
-      routeTo("/my-locality/business");
-      return;
-    }
+      if (businessProfile) {
+        setRouterStatus(
+          "Opening your business workspace..."
+        );
+      
+        routeTo("supplier.html");
+        return;
+      }
 
     /*
       If the user chose business signup but has no
@@ -165,7 +165,7 @@ async function routeMyLocality() {
       "Opening your personal Locality workspace..."
     );
 
-    routeTo("/my-locality/private");
+    routeTo("my-locality-private.html");
   } catch (error) {
     console.error(
       "Unable to route My Locality:",
