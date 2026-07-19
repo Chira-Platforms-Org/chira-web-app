@@ -151,6 +151,31 @@ function getBusinessDescription(profile = {}) {
   );
 }
 
+function truncateText(value = "", maxLength = 115) {
+  const text =
+    String(value || "")
+      .replace(/\s+/g, " ")
+      .trim();
+
+  if (text.length <= maxLength) {
+    return text;
+  }
+
+  return `${text.slice(0, maxLength).trim()}...`;
+}
+
+function getBusinessCardSubtitle(profile = {}) {
+  const category =
+    getPrimaryCategory(profile);
+
+  const location =
+    profile.location_label ||
+    profile.city ||
+    "local area";
+
+  return `${category} · ${location}. View this business profile for products, pickup options, and updates.`;
+}
+
 function getBusinessImage(profile = {}) {
   const gallery =
     parseArray(profile.gallery_images);
@@ -232,10 +257,12 @@ function buildFeaturedCards() {
           label: "Product",
           badge: getProductAvailability(product),
           title: product.name || "Local product",
-          subtitle:
-            product.description ||
-            product.fulfillment_notes ||
-            "Available from a nearby Locality business.",
+          subtitle: truncateText(
+           product.description ||
+             product.fulfillment_notes ||
+             "Available from a nearby Locality business.",
+           110
+          ),
           metaOne:
             business?.name ||
             "Locality business",
@@ -266,7 +293,7 @@ function buildFeaturedCards() {
           label: normalizeRoleLabel(business),
           badge: getPrimaryCategory(business),
           title: business.name || "Local business",
-          subtitle: getBusinessDescription(business),
+          subtitle: getBusinessCardSubtitle(business),
           metaOne:
             business.location_label ||
             business.city ||
