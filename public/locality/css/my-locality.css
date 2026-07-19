@@ -1213,3 +1213,15 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* Keep private buyer carousel cards compact */
+.private-buyer-dashboard-page .mixed-feature-card .fresh-card-body p {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.private-buyer-dashboard-page .mixed-feature-card .fresh-meta-row {
+  margin-top: auto;
+}
