@@ -983,3 +983,233 @@
     flex-wrap: wrap;
   }
 }
+
+
+/* =========================
+   PRIVATE BUYER DASHBOARD REBALANCE
+========================= */
+
+.private-buyer-dashboard-page .my-locality-shell {
+  padding-top: 24px;
+}
+
+.private-buyer-dashboard-page .buyer-slim-hero {
+  grid-template-columns: minmax(0, 1fr) minmax(220px, 290px);
+  gap: 22px;
+  padding: clamp(22px, 3vw, 34px);
+  border-radius: 34px;
+}
+
+.private-buyer-dashboard-page .buyer-slim-hero h1 {
+  max-width: 760px;
+  font-size: clamp(2.45rem, 4.55vw, 4rem);
+  line-height: 0.94;
+}
+
+.private-buyer-dashboard-page .buyer-slim-hero .local-week-copy > p:not(.page-kicker):not(.buyer-hero-location-row) {
+  max-width: 720px;
+  margin-top: 12px;
+}
+
+.buyer-hero-location-row {
+  width: fit-content;
+  max-width: 100%;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 18px;
+  padding: 9px 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 0.84rem;
+  font-weight: 850;
+}
+
+.buyer-hero-location-row strong {
+  color: white;
+  font-weight: 950;
+}
+
+.buyer-location-dot {
+  width: 9px;
+  height: 9px;
+  display: inline-block;
+  border-radius: 999px;
+  background: var(--green);
+  box-shadow: 0 0 0 4px rgba(8, 196, 100, 0.16);
+}
+
+.buyer-hero-actions {
+  align-self: center;
+}
+
+/* Hide the old buyer stat-card layout on the private dashboard if any older markup remains */
+.private-buyer-dashboard-page .local-week-stats {
+  display: none;
+}
+
+.quick-buy-helper {
+  margin-top: 18px;
+  padding: 22px;
+}
+
+.quick-buy-helper .section-heading h2 {
+  font-size: clamp(1.75rem, 2.7vw, 2.55rem);
+}
+
+.quick-buy-explainer {
+  max-width: 740px;
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 0.92rem;
+  font-weight: 820;
+  line-height: 1.45;
+}
+
+.buyer-feature-row {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(280px, 0.95fr);
+  gap: 22px;
+  margin-top: 22px;
+  align-items: stretch;
+}
+
+.buyer-feature-row .buyer-feature-panel {
+  margin-top: 0;
+}
+
+.buyer-feature-side {
+  display: grid;
+  gap: 22px;
+}
+
+.buyer-preview-card {
+  min-height: 0;
+  display: grid;
+  align-content: start;
+  gap: 16px;
+  padding: 24px;
+  border-radius: 30px;
+  border: 1px solid rgba(12, 33, 66, 0.08);
+  background:
+    radial-gradient(circle at 88% 12%, rgba(8, 196, 100, 0.12), transparent 34%),
+    rgba(255, 255, 255, 0.86);
+  box-shadow: 0 20px 48px rgba(20, 50, 92, 0.07);
+}
+
+.basket-preview-card {
+  background:
+    radial-gradient(circle at 88% 12%, rgba(8, 196, 100, 0.14), transparent 34%),
+    rgba(255, 255, 255, 0.88);
+}
+
+.saved-preview-card {
+  background:
+    radial-gradient(circle at 88% 12%, rgba(238, 181, 42, 0.12), transparent 34%),
+    rgba(255, 252, 245, 0.9);
+}
+
+.buyer-preview-card h2 {
+  margin: 6px 0 0;
+  color: var(--navy);
+  font-size: clamp(1.35rem, 2vw, 1.8rem);
+  line-height: 1;
+  font-weight: 950;
+  letter-spacing: -0.045em;
+}
+
+.buyer-preview-card p {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 0.88rem;
+  line-height: 1.45;
+  font-weight: 800;
+}
+
+.buyer-preview-summary {
+  display: grid;
+  gap: 3px;
+  padding: 16px;
+  border-radius: 20px;
+  background: rgba(12, 33, 66, 0.055);
+}
+
+.buyer-preview-summary strong {
+  color: var(--navy);
+  font-size: 2rem;
+  line-height: 1;
+  font-weight: 950;
+}
+
+.buyer-preview-summary span {
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 850;
+}
+
+.buyer-preview-summary.muted strong {
+  color: rgba(12, 33, 66, 0.55);
+}
+
+.side-card-link.secondary {
+  background: rgba(12, 33, 66, 0.07);
+  color: var(--navy);
+  box-shadow: none;
+}
+
+.private-buyer-dashboard-page .fresh-carousel-track {
+  grid-template-columns: 1.08fr 1fr 1fr;
+  gap: 16px;
+}
+
+.private-buyer-dashboard-page .fresh-card-media {
+  min-height: 210px;
+}
+
+.private-buyer-dashboard-page .fresh-card-media img,
+.private-buyer-dashboard-page .fresh-card-media .fresh-image {
+  min-height: 210px;
+}
+
+@media (max-width: 1180px) {
+  .buyer-feature-row {
+    grid-template-columns: 1fr;
+  }
+
+  .buyer-feature-side {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 900px) {
+  .private-buyer-dashboard-page .buyer-slim-hero {
+    grid-template-columns: 1fr;
+  }
+
+  .buyer-hero-actions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .buyer-hero-actions .ghost-action {
+    grid-column: 1 / -1;
+  }
+
+  .private-buyer-dashboard-page .fresh-carousel-track {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .private-buyer-dashboard-page .fresh-card.featured {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 680px) {
+  .buyer-hero-actions,
+  .buyer-feature-side,
+  .private-buyer-dashboard-page .fresh-carousel-track {
+    grid-template-columns: 1fr;
+  }
+}
