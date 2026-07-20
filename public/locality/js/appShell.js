@@ -111,6 +111,29 @@
     `;
   }
 
+function basketIconSvg() {
+  return `
+    <svg
+      viewBox="0 0 24 24"
+      stroke-width="1.9"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      aria-hidden="true"
+    >
+      <path
+        d="M5 9h14l-1.3 9.2a2 2 0 0 1-2 1.8H8.3a2 2 0 0 1-2-1.8L5 9Z"
+      ></path>
+      <path
+        d="M8 9c.35-3.4 1.8-5.2 4-5.2S15.65 5.6 16 9"
+      ></path>
+      <path d="M7.5 12h9"></path>
+      <path d="M8.4 15h7.2"></path>
+      <path d="M10 9l.5 11"></path>
+      <path d="M14 9l-.5 11"></path>
+    </svg>
+  `;
+}
+
   function bellIconSvg() {
     return `
       <svg
@@ -260,23 +283,39 @@
           </div>
         </div>
 
-        <a
-          id="appShellMessagesButton"
-          href="coming-soon.html"
-          class="app-shell-icon-link"
-          aria-label="Messages"
-          title="Messages"
-        >
-          ${messageIconSvg()}
+         <a
+           id="appShellMessagesButton"
+           href="coming-soon.html"
+           class="app-shell-icon-link"
+           aria-label="Messages"
+           title="Messages"
+         >
+           ${messageIconSvg()}
+         
+           <span
+             id="appShellMessageIndicator"
+             class="app-shell-indicator"
+             hidden
+           ></span>
+         </a>
+         
+         <a
+           id="appShellBasketButton"
+           href="coming-soon.html?feature=basket"
+           class="app-shell-icon-link app-shell-basket-link"
+           aria-label="Basket"
+           title="Basket"
+         >
+           ${basketIconSvg()}
+         
+           <span
+             id="appShellBasketIndicator"
+             class="app-shell-indicator"
+             hidden
+           ></span>
+         </a>
 
-          <span
-            id="appShellMessageIndicator"
-            class="app-shell-indicator"
-            hidden
-          ></span>
-        </a>
-
-        <div class="app-shell-account-wrap">
+         <div class="app-shell-account-wrap">
           <button
             id="appShellAccountToggle"
             type="button"
@@ -334,6 +373,16 @@
     document.getElementById(
       "appShellMessageIndicator"
     );
+
+  const basketButton =
+  document.getElementById(
+    "appShellBasketButton"
+  );
+
+  const basketIndicator =
+  document.getElementById(
+    "appShellBasketIndicator"
+  );
 
   const notificationButton =
     document.getElementById(
@@ -467,6 +516,115 @@
       );
     }
   }
+
+function getStoredBasketCount() {
+  const basketKeys = [
+    "localityOrderBasket",
+    "localityBasketItems",
+    "localityBasket"
+  ];
+
+  try {
+    for (const key of basketKeys) {
+      const rawValue =
+        window.localStorage.getItem(key);
+
+      if (!rawValue) continue;
+
+      const parsed = JSON.parse(rawValue);
+
+      if (Array.isArray(parsed)) {
+        return parsed.length;
+      }
+
+      if (
+        parsed &&
+        Array.isArray(parsed.items)
+      ) {
+        return parsed.items.length;
+      }
+
+      if (
+        parsed &&
+        Number.isFinite(Number(parsed.count))
+      ) {
+        return Number(parsed.count);
+      }
+    }
+
+    return (
+      Number(
+        window.localStorage.getItem(
+          "localityBasketCount"
+        )
+      ) || 0
+    );
+  } catch {
+    return 0;
+  }
+}
+
+function setBasketCount(count = 0) {
+  const number =
+    Math.max(0, Number(count) || 0);
+
+  if (basketIndicator) {
+    basketIndicator.dataset.count =
+      String(number);
+
+    basketIndicator.hidden =
+      number <= 0;
+
+    basketIndicator.classList.toggle(
+      "has-count",
+      number > 0
+    );
+
+    basketIndicator.textContent =
+      number > 0
+        ? String(Math.min(number, 99))
+        : "";
+
+    if (number > 0) {
+      basketIndicator.classList.remove(
+        "is-new"
+      );
+
+      void basketIndicator.offsetWidth;
+
+      basketIndicator.classList.add(
+        "is-new"
+      );
+    }
+  }
+
+  basketButton?.classList.toggle(
+    "has-items",
+    number > 0
+  );
+
+  basketButton?.setAttribute(
+    "aria-label",
+    number > 0
+      ? `${number} basket ${
+          number === 1 ? "item" : "items"
+        }`
+      : "Basket"
+  );
+
+  basketButton?.setAttribute(
+    "title",
+    number > 0
+      ? `${number} basket ${
+          number === 1 ? "item" : "items"
+        }`
+      : "Basket"
+  );
+}
+
+function refreshBasketCount() {
+  setBasketCount(getStoredBasketCount());
+}
 
 function setUnreadNotifications(
   count = 0,
@@ -788,6 +946,11 @@ function showNotificationPreview(
       ""
     );
 
+    basketButton?.setAttribute(
+      "hidden",
+      ""
+    );
+
     notificationButton
       ?.closest(
         ".app-shell-notification-wrap"
@@ -1082,8 +1245,23 @@ function showNotificationPreview(
       logoUrl
     );
 
-    renderToolsMenu();
-    renderAccountMenu();
+   messagesButton?.removeAttribute(
+     "hidden"
+   );
+   
+   basketButton?.removeAttribute(
+     "hidden"
+   );
+   
+   notificationButton
+     ?.closest(
+       ".app-shell-notification-wrap"
+     )
+     ?.removeAttribute("hidden");
+   
+   renderToolsMenu();
+   renderAccountMenu();
+   refreshBasketCount();
 
     window.dispatchEvent(
       new CustomEvent(
@@ -1183,6 +1361,37 @@ function showNotificationPreview(
     closeMenus
   );
 
+   window.addEventListener(
+     "storage",
+     (event) => {
+       const watchedKeys = [
+         "localityOrderBasket",
+         "localityBasketItems",
+         "localityBasket",
+         "localityBasketCount"
+       ];
+   
+       if (watchedKeys.includes(event.key)) {
+         refreshBasketCount();
+       }
+     }
+   );
+   
+   window.addEventListener(
+     "locality:basket-updated",
+     (event) => {
+       const count =
+         Number(event.detail?.count);
+   
+       if (Number.isFinite(count)) {
+         setBasketCount(count);
+         return;
+       }
+   
+       refreshBasketCount();
+     }
+   );
+
   window.LocalityAppShell = {
     getContext() {
       return { ...appContext };
@@ -1191,6 +1400,10 @@ function showNotificationPreview(
     setUnreadMessages,
 
     setUnreadNotifications,
+
+    setBasketCount,
+
+    refreshBasketCount,
 
     showNotification({
       label,
