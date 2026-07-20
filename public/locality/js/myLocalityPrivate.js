@@ -20,6 +20,11 @@ const buyerFreshCount =
 const buyerBusinessCount =
   document.getElementById("buyerBusinessCount");
 
+const buyerBasketPreviewCount =
+  document.getElementById(
+    "buyerBasketPreviewCount"
+  );
+
 const freshCarouselTrack =
   document.getElementById("freshCarouselTrack");
 
@@ -521,6 +526,66 @@ function renderRecommendedBusinesses() {
   });
 }
 
+function getStoredBasketCount() {
+  const basketKeys = [
+    "localityOrderBasket",
+    "localityBasketItems",
+    "localityBasket"
+  ];
+
+  try {
+    for (const key of basketKeys) {
+      const rawValue =
+        window.localStorage.getItem(key);
+
+      if (!rawValue) continue;
+
+      const parsed = JSON.parse(rawValue);
+
+      if (Array.isArray(parsed)) {
+        return parsed.length;
+      }
+
+      if (
+        parsed &&
+        Array.isArray(parsed.items)
+      ) {
+        return parsed.items.length;
+      }
+
+      if (
+        parsed &&
+        Number.isFinite(Number(parsed.count))
+      ) {
+        return Number(parsed.count);
+      }
+    }
+
+    return (
+      Number(
+        window.localStorage.getItem(
+          "localityBasketCount"
+        )
+      ) || 0
+    );
+  } catch {
+    return 0;
+  }
+}
+
+function renderBasketPreview() {
+  const count = getStoredBasketCount();
+
+  if (buyerBasketPreviewCount) {
+    buyerBasketPreviewCount.textContent =
+      String(count);
+  }
+
+  window.LocalityAppShell?.setBasketCount?.(
+    count
+  );
+}
+
 function renderPrivateBuyerDashboard({
   user,
   userProfile
@@ -566,6 +631,8 @@ function renderPrivateBuyerDashboard({
     buyerBusinessCount.textContent =
       String(publicBusinesses.length);
   }
+
+  renderBasketPreview();
 
   featuredCards = buildFeaturedCards();
   carouselIndex = 0;
@@ -722,6 +789,27 @@ function attachCarouselEvents() {
 function initializePrivateBuyerPage() {
   attachCarouselEvents();
   loadPrivateBuyerDashboard();
+
+  window.addEventListener(
+    "locality:basket-updated",
+    renderBasketPreview
+  );
+
+  window.addEventListener(
+    "storage",
+    (event) => {
+      const watchedKeys = [
+        "localityOrderBasket",
+        "localityBasketItems",
+        "localityBasket",
+        "localityBasketCount"
+      ];
+
+      if (watchedKeys.includes(event.key)) {
+        renderBasketPreview();
+      }
+    }
+  );
 }
 
 if (document.readyState === "loading") {
