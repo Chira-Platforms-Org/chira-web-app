@@ -607,7 +607,7 @@
   color: #8d6416;
 }
 
-..product-card-actions {
+.product-card-actions {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
