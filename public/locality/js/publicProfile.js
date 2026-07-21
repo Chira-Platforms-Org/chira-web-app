@@ -54,6 +54,10 @@ const publicProductsPreviewDescription = document.getElementById("publicProducts
 const publicProductPreviewRow = document.getElementById("publicProductPreviewRow");
 const publicSupplyCta = document.getElementById("publicSupplyCta");
 
+const publicOwnerModeSwitch = document.getElementById("publicOwnerModeSwitch");
+const publicProfileTabLink = document.getElementById("publicProfileTabLink");
+const publicSupplyTabLink = document.getElementById("publicSupplyTabLink");
+
 function showState(state) {
   publicProfileLoading?.classList.toggle("hidden", state !== "loading");
   publicProfileEmpty?.classList.toggle("hidden", state !== "empty");
@@ -440,6 +444,42 @@ function scrollPublicGallery(direction) {
   });
 }
 
+function configurePublicProfileRouteChrome() {
+  const params = new URLSearchParams(window.location.search);
+  const publicProfileId = params.get("id");
+
+  if (!publicProfileId) {
+    return {
+      isPublicViewerRoute: false,
+      publicProfileId: null
+    };
+  }
+
+  const encodedId = encodeURIComponent(publicProfileId);
+
+  if (publicOwnerModeSwitch) {
+    publicOwnerModeSwitch.classList.add("hidden");
+    publicOwnerModeSwitch.setAttribute("aria-hidden", "true");
+  }
+
+  if (publicProfileTabLink) {
+    publicProfileTabLink.href = `public-profile.html?id=${encodedId}`;
+  }
+
+  if (publicSupplyTabLink) {
+    publicSupplyTabLink.href = `supply.html?id=${encodedId}`;
+  }
+
+  if (publicSupplyCta) {
+    publicSupplyCta.href = `supply.html?id=${encodedId}`;
+  }
+
+  return {
+    isPublicViewerRoute: true,
+    publicProfileId
+  };
+}
+
 async function getProfileForThisPage() {
   const params =
     new URLSearchParams(window.location.search);
@@ -690,6 +730,7 @@ async function renderPublicProfile(profile) {
 
 async function loadPublicProfilePreview() {
   showState("loading");
+  configurePublicProfileRouteChrome();
 
   const profile = await getProfileForThisPage();
 
