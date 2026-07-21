@@ -414,8 +414,11 @@ function renderProductImage(product) {
 
 if (product.image_url) {
   const image = document.createElement("img");
-  image.src = product.image_url;
-  image.alt = `${product.name || "Product"} image`;
+   image.src = product.image_url;
+   image.alt = `${product.name || "Product"} image`;
+   image.loading = "eager";
+   image.decoding = "async";
+   image.fetchPriority = "high";
 
   function adaptFrameToImage() {
     if (!image.naturalWidth || !image.naturalHeight) return;
