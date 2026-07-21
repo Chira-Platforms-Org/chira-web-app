@@ -833,24 +833,29 @@
 
 /* =========================
    PRODUCT IMAGE FULL-FIT PATCH
-   Shows the full uploaded product photo without expanding cards
+   Shows full product photos inside product cards
 ========================= */
 
 .supply-page .product-image-frame {
-  display: grid;
-  place-items: center;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  aspect-ratio: auto !important;
+  height: 176px;
+  padding: 10px;
+  overflow: hidden;
   background:
     radial-gradient(circle at 18% 22%, rgba(8, 196, 100, 0.08), transparent 32%),
     linear-gradient(135deg, rgba(248, 250, 246, 0.98), rgba(255, 252, 245, 0.98));
 }
 
 .supply-page .product-image-frame img {
-  width: auto !important;
-  height: auto !important;
-  max-width: calc(100% - 22px);
-  max-height: calc(100% - 22px);
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
   object-fit: contain !important;
   object-position: center center !important;
   padding: 0 !important;
-  display: block;
+  display: block !important;
 }
