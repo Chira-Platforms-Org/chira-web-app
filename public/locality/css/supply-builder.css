@@ -1241,7 +1241,7 @@
 
 .product-card .product-image-frame.has-adaptive-image {
   --product-image-ratio: 1.25;
-  --product-image-height: 178px;
+  --product-image-height: 195px;
 
   width: min(
     calc(100% - 28px),
