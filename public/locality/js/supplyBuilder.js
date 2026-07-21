@@ -412,17 +412,35 @@ function renderProductImage(product) {
 
   badgeRow.appendChild(rightBadges);
 
-  if (product.image_url) {
-    const image = document.createElement("img");
-    image.src = product.image_url;
-    image.alt = `${product.name || "Product"} image`;
-    frame.appendChild(image);
-  } else {
-    const placeholder = document.createElement("span");
-    placeholder.textContent = product.category || "Product";
-    frame.appendChild(placeholder);
+if (product.image_url) {
+  const image = document.createElement("img");
+  image.src = product.image_url;
+  image.alt = `${product.name || "Product"} image`;
+
+  function adaptFrameToImage() {
+    if (!image.naturalWidth || !image.naturalHeight) return;
+
+    const rawRatio = image.naturalWidth / image.naturalHeight;
+
+    // Keeps very tall or very wide images from making the frame look strange.
+    const safeRatio = Math.max(0.72, Math.min(rawRatio, 1.9));
+
+    frame.classList.add("has-adaptive-image");
+    frame.style.setProperty("--product-image-ratio", safeRatio);
   }
 
+  image.addEventListener("load", adaptFrameToImage);
+
+  if (image.complete) {
+    adaptFrameToImage();
+  }
+
+  frame.appendChild(image);
+} else {
+  const placeholder = document.createElement("span");
+  placeholder.textContent = product.category || "Product";
+  frame.appendChild(placeholder);
+}
   frame.appendChild(badgeRow);
 
   return frame;
