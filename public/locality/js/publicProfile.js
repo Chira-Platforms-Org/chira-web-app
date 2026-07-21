@@ -23,6 +23,8 @@ const publicRoleChip = document.getElementById("publicRoleChip");
 const publicCategoryChip = document.getElementById("publicCategoryChip");
 const publicTrustChip = document.getElementById("publicTrustChip");
 
+const publicPreviewNotice = document.getElementById("publicPreviewNotice");
+
 const publicSummarySection = document.getElementById("publicSummarySection");
 const publicShortIntro = document.getElementById("publicShortIntro");
 
@@ -154,6 +156,14 @@ function renderIdentity(profile) {
   const category = formatCategory(profile.business_categories);
 
   document.title = `${businessName} | Locality`;
+
+  if (publicPreviewNotice) {
+    const isPreviewBusiness =
+      profile.is_preview_business === true ||
+      profile.is_preview_business === "true";
+
+    publicPreviewNotice.classList.toggle("hidden", !isPreviewBusiness);
+  }
 
   if (publicBusinessName) publicBusinessName.textContent = businessName;
   if (publicMetaLine) publicMetaLine.textContent = `${location} • ${category} • ${role}`;
