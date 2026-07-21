@@ -1269,3 +1269,43 @@
   right: 10px;
   top: 10px;
 }
+
+/* =========================
+   MVP PRODUCT IMAGE DISPLAY FIX
+   Larger frame, safer image fit, light crop zoom.
+========================= */
+
+.product-card .product-image-frame,
+.product-card .product-image-frame.has-adaptive-image {
+  width: calc(100% - 28px) !important;
+  height: 212px !important;
+  aspect-ratio: auto !important;
+  justify-self: stretch !important;
+  margin: 14px 14px 0 !important;
+  padding: 10px !important;
+  box-sizing: border-box;
+  border-radius: 22px;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  background:
+    radial-gradient(circle at 18% 22%, rgba(8, 196, 100, 0.06), transparent 34%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(255, 252, 245, 0.92));
+}
+
+.product-card .product-image-frame img,
+.product-card .product-image-frame.has-adaptive-image img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain !important;
+  object-position: center !important;
+  display: block;
+  transform: scale(1.14);
+  transform-origin: center;
+}
+
+.product-card .product-badge-row {
+  left: 12px;
+  right: 12px;
+  top: 12px;
+}
