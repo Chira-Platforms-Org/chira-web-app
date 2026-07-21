@@ -292,9 +292,11 @@ function renderProductImage(product) {
 
   if (product.image_url) {
     const image = document.createElement("img");
-    image.src = product.image_url;
-    image.alt = `${product.name || "Product"} image`;
-    frame.appendChild(image);
+      image.src = product.image_url;
+      image.alt = `${product.name || "Product"} image`;
+      image.loading = "eager";
+      image.decoding = "async";
+      image.fetchPriority = "high";
   } else {
     const placeholder = document.createElement("span");
     placeholder.textContent = product.category || "Product";
