@@ -17,6 +17,11 @@ const productAvailabilityFilter = document.getElementById("productAvailabilityFi
 const productSortSelect = document.getElementById("productSortSelect");
 const resetProductViewBtn = document.getElementById("resetProductViewBtn");
 
+const supplyOwnerModeSwitch = document.getElementById("supplyOwnerModeSwitch");
+const supplyBusinessProfileBtn = document.getElementById("supplyBusinessProfileBtn");
+const supplyProfileTabLink = document.getElementById("supplyProfileTabLink");
+const supplySupplyTabLink = document.getElementById("supplySupplyTabLink");
+
 const categories = [
   "Produce",
   "Fruit",
@@ -290,14 +295,16 @@ function renderProductImage(product) {
   availabilityBadge.textContent = product.availability_status || "Availability";
   badgeRow.appendChild(availabilityBadge);
 
-  if (product.image_url) {
-   const image = document.createElement("img");
-   image.src = product.image_url;
-   image.alt = `${product.name || "Product"} image`;
-   image.loading = "eager";
-   image.decoding = "async";
-   image.fetchPriority = "high";
-  } else {
+if (product.image_url) {
+  const image = document.createElement("img");
+  image.src = product.image_url;
+  image.alt = `${product.name || "Product"} image`;
+  image.loading = "eager";
+  image.decoding = "async";
+  image.fetchPriority = "high";
+
+  frame.appendChild(image);
+} else {
     const placeholder = document.createElement("span");
     placeholder.textContent = product.category || "Product";
     frame.appendChild(placeholder);
@@ -545,6 +552,29 @@ function resetProductView() {
   renderProducts();
 }
 
+function configureSupplyRouteChrome(publicProfileId) {
+  if (!publicProfileId) return;
+
+  const encodedId = encodeURIComponent(publicProfileId);
+
+  if (supplyOwnerModeSwitch) {
+    supplyOwnerModeSwitch.classList.add("hidden");
+    supplyOwnerModeSwitch.setAttribute("aria-hidden", "true");
+  }
+
+  if (supplyBusinessProfileBtn) {
+    supplyBusinessProfileBtn.href = `public-profile.html?id=${encodedId}`;
+  }
+
+  if (supplyProfileTabLink) {
+    supplyProfileTabLink.href = `public-profile.html?id=${encodedId}`;
+  }
+
+  if (supplySupplyTabLink) {
+    supplySupplyTabLink.href = `supply.html?id=${encodedId}`;
+  }
+}
+
 async function loadSupplyPage() {
   if (
     !window.LocalityProfileService ||
@@ -562,7 +592,9 @@ async function loadSupplyPage() {
 
   const publicProfileId = params.get("id");
 
-  setSupplyStatus("Loading business profile...");
+   configureSupplyRouteChrome(publicProfileId);
+   
+   setSupplyStatus("Loading business profile...");
 
   const profileResult = publicProfileId
     ? await window.LocalityProfileService
