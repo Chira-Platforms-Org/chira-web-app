@@ -1026,3 +1026,71 @@
   text-transform: uppercase;
   letter-spacing: 0.06em;
 }
+
+/* =========================
+   MVP PREVIEW BUSINESS NOTICE
+========================= */
+
+.public-preview-notice {
+  width: fit-content;
+  max-width: 100%;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 14px;
+  padding: 9px 13px 9px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(217, 163, 58, 0.28);
+  background:
+    radial-gradient(circle at 12% 24%, rgba(255, 255, 255, 0.72), transparent 35%),
+    linear-gradient(135deg, rgba(255, 247, 226, 0.96), rgba(255, 252, 245, 0.84));
+  color: #845d12;
+  box-shadow:
+    0 14px 34px rgba(217, 163, 58, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.82);
+}
+
+.public-preview-notice-icon {
+  width: 30px;
+  height: 30px;
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  background: rgba(217, 163, 58, 0.16);
+  color: #a36b05;
+}
+
+.public-preview-notice-icon svg {
+  width: 17px;
+  height: 17px;
+  fill: currentColor;
+}
+
+.public-preview-notice span:last-child {
+  display: grid;
+  gap: 1px;
+  line-height: 1.1;
+}
+
+.public-preview-notice strong {
+  color: #74500e;
+  font-size: 0.72rem;
+  font-weight: 950;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.public-preview-notice em {
+  color: #8d6416;
+  font-size: 0.75rem;
+  font-style: normal;
+  font-weight: 850;
+}
+
+@media (max-width: 700px) {
+  .public-preview-notice {
+    border-radius: 20px;
+    align-items: flex-start;
+  }
+}
