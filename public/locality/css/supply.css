@@ -904,3 +904,7 @@
 .product-card.expanded .product-image-frame.has-adaptive-image img {
   transform: scale(1.03);
 }
+
+.hidden {
+  display: none !important;
+}
