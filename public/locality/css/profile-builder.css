@@ -2438,3 +2438,69 @@
 .setup-mode .editor-only {
   display: none !important;
 }
+
+/* =========================
+   FIX ORDERING GUIDELINES EDITOR OVERFLOW
+========================= */
+
+.profile-story-grid {
+  align-items: stretch;
+  overflow: visible;
+}
+
+.story-side-panel[data-editing="true"] {
+  position: relative;
+  z-index: 3;
+  display: grid;
+  align-content: start;
+  overflow: visible;
+  background:
+    radial-gradient(circle at 10% 16%, rgba(8, 196, 100, 0.045), transparent 32%),
+    rgba(8, 196, 100, 0.018);
+}
+
+.story-side-panel[data-editing="true"] .compact-display-shell {
+  height: auto;
+  min-height: 0;
+}
+
+.story-side-panel[data-editing="true"] .section-editor-shell {
+  position: relative;
+  z-index: 4;
+  padding: 0 28px 30px;
+}
+
+.story-side-panel[data-editing="true"] .section-editor-shell textarea {
+  min-height: 220px;
+  max-height: 340px;
+  resize: vertical;
+  overflow-y: auto;
+}
+
+.story-side-panel[data-editing="true"] .section-action-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  align-items: start;
+  padding-top: 4px;
+}
+
+.story-side-panel[data-editing="true"] .section-editor-actions {
+  width: 100%;
+  justify-content: flex-start;
+}
+
+.story-side-panel[data-editing="true"] .builder-mini-btn {
+  white-space: nowrap;
+}
+
+@media (max-width: 760px) {
+  .story-side-panel[data-editing="true"] .section-editor-shell {
+    padding: 0 24px 28px;
+  }
+
+  .story-side-panel[data-editing="true"] .section-editor-shell textarea {
+    min-height: 190px;
+    max-height: 300px;
+  }
+}
