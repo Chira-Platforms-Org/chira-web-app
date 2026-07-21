@@ -20,7 +20,7 @@
     </a>
 
     <nav class="public-profile-nav" aria-label="Public profile navigation">
-      <a href="profile-builder.html" class="profile-mode-switch to-preview" aria-label="Return to profile editor">
+      <a id="publicOwnerModeSwitch" href="profile-builder.html" class="profile-mode-switch to-preview" aria-label="Return to profile editor">
         <span class="mode-switch-track">
           <span class="mode-switch-option mode-switch-option-left">Edit Mode</span>
           <span class="mode-switch-option mode-switch-option-right">Preview Mode</span>
@@ -49,16 +49,16 @@
 
     <section id="publicProfilePage" class="public-profile-page hidden">
       <nav class="public-profile-tabs" aria-label="Business profile sections">
-        <a href="public-profile.html" class="public-profile-tab active">
+        <a id="publicProfileTabLink" href="public-profile.html" class="public-profile-tab active">
           <span>Business Profile</span>
           <small>Story, trust, and identity</small>
         </a>
-
-      <a href="supply.html" class="public-profile-tab">
-        <span>Supply & Products</span>
-        <small>Products, pricing, and availability</small>
-      </a>
-    </nav>
+      
+        <a id="publicSupplyTabLink" href="supply.html" class="public-profile-tab">
+          <span>Supply & Products</span>
+          <small>Products, pricing, and availability</small>
+        </a>
+      </nav>
 
       <section class="public-hero-section">
         <div id="publicBanner" class="public-banner">
