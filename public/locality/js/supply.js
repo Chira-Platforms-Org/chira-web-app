@@ -291,12 +291,9 @@ function renderProductImage(product) {
   badgeRow.appendChild(availabilityBadge);
 
   if (product.image_url) {
-    const image = document.createElement("img");
-      image.src = product.image_url;
-      image.alt = `${product.name || "Product"} image`;
-      image.loading = "eager";
-      image.decoding = "async";
-      image.fetchPriority = "high";
+   const image = document.createElement("img");
+   image.src = product.image_url;
+   image.alt = `${product.name || "Product"} image`;
   } else {
     const placeholder = document.createElement("span");
     placeholder.textContent = product.category || "Product";
