@@ -2504,3 +2504,70 @@
     max-height: 300px;
   }
 }
+
+/* =========================
+   CLEAN BUILDER NAV UPDATE
+========================= */
+
+.profile-builder-topbar {
+  grid-template-columns: auto 1fr auto;
+}
+
+.profile-builder-topbar-copy {
+  min-width: 250px;
+}
+
+.profile-builder-topbar-center {
+  justify-self: center;
+  display: flex;
+  align-items: center;
+}
+
+.profile-builder-topbar-actions {
+  justify-self: end;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.builder-nav-link {
+  text-decoration: none;
+}
+
+.profile-builder-topbar .profile-mode-switch {
+  min-width: 286px;
+  flex: 0 0 286px;
+}
+
+.profile-builder-topbar .builder-secondary-btn,
+.profile-builder-topbar .builder-primary-btn {
+  min-height: 46px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+}
+
+@media (max-width: 980px) {
+  .profile-builder-topbar {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .profile-builder-topbar-copy,
+  .profile-builder-topbar-center,
+  .profile-builder-topbar-actions {
+    justify-self: stretch;
+  }
+
+  .profile-builder-topbar-center,
+  .profile-builder-topbar-actions {
+    justify-content: center;
+  }
+
+  .profile-builder-topbar .profile-mode-switch {
+    width: min(100%, 320px);
+    min-width: 0;
+    flex-basis: auto;
+  }
+}
