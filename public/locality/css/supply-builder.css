@@ -1309,3 +1309,67 @@
   right: 12px;
   top: 12px;
 }
+
+/* =========================
+   CLEAN BUILDER NAV UPDATE
+========================= */
+
+.supply-builder-topbar {
+  grid-template-columns: auto 1fr auto;
+}
+
+.supply-builder-topbar-copy {
+  min-width: 260px;
+}
+
+.supply-builder-topbar-center {
+  justify-self: center;
+  display: flex;
+  align-items: center;
+}
+
+.supply-builder-topbar-actions {
+  justify-self: end;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.supply-builder-topbar .profile-mode-switch {
+  min-width: 286px;
+  flex: 0 0 286px;
+}
+
+.supply-builder-topbar .supply-secondary-btn,
+.supply-builder-topbar .supply-primary-btn {
+  min-height: 46px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  text-decoration: none;
+}
+
+@media (max-width: 1080px) {
+  .supply-builder-topbar {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .supply-builder-topbar-copy,
+  .supply-builder-topbar-center,
+  .supply-builder-topbar-actions {
+    justify-self: stretch;
+  }
+
+  .supply-builder-topbar-center,
+  .supply-builder-topbar-actions {
+    justify-content: center;
+  }
+
+  .supply-builder-topbar .profile-mode-switch {
+    width: min(100%, 320px);
+    min-width: 0;
+    flex-basis: auto;
+  }
+}
