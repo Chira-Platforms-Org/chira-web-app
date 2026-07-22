@@ -22,6 +22,9 @@ const supplyBusinessProfileBtn = document.getElementById("supplyBusinessProfileB
 const supplyProfileTabLink = document.getElementById("supplyProfileTabLink");
 const supplySupplyTabLink = document.getElementById("supplySupplyTabLink");
 
+const localityAppHeader = document.getElementById("localityAppHeader");
+const supplyBuilderPreviewHeader = document.getElementById("supplyBuilderPreviewHeader");
+
 const categories = [
   "Produce",
   "Fruit",
@@ -553,7 +556,36 @@ function resetProductView() {
 }
 
 function configureSupplyRouteChrome(publicProfileId) {
-  if (!publicProfileId) return;
+  const isPublicViewerRoute = Boolean(publicProfileId);
+
+  if (localityAppHeader) {
+    localityAppHeader.hidden = !isPublicViewerRoute;
+  }
+
+  if (supplyBuilderPreviewHeader) {
+    supplyBuilderPreviewHeader.hidden = isPublicViewerRoute;
+  }
+
+  if (!publicProfileId) {
+    if (supplyOwnerModeSwitch) {
+      supplyOwnerModeSwitch.classList.remove("hidden");
+      supplyOwnerModeSwitch.removeAttribute("aria-hidden");
+    }
+
+    if (supplyBusinessProfileBtn) {
+      supplyBusinessProfileBtn.href = "public-profile.html";
+    }
+
+    if (supplyProfileTabLink) {
+      supplyProfileTabLink.href = "public-profile.html";
+    }
+
+    if (supplySupplyTabLink) {
+      supplySupplyTabLink.href = "supply.html";
+    }
+
+    return;
+  }
 
   const encodedId = encodeURIComponent(publicProfileId);
 
