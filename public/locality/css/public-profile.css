@@ -1098,3 +1098,26 @@
 .hidden {
   display: none !important;
 }
+
+/* =========================
+   PUBLIC VIEWER / OWNER PREVIEW NAV BEHAVIOR
+========================= */
+
+#localityAppHeader[hidden],
+#publicBuilderPreviewHeader[hidden] {
+  display: none !important;
+}
+
+.public-profile-header {
+  min-height: 78px;
+}
+
+.public-profile-nav {
+  align-items: center;
+  gap: 12px;
+}
+
+.public-profile-nav .profile-mode-switch {
+  min-width: 286px;
+  flex: 0 0 286px;
+}
