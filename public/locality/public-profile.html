@@ -10,11 +10,18 @@
   <link rel="apple-touch-icon" href="images/Locality Flavicon Spinner.png" />
 
   <link rel="stylesheet" href="css/locality.css" />
+  <link rel="stylesheet" href="css/app-shell.css" />
   <link rel="stylesheet" href="css/public-profile.css" />
 </head>
 
-<body class="public-profile-body">
-  <header class="public-profile-header">
+  <body class="public-profile-body">
+    <div
+    id="localityAppHeader"
+    data-active-page="marketplace"
+    hidden
+  ></div>
+  
+  <header id="publicBuilderPreviewHeader" class="public-profile-header">
     <a href="index.html" class="public-profile-brand">
       <img src="images/LOCALITY LOGO.png" alt="Locality" />
     </a>
@@ -252,6 +259,7 @@
   <script src="js/authService.js"></script>
   <script src="js/profileService.js"></script>
   <script src="js/productService.js"></script>
+  <script src="js/appShell.js"></script>
   <script src="js/publicProfile.js"></script>
 </body>
 </html>
