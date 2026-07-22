@@ -58,6 +58,9 @@ const publicOwnerModeSwitch = document.getElementById("publicOwnerModeSwitch");
 const publicProfileTabLink = document.getElementById("publicProfileTabLink");
 const publicSupplyTabLink = document.getElementById("publicSupplyTabLink");
 
+const localityAppHeader = document.getElementById("localityAppHeader");
+const publicBuilderPreviewHeader = document.getElementById("publicBuilderPreviewHeader");
+
 function showState(state) {
   publicProfileLoading?.classList.toggle("hidden", state !== "loading");
   publicProfileEmpty?.classList.toggle("hidden", state !== "empty");
@@ -448,7 +451,34 @@ function configurePublicProfileRouteChrome() {
   const params = new URLSearchParams(window.location.search);
   const publicProfileId = params.get("id");
 
+  const isPublicViewerRoute = Boolean(publicProfileId);
+
+  if (localityAppHeader) {
+    localityAppHeader.hidden = !isPublicViewerRoute;
+  }
+
+  if (publicBuilderPreviewHeader) {
+    publicBuilderPreviewHeader.hidden = isPublicViewerRoute;
+  }
+
   if (!publicProfileId) {
+    if (publicOwnerModeSwitch) {
+      publicOwnerModeSwitch.classList.remove("hidden");
+      publicOwnerModeSwitch.removeAttribute("aria-hidden");
+    }
+
+    if (publicProfileTabLink) {
+      publicProfileTabLink.href = "public-profile.html";
+    }
+
+    if (publicSupplyTabLink) {
+      publicSupplyTabLink.href = "supply.html";
+    }
+
+    if (publicSupplyCta) {
+      publicSupplyCta.href = "supply.html";
+    }
+
     return {
       isPublicViewerRoute: false,
       publicProfileId: null
