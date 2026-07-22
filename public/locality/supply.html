@@ -10,11 +10,18 @@
   <link rel="apple-touch-icon" href="images/Locality Flavicon Spinner.png" />
 
   <link rel="stylesheet" href="css/locality.css" />
+  <link rel="stylesheet" href="css/app-shell.css" />
   <link rel="stylesheet" href="css/supply.css" />
 </head>
 
 <body class="supply-page">
-  <header class="supply-topbar">
+    <div
+    id="localityAppHeader"
+    data-active-page="marketplace"
+    hidden
+  ></div>
+
+  <header id="supplyBuilderPreviewHeader" class="supply-topbar">
     <a href="index.html" class="supply-logo">
       <img src="images/LOCALITY LOGO.png" alt="Locality" />
     </a>
@@ -126,6 +133,7 @@
   <script src="js/authService.js"></script>
   <script src="js/profileService.js"></script>
   <script src="js/productService.js"></script>
+  <script src="js/appShell.js"></script>
   <script src="js/supply.js"></script>
 </body>
 </html>
