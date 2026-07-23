@@ -21,17 +21,17 @@
     hidden
   ></div>
 
-  <header id="supplyBuilderPreviewHeader" class="supply-topbar">
-    <a href="index.html" class="supply-logo">
+  <header id="supplyBuilderPreviewHeader" class="supply-topbar unified-builder-header">
+    <a href="index.html" class="supply-logo unified-builder-logo">
       <img src="images/LOCALITY LOGO.png" alt="Locality" />
     </a>
-
-    <div class="supply-topbar-copy">
-      <strong>Supply & Products</strong>
-      <span>Buyer-facing preview of your product catalog.</span>
+  
+    <div class="supply-topbar-copy unified-builder-copy">
+      <strong>Supply & Products Builder</strong>
+      <span>Preview how your product catalog appears to buyers.</span>
     </div>
-
-    <nav class="supply-topbar-actions" aria-label="Supply page actions">
+  
+    <nav class="supply-topbar-actions unified-builder-actions" aria-label="Supply preview actions">
       <a id="supplyOwnerModeSwitch" href="supply-builder.html" class="profile-mode-switch to-preview" aria-label="Return to supply editor">
         <span class="mode-switch-track">
           <span class="mode-switch-option mode-switch-option-left">Edit Mode</span>
@@ -41,8 +41,34 @@
           </span>
         </span>
       </a>
-    
-     <a id="supplyBusinessProfileBtn" href="public-profile.html" class="supply-secondary-btn">Business Profile</a>
+  
+      <a href="supply-builder.html" class="builder-subtle-btn">
+        Cancel changes
+      </a>
+  
+      <a href="supply-builder.html" class="builder-primary-btn">
+        Save changes
+      </a>
+  
+      <a href="my-locality.html" class="builder-subtle-btn">
+        My Locality
+      </a>
+  
+      <div class="builder-account-menu">
+        <button type="button" class="builder-account-btn" aria-expanded="false">
+          <span class="builder-account-avatar">LC</span>
+          <span class="builder-account-name">Account</span>
+          <span class="builder-account-caret">▾</span>
+        </button>
+  
+        <div class="builder-account-dropdown" hidden>
+          <a href="my-locality.html">My Locality</a>
+          <a href="account-settings.html">Account settings</a>
+          <a href="map.html">Marketplace</a>
+          <a href="profile-builder.html">Business profile</a>
+          <button type="button" class="builder-account-logout">Log out</button>
+        </div>
+      </div>
     </nav>
   </header>
 
