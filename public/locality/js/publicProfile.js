@@ -61,6 +61,83 @@ const publicSupplyTabLink = document.getElementById("publicSupplyTabLink");
 const localityAppHeader = document.getElementById("localityAppHeader");
 const publicBuilderPreviewHeader = document.getElementById("publicBuilderPreviewHeader");
 
+
+function initializeBuilderAccountMenu() {
+  const accountMenu = document.querySelector(".builder-account-menu");
+  const accountBtn = document.querySelector(".builder-account-btn");
+  const accountDropdown = document.querySelector(".builder-account-dropdown");
+  const accountName = document.querySelector(".builder-account-name");
+  const accountAvatar = document.querySelector(".builder-account-avatar");
+  const logoutBtn = document.querySelector(".builder-account-logout");
+
+  if (!accountMenu || !accountBtn || !accountDropdown) return;
+
+  const closeMenu = () => {
+    accountDropdown.hidden = true;
+    accountBtn.setAttribute("aria-expanded", "false");
+  };
+
+  const openMenu = () => {
+    accountDropdown.hidden = false;
+    accountBtn.setAttribute("aria-expanded", "true");
+  };
+
+  accountBtn.addEventListener("click", (event) => {
+    event.stopPropagation();
+
+    if (accountDropdown.hidden) {
+      openMenu();
+    } else {
+      closeMenu();
+    }
+  });
+
+  document.addEventListener("click", (event) => {
+    if (!accountMenu.contains(event.target)) {
+      closeMenu();
+    }
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      closeMenu();
+    }
+  });
+
+  logoutBtn?.addEventListener("click", async () => {
+    if (window.LocalityAuthService?.signOut) {
+      await window.LocalityAuthService.signOut();
+    }
+
+    window.location.href = "account.html";
+  });
+
+  window.addEventListener("locality:builder-account-ready", (event) => {
+    const detail = event.detail || {};
+    const name = detail.name || "Account";
+    const logoUrl = detail.logoUrl || "";
+
+    if (accountName) {
+      accountName.textContent = name;
+    }
+
+    if (accountAvatar) {
+      if (logoUrl) {
+        accountAvatar.innerHTML = `<img src="${logoUrl}" alt="" />`;
+      } else {
+        const initials = name
+          .split(/\s+/)
+          .filter(Boolean)
+          .slice(0, 2)
+          .map((part) => part[0]?.toUpperCase())
+          .join("") || "LC";
+
+        accountAvatar.textContent = initials;
+      }
+    }
+  });
+}
+
 function showState(state) {
   publicProfileLoading?.classList.toggle("hidden", state !== "loading");
   publicProfileEmpty?.classList.toggle("hidden", state !== "empty");
@@ -782,4 +859,7 @@ publicGalleryRightBtn?.addEventListener("click", () => {
   scrollPublicGallery(1);
 });
 
-document.addEventListener("DOMContentLoaded", loadPublicProfilePreview);
+document.addEventListener("DOMContentLoaded", () => {
+  initializeBuilderAccountMenu();
+  loadPublicProfilePreview();
+});
