@@ -450,7 +450,6 @@ function scrollPublicGallery(direction) {
 function configurePublicProfileRouteChrome() {
   const params = new URLSearchParams(window.location.search);
   const publicProfileId = params.get("id");
-
   const isPublicViewerRoute = Boolean(publicProfileId);
 
   if (localityAppHeader) {
@@ -460,6 +459,9 @@ function configurePublicProfileRouteChrome() {
   if (publicBuilderPreviewHeader) {
     publicBuilderPreviewHeader.hidden = isPublicViewerRoute;
   }
+
+  document.body.classList.toggle("public-viewer-route", isPublicViewerRoute);
+  document.body.classList.toggle("owner-preview-route", !isPublicViewerRoute);
 
   if (!publicProfileId) {
     if (publicOwnerModeSwitch) {
