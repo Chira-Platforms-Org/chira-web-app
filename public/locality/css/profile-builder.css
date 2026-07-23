@@ -2571,3 +2571,65 @@
     flex-basis: auto;
   }
 }
+
+/* =========================
+   UNIFIED BUILDER HEADER
+========================= */
+
+.profile-builder-topbar {
+  grid-template-columns: auto minmax(260px, 1fr) auto auto;
+  align-items: center;
+}
+
+.profile-builder-topbar-copy {
+  min-width: 0;
+}
+
+.profile-builder-topbar-center {
+  justify-self: end;
+  display: flex;
+  align-items: center;
+}
+
+.profile-builder-topbar-actions {
+  justify-self: end;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.profile-builder-topbar .profile-mode-switch {
+  width: 286px;
+  min-width: 286px;
+  flex: 0 0 286px;
+}
+
+.profile-builder-topbar .builder-secondary-btn,
+.profile-builder-topbar .builder-primary-btn {
+  min-height: 46px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  text-decoration: none;
+}
+
+.profile-builder-topbar .builder-primary-btn {
+  min-width: 132px;
+}
+
+@media (max-width: 1120px) {
+  .profile-builder-topbar {
+    grid-template-columns: auto 1fr;
+  }
+
+  .profile-builder-topbar-center,
+  .profile-builder-topbar-actions {
+    justify-self: start;
+  }
+
+  .profile-builder-topbar-actions {
+    grid-column: 1 / -1;
+    flex-wrap: wrap;
+  }
+}
