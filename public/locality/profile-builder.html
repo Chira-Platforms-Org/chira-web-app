@@ -14,17 +14,17 @@
 </head>
 
 <body class="profile-builder-page">
-  <header class="profile-builder-topbar">
-    <a href="index.html" class="profile-builder-logo">
+  <header class="profile-builder-topbar unified-builder-header">
+    <a href="index.html" class="profile-builder-logo unified-builder-logo">
       <img src="images/LOCALITY LOGO.png" alt="Locality" />
     </a>
-
-    <div class="profile-builder-topbar-copy">
+  
+    <div class="profile-builder-topbar-copy unified-builder-copy">
       <strong>Profile Builder</strong>
       <span>Build how your business appears in the local food network.</span>
     </div>
-
-    <div class="profile-builder-topbar-center">
+  
+    <nav class="unified-builder-actions" aria-label="Profile builder actions">
       <a id="profileModeSwitch" href="public-profile.html" class="profile-mode-switch to-edit" aria-label="Switch to public profile preview">
         <span class="mode-switch-track">
           <span class="mode-switch-option mode-switch-option-left">Edit Mode</span>
@@ -34,25 +34,34 @@
           </span>
         </span>
       </a>
-    </div>
-    
-    <div class="profile-builder-topbar-actions">
-      <a id="profileControlCenterBtn" href="my-locality.html" class="builder-secondary-btn editor-only">
-        My Locality
-      </a>
-    
-      <a href="map.html" class="builder-secondary-btn editor-only">
-        Marketplace
-      </a>
-    
-      <a href="account-settings.html" class="builder-secondary-btn editor-only">
-        Account
-      </a>
-    
+  
+      <button type="button" id="builderCancelChangesBtn" class="builder-subtle-btn">
+        Cancel changes
+      </button>
+  
       <button id="builderFinishBtn" type="button" class="builder-primary-btn">
         Save changes
       </button>
-    </div>
+  
+      <a id="profileControlCenterBtn" href="my-locality.html" class="builder-subtle-btn builder-nav-link">
+        My Locality
+      </a>
+  
+      <div class="builder-account-menu">
+        <button type="button" class="builder-account-btn" aria-expanded="false">
+          <span class="builder-account-avatar">LC</span>
+          <span class="builder-account-name">Account</span>
+          <span class="builder-account-caret">▾</span>
+        </button>
+  
+        <div class="builder-account-dropdown" hidden>
+          <a href="my-locality.html">My Locality</a>
+          <a href="account-settings.html">Account settings</a>
+          <a href="map.html">Marketplace</a>
+          <button type="button" class="builder-account-logout">Log out</button>
+        </div>
+      </div>
+    </nav>
   </header>
 
   <main class="profile-builder-workspace">
