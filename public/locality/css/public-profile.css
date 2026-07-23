@@ -1121,3 +1121,62 @@
   min-width: 286px;
   flex: 0 0 286px;
 }
+
+/* =========================
+   OWNER PREVIEW HEADER ALIGNMENT
+========================= */
+
+.public-profile-header {
+  min-height: 78px;
+  display: grid;
+  grid-template-columns: auto minmax(260px, 1fr) auto;
+  align-items: center;
+  gap: 22px;
+  padding: 14px 32px;
+}
+
+.public-profile-brand {
+  display: inline-flex;
+  align-items: center;
+}
+
+.public-profile-brand img {
+  width: 160px;
+  display: block;
+}
+
+.public-profile-nav {
+  justify-self: end;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.public-profile-nav .profile-mode-switch {
+  width: 286px;
+  min-width: 286px;
+  flex: 0 0 286px;
+}
+
+.public-profile-nav > a:not(.profile-mode-switch) {
+  min-height: 46px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  padding: 10px 18px;
+  background: rgba(12, 33, 66, 0.07);
+  color: var(--navy);
+  text-decoration: none;
+  font-weight: 950;
+}
+
+.public-profile-nav > a.public-profile-nav-cta {
+  background: var(--green);
+  color: white;
+}
+
+#localityAppHeader[hidden],
+#publicBuilderPreviewHeader[hidden] {
+  display: none !important;
+}
