@@ -566,6 +566,9 @@ function configureSupplyRouteChrome(publicProfileId) {
     supplyBuilderPreviewHeader.hidden = isPublicViewerRoute;
   }
 
+  document.body.classList.toggle("public-viewer-route", isPublicViewerRoute);
+  document.body.classList.toggle("owner-preview-route", !isPublicViewerRoute);
+
   if (!publicProfileId) {
     if (supplyOwnerModeSwitch) {
       supplyOwnerModeSwitch.classList.remove("hidden");
