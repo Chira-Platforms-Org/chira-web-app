@@ -1373,3 +1373,65 @@
     flex-basis: auto;
   }
 }
+
+/* =========================
+   UNIFIED BUILDER HEADER
+========================= */
+
+.supply-builder-topbar {
+  grid-template-columns: auto minmax(260px, 1fr) auto auto;
+  align-items: center;
+}
+
+.supply-builder-topbar-copy {
+  min-width: 0;
+}
+
+.supply-builder-topbar-center {
+  justify-self: end;
+  display: flex;
+  align-items: center;
+}
+
+.supply-builder-topbar-actions {
+  justify-self: end;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.supply-builder-topbar .profile-mode-switch {
+  width: 286px;
+  min-width: 286px;
+  flex: 0 0 286px;
+}
+
+.supply-builder-topbar .supply-secondary-btn,
+.supply-builder-topbar .supply-primary-btn {
+  min-height: 46px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  text-decoration: none;
+}
+
+.supply-builder-topbar .supply-primary-btn {
+  min-width: 132px;
+}
+
+@media (max-width: 1180px) {
+  .supply-builder-topbar {
+    grid-template-columns: auto 1fr;
+  }
+
+  .supply-builder-topbar-center,
+  .supply-builder-topbar-actions {
+    justify-self: start;
+  }
+
+  .supply-builder-topbar-actions {
+    grid-column: 1 / -1;
+    flex-wrap: wrap;
+  }
+}
