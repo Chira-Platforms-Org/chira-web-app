@@ -21,12 +21,17 @@
     hidden
   ></div>
   
-  <header id="publicBuilderPreviewHeader" class="public-profile-header">
-    <a href="index.html" class="public-profile-brand">
+  <header id="publicBuilderPreviewHeader" class="public-profile-header unified-builder-header">
+    <a href="index.html" class="public-profile-brand unified-builder-logo">
       <img src="images/LOCALITY LOGO.png" alt="Locality" />
     </a>
-
-    <nav class="public-profile-nav" aria-label="Public profile navigation">
+  
+    <div class="unified-builder-copy">
+      <strong>Profile Builder</strong>
+      <span>Preview how your business profile appears to buyers.</span>
+    </div>
+  
+    <nav class="public-profile-nav unified-builder-actions" aria-label="Public profile preview navigation">
       <a id="publicOwnerModeSwitch" href="profile-builder.html" class="profile-mode-switch to-preview" aria-label="Return to profile editor">
         <span class="mode-switch-track">
           <span class="mode-switch-option mode-switch-option-left">Edit Mode</span>
@@ -36,9 +41,33 @@
           </span>
         </span>
       </a>
-    
-      <a href="map.html">Marketplace</a>
-      <a href="account.html" class="public-profile-nav-cta">Account</a>
+  
+      <a href="profile-builder.html" class="builder-subtle-btn">
+        Cancel changes
+      </a>
+  
+      <a href="profile-builder.html" class="builder-primary-btn">
+        Save changes
+      </a>
+  
+      <a href="my-locality.html" class="builder-subtle-btn">
+        My Locality
+      </a>
+  
+      <div class="builder-account-menu">
+        <button type="button" class="builder-account-btn" aria-expanded="false">
+          <span class="builder-account-avatar">LC</span>
+          <span class="builder-account-name">Account</span>
+          <span class="builder-account-caret">▾</span>
+        </button>
+  
+        <div class="builder-account-dropdown" hidden>
+          <a href="my-locality.html">My Locality</a>
+          <a href="account-settings.html">Account settings</a>
+          <a href="map.html">Marketplace</a>
+          <button type="button" class="builder-account-logout">Log out</button>
+        </div>
+      </div>
     </nav>
   </header>
 
