@@ -2775,6 +2775,17 @@
   object-fit: cover;
 }
 
+.builder-account-avatar {
+  overflow: hidden;
+}
+
+.builder-account-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
 .builder-account-caret {
   font-size: 0.8rem;
 }
