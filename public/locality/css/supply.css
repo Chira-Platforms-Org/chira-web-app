@@ -908,3 +908,61 @@
 .hidden {
   display: none !important;
 }
+
+/* =========================
+   OWNER PREVIEW HEADER ALIGNMENT
+========================= */
+
+.supply-topbar {
+  min-height: 78px;
+  display: grid;
+  grid-template-columns: auto minmax(260px, 1fr) auto;
+  align-items: center;
+  gap: 22px;
+  padding: 14px 32px;
+}
+
+.supply-logo {
+  display: inline-flex;
+  align-items: center;
+}
+
+.supply-logo img {
+  width: 160px;
+  display: block;
+}
+
+.supply-topbar-copy {
+  min-width: 0;
+}
+
+.supply-topbar-actions {
+  justify-self: end;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.supply-topbar-actions .profile-mode-switch {
+  width: 286px;
+  min-width: 286px;
+  flex: 0 0 286px;
+}
+
+.supply-topbar-actions > a:not(.profile-mode-switch) {
+  min-height: 46px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  padding: 10px 18px;
+  background: rgba(12, 33, 66, 0.07);
+  color: var(--navy);
+  text-decoration: none;
+  font-weight: 950;
+}
+
+#localityAppHeader[hidden],
+#supplyBuilderPreviewHeader[hidden] {
+  display: none !important;
+}
