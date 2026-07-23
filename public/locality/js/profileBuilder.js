@@ -321,6 +321,21 @@ function formatCategory(categories) {
     .replace(/\b\w/g, (letter) => letter.toUpperCase());
 }
 
+function getInitials(name = "") {
+  const words = String(name)
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean);
+
+  if (!words.length) return "LC";
+
+  return words
+    .slice(0, 2)
+    .map((word) => word[0])
+    .join("")
+    .toUpperCase();
+}
+
 function fillBuilderAccountButton(profile = null, user = null) {
   const accountMenus = document.querySelectorAll(".builder-account-menu");
 
@@ -1406,7 +1421,8 @@ async function renderBuilderProductPreview(profile) {
 
 function hydrateBuilder(profile) {
   currentProfile = profile;
-   fillBuilderAccountButton(currentProfile, currentUser);
+
+  fillBuilderAccountButton(currentProfile, currentUser);
 
   profileSectionStatus = getJsonValue(profile.profile_section_status, {});
   profileGalleryImages = getJsonValue(profile.gallery_images, []);
