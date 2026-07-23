@@ -37,6 +37,82 @@ const isSupplySetupMode =
   supplyBuilderUrlParams.get("setup") === "1" ||
   supplyBuilderUrlParams.get("mode") === "setup";
 
+function initializeBuilderAccountMenu() {
+  const accountMenu = document.querySelector(".builder-account-menu");
+  const accountBtn = document.querySelector(".builder-account-btn");
+  const accountDropdown = document.querySelector(".builder-account-dropdown");
+  const accountName = document.querySelector(".builder-account-name");
+  const accountAvatar = document.querySelector(".builder-account-avatar");
+  const logoutBtn = document.querySelector(".builder-account-logout");
+
+  if (!accountMenu || !accountBtn || !accountDropdown) return;
+
+  const closeMenu = () => {
+    accountDropdown.hidden = true;
+    accountBtn.setAttribute("aria-expanded", "false");
+  };
+
+  const openMenu = () => {
+    accountDropdown.hidden = false;
+    accountBtn.setAttribute("aria-expanded", "true");
+  };
+
+  accountBtn.addEventListener("click", (event) => {
+    event.stopPropagation();
+
+    if (accountDropdown.hidden) {
+      openMenu();
+    } else {
+      closeMenu();
+    }
+  });
+
+  document.addEventListener("click", (event) => {
+    if (!accountMenu.contains(event.target)) {
+      closeMenu();
+    }
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      closeMenu();
+    }
+  });
+
+  logoutBtn?.addEventListener("click", async () => {
+    if (window.LocalityAuthService?.signOut) {
+      await window.LocalityAuthService.signOut();
+    }
+
+    window.location.href = "account.html";
+  });
+
+  window.addEventListener("locality:builder-account-ready", (event) => {
+    const detail = event.detail || {};
+    const name = detail.name || "Account";
+    const logoUrl = detail.logoUrl || "";
+
+    if (accountName) {
+      accountName.textContent = name;
+    }
+
+    if (accountAvatar) {
+      if (logoUrl) {
+        accountAvatar.innerHTML = `<img src="${logoUrl}" alt="" />`;
+      } else {
+        const initials = name
+          .split(/\s+/)
+          .filter(Boolean)
+          .slice(0, 2)
+          .map((part) => part[0]?.toUpperCase())
+          .join("") || "LC";
+
+        accountAvatar.textContent = initials;
+      }
+    }
+  });
+}
+
 function applySupplyBuilderMode() {
   document.body.classList.toggle("setup-mode", isSupplySetupMode);
   document.body.classList.toggle("editor-mode", !isSupplySetupMode);
@@ -180,6 +256,47 @@ function getInitials(name = "") {
     .slice(0, 2)
     .map((word) => word[0]?.toUpperCase())
     .join("");
+}
+
+function fillBuilderAccountButton(profile = null, user = null) {
+  const accountMenus = document.querySelectorAll(".builder-account-menu");
+
+  if (!accountMenus.length) return;
+
+  const displayName =
+    profile?.name ||
+    user?.email ||
+    "Account";
+
+  const logoUrl =
+    profile?.logo_url ||
+    "";
+
+  const initials = getInitials(displayName);
+
+  accountMenus.forEach((menu) => {
+    const avatar = menu.querySelector(".builder-account-avatar");
+    const name = menu.querySelector(".builder-account-name");
+
+    if (name) {
+      name.textContent = displayName;
+    }
+
+    if (avatar) {
+      avatar.innerHTML = "";
+
+      if (logoUrl) {
+        const image = document.createElement("img");
+        image.src = logoUrl;
+        image.alt = `${displayName} logo`;
+        avatar.appendChild(image);
+        avatar.classList.add("has-image");
+      } else {
+        avatar.textContent = initials;
+        avatar.classList.remove("has-image");
+      }
+    }
+  });
 }
 
 function renderBusinessHeader(profile) {
@@ -1315,6 +1432,8 @@ async function finishSupplySetup() {
   openSupplySetupCompleteModal();
 }
 
+
+
 function resetProductView() {
   if (productSearchInput) productSearchInput.value = "";
   if (productCategoryFilter) productCategoryFilter.value = "all";
@@ -1340,8 +1459,21 @@ async function loadSupplyBuilder() {
     return;
   }
 
-  currentProfile = profileResult.data;
-  renderBusinessHeader(currentProfile);
+   document.getElementById("supplyCancelChangesBtn")?.addEventListener("click", () => {
+  const confirmCancel = window.confirm(
+    "Cancel your unsaved supply changes and reload the last saved version?"
+  );
+
+  if (confirmCancel) {
+    window.location.reload();
+  }
+});
+
+   currentProfile = profileResult.data;
+   
+   fillBuilderAccountButton(currentProfile);
+   
+   renderBusinessHeader(currentProfile);
 
   setSupplyStatus("Loading products...");
 
@@ -1388,5 +1520,6 @@ resetProductViewBtn?.addEventListener("click", resetProductView);
 saveSupplyDraftBtn?.addEventListener("click", saveSupplyDraft);
 finishSupplySetupBtn?.addEventListener("click", finishSupplySetup);
 
+initializeBuilderAccountMenu();
 applySupplyBuilderMode();
 loadSupplyBuilder();
