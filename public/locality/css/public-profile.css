@@ -1402,3 +1402,9 @@
     display: none;
   }
 }
+
+.public-save-business-btn {
+  border: 0;
+  cursor: pointer;
+  font: inherit;
+}
