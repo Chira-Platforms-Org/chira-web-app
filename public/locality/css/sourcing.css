@@ -5,112 +5,68 @@
 .sourcing-page {
   min-height: 100vh;
   background:
-    radial-gradient(circle at 18% 8%, rgba(22, 196, 104, 0.12), transparent 30%),
-    radial-gradient(circle at 78% 14%, rgba(248, 194, 69, 0.13), transparent 28%),
+    radial-gradient(circle at 12% 0%, rgba(18, 198, 106, 0.12), transparent 32%),
+    radial-gradient(circle at 88% 10%, rgba(248, 194, 69, 0.11), transparent 30%),
     #f8faf3;
   color: #0c2852;
 }
 
 .sourcing-shell {
-  width: min(1480px, calc(100% - 72px));
+  width: min(1500px, calc(100% - 72px));
   margin: 0 auto;
-  padding: 34px 0 80px;
-}
-
-.sourcing-hero {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 24px;
-  padding: 34px 38px;
-  border: 1px solid rgba(12, 38, 68, 0.08);
-  border-radius: 34px;
-  background:
-    linear-gradient(135deg, rgba(255, 255, 255, 0.94), rgba(248, 255, 246, 0.88));
-  box-shadow: 0 24px 70px rgba(12, 38, 68, 0.08);
-}
-
-.sourcing-kicker {
-  margin: 0 0 10px;
-  color: #06a85f;
-  font-size: 0.78rem;
-  font-weight: 900;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-}
-
-.sourcing-hero h1 {
-  margin: 0;
-  font-size: clamp(2.4rem, 5vw, 5rem);
-  letter-spacing: -0.075em;
-  line-height: 0.95;
-}
-
-.sourcing-hero p {
-  max-width: 760px;
-  margin: 16px 0 0;
-  color: #65758e;
-  font-size: 1.06rem;
-  font-weight: 750;
-  line-height: 1.5;
-}
-
-.sourcing-hero-link,
-.sourcing-soft-link,
-.sourcing-soft-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 46px;
-  padding: 0 20px;
-  border: 0;
-  border-radius: 999px;
-  background: #eef2f1;
-  color: #0c2852;
-  font: inherit;
-  font-weight: 900;
-  text-decoration: none;
-  cursor: pointer;
-}
-
-.sourcing-hero-link {
-  background: #12c66a;
-  color: #fff;
-  box-shadow: 0 14px 26px rgba(18, 198, 106, 0.22);
-}
-
-.sourcing-soft-button.danger {
-  background: #fff1ee;
-  color: #c94232;
+  padding: 26px 0 76px;
 }
 
 .sourcing-tab-zone {
   display: flex;
-  justify-content: center;
-  margin: 22px 0 26px;
+  align-items: end;
+  justify-content: space-between;
+  gap: 26px;
+  margin-bottom: 24px;
+}
+
+.sourcing-page-title {
+  min-width: 260px;
+}
+
+.sourcing-kicker {
+  margin: 0 0 8px;
+  color: #06a85f;
+  font-size: 0.76rem;
+  font-weight: 950;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.sourcing-page-title h1 {
+  margin: 0;
+  color: #0c2852;
+  font-size: clamp(2rem, 4vw, 3.4rem);
+  line-height: 0.96;
+  letter-spacing: -0.07em;
 }
 
 .sourcing-tab-shell {
   display: inline-flex;
   align-items: stretch;
-  gap: 0;
+  gap: 8px;
   padding: 6px;
   border: 1px solid rgba(12, 38, 68, 0.1);
-  border-radius: 20px;
-  background: rgba(255, 255, 255, 0.62);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.66);
   backdrop-filter: blur(18px) saturate(140%);
   -webkit-backdrop-filter: blur(18px) saturate(140%);
   box-shadow:
-    0 18px 42px rgba(12, 38, 68, 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 0.78);
+    0 18px 42px rgba(12, 38, 68, 0.07),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
 }
 
 .sourcing-tab {
   position: relative;
-  min-width: 190px;
-  padding: 14px 22px 16px;
+  min-width: 174px;
+  padding: 12px 18px 15px;
   border: 0;
-  border-radius: 14px;
+  border-radius: 12px;
   background: transparent;
   color: #0c2852;
   font: inherit;
@@ -127,27 +83,27 @@
   display: block;
   margin-top: 3px;
   color: #6d7d93;
-  font-size: 0.78rem;
+  font-size: 0.76rem;
   font-weight: 800;
 }
 
 .sourcing-tab::after {
   content: "";
   position: absolute;
-  left: 22px;
-  right: 22px;
-  bottom: 7px;
+  left: 18px;
+  right: 18px;
+  bottom: 6px;
   height: 3px;
   border-radius: 999px;
   background: transparent;
 }
 
 .sourcing-tab.is-active {
-  background: rgba(222, 253, 234, 0.82);
+  background: rgba(225, 253, 236, 0.82);
   color: #008b4f;
   box-shadow:
     inset 0 0 0 1px rgba(18, 194, 105, 0.18),
-    0 10px 24px rgba(18, 194, 105, 0.1);
+    0 10px 24px rgba(18, 194, 105, 0.08);
 }
 
 .sourcing-tab.is-active::after {
@@ -160,23 +116,31 @@
 
 .sourcing-workspace {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 72px;
+  grid-template-columns: minmax(0, 1fr) 104px;
   gap: 18px;
   align-items: stretch;
+}
+
+.sourcing-workspace.is-basket-active {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.sourcing-workspace.is-basket-active .basket-preview-rail {
+  display: none;
 }
 
 .sourcing-main-panel {
   min-width: 0;
   border: 1px solid rgba(12, 38, 68, 0.08);
-  border-radius: 34px;
-  background: rgba(255, 255, 255, 0.82);
+  border-radius: 32px;
+  background: rgba(255, 255, 255, 0.86);
   box-shadow: 0 22px 70px rgba(12, 38, 68, 0.08);
   overflow: hidden;
 }
 
 .sourcing-controls {
   display: grid;
-  grid-template-columns: minmax(240px, 1fr) 260px auto;
+  grid-template-columns: minmax(280px, 1fr) 260px auto;
   gap: 14px;
   align-items: end;
   padding: 24px 26px;
@@ -191,7 +155,7 @@
 
 .sourcing-controls label span {
   color: #0c2852;
-  font-size: 0.78rem;
+  font-size: 0.76rem;
   font-weight: 950;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -208,7 +172,7 @@
   background: #fff;
   color: #0c2852;
   font: inherit;
-  font-weight: 800;
+  font-weight: 820;
   padding: 0 16px;
   outline: none;
 }
@@ -221,8 +185,31 @@
   box-shadow: 0 0 0 4px rgba(18, 198, 106, 0.12);
 }
 
+.sourcing-soft-link,
+.sourcing-soft-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: 999px;
+  background: #eef2f1;
+  color: #0c2852;
+  font: inherit;
+  font-weight: 900;
+  text-decoration: none;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.sourcing-soft-button.danger {
+  background: #fff1ee;
+  color: #c94232;
+}
+
 .sourcing-panel {
-  padding: 32px 34px 38px;
+  padding: 30px 34px 38px;
 }
 
 .sourcing-panel-heading {
@@ -234,9 +221,10 @@
 }
 
 .sourcing-panel-heading h2 {
-  max-width: 920px;
+  max-width: 880px;
   margin: 0;
-  font-size: clamp(2rem, 4vw, 3.35rem);
+  color: #0c2852;
+  font-size: clamp(2rem, 4vw, 3.2rem);
   letter-spacing: -0.07em;
   line-height: 0.96;
 }
@@ -252,7 +240,7 @@
   border: 1px solid rgba(12, 38, 68, 0.1);
   border-radius: 24px;
   background:
-    linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(248, 255, 246, 0.86));
+    linear-gradient(135deg, rgba(255, 255, 255, 0.97), rgba(248, 255, 246, 0.86));
   overflow: hidden;
 }
 
@@ -408,11 +396,6 @@
   background: rgba(238, 242, 241, 0.55);
 }
 
-.basket-business-footer strong,
-.basket-total-footer strong {
-  font-size: 1.05rem;
-}
-
 .basket-total-footer {
   margin-top: 18px;
   border: 1px solid rgba(18, 198, 106, 0.18);
@@ -420,9 +403,33 @@
   background: linear-gradient(135deg, rgba(224, 255, 236, 0.86), rgba(255, 250, 236, 0.74));
 }
 
+.basket-total-footer p {
+  margin: 4px 0 0;
+  color: #6b7a90;
+  font-weight: 800;
+}
+
+.basket-total-footer > div:last-child {
+  display: grid;
+  gap: 10px;
+  justify-items: end;
+}
+
+.basket-total-footer button {
+  min-height: 42px;
+  border: 0;
+  border-radius: 999px;
+  padding: 0 18px;
+  background: #12c66a;
+  color: #fff;
+  font: inherit;
+  font-weight: 950;
+  cursor: pointer;
+}
+
 .sourcing-empty-card,
 .sourcing-coming-soon-card {
-  padding: 26px;
+  padding: 24px;
   border: 1px dashed rgba(12, 38, 68, 0.16);
   border-radius: 22px;
   background: rgba(255, 255, 255, 0.72);
@@ -437,7 +444,7 @@
   border-radius: 999px;
   background: #e4fbed;
   color: #008b4f;
-  font-size: 0.78rem;
+  font-size: 0.76rem;
   font-weight: 950;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -458,30 +465,124 @@
   line-height: 1.55;
 }
 
-.sourcing-peek-rail {
-  display: grid;
-  gap: 12px;
+/* =========================
+   RIGHT BASKET PREVIEW RAIL
+========================= */
+
+.basket-preview-rail {
+  position: sticky;
+  top: 96px;
+  align-self: start;
+  min-height: 520px;
+  border: 1px solid rgba(12, 38, 68, 0.1);
+  border-radius: 28px;
+  background: rgba(255, 255, 255, 0.58);
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  box-shadow:
+    0 18px 44px rgba(12, 38, 68, 0.07),
+    inset 0 1px 0 rgba(255, 255, 255, 0.74);
+  overflow: hidden;
 }
 
-.sourcing-peek-button {
-  writing-mode: vertical-rl;
-  text-orientation: mixed;
-  min-height: 210px;
-  border: 1px solid rgba(12, 38, 68, 0.1);
-  border-radius: 24px;
-  background: rgba(255, 255, 255, 0.62);
+.basket-preview-card {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  height: 100%;
+  min-height: 520px;
+}
+
+.basket-preview-open {
+  display: grid;
+  gap: 6px;
+  justify-items: center;
+  width: 100%;
+  padding: 16px 10px;
+  border: 0;
+  border-bottom: 1px solid rgba(12, 38, 68, 0.08);
+  background: transparent;
   color: #0c2852;
   font: inherit;
-  font-weight: 950;
   cursor: pointer;
-  box-shadow:
-    0 14px 40px rgba(12, 38, 68, 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 0.7);
 }
 
-.sourcing-peek-button span {
-  color: #06a85f;
+.basket-preview-open strong {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  font-size: 0.92rem;
+  font-weight: 950;
 }
+
+.basket-preview-open span {
+  display: inline-grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  background: rgba(18, 198, 106, 0.12);
+  color: #008b4f;
+  font-size: 0.75rem;
+  font-weight: 950;
+}
+
+.basket-preview-items {
+  display: grid;
+  align-content: start;
+  gap: 10px;
+  padding: 14px 10px;
+  overflow: hidden;
+}
+
+.basket-preview-item {
+  display: grid;
+  gap: 2px;
+  color: #718098;
+  font-size: 0.72rem;
+  font-weight: 750;
+  line-height: 1.25;
+}
+
+.basket-preview-item strong {
+  color: #4f6178;
+  font-size: 0.76rem;
+  font-weight: 850;
+}
+
+.basket-preview-empty {
+  color: #8290a3;
+  font-size: 0.74rem;
+  font-weight: 800;
+  line-height: 1.35;
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  justify-self: center;
+}
+
+.basket-preview-total {
+  display: grid;
+  gap: 4px;
+  padding: 14px 10px 16px;
+  border-top: 1px solid rgba(12, 38, 68, 0.08);
+  text-align: center;
+}
+
+.basket-preview-total span {
+  color: #7b8798;
+  font-size: 0.66rem;
+  font-weight: 950;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.basket-preview-total strong {
+  color: #0c2852;
+  font-size: 0.95rem;
+  font-weight: 950;
+}
+
+/* =========================
+   PRODUCT MODAL
+========================= */
 
 .sourcing-modal {
   position: fixed;
@@ -594,7 +695,7 @@
     width: min(100% - 28px, 760px);
   }
 
-  .sourcing-hero {
+  .sourcing-tab-zone {
     display: grid;
   }
 
@@ -611,7 +712,7 @@
     grid-template-columns: 1fr;
   }
 
-  .sourcing-peek-rail {
+  .basket-preview-rail {
     display: none;
   }
 
