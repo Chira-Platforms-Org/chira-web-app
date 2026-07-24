@@ -441,6 +441,39 @@ function toggleProductExpansion(productId) {
   }
 }
 
+async function addSupplyProductToBasket(product) {
+  if (!window.LocalitySourcingService?.addProductToBasket) {
+    window.location.href = "account.html";
+    return { error: "Sourcing service unavailable." };
+  }
+
+  if (!currentProfile?.id || !product?.id) {
+    return { error: "Missing product or business profile." };
+  }
+
+  return await window.LocalitySourcingService.addProductToBasket({
+    productId: product.id,
+    businessProfileId: currentProfile.id,
+    quantityValue: 1
+  });
+}
+
+async function saveSupplyProduct(product) {
+  if (!window.LocalitySourcingService?.saveProduct) {
+    window.location.href = "account.html";
+    return { error: "Sourcing service unavailable." };
+  }
+
+  if (!currentProfile?.id || !product?.id) {
+    return { error: "Missing product or business profile." };
+  }
+
+  return await window.LocalitySourcingService.saveProduct({
+    productId: product.id,
+    businessProfileId: currentProfile.id
+  });
+}
+
 function renderProductCard(product) {
   const isExpanded = expandedProductId === product.id;
 
@@ -516,25 +549,47 @@ card.appendChild(expandButton);
   const actions = document.createElement("div");
   actions.className = "product-public-actions";
 
-  const requestLink = document.createElement("a");
-  requestLink.href = "coming-soon.html";
-  requestLink.className = "primary";
-  requestLink.textContent = "Request quote";
-  requestLink.addEventListener("click", (event) => event.stopPropagation());
-
-  const messageLink = document.createElement("a");
-  messageLink.href = "coming-soon.html";
-  messageLink.textContent = "Message business";
-  messageLink.addEventListener("click", (event) => event.stopPropagation());
-
-  const saveLink = document.createElement("a");
-  saveLink.href = "coming-soon.html";
-  saveLink.textContent = "Save product";
-  saveLink.addEventListener("click", (event) => event.stopPropagation());
-
-  actions.appendChild(requestLink);
-  actions.appendChild(messageLink);
-  actions.appendChild(saveLink);
+  const basketLink = document.createElement("a");
+   basketLink.href = "#";
+   basketLink.className = "primary";
+   basketLink.textContent = "Add to basket";
+   basketLink.addEventListener("click", async (event) => {
+     event.preventDefault();
+     event.stopPropagation();
+   
+     basketLink.textContent = "Adding...";
+   
+     const result =
+       await addSupplyProductToBasket(product);
+   
+     basketLink.textContent =
+       result.error ? "Try again" : "Added";
+   });
+   
+   const messageLink = document.createElement("a");
+   messageLink.href = "coming-soon.html";
+   messageLink.textContent = "Message business";
+   messageLink.addEventListener("click", (event) => event.stopPropagation());
+   
+   const saveLink = document.createElement("a");
+   saveLink.href = "#";
+   saveLink.textContent = "Save product";
+   saveLink.addEventListener("click", async (event) => {
+     event.preventDefault();
+     event.stopPropagation();
+   
+     saveLink.textContent = "Saving...";
+   
+     const result =
+       await saveSupplyProduct(product);
+   
+     saveLink.textContent =
+       result.error ? "Try again" : "Saved";
+   });
+   
+   actions.appendChild(basketLink);
+   actions.appendChild(messageLink);
+   actions.appendChild(saveLink);
 
   expandedDetails.appendChild(actions);
   body.appendChild(expandedDetails);
