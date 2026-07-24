@@ -47,6 +47,9 @@ const publicCertificationsList = document.getElementById("publicCertificationsLi
 
 const publicContactCta = document.getElementById("publicContactCta");
 
+const publicSaveBusinessCta =
+  document.getElementById("publicSaveBusinessCta");
+
 const publicProductsPreviewSection = document.getElementById("publicProductsPreviewSection");
 const publicProductsPreviewTitle = document.getElementById("publicProductsPreviewTitle");
 const publicProductsPreviewPill = document.getElementById("publicProductsPreviewPill");
@@ -825,6 +828,40 @@ async function renderProductsPreview(profile) {
   });
 }
 
+function configureSaveBusinessCta(profile) {
+  if (!publicSaveBusinessCta) return;
+
+  const params =
+    new URLSearchParams(window.location.search);
+
+  const isPublicViewerRoute =
+    Boolean(params.get("id"));
+
+  publicSaveBusinessCta.hidden =
+    !isPublicViewerRoute || !profile?.id;
+
+  if (!isPublicViewerRoute || !profile?.id) {
+    return;
+  }
+
+  publicSaveBusinessCta.onclick = async () => {
+    if (!window.LocalitySourcingService?.saveBusiness) {
+      window.location.href = "account.html";
+      return;
+    }
+
+    publicSaveBusinessCta.textContent = "Saving...";
+
+    const result =
+      await window.LocalitySourcingService.saveBusiness(
+        profile.id
+      );
+
+    publicSaveBusinessCta.textContent =
+      result.error ? "Try again" : "Saved";
+  };
+}
+
 async function renderPublicProfile(profile) {
   renderIdentity(profile);
   renderSummary(profile);
@@ -832,6 +869,7 @@ async function renderPublicProfile(profile) {
   renderStorySections(profile);
   renderTeam(profile);
   renderCertifications(profile);
+  configureSaveBusinessCta(profile);
   await renderProductsPreview(profile);
 
   showState("profile");
