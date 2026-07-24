@@ -33,30 +33,15 @@
   ></header>
 
   <main class="sourcing-shell">
-    <section class="sourcing-hero">
-      <div>
-        <p class="sourcing-kicker">
-          Locality sourcing
-        </p>
-
-        <h1>
-          Sourcing & Basket
-        </h1>
-
-        <p>
-          Save businesses, revisit products, and prepare local food requests from one organized workspace.
-        </p>
-      </div>
-
-      <a href="map.html" class="sourcing-hero-link">
-        Browse marketplace
-      </a>
-    </section>
-
     <section
       class="sourcing-tab-zone"
       aria-label="Sourcing tabs"
     >
+      <div class="sourcing-page-title">
+        <p class="sourcing-kicker">Locality sourcing</p>
+        <h1>Sourcing & Basket</h1>
+      </div>
+
       <div
         class="sourcing-tab-shell"
         role="tablist"
@@ -113,13 +98,12 @@
             </select>
           </label>
 
-          <button
-            id="sourcingRefreshBtn"
-            type="button"
-            class="sourcing-soft-button"
+          <a
+            href="map.html"
+            class="sourcing-soft-link"
           >
-            Refresh
-          </button>
+            Browse marketplace
+          </a>
         </section>
 
         <section
@@ -133,9 +117,13 @@
               <h2>Businesses and products you want to remember.</h2>
             </div>
 
-            <a href="map.html?view=businesses" class="sourcing-soft-link">
-              Find businesses
-            </a>
+            <button
+              id="sourcingRefreshBtn"
+              type="button"
+              class="sourcing-soft-button"
+            >
+              Refresh
+            </button>
           </div>
 
           <div
@@ -196,18 +184,22 @@
 
           <div class="sourcing-coming-soon-card">
             <span>Coming soon</span>
-            <h3>Agreements will connect saved businesses, recurring orders, negotiated pricing, and contract terms.</h3>
+
+            <h3>
+              Agreements will connect recurring orders, negotiated pricing, and contract terms.
+            </h3>
+
             <p>
-              This tab is reserved for the future contract and recurring order terminal. Saved Network and Basket are the first functional pieces.
+              This tab is reserved for the future order terminal. Saved Network and Basket are the first functional pieces.
             </p>
           </div>
         </section>
       </div>
 
       <aside
-        id="sourcingPeekRail"
-        class="sourcing-peek-rail"
-        aria-label="Quick tab switcher"
+        id="basketPreviewRail"
+        class="basket-preview-rail"
+        aria-label="Basket preview"
       ></aside>
     </section>
   </main>
