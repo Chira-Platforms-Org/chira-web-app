@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+
+  <title>Sourcing & Basket | Locality</title>
+
+  <link
+    rel="icon"
+    type="image/png"
+    href="images/Locality Flavicon Spinner.png"
+  />
+
+  <link
+    rel="apple-touch-icon"
+    href="images/Locality Flavicon Spinner.png"
+  />
+
+  <link rel="stylesheet" href="css/locality.css" />
+  <link rel="stylesheet" href="css/app-shell.css" />
+  <link rel="stylesheet" href="css/sourcing.css" />
+</head>
+
+<body class="sourcing-page">
+  <header
+    id="localityAppHeader"
+    data-active-page="my-locality"
+  ></header>
+
+  <main class="sourcing-shell">
+    <section class="sourcing-hero">
+      <div>
+        <p class="sourcing-kicker">
+          Locality sourcing
+        </p>
+
+        <h1>
+          Sourcing & Basket
+        </h1>
+
+        <p>
+          Save businesses, revisit products, and prepare local food requests from one organized workspace.
+        </p>
+      </div>
+
+      <a href="map.html" class="sourcing-hero-link">
+        Browse marketplace
+      </a>
+    </section>
+
+    <section
+      class="sourcing-tab-zone"
+      aria-label="Sourcing tabs"
+    >
+      <div
+        class="sourcing-tab-shell"
+        role="tablist"
+        aria-label="Sourcing sections"
+      >
+        <button
+          type="button"
+          class="sourcing-tab"
+          data-sourcing-tab="saved"
+          role="tab"
+        >
+          <span>Saved Network</span>
+          <small>Businesses & products</small>
+        </button>
+
+        <button
+          type="button"
+          class="sourcing-tab"
+          data-sourcing-tab="basket"
+          role="tab"
+        >
+          <span>Basket</span>
+          <small>Items to request</small>
+        </button>
+
+        <button
+          type="button"
+          class="sourcing-tab"
+          data-sourcing-tab="agreements"
+          role="tab"
+        >
+          <span>Agreements</span>
+          <small>Coming soon</small>
+        </button>
+      </div>
+    </section>
+
+    <section class="sourcing-workspace">
+      <div class="sourcing-main-panel">
+        <section class="sourcing-controls">
+          <label>
+            <span>Search</span>
+            <input
+              id="sourcingSearchInput"
+              type="search"
+              placeholder="Search saved businesses, products, categories..."
+            />
+          </label>
+
+          <label>
+            <span>Category</span>
+            <select id="sourcingCategoryFilter">
+              <option value="all">All categories</option>
+            </select>
+          </label>
+
+          <button
+            id="sourcingRefreshBtn"
+            type="button"
+            class="sourcing-soft-button"
+          >
+            Refresh
+          </button>
+        </section>
+
+        <section
+          id="savedPanel"
+          class="sourcing-panel"
+          data-panel="saved"
+        >
+          <div class="sourcing-panel-heading">
+            <div>
+              <p class="sourcing-kicker">Saved network</p>
+              <h2>Businesses and products you want to remember.</h2>
+            </div>
+
+            <a href="map.html?view=businesses" class="sourcing-soft-link">
+              Find businesses
+            </a>
+          </div>
+
+          <div
+            id="savedNetworkList"
+            class="saved-network-list"
+            aria-live="polite"
+          >
+            <div class="sourcing-empty-card">
+              Loading saved items...
+            </div>
+          </div>
+        </section>
+
+        <section
+          id="basketPanel"
+          class="sourcing-panel"
+          data-panel="basket"
+          hidden
+        >
+          <div class="sourcing-panel-heading">
+            <div>
+              <p class="sourcing-kicker">Basket</p>
+              <h2>Items you are preparing to request.</h2>
+            </div>
+
+            <button
+              id="clearBasketBtn"
+              type="button"
+              class="sourcing-soft-button danger"
+            >
+              Clear basket
+            </button>
+          </div>
+
+          <div
+            id="basketList"
+            class="basket-list"
+            aria-live="polite"
+          >
+            <div class="sourcing-empty-card">
+              Loading basket...
+            </div>
+          </div>
+        </section>
+
+        <section
+          id="agreementsPanel"
+          class="sourcing-panel"
+          data-panel="agreements"
+          hidden
+        >
+          <div class="sourcing-panel-heading">
+            <div>
+              <p class="sourcing-kicker">Agreements</p>
+              <h2>Recurring orders and contract-linked sourcing.</h2>
+            </div>
+          </div>
+
+          <div class="sourcing-coming-soon-card">
+            <span>Coming soon</span>
+            <h3>Agreements will connect saved businesses, recurring orders, negotiated pricing, and contract terms.</h3>
+            <p>
+              This tab is reserved for the future contract and recurring order terminal. Saved Network and Basket are the first functional pieces.
+            </p>
+          </div>
+        </section>
+      </div>
+
+      <aside
+        id="sourcingPeekRail"
+        class="sourcing-peek-rail"
+        aria-label="Quick tab switcher"
+      ></aside>
+    </section>
+  </main>
+
+  <div
+    id="sourcingProductModal"
+    class="sourcing-modal"
+    hidden
+  >
+    <div
+      class="sourcing-modal-backdrop"
+      data-close-sourcing-modal
+    ></div>
+
+    <article
+      class="sourcing-modal-card"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="sourcingModalTitle"
+    >
+      <button
+        type="button"
+        class="sourcing-modal-close"
+        data-close-sourcing-modal
+        aria-label="Close product details"
+      >
+        ×
+      </button>
+
+      <div id="sourcingModalContent"></div>
+    </article>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabaseConfig.js"></script>
+  <script src="js/supabaseClient.js"></script>
+  <script src="js/authService.js"></script>
+  <script src="js/profileService.js"></script>
+  <script src="js/productService.js"></script>
+  <script src="js/sourcingService.js"></script>
+  <script src="js/appShell.js"></script>
+  <script src="js/sourcing.js"></script>
+</body>
+</html>
