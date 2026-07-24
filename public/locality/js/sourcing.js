@@ -5,6 +5,9 @@
 const sourcingTabs =
   document.querySelectorAll("[data-sourcing-tab]");
 
+const sourcingWorkspace =
+  document.querySelector(".sourcing-workspace");
+
 const savedPanel =
   document.getElementById("savedPanel");
 
@@ -32,8 +35,8 @@ const basketList =
 const clearBasketBtn =
   document.getElementById("clearBasketBtn");
 
-const sourcingPeekRail =
-  document.getElementById("sourcingPeekRail");
+const basketPreviewRail =
+  document.getElementById("basketPreviewRail");
 
 const sourcingProductModal =
   document.getElementById("sourcingProductModal");
@@ -114,9 +117,9 @@ function formatCategory(value = "") {
 }
 
 function getLocation(profile = {}) {
-  if (profile.location_label) return profile.location_label;
+  if (profile?.location_label) return profile.location_label;
 
-  if (profile.address && typeof profile.address === "object") {
+  if (profile?.address && typeof profile.address === "object") {
     const city = profile.address.city || "";
     const state = profile.address.state || "";
 
@@ -171,9 +174,9 @@ function formatMoney(value) {
 }
 
 function businessLogoHtml(profile = {}, className = "") {
-  const name = profile.name || "Locality business";
+  const name = profile?.name || "Locality business";
 
-  if (profile.logo_url) {
+  if (profile?.logo_url) {
     return `
       <div class="${className}">
         <img src="${escapeHtml(profile.logo_url)}" alt="${escapeHtml(name)} logo" />
@@ -355,7 +358,12 @@ function setActiveTab(tabName, updateUrl = true) {
     agreementsPanel.hidden = activeTab !== "agreements";
   }
 
-  renderPeekRail();
+  sourcingWorkspace?.classList.toggle(
+    "is-basket-active",
+    activeTab === "basket"
+  );
+
+  renderBasketPreviewRail();
 
   if (updateUrl) {
     const url = new URL(window.location.href);
@@ -383,11 +391,6 @@ function renderSavedNetwork() {
     .map(({ business, businessId, productRows }) => {
       const name =
         business?.name || "Saved business";
-
-      const logo = businessLogoHtml(
-        business || { name },
-        "saved-business-logo"
-      );
 
       const rowsHtml =
         productRows.length
@@ -455,7 +458,10 @@ function renderSavedNetwork() {
       return `
         <article class="saved-business-panel" data-business-id="${escapeHtml(businessId)}">
           <header class="saved-business-header">
-            ${logo}
+            ${businessLogoHtml(
+              business || { name },
+              "saved-business-logo"
+            )}
 
             <div class="saved-business-copy">
               <h3>${escapeHtml(name)}</h3>
@@ -582,6 +588,25 @@ function getBasketGroupSubtotal(group) {
   return hasAnyPrice ? total : null;
 }
 
+function getBasketTotal() {
+  let total = 0;
+  let hasTotal = false;
+
+  getBasketGroups().forEach((group) => {
+    const subtotal = getBasketGroupSubtotal(group);
+
+    if (Number.isFinite(subtotal)) {
+      hasTotal = true;
+      total += subtotal;
+    }
+  });
+
+  return {
+    total,
+    hasTotal
+  };
+}
+
 function renderBasket() {
   if (!basketList) return;
 
@@ -595,6 +620,7 @@ function renderBasket() {
     `;
 
     window.LocalityAppShell?.setBasketCount?.(0);
+    renderBasketPreviewRail();
     return;
   }
 
@@ -719,7 +745,7 @@ function renderBasket() {
           ${hasBasketTotal ? formatMoney(basketTotal) : "Request pricing"}
         </strong>
 
-        <button type="button" class="sourcing-hero-link" data-request-all-basket>
+        <button type="button" data-request-all-basket>
           Request all items
         </button>
       </div>
@@ -729,49 +755,65 @@ function renderBasket() {
   window.LocalityAppShell?.setBasketCount?.(
     basketData.basketItems.length
   );
+
+  renderBasketPreviewRail();
 }
 
-function renderPeekRail() {
-  if (!sourcingPeekRail) return;
+function renderBasketPreviewRail() {
+  if (!basketPreviewRail) return;
 
-  const savedCount =
-    getSavedBusinessIds().length;
+  if (activeTab === "basket") {
+    basketPreviewRail.innerHTML = "";
+    return;
+  }
 
-  const basketCount =
-    basketData.basketItems.length;
+  const basketItems =
+    basketData.basketItems.slice(0, 5);
 
-  const peeks = [
-    {
-      tab: "saved",
-      label: "Saved",
-      count: savedCount
-    },
-    {
-      tab: "basket",
-      label: "Basket",
-      count: basketCount
-    },
-    {
-      tab: "agreements",
-      label: "Agreements",
-      count: "Soon"
-    }
-  ].filter((item) => item.tab !== activeTab);
+  const { total, hasTotal } =
+    getBasketTotal();
 
-  sourcingPeekRail.innerHTML = peeks
-    .map((item) => {
-      return `
-        <button
-          type="button"
-          class="sourcing-peek-button"
-          data-peek-tab="${escapeHtml(item.tab)}"
-        >
-          ${escapeHtml(item.label)}
-          <span>${escapeHtml(item.count)}</span>
-        </button>
-      `;
-    })
-    .join("");
+  const itemsHtml = basketItems.length
+    ? basketItems
+        .map((item) => {
+          const product =
+            getProductById(item.product_id, basketData);
+
+          return `
+            <div class="basket-preview-item">
+              <strong>${escapeHtml(product?.name || "Basket item")}</strong>
+              <span>${escapeHtml(item.quantity_value || 1)} · ${escapeHtml(getProductPrice(product || {}))}</span>
+            </div>
+          `;
+        })
+        .join("")
+    : `
+      <div class="basket-preview-empty">
+        Basket is empty
+      </div>
+    `;
+
+  basketPreviewRail.innerHTML = `
+    <article class="basket-preview-card">
+      <button
+        type="button"
+        class="basket-preview-open"
+        data-open-basket-tab
+      >
+        <span>${basketData.basketItems.length}</span>
+        <strong>Basket</strong>
+      </button>
+
+      <div class="basket-preview-items">
+        ${itemsHtml}
+      </div>
+
+      <footer class="basket-preview-total">
+        <span>Total</span>
+        <strong>${hasTotal ? formatMoney(total) : "—"}</strong>
+      </footer>
+    </article>
+  `;
 }
 
 function openProductModal(productId, data = savedData) {
@@ -928,7 +970,7 @@ async function loadSourcingData() {
   refreshCategoryFilter();
   renderSavedNetwork();
   renderBasket();
-  renderPeekRail();
+  renderBasketPreviewRail();
 
   service.emitBasketUpdated?.();
 }
@@ -1112,23 +1154,22 @@ function attachSourcingEvents() {
     });
   });
 
-  sourcingPeekRail?.addEventListener("click", (event) => {
-    const button =
-      event.target.closest("[data-peek-tab]");
-
-    if (button) {
-      setActiveTab(button.dataset.peekTab);
+  basketPreviewRail?.addEventListener("click", (event) => {
+    if (event.target.closest("[data-open-basket-tab]")) {
+      setActiveTab("basket");
     }
   });
 
   sourcingSearchInput?.addEventListener("input", () => {
     renderSavedNetwork();
     renderBasket();
+    renderBasketPreviewRail();
   });
 
   sourcingCategoryFilter?.addEventListener("change", () => {
     renderSavedNetwork();
     renderBasket();
+    renderBasketPreviewRail();
   });
 
   sourcingRefreshBtn?.addEventListener("click", loadSourcingData);
@@ -1161,11 +1202,6 @@ function attachSourcingEvents() {
       closeProductModal();
     }
   });
-
-  window.addEventListener(
-    "locality:basket-updated",
-    loadSourcingData
-  );
 }
 
 function initializeSourcingPage() {
