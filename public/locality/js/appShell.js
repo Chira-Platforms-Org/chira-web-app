@@ -301,7 +301,7 @@ function basketIconSvg() {
          
          <a
            id="appShellBasketButton"
-           href="coming-soon.html?feature=basket"
+           href="sourcing.html?tab=basket"
            class="app-shell-icon-link app-shell-basket-link"
            aria-label="Basket"
            title="Basket"
@@ -997,7 +997,7 @@ function showNotificationPreview(
           Browse products
         </a>
 
-        <a href="coming-soon.html">
+        <a href="sourcing.html?tab=saved">
           Saved items
         </a>
 
@@ -1022,6 +1022,10 @@ function showNotificationPreview(
 
       <a href="contracts.html">
         Contract Studio
+      </a>
+
+      <a href="sourcing.html?tab=basket">
+        Sourcing & Basket
       </a>
 
       <a href="profile-builder.html">
