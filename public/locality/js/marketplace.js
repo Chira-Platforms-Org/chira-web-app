@@ -40,6 +40,7 @@ let marketplaceProducts = [];
 let savedProductIds = new Set();
 let savedBusinessIds = new Set();
 let basketProductIds = new Set();
+let basketQuantitiesByProductId = new Map();
 
 let activeBusinessRole = "all";
 let currentBusinessProfileId = null;
@@ -80,6 +81,42 @@ function toggleStoredItem(key, id) {
 
 function isStored(key, id) {
   return getStoredList(key).includes(id);
+}
+
+function getBookmarkOutlineIcon() {
+  return `
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M7 4.75h10a1 1 0 0 1 1 1v13.5l-6-3.8-6 3.8V5.75a1 1 0 0 1 1-1Z"></path>
+    </svg>
+  `;
+}
+
+function getBasketOutlineIcon() {
+  return `
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M7 10h10l-1 8H8l-1-8Z"></path>
+      <path d="M9 10 12 6l3 4"></path>
+      <path d="M10 13.5h4"></path>
+    </svg>
+  `;
+}
+
+function getTrashOutlineIcon() {
+  return `
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M5 7h14"></path>
+      <path d="M9 7V5.5A1.5 1.5 0 0 1 10.5 4h3A1.5 1.5 0 0 1 15 5.5V7"></path>
+      <path d="M8 7l.7 11a1 1 0 0 0 1 .94h4.6a1 1 0 0 0 1-.94L16 7"></path>
+    </svg>
+  `;
+}
+
+function getCheckIcon() {
+  return `
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M5 12.5 10 17l9-10"></path>
+    </svg>
+  `;
 }
 
 function bookmarkIconSvg() {
@@ -189,6 +226,86 @@ async function loadSourcingState() {
       basketResult.data.basketItems?.length || 0
     );
   }
+}
+
+function clampQty(value) {
+  const parsed = Number.parseInt(value, 10);
+  if (!Number.isFinite(parsed) || parsed < 1) return 1;
+  return parsed;
+}
+
+function buildQtyLinkedControl({
+  productId,
+  quantity = 1,
+  mode = "basket", // "basket" or "trash"
+  isActive = false
+}) {
+  const actionClass =
+    mode === "trash"
+      ? "qty-link-action qty-link-trash"
+      : `qty-link-action ${isActive ? "is-active-basket" : ""}`;
+
+  const wrapperClass =
+    mode === "trash"
+      ? "qty-link-control is-remove-mode"
+      : `qty-link-control ${isActive ? "is-basket-active" : ""}`;
+
+  const iconMarkup =
+    mode === "trash" ? getTrashOutlineIcon() : getBasketOutlineIcon();
+
+  return `
+    <div class="qty-link-stack" data-product-id="${productId}">
+      <span class="qty-link-label">Qty</span>
+      <div class="${wrapperClass}" data-role="qty-link-control" data-mode="${mode}">
+        <button type="button" class="qty-link-step" data-qty-step="-1" aria-label="Decrease quantity">−</button>
+        <div class="qty-link-number-wrap">
+          <input
+            class="qty-link-number"
+            type="number"
+            min="1"
+            step="1"
+            value="${clampQty(quantity)}"
+            inputmode="numeric"
+            aria-label="Quantity"
+          />
+        </div>
+        <button type="button" class="qty-link-step" data-qty-step="1" aria-label="Increase quantity">+</button>
+        <button
+          type="button"
+          class="${actionClass}"
+          data-qty-action="${mode}"
+          aria-label="${mode === "trash" ? "Remove from basket" : "Add to basket"}"
+        >
+          ${iconMarkup}
+        </button>
+      </div>
+    </div>
+  `;
+}
+
+function runTemporaryCheckState(button) {
+  if (!button) return;
+  const previous = button.innerHTML;
+  button.classList.add("is-checking");
+  button.innerHTML = getCheckIcon();
+
+  window.setTimeout(() => {
+    button.classList.remove("is-checking");
+    button.innerHTML = previous;
+  }, 900);
+}
+
+function getQtyValueFromControl(container) {
+  const input = container?.querySelector(".qty-link-number");
+  return clampQty(input?.value || 1);
+}
+
+function updateQtyInput(container, nextValue) {
+  const input = container?.querySelector(".qty-link-number");
+  if (!input) return 1;
+  const qty = clampQty(nextValue);
+  input.value = qty;
+  return qty;
 }
 
 async function saveMarketplaceProduct(product, button) {
@@ -309,7 +426,7 @@ async function saveMarketplaceBusiness(profile, button) {
   }
 }
 
-async function addMarketplaceProductToBasket(product, button) {
+async function addMarketplaceProductToBasket(product, button, quantityValue = 1) {
   if (!product?.id) return;
 
   if (!window.LocalitySourcingService?.addProductToBasket) {
@@ -318,6 +435,9 @@ async function addMarketplaceProductToBasket(product, button) {
     return;
   }
 
+  const qty =
+    Math.max(1, Number(quantityValue) || 1);
+
   button?.classList.add("is-busy");
 
   try {
@@ -325,7 +445,7 @@ async function addMarketplaceProductToBasket(product, button) {
       await window.LocalitySourcingService.addProductToBasket({
         productId: product.id,
         businessProfileId: product.producerId,
-        quantityValue: 1
+        quantityValue: qty
       });
 
     if (result.error) {
@@ -335,7 +455,14 @@ async function addMarketplaceProductToBasket(product, button) {
     }
 
     basketProductIds.add(product.id);
+    basketQuantitiesByProductId.set(product.id, qty);
+
     button?.classList.add("is-added");
+    button?.classList.add("is-active-basket");
+
+    button
+      ?.closest("[data-qty-basket-control]")
+      ?.classList.add("is-active-basket");
 
     animateActionSuccess(
       button,
@@ -350,6 +477,10 @@ async function addMarketplaceProductToBasket(product, button) {
         countResult.data || 0
       );
     }
+
+    window.dispatchEvent(
+      new CustomEvent("locality:basket-updated")
+    );
   } finally {
     button?.classList.remove("is-busy");
 
@@ -1173,14 +1304,17 @@ function setBusinessRole(role) {
 }
 
 function createProductCard(product) {
-  const saved =
-     isSavedProduct(product.id);
+   const saved =
+      isSavedProduct(product.id);
+    
+   const inBasket =
+      isProductInBasket(product.id);
    
-  const inBasket =
-     isProductInBasket(product.id);
-
-  const ownListing =
-    isOwnProduct(product);
+   const basketQty =
+     basketQuantitiesByProductId?.get(product.id) || 1;
+   
+   const ownListing =
+     isOwnProduct(product);
 
   const card =
     document.createElement("article");
@@ -1236,29 +1370,26 @@ function createProductCard(product) {
           ownListing
             ? ""
             : `
-            <div class="result-quick-actions">
-              <button
-                type="button"
-                class="basket-action ${
-                  inBasket ? "is-added" : ""
-                }"
-                aria-label="${inBasket ? "Product in basket" : "Add product to basket"}"
-                title="${inBasket ? "Product in basket" : "Add product to basket"}"
-              >
-                ${basketActionIconSvg()}
-              </button>
-            
-              <button
-                type="button"
-                class="save-action ${
-                  saved ? "is-saved" : ""
-                }"
-                aria-label="${saved ? "Saved product" : "Save product"}"
-                title="${saved ? "Saved product" : "Save product"}"
-              >
-                ${bookmarkIconSvg()}
-              </button>
-            </div>
+         <div class="marketplace-action-cluster">
+           ${buildQtyLinkedControl({
+             productId: product.id,
+             quantity: basketQty,
+             mode: "basket",
+             isActive: inBasket
+           })}
+         
+           <button
+             type="button"
+             class="marketplace-icon-btn save-action ${
+               saved ? "is-active-save is-saved" : ""
+             }"
+             aria-label="${saved ? "Saved product" : "Save product"}"
+             aria-pressed="${saved ? "true" : "false"}"
+             title="${saved ? "Saved product" : "Save product"}"
+           >
+             ${bookmarkIconSvg()}
+           </button>
+         </div>
             `
         }
       </div>
@@ -1358,18 +1489,48 @@ card
   );
 
 card
-  .querySelector(".basket-action")
-  ?.addEventListener(
-    "click",
-    async (event) => {
-      event.stopPropagation();
+  .querySelector("[data-qty-basket-control]")
+  ?.addEventListener("click", async (event) => {
+    event.stopPropagation();
 
+    const control = event.currentTarget;
+    const input = control.querySelector("[data-qty-input]");
+    const basketButton = control.querySelector(".basket-action");
+
+    let quantity = Math.max(1, Number(input?.value || 1));
+
+    const decreaseButton = event.target.closest("[data-qty-decrease]");
+    const increaseButton = event.target.closest("[data-qty-increase]");
+    const addButton = event.target.closest(".basket-action");
+
+    if (decreaseButton) {
+      quantity = Math.max(1, quantity - 1);
+
+      if (input) {
+        input.value = String(quantity);
+      }
+
+      return;
+    }
+
+    if (increaseButton) {
+      quantity += 1;
+
+      if (input) {
+        input.value = String(quantity);
+      }
+
+      return;
+    }
+
+    if (addButton) {
       await addMarketplaceProductToBasket(
         product,
-        event.currentTarget
+        basketButton || addButton,
+        quantity
       );
     }
-  );
+  });
 
   card
     .querySelector(
