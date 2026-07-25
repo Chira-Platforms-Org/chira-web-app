@@ -1322,3 +1322,66 @@
   pointer-events: none;
   opacity: 0.72;
 }
+
+/* =========================================================
+   MARKETPLACE COMPACT SAVE + BASKET STATE OVERRIDES
+   ========================================================= */
+
+.marketplace-action-cluster .marketplace-icon-btn.save-action {
+  width: 38px;
+  height: 38px;
+  min-width: 38px;
+  border: 2px solid rgba(12, 33, 66, 0.22);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.92);
+  color: #0c2852;
+  box-shadow: 0 2px 6px rgba(22, 40, 73, 0.05);
+}
+
+.marketplace-action-cluster .marketplace-icon-btn.save-action svg {
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2.15;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.marketplace-action-cluster .marketplace-icon-btn.save-action:hover {
+  border-color: rgba(238, 181, 42, 0.68);
+  background: rgba(255, 248, 230, 0.96);
+  color: #9b6a14;
+}
+
+.marketplace-action-cluster .marketplace-icon-btn.save-action.is-saved,
+.marketplace-action-cluster .marketplace-icon-btn.save-action.is-active-save {
+  border-color: #dcae20;
+  background: #efbf22;
+  color: #ffffff;
+  box-shadow:
+    0 0 0 3px rgba(238, 181, 42, 0.12),
+    0 12px 26px rgba(238, 181, 42, 0.22);
+}
+
+.marketplace-action-cluster .marketplace-icon-btn.save-action.is-saved svg,
+.marketplace-action-cluster .marketplace-icon-btn.save-action.is-active-save svg {
+  fill: currentColor;
+  stroke: currentColor;
+}
+
+.marketplace-action-cluster .qty-link-control.is-basket-active {
+  border-color: #10a95a;
+}
+
+.marketplace-action-cluster .qty-link-action.is-active-basket,
+.marketplace-action-cluster .qty-link-control.is-basket-active .qty-link-action {
+  background: #12c66a;
+  color: #ffffff;
+}
+
+.marketplace-action-cluster .qty-link-action.is-active-basket svg,
+.marketplace-action-cluster .qty-link-control.is-basket-active .qty-link-action svg {
+  fill: none;
+  stroke: currentColor;
+}
