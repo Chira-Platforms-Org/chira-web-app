@@ -37,6 +37,10 @@ let activeMode = "products";
 let marketplaceProfiles = [];
 let marketplaceProducts = [];
 
+let savedProductIds = new Set();
+let savedBusinessIds = new Set();
+let basketProductIds = new Set();
+
 let activeBusinessRole = "all";
 let currentBusinessProfileId = null;
 let marketplaceIsReady = false;
@@ -76,6 +80,209 @@ function toggleStoredItem(key, id) {
 
 function isStored(key, id) {
   return getStoredList(key).includes(id);
+}
+
+function bookmarkIconSvg() {
+  return `
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M7 4.8c0-.9.7-1.6 1.6-1.6h6.8c.9 0 1.6.7 1.6 1.6v15.4l-5-3.2-5 3.2V4.8Z"></path>
+    </svg>
+  `;
+}
+
+function basketActionIconSvg() {
+  return `
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M5 9h14l-1.3 9.2a2 2 0 0 1-2 1.8H8.3a2 2 0 0 1-2-1.8L5 9Z"></path>
+      <path d="M8 9c.35-3.4 1.8-5.2 4-5.2S15.65 5.6 16 9"></path>
+      <path d="M7.8 12.4h8.4"></path>
+    </svg>
+  `;
+}
+
+function checkIconSvg() {
+  return `
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M20 6.5 9.5 17 4 11.5"></path>
+    </svg>
+  `;
+}
+
+function isSavedProduct(productId) {
+  return savedProductIds.has(productId);
+}
+
+function isSavedBusiness(businessId) {
+  return savedBusinessIds.has(businessId);
+}
+
+function isProductInBasket(productId) {
+  return basketProductIds.has(productId);
+}
+
+function animateActionSuccess(button, finalHtml) {
+  if (!button) return;
+
+  button.classList.add("is-confirming");
+  button.innerHTML = checkIconSvg();
+
+  window.setTimeout(() => {
+    button.classList.remove("is-confirming");
+    button.innerHTML = finalHtml;
+  }, 1200);
+}
+
+function syncLocalSavedFallback() {
+  savedProductIds = new Set([
+    ...savedProductIds,
+    ...getStoredList(SAVED_PRODUCTS_KEY)
+  ]);
+
+  savedBusinessIds = new Set([
+    ...savedBusinessIds,
+    ...getStoredList(SAVED_BUSINESSES_KEY)
+  ]);
+}
+
+async function loadSourcingState() {
+  syncLocalSavedFallback();
+
+  if (!window.LocalitySourcingService) {
+    return;
+  }
+
+  const user =
+    await window.LocalityAuthService?.getCurrentUser?.();
+
+  if (!user) {
+    return;
+  }
+
+  const [savedResult, basketResult] =
+    await Promise.all([
+      window.LocalitySourcingService.getSavedNetwork(),
+      window.LocalitySourcingService.getBasketItems()
+    ]);
+
+  if (!savedResult.error && savedResult.data) {
+    savedProductIds = new Set(
+      (savedResult.data.savedProducts || [])
+        .map((item) => item.product_id)
+        .filter(Boolean)
+    );
+
+    savedBusinessIds = new Set(
+      (savedResult.data.savedBusinesses || [])
+        .map((item) => item.business_profile_id)
+        .filter(Boolean)
+    );
+  }
+
+  if (!basketResult.error && basketResult.data) {
+    basketProductIds = new Set(
+      (basketResult.data.basketItems || [])
+        .map((item) => item.product_id)
+        .filter(Boolean)
+    );
+
+    window.LocalityAppShell?.setBasketCount?.(
+      basketResult.data.basketItems?.length || 0
+    );
+  }
+}
+
+async function saveMarketplaceProduct(product, button) {
+  if (!window.LocalitySourcingService?.saveProduct) {
+    toggleStoredItem(SAVED_PRODUCTS_KEY, product.id);
+    return;
+  }
+
+  const wasSaved = isSavedProduct(product.id);
+
+  button?.classList.add("is-busy");
+
+  if (wasSaved) {
+    const result =
+      await window.LocalitySourcingService.unsaveProduct(product.id);
+
+    if (!result.error) {
+      savedProductIds.delete(product.id);
+    }
+  } else {
+    const result =
+      await window.LocalitySourcingService.saveProduct({
+        productId: product.id,
+        businessProfileId: product.producerId
+      });
+
+    if (!result.error) {
+      savedProductIds.add(product.id);
+
+      if (product.producerId) {
+        savedBusinessIds.add(product.producerId);
+      }
+
+      animateActionSuccess(button, bookmarkIconSvg());
+    }
+  }
+
+  button?.classList.remove("is-busy");
+  renderMarketplace();
+}
+
+async function saveMarketplaceBusiness(profile, button) {
+  if (!window.LocalitySourcingService?.saveBusiness) {
+    toggleStoredItem(SAVED_BUSINESSES_KEY, profile.id);
+    return;
+  }
+
+  const wasSaved = isSavedBusiness(profile.id);
+
+  button?.classList.add("is-busy");
+
+  if (wasSaved) {
+    const result =
+      await window.LocalitySourcingService.unsaveBusiness(profile.id);
+
+    if (!result.error) {
+      savedBusinessIds.delete(profile.id);
+    }
+  } else {
+    const result =
+      await window.LocalitySourcingService.saveBusiness(profile.id);
+
+    if (!result.error) {
+      savedBusinessIds.add(profile.id);
+      animateActionSuccess(button, bookmarkIconSvg());
+    }
+  }
+
+  button?.classList.remove("is-busy");
+  renderMarketplace();
+}
+
+async function addMarketplaceProductToBasket(product, button) {
+  if (!window.LocalitySourcingService?.addProductToBasket) {
+    window.location.href = "account.html";
+    return;
+  }
+
+  button?.classList.add("is-busy");
+
+  const result =
+    await window.LocalitySourcingService.addProductToBasket({
+      productId: product.id,
+      businessProfileId: product.producerId,
+      quantityValue: 1
+    });
+
+  if (!result.error) {
+    basketProductIds.add(product.id);
+    animateActionSuccess(button, basketActionIconSvg());
+  }
+
+  button?.classList.remove("is-busy");
+  renderMarketplace();
 }
 
 function slugify(value = "") {
@@ -893,10 +1100,10 @@ function setBusinessRole(role) {
 
 function createProductCard(product) {
   const saved =
-    isStored(
-      SAVED_PRODUCTS_KEY,
-      product.id
-    );
+     isSavedProduct(product.id);
+   
+  const inBasket =
+     isProductInBasket(product.id);
 
   const ownListing =
     isOwnProduct(product);
@@ -955,18 +1162,29 @@ function createProductCard(product) {
           ownListing
             ? ""
             : `
+            <div class="result-quick-actions">
+              <button
+                type="button"
+                class="basket-action ${
+                  inBasket ? "is-added" : ""
+                }"
+                aria-label="${inBasket ? "Product in basket" : "Add product to basket"}"
+                title="${inBasket ? "Product in basket" : "Add product to basket"}"
+              >
+                ${basketActionIconSvg()}
+              </button>
+            
               <button
                 type="button"
                 class="save-action ${
-                  saved
-                    ? "is-saved"
-                    : ""
+                  saved ? "is-saved" : ""
                 }"
-                aria-label="Save product"
-                title="Save product"
+                aria-label="${saved ? "Saved product" : "Save product"}"
+                title="${saved ? "Saved product" : "Save product"}"
               >
-                ★
+                ${bookmarkIconSvg()}
               </button>
+            </div>
             `
         }
       </div>
@@ -1051,19 +1269,33 @@ function createProductCard(product) {
     }
   );
 
-  card
-    .querySelector(".save-action")
-    ?.addEventListener(
-      "click",
-      (event) => {
-        event.stopPropagation();
+card
+  .querySelector(".save-action")
+  ?.addEventListener(
+    "click",
+    async (event) => {
+      event.stopPropagation();
 
-        toggleStoredItem(
-          SAVED_PRODUCTS_KEY,
-          product.id
-        );
-      }
-    );
+      await saveMarketplaceProduct(
+        product,
+        event.currentTarget
+      );
+    }
+  );
+
+card
+  .querySelector(".basket-action")
+  ?.addEventListener(
+    "click",
+    async (event) => {
+      event.stopPropagation();
+
+      await addMarketplaceProductToBasket(
+        product,
+        event.currentTarget
+      );
+    }
+  );
 
   card
     .querySelector(
@@ -1118,10 +1350,7 @@ function createProductCard(product) {
 
 function createBusinessCard(profile) {
   const saved =
-    isStored(
-      SAVED_BUSINESSES_KEY,
-      profile.id
-    );
+    isSavedBusiness(profile.id);
 
   const ownBusiness =
     isOwnBusiness(profile);
@@ -1188,14 +1417,12 @@ function createBusinessCard(profile) {
             <button
               type="button"
               class="save-action ${
-                saved
-                  ? "is-saved"
-                  : ""
+                saved ? "is-saved" : ""
               }"
-              aria-label="Save business"
-              title="Save business"
+              aria-label="${saved ? "Saved business" : "Save business"}"
+              title="${saved ? "Saved business" : "Save business"}"
             >
-              ★
+              ${bookmarkIconSvg()}
             </button>
           `
       }
@@ -1336,35 +1563,19 @@ function createBusinessCard(profile) {
     }
   );
 
-  card
-    .querySelector(".save-action")
-    ?.addEventListener(
-      "click",
-      (event) => {
-        event.stopPropagation();
-
-        toggleStoredItem(
-          SAVED_BUSINESSES_KEY,
-          profile.id
-        );
-      }
-    );
-
-  card
-    .querySelector(
-      '[data-action="save-business"]'
-    )
-    ?.addEventListener(
-      "click",
-      (event) => {
-        event.stopPropagation();
-
-        toggleStoredItem(
-          SAVED_BUSINESSES_KEY,
-          profile.id
-        );
-      }
-    );
+   card
+     .querySelector('[data-action="save-business"]')
+     ?.addEventListener(
+       "click",
+       async (event) => {
+         event.stopPropagation();
+   
+         await saveMarketplaceBusiness(
+           profile,
+           event.currentTarget
+         );
+       }
+     );
 
   card
     .querySelector(
@@ -1922,47 +2133,55 @@ function openPreviewForProduct(product) {
                 </a>
               `
               : `
-                <a
-                  href="coming-soon.html"
-                  class="preview-action-primary"
-                >
-                  Reserve
-                </a>
-
-                <button
-                  type="button"
-                  class="preview-action-gold"
-                  data-preview-save
-                >
-                  ${
-                    isStored(
-                      SAVED_PRODUCTS_KEY,
-                      product.id
-                    )
-                      ? "Saved"
-                      : "Save product"
-                  }
-                </button>
-
-                <button
-                  type="button"
-                  class="preview-action-gold"
-                  data-preview-routine
-                >
-                  Add ${formatCategory(
-                    getCategoryGroup(
-                      product.category
-                    )
-                  )} to routine
-                </button>
-
-                <button
-                  type="button"
-                  class="preview-action-secondary"
-                  data-preview-business
-                >
-                  View business
-                </button>
+               <button
+                 type="button"
+                 class="preview-action-primary basket-action"
+                 data-preview-add-basket
+               >
+                 Add to basket
+               </button>
+               
+               <button
+                 type="button"
+                 class="preview-action-gold save-action ${
+                   isStored(
+                     SAVED_PRODUCTS_KEY,
+                     product.id
+                   )
+                     ? "is-saved"
+                     : ""
+                 }"
+                 data-preview-save-product
+               >
+                 ${
+                   isStored(
+                     SAVED_PRODUCTS_KEY,
+                     product.id
+                   )
+                     ? "Saved"
+                     : "Save product"
+                 }
+               </button>
+               
+               <button
+                 type="button"
+                 class="preview-action-gold"
+                 data-preview-routine
+               >
+                 Add ${formatCategory(
+                   getCategoryGroup(
+                     product.category
+                   )
+                 )} to routine
+               </button>
+               
+               <button
+                 type="button"
+                 class="preview-action-secondary"
+                 data-preview-business
+               >
+                 View business
+               </button>
               `
           }
         </div>
@@ -1970,21 +2189,37 @@ function openPreviewForProduct(product) {
     </article>
   `;
 
-  previewPanelContent
-    .querySelector(
-      "[data-preview-save]"
-    )
-    ?.addEventListener(
-      "click",
-      () => {
-        toggleStoredItem(
-          SAVED_PRODUCTS_KEY,
-          product.id
-        );
+   previewPanelContent
+     .querySelector(
+       "[data-preview-save-product]"
+     )
+     ?.addEventListener(
+       "click",
+       async (event) => {
+         event.stopPropagation();
+   
+         await saveMarketplaceProduct(
+           product,
+           event.currentTarget
+         );
+       }
+     );
 
-        openPreviewForProduct(product);
-      }
-    );
+   previewPanelContent
+     .querySelector(
+       "[data-preview-add-basket]"
+     )
+     ?.addEventListener(
+       "click",
+       async (event) => {
+         event.stopPropagation();
+   
+         await addMarketplaceProductToBasket(
+           product,
+           event.currentTarget
+         );
+       }
+     );
 
   previewPanelContent
     .querySelector(
@@ -2022,10 +2257,7 @@ function openPreviewForProduct(product) {
 
 function openPreviewForBusiness(profile) {
   const saved =
-    isStored(
-      SAVED_BUSINESSES_KEY,
-      profile.id
-    );
+    isSavedBusiness(profile.id);
 
   const ownBusiness =
     isOwnBusiness(profile);
@@ -2264,21 +2496,19 @@ function openPreviewForBusiness(profile) {
     </article>
   `;
 
-  previewPanelContent
-    .querySelector(
-      "[data-preview-save-business]"
-    )
-    ?.addEventListener(
-      "click",
-      () => {
-        toggleStoredItem(
-          SAVED_BUSINESSES_KEY,
-          profile.id
-        );
-
-        openPreviewForBusiness(profile);
-      }
-    );
+   previewPanel
+     .querySelector("[data-preview-save-business]")
+     ?.addEventListener(
+       "click",
+       async (event) => {
+         event.stopPropagation();
+   
+         await saveMarketplaceBusiness(
+           profile,
+           event.currentTarget
+         );
+       }
+     );
 
   previewPanelContent
     .querySelector(
@@ -2359,6 +2589,7 @@ async function initializeMarketplace() {
     renderMarketplaceLoading();
 
     await loadMarketplaceData();
+    await loadSourcingState();
 
      marketplaceIsReady = true;
 
