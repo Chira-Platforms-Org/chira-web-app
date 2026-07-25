@@ -333,6 +333,114 @@ function refreshCategoryFilter() {
       : "all";
 }
 
+function clampQty(value) {
+  const parsed = Number.parseInt(value, 10);
+  if (!Number.isFinite(parsed) || parsed < 1) return 1;
+  return parsed;
+}
+
+function buildQtyLinkedControl({
+  productId,
+  quantity = 1,
+  mode = "basket", // "basket" or "trash"
+  isActive = false
+}) {
+  const actionClass =
+    mode === "trash"
+      ? "qty-link-action qty-link-trash"
+      : `qty-link-action ${isActive ? "is-active-basket" : ""}`;
+
+  const wrapperClass =
+    mode === "trash"
+      ? "qty-link-control is-remove-mode"
+      : `qty-link-control ${isActive ? "is-basket-active" : ""}`;
+
+  const iconMarkup =
+    mode === "trash" ? getTrashOutlineIcon() : getBasketOutlineIcon();
+
+  return `
+    <div class="qty-link-stack" data-product-id="${productId}">
+      <span class="qty-link-label">Qty</span>
+      <div class="${wrapperClass}" data-role="qty-link-control" data-mode="${mode}">
+        <button type="button" class="qty-link-step" data-qty-step="-1" aria-label="Decrease quantity">−</button>
+        <div class="qty-link-number-wrap">
+          <input
+            class="qty-link-number"
+            type="number"
+            min="1"
+            step="1"
+            value="${clampQty(quantity)}"
+            inputmode="numeric"
+            aria-label="Quantity"
+          />
+        </div>
+        <button type="button" class="qty-link-step" data-qty-step="1" aria-label="Increase quantity">+</button>
+        <button
+          type="button"
+          class="${actionClass}"
+          data-qty-action="${mode}"
+          aria-label="${mode === "trash" ? "Remove from basket" : "Add to basket"}"
+        >
+          ${iconMarkup}
+        </button>
+      </div>
+    </div>
+  `;
+}
+
+function getBasketOutlineIcon() {
+  return `
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M7 10h10l-1 8H8l-1-8Z"></path>
+      <path d="M9 10 12 6l3 4"></path>
+      <path d="M10 13.5h4"></path>
+    </svg>
+  `;
+}
+
+function getTrashOutlineIcon() {
+  return `
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M5 7h14"></path>
+      <path d="M9 7V5.5A1.5 1.5 0 0 1 10.5 4h3A1.5 1.5 0 0 1 15 5.5V7"></path>
+      <path d="M8 7l.7 11a1 1 0 0 0 1 .94h4.6a1 1 0 0 0 1-.94L16 7"></path>
+    </svg>
+  `;
+}
+
+function getCheckIcon() {
+  return `
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M5 12.5 10 17l9-10"></path>
+    </svg>
+  `;
+}
+
+function runTemporaryCheckState(button) {
+  if (!button) return;
+  const previous = button.innerHTML;
+  button.classList.add("is-checking");
+  button.innerHTML = getCheckIcon();
+
+  window.setTimeout(() => {
+    button.classList.remove("is-checking");
+    button.innerHTML = previous;
+  }, 900);
+}
+
+function getQtyValueFromControl(container) {
+  const input = container?.querySelector(".qty-link-number");
+  return clampQty(input?.value || 1);
+}
+
+function updateQtyInput(container, nextValue) {
+  const input = container?.querySelector(".qty-link-number");
+  if (!input) return 1;
+  const qty = clampQty(nextValue);
+  input.value = qty;
+  return qty;
+}
+
 function setActiveTab(tabName, updateUrl = true) {
   activeTab = ["saved", "basket", "agreements"].includes(tabName)
     ? tabName
@@ -398,45 +506,41 @@ function renderSavedNetwork() {
               .filter(({ product }) => Boolean(product))
               .map(({ product }) => {
                 return `
-                  <div class="saved-product-row" data-product-id="${escapeHtml(product.id)}">
+                  <div
+                    class="saved-product-row"
+                    data-product-id="${escapeHtml(product.id)}"
+                    data-business-id="${escapeHtml(product.business_profile_id || businessId)}"
+                  >
                     <div class="saved-product-main">
                       <strong>${escapeHtml(product.name || "Saved product")}</strong>
                       <span>${escapeHtml(product.description || product.availability_status || "Saved product")}</span>
                     </div>
-
+                  
                     <span class="saved-product-meta">
                       ${escapeHtml(formatCategory(product.category))}
                     </span>
-
+                  
                     <span class="saved-product-meta">
                       ${escapeHtml(getProductPrice(product))}
                     </span>
-
-                    <input
-                      class="saved-product-qty"
-                      type="number"
-                      min="1"
-                      value="1"
-                      aria-label="Quantity for ${escapeHtml(product.name || "product")}"
-                    />
-
+                  
+                    ${buildQtyLinkedControl({
+                      productId: product.id,
+                      quantity: 1,
+                      mode: "basket",
+                      isActive: basketData.basketItems.some(
+                        (item) => item.product_id === product.id
+                      )
+                    })}
+                  
                     <div class="saved-product-actions">
-                      <button
-                        type="button"
-                        class="primary"
-                        data-add-saved-product-to-basket="${escapeHtml(product.id)}"
-                        data-business-id="${escapeHtml(product.business_profile_id || businessId)}"
-                      >
-                        Add
-                      </button>
-
                       <button
                         type="button"
                         data-view-product="${escapeHtml(product.id)}"
                       >
                         View
                       </button>
-
+                  
                       <button
                         type="button"
                         class="danger"
@@ -659,37 +763,21 @@ function renderBasket() {
                 ${escapeHtml(getProductPrice(product))}
               </span>
 
-              <input
-                class="basket-qty-input"
-                type="number"
-                min="1"
-                value="${escapeHtml(item.quantity_value || 1)}"
-                aria-label="Quantity for ${escapeHtml(product.name || "product")}"
-              />
-
-              <div class="basket-row-actions">
-                <button
-                  type="button"
-                  data-update-basket-item="${escapeHtml(item.id)}"
-                >
-                  Update
-                </button>
-
-                <button
-                  type="button"
-                  data-view-basket-product="${escapeHtml(product.id)}"
-                >
-                  View
-                </button>
-
-                <button
-                  type="button"
-                  class="danger"
-                  data-remove-basket-item="${escapeHtml(item.id)}"
-                >
-                  Remove
-                </button>
-              </div>
+               ${buildQtyLinkedControl({
+                 productId: product.id,
+                 quantity: item.quantity_value || 1,
+                 mode: "trash",
+                 isActive: true
+               })}
+               
+               <div class="basket-row-actions">
+                 <button
+                   type="button"
+                   data-view-basket-product="${escapeHtml(product.id)}"
+                 >
+                   View
+                 </button>
+               </div>
             </div>
           `;
         })
@@ -976,8 +1064,11 @@ async function loadSourcingData() {
 }
 
 async function handleSavedAction(event) {
-  const addButton =
-    event.target.closest("[data-add-saved-product-to-basket]");
+  const qtyStepButton =
+    event.target.closest("[data-qty-step]");
+
+  const basketButton =
+    event.target.closest('[data-qty-action="basket"]');
 
   const viewButton =
     event.target.closest("[data-view-product]");
@@ -988,26 +1079,68 @@ async function handleSavedAction(event) {
   const unsaveBusinessButton =
     event.target.closest("[data-unsave-business]");
 
-  if (addButton) {
+  if (qtyStepButton) {
+    const control =
+      qtyStepButton.closest('[data-role="qty-link-control"]');
+
+    const currentQty =
+      getQtyValueFromControl(control);
+
+    const step =
+      Number(qtyStepButton.dataset.qtyStep || 0);
+
+    updateQtyInput(
+      control,
+      currentQty + step
+    );
+
+    return;
+  }
+
+  if (basketButton) {
     const row =
-      addButton.closest(".saved-product-row");
+      basketButton.closest(".saved-product-row");
+
+    const control =
+      basketButton.closest('[data-role="qty-link-control"]');
+
+    const productId =
+      row?.dataset.productId;
+
+    const businessId =
+      row?.dataset.businessId;
 
     const qty =
-      Number(row?.querySelector(".saved-product-qty")?.value) || 1;
+      getQtyValueFromControl(control);
 
-    addButton.textContent = "Adding...";
+    if (!productId || !businessId) return;
+
+    basketButton.classList.add("is-busy");
 
     const result =
       await window.LocalitySourcingService.addProductToBasket({
-        productId: addButton.dataset.addSavedProductToBasket,
-        businessProfileId: addButton.dataset.businessId,
+        productId,
+        businessProfileId: businessId,
         quantityValue: qty
       });
 
-    addButton.textContent =
-      result.error ? "Try again" : "Added";
+    basketButton.classList.remove("is-busy");
 
-    await loadSourcingData();
+    if (result.error) {
+      console.error("Unable to add saved product to basket:", result.error);
+      basketButton.classList.add("is-error");
+      return;
+    }
+
+    basketButton.classList.add("is-active-basket");
+    control?.classList.add("is-basket-active");
+
+    runTemporaryCheckState(basketButton);
+
+    window.setTimeout(async () => {
+      await loadSourcingData();
+    }, 650);
+
     return;
   }
 
@@ -1035,11 +1168,11 @@ async function handleSavedAction(event) {
 }
 
 async function handleBasketAction(event) {
-  const updateButton =
-    event.target.closest("[data-update-basket-item]");
+  const qtyStepButton =
+    event.target.closest("[data-qty-step]");
 
-  const removeButton =
-    event.target.closest("[data-remove-basket-item]");
+  const trashButton =
+    event.target.closest('[data-qty-action="trash"]');
 
   const viewButton =
     event.target.closest("[data-view-basket-product]");
@@ -1050,36 +1183,77 @@ async function handleBasketAction(event) {
   const requestAll =
     event.target.closest("[data-request-all-basket]");
 
-  if (updateButton) {
+  if (qtyStepButton) {
     const row =
-      updateButton.closest(".basket-row");
+      qtyStepButton.closest(".basket-row");
 
-    const qty =
-      Number(row?.querySelector(".basket-qty-input")?.value) || 1;
+    const control =
+      qtyStepButton.closest('[data-role="qty-link-control"]');
 
-    updateButton.textContent = "Saving...";
+    const basketItemId =
+      row?.dataset.basketItemId;
+
+    if (!basketItemId) return;
+
+    const currentQty =
+      getQtyValueFromControl(control);
+
+    const step =
+      Number(qtyStepButton.dataset.qtyStep || 0);
+
+    const nextQty =
+      updateQtyInput(
+        control,
+        currentQty + step
+      );
 
     const result =
       await window.LocalitySourcingService.updateBasketItem(
-        updateButton.dataset.updateBasketItem,
+        basketItemId,
         {
-          quantityValue: qty
+          quantityValue: nextQty
         }
       );
 
-    updateButton.textContent =
-      result.error ? "Try again" : "Saved";
+    if (result.error) {
+      console.error("Unable to update basket quantity:", result.error);
+      return;
+    }
 
     await loadSourcingData();
     return;
   }
 
-  if (removeButton) {
-    await window.LocalitySourcingService.removeBasketItem(
-      removeButton.dataset.removeBasketItem
-    );
+  if (trashButton) {
+    const row =
+      trashButton.closest(".basket-row");
 
-    await loadSourcingData();
+    const basketItemId =
+      row?.dataset.basketItemId;
+
+    if (!basketItemId) return;
+
+    trashButton.classList.add("is-busy");
+
+    const result =
+      await window.LocalitySourcingService.removeBasketItem(
+        basketItemId
+      );
+
+    trashButton.classList.remove("is-busy");
+
+    if (result.error) {
+      console.error("Unable to remove basket item:", result.error);
+      trashButton.classList.add("is-error");
+      return;
+    }
+
+    runTemporaryCheckState(trashButton);
+
+    window.setTimeout(async () => {
+      await loadSourcingData();
+    }, 450);
+
     return;
   }
 
@@ -1105,6 +1279,41 @@ async function handleBasketAction(event) {
       "Request all will eventually create separate seller requests grouped by business."
     );
   }
+}
+
+async function handleBasketQtyChange(event) {
+  const input =
+    event.target.closest(".qty-link-number");
+
+  if (!input) return;
+
+  const row =
+    input.closest(".basket-row");
+
+  const basketItemId =
+    row?.dataset.basketItemId;
+
+  if (!basketItemId) return;
+
+  const qty =
+    clampQty(input.value);
+
+  input.value = String(qty);
+
+  const result =
+    await window.LocalitySourcingService.updateBasketItem(
+      basketItemId,
+      {
+        quantityValue: qty
+      }
+    );
+
+  if (result.error) {
+    console.error("Unable to update basket quantity:", result.error);
+    return;
+  }
+
+  await loadSourcingData();
 }
 
 async function handleModalAction(event) {
@@ -1174,8 +1383,9 @@ function attachSourcingEvents() {
 
   sourcingRefreshBtn?.addEventListener("click", loadSourcingData);
 
-  savedNetworkList?.addEventListener("click", handleSavedAction);
-  basketList?.addEventListener("click", handleBasketAction);
+   savedNetworkList?.addEventListener("click", handleSavedAction);
+   basketList?.addEventListener("click", handleBasketAction);
+   basketList?.addEventListener("change", handleBasketQtyChange);
 
   clearBasketBtn?.addEventListener("click", async () => {
     const confirmed = window.confirm(
