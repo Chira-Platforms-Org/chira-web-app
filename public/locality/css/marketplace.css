@@ -1235,3 +1235,90 @@
     left: 14px;
   }
 }
+
+/* =========================
+   MARKETPLACE SAVE / BASKET ICON ACTIONS
+========================= */
+
+.result-quick-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.save-action,
+.basket-action {
+  width: 38px;
+  height: 38px;
+  border: 2px solid rgba(12, 33, 66, 0.22);
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  background: rgba(255, 255, 255, 0.88);
+  color: #0c2852;
+  cursor: pointer;
+  transition:
+    transform 0.16s ease,
+    background 0.16s ease,
+    border-color 0.16s ease,
+    color 0.16s ease,
+    box-shadow 0.16s ease;
+}
+
+.basket-action {
+  width: 46px;
+  border-radius: 16px;
+}
+
+.save-action svg,
+.basket-action svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.15;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.save-action:hover,
+.basket-action:hover {
+  transform: translateY(-1px);
+  border-color: rgba(238, 181, 42, 0.64);
+  background: rgba(255, 248, 230, 0.95);
+  color: #9b6a14;
+  box-shadow: 0 10px 22px rgba(238, 181, 42, 0.16);
+}
+
+.save-action.is-saved,
+.basket-action.is-added {
+  border-color: rgba(238, 181, 42, 0.72);
+  background: #efbf22;
+  color: #fff;
+  box-shadow: 0 12px 26px rgba(238, 181, 42, 0.22);
+}
+
+.save-action.is-saved svg,
+.basket-action.is-added svg {
+  fill: currentColor;
+}
+
+.save-action.is-confirming,
+.basket-action.is-confirming {
+  border-color: rgba(18, 198, 106, 0.76);
+  background: #12c66a;
+  color: #fff;
+  transform: scale(1.06);
+  box-shadow: 0 12px 28px rgba(18, 198, 106, 0.22);
+}
+
+.save-action.is-confirming svg,
+.basket-action.is-confirming svg {
+  fill: none;
+}
+
+.save-action.is-busy,
+.basket-action.is-busy {
+  pointer-events: none;
+  opacity: 0.72;
+}
