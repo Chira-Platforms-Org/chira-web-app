@@ -469,6 +469,18 @@
    RIGHT BASKET PREVIEW RAIL
 ========================= */
 
+.sourcing-workspace {
+  grid-template-columns: minmax(0, 1fr) 132px;
+}
+
+.sourcing-workspace.is-basket-active {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.sourcing-workspace.is-basket-active .basket-preview-rail {
+  display: none;
+}
+
 .basket-preview-rail {
   position: sticky;
   top: 96px;
@@ -495,22 +507,24 @@
 .basket-preview-open {
   display: grid;
   gap: 6px;
-  justify-items: center;
+  justify-items: start;
   width: 100%;
-  padding: 16px 10px;
+  padding: 16px 14px;
   border: 0;
   border-bottom: 1px solid rgba(12, 38, 68, 0.08);
   background: transparent;
   color: #0c2852;
   font: inherit;
+  text-align: left;
   cursor: pointer;
 }
 
 .basket-preview-open strong {
-  writing-mode: vertical-rl;
-  text-orientation: mixed;
-  font-size: 0.92rem;
+  writing-mode: horizontal-tb;
+  text-orientation: initial;
+  font-size: 0.9rem;
   font-weight: 950;
+  line-height: 1.1;
 }
 
 .basket-preview-open span {
@@ -529,7 +543,7 @@
   display: grid;
   align-content: start;
   gap: 10px;
-  padding: 14px 10px;
+  padding: 12px 14px;
   overflow: hidden;
 }
 
@@ -540,6 +554,8 @@
   font-size: 0.72rem;
   font-weight: 750;
   line-height: 1.25;
+  text-align: left;
+  overflow: hidden;
 }
 
 .basket-preview-item strong {
@@ -548,22 +564,31 @@
   font-weight: 850;
 }
 
+.basket-preview-item strong,
+.basket-preview-item span {
+  display: block;
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
 .basket-preview-empty {
   color: #8290a3;
   font-size: 0.74rem;
   font-weight: 800;
   line-height: 1.35;
-  writing-mode: vertical-rl;
-  text-orientation: mixed;
-  justify-self: center;
+  writing-mode: horizontal-tb;
+  text-orientation: initial;
+  justify-self: stretch;
+  text-align: left;
 }
 
 .basket-preview-total {
   display: grid;
   gap: 4px;
-  padding: 14px 10px 16px;
+  padding: 14px;
   border-top: 1px solid rgba(12, 38, 68, 0.08);
-  text-align: center;
+  text-align: left;
 }
 
 .basket-preview-total span {
@@ -580,6 +605,20 @@
   font-weight: 950;
 }
 
+@media (max-width: 980px) {
+  .sourcing-workspace {
+    grid-template-columns: 1fr;
+  }
+
+  .basket-preview-rail {
+    position: static;
+    min-height: auto;
+  }
+
+  .basket-preview-card {
+    min-height: auto;
+  }
+}
 /* =========================
    PRODUCT MODAL
 ========================= */
