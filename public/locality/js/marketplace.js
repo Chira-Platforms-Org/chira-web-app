@@ -192,6 +192,8 @@ async function loadSourcingState() {
 }
 
 async function saveMarketplaceProduct(product, button) {
+  if (!product?.id) return;
+
   if (!window.LocalitySourcingService?.saveProduct) {
     toggleStoredItem(SAVED_PRODUCTS_KEY, product.id);
     return;
@@ -201,36 +203,62 @@ async function saveMarketplaceProduct(product, button) {
 
   button?.classList.add("is-busy");
 
-  if (wasSaved) {
-    const result =
-      await window.LocalitySourcingService.unsaveProduct(product.id);
+  try {
+    if (wasSaved) {
+      const result =
+        await window.LocalitySourcingService.unsaveProduct(product.id);
 
-    if (!result.error) {
+      if (result.error) {
+        console.error("Unable to unsave product:", result.error);
+        button?.classList.add("is-error");
+        return;
+      }
+
       savedProductIds.delete(product.id);
+      button?.classList.remove("is-saved");
+      button?.setAttribute("aria-label", "Save product");
+      button?.setAttribute("title", "Save product");
+      return;
     }
-  } else {
+
     const result =
       await window.LocalitySourcingService.saveProduct({
         productId: product.id,
         businessProfileId: product.producerId
       });
 
-    if (!result.error) {
-      savedProductIds.add(product.id);
-
-      if (product.producerId) {
-        savedBusinessIds.add(product.producerId);
-      }
-
-      animateActionSuccess(button, bookmarkIconSvg());
+    if (result.error) {
+      console.error("Unable to save product:", result.error);
+      button?.classList.add("is-error");
+      return;
     }
-  }
 
-  button?.classList.remove("is-busy");
-  renderMarketplace();
+    savedProductIds.add(product.id);
+
+    if (product.producerId) {
+      savedBusinessIds.add(product.producerId);
+    }
+
+    button?.classList.add("is-saved");
+    button?.setAttribute("aria-label", "Saved product");
+    button?.setAttribute("title", "Saved product");
+
+    animateActionSuccess(
+      button,
+      bookmarkIconSvg()
+    );
+  } finally {
+    button?.classList.remove("is-busy");
+
+    window.setTimeout(() => {
+      renderMarketplace();
+    }, 900);
+  }
 }
 
 async function saveMarketplaceBusiness(profile, button) {
+  if (!profile?.id) return;
+
   if (!window.LocalitySourcingService?.saveBusiness) {
     toggleStoredItem(SAVED_BUSINESSES_KEY, profile.id);
     return;
@@ -240,49 +268,95 @@ async function saveMarketplaceBusiness(profile, button) {
 
   button?.classList.add("is-busy");
 
-  if (wasSaved) {
-    const result =
-      await window.LocalitySourcingService.unsaveBusiness(profile.id);
+  try {
+    if (wasSaved) {
+      const result =
+        await window.LocalitySourcingService.unsaveBusiness(profile.id);
 
-    if (!result.error) {
+      if (result.error) {
+        console.error("Unable to unsave business:", result.error);
+        button?.classList.add("is-error");
+        return;
+      }
+
       savedBusinessIds.delete(profile.id);
+      button?.classList.remove("is-saved");
+      return;
     }
-  } else {
+
     const result =
       await window.LocalitySourcingService.saveBusiness(profile.id);
 
-    if (!result.error) {
-      savedBusinessIds.add(profile.id);
-      animateActionSuccess(button, bookmarkIconSvg());
+    if (result.error) {
+      console.error("Unable to save business:", result.error);
+      button?.classList.add("is-error");
+      return;
     }
-  }
 
-  button?.classList.remove("is-busy");
-  renderMarketplace();
+    savedBusinessIds.add(profile.id);
+    button?.classList.add("is-saved");
+
+    animateActionSuccess(
+      button,
+      bookmarkIconSvg()
+    );
+  } finally {
+    button?.classList.remove("is-busy");
+
+    window.setTimeout(() => {
+      renderMarketplace();
+    }, 900);
+  }
 }
 
 async function addMarketplaceProductToBasket(product, button) {
+  if (!product?.id) return;
+
   if (!window.LocalitySourcingService?.addProductToBasket) {
+    console.error("LocalitySourcingService.addProductToBasket is unavailable.");
     window.location.href = "account.html";
     return;
   }
 
   button?.classList.add("is-busy");
 
-  const result =
-    await window.LocalitySourcingService.addProductToBasket({
-      productId: product.id,
-      businessProfileId: product.producerId,
-      quantityValue: 1
-    });
+  try {
+    const result =
+      await window.LocalitySourcingService.addProductToBasket({
+        productId: product.id,
+        businessProfileId: product.producerId,
+        quantityValue: 1
+      });
 
-  if (!result.error) {
+    if (result.error) {
+      console.error("Unable to add product to basket:", result.error);
+      button?.classList.add("is-error");
+      return;
+    }
+
     basketProductIds.add(product.id);
-    animateActionSuccess(button, basketActionIconSvg());
-  }
+    button?.classList.add("is-added");
 
-  button?.classList.remove("is-busy");
-  renderMarketplace();
+    animateActionSuccess(
+      button,
+      basketActionIconSvg()
+    );
+
+    const countResult =
+      await window.LocalitySourcingService.getBasketCount?.();
+
+    if (!countResult?.error) {
+      window.LocalityAppShell?.setBasketCount?.(
+        countResult.data || 0
+      );
+    }
+  } finally {
+    button?.classList.remove("is-busy");
+
+    window.setTimeout(() => {
+      renderMarketplace();
+    }, 900);
+  }
 }
 
 function slugify(value = "") {
@@ -1565,6 +1639,20 @@ function createBusinessCard(profile) {
 
    card
      .querySelector('[data-action="save-business"]')
+     ?.addEventListener(
+       "click",
+       async (event) => {
+         event.stopPropagation();
+   
+         await saveMarketplaceBusiness(
+           profile,
+           event.currentTarget
+         );
+       }
+     );
+   
+   card
+     .querySelector(".producer-card-header .save-action")
      ?.addEventListener(
        "click",
        async (event) => {
