@@ -913,3 +913,49 @@
     min-height: auto;
   }
 }
+
+/* =========================================================
+   SOURCING ROW COMPACT QTY CONTROL OVERRIDES
+   ========================================================= */
+
+.saved-product-row,
+.basket-row {
+  grid-template-columns:
+    minmax(180px, 1.2fr)
+    120px
+    110px
+    minmax(170px, auto)
+    auto;
+}
+
+.saved-product-row .qty-link-stack,
+.basket-row .qty-link-stack {
+  justify-self: end;
+}
+
+.basket-row .qty-link-control.is-remove-mode {
+  border-color: #d8e0ea;
+}
+
+.basket-row .qty-link-action.qty-link-trash {
+  background: #ffffff;
+  color: #183153;
+}
+
+.basket-row .qty-link-action.qty-link-trash:hover {
+  background: #fff1ee;
+  color: #c94232;
+}
+
+@media (max-width: 1100px) {
+  .saved-product-row,
+  .basket-row {
+    grid-template-columns: 1fr;
+    align-items: stretch;
+  }
+
+  .saved-product-row .qty-link-stack,
+  .basket-row .qty-link-stack {
+    justify-self: start;
+  }
+}
