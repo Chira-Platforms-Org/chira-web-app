@@ -3426,3 +3426,303 @@ body::after {
     justify-self: start;
   }
 }
+
+/* =========================================================
+   SHARED ICON ACTION BUTTONS
+   ========================================================= */
+
+.marketplace-icon-btn,
+.sourcing-icon-btn,
+.qty-link-action {
+  --btn-size: 46px;
+  width: var(--btn-size);
+  height: var(--btn-size);
+  min-width: var(--btn-size);
+  border-radius: 16px;
+  border: 2px solid #cfd8e3;
+  background: #ffffff;
+  color: #183153;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.15s ease, background 0.2s ease, border-color 0.2s ease,
+    box-shadow 0.2s ease, color 0.2s ease;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(22, 40, 73, 0.05);
+}
+
+.marketplace-icon-btn:hover,
+.sourcing-icon-btn:hover,
+.qty-link-action:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(22, 40, 73, 0.08);
+}
+
+.marketplace-icon-btn svg,
+.sourcing-icon-btn svg,
+.qty-link-action svg {
+  width: 22px;
+  height: 22px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.marketplace-icon-btn.is-active-save,
+.sourcing-icon-btn.is-active-save {
+  background: #f3c748;
+  border-color: #ddb22d;
+  color: #163154;
+}
+
+.marketplace-icon-btn.is-active-basket,
+.sourcing-icon-btn.is-active-basket,
+.qty-link-action.is-active-basket {
+  background: #19c464;
+  border-color: #14aa56;
+  color: #113623;
+}
+
+.marketplace-icon-btn.is-checking,
+.sourcing-icon-btn.is-checking,
+.qty-link-action.is-checking {
+  background: #19c464;
+  border-color: #14aa56;
+  color: #ffffff;
+}
+
+.marketplace-icon-btn.is-removing,
+.sourcing-icon-btn.is-removing,
+.qty-link-action.is-removing {
+  background: #ffe9e4;
+  border-color: #ffc9bd;
+  color: #c9553d;
+}
+
+/* =========================================================
+   QTY LINKED CONTROL
+   Used in marketplace, sourcing saved tab, sourcing basket tab
+   ========================================================= */
+
+.qty-link-stack {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: flex-start;
+}
+
+.qty-link-label {
+  font-size: 11px;
+  line-height: 1;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #6d809c;
+  font-weight: 700;
+  padding-left: 2px;
+}
+
+.qty-link-control {
+  display: inline-flex;
+  align-items: stretch;
+  border: 2px solid #d8e0ea;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #ffffff;
+  min-height: 46px;
+  box-shadow: 0 2px 6px rgba(22, 40, 73, 0.05);
+}
+
+.qty-link-step,
+.qty-link-number,
+.qty-link-action {
+  min-height: 46px;
+}
+
+.qty-link-step {
+  width: 42px;
+  border: 0;
+  border-right: 1px solid #e1e7ef;
+  background: #ffffff;
+  color: #183153;
+  font-size: 24px;
+  line-height: 1;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.qty-link-step:last-of-type {
+  border-right: 1px solid #e1e7ef;
+}
+
+.qty-link-step:hover {
+  background: #f4f8fb;
+}
+
+.qty-link-number-wrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 62px;
+  border-right: 1px solid #e1e7ef;
+  background: #ffffff;
+  position: relative;
+}
+
+.qty-link-number {
+  width: 56px;
+  border: 0;
+  text-align: center;
+  font-size: 18px;
+  font-weight: 700;
+  color: #183153;
+  background: transparent;
+  outline: none;
+}
+
+.qty-link-number::-webkit-outer-spin-button,
+.qty-link-number::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.qty-link-number[type="number"] {
+  -moz-appearance: textfield;
+}
+
+.qty-link-action {
+  width: 52px;
+  border: 0;
+  border-left: 1px solid #e1e7ef;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.qty-link-action.qty-link-trash {
+  background: #ffffff;
+  color: #183153;
+}
+
+.qty-link-action.qty-link-trash:hover {
+  background: #fff4f1;
+  color: #c9553d;
+}
+
+.qty-link-control.is-basket-active {
+  border-color: #14aa56;
+}
+
+.qty-link-control.is-remove-mode {
+  border-color: #d8e0ea;
+}
+
+/* compact marketplace placement */
+.marketplace-action-cluster {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.marketplace-action-cluster .qty-link-stack {
+  flex-shrink: 0;
+}
+
+.marketplace-action-cluster .marketplace-icon-btn {
+  flex-shrink: 0;
+}
+
+/* sourcing rows */
+.sourcing-row-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+
+/* basket preview rail (horizontal text, not rotated) */
+.sourcing-side-preview {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 14px 12px;
+  gap: 12px;
+}
+
+.sourcing-side-preview-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.sourcing-side-preview-title h4 {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.1;
+  color: #183153;
+}
+
+.sourcing-side-preview-count {
+  width: 30px;
+  height: 30px;
+  border-radius: 999px;
+  background: #dff6e6;
+  color: #1f8a4a;
+  font-size: 15px;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sourcing-side-preview-items {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sourcing-side-preview-item {
+  font-size: 12px;
+  line-height: 1.35;
+  color: #72849d;
+}
+
+.sourcing-side-preview-item strong {
+  display: block;
+  color: #304560;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.sourcing-side-preview-total {
+  margin-top: auto;
+  padding-top: 10px;
+  border-top: 1px solid #e4eaf1;
+}
+
+.sourcing-side-preview-total-label {
+  display: block;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #7f91a8;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.sourcing-side-preview-total-value {
+  font-size: 24px;
+  font-weight: 800;
+  color: #183153;
+}
+
+/* remove old vertical writing if still present */
+.sourcing-side-preview,
+.sourcing-side-preview * {
+  writing-mode: initial !important;
+  text-orientation: initial !important;
+  transform: none;
+}
