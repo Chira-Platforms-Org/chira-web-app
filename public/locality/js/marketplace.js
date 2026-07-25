@@ -215,17 +215,33 @@ async function loadSourcingState() {
     );
   }
 
-  if (!basketResult.error && basketResult.data) {
-    basketProductIds = new Set(
-      (basketResult.data.basketItems || [])
-        .map((item) => item.product_id)
-        .filter(Boolean)
-    );
-
-    window.LocalityAppShell?.setBasketCount?.(
-      basketResult.data.basketItems?.length || 0
-    );
-  }
+   if (!basketResult.error && basketResult.data) {
+     const basketItems =
+       basketResult.data.basketItems || [];
+   
+     basketProductIds = new Set(
+       basketItems
+         .map((item) => item.product_id)
+         .filter(Boolean)
+     );
+   
+     basketQuantitiesByProductId = new Map(
+       basketItems
+         .filter((item) => item.product_id)
+         .map((item) => [
+           item.product_id,
+           clampQty(
+             item.quantity_value ||
+             item.quantity ||
+             1
+           )
+         ])
+     );
+   
+     window.LocalityAppShell?.setBasketCount?.(
+       basketItems.length || 0
+     );
+   }
 }
 
 function clampQty(value) {
@@ -1461,18 +1477,20 @@ function createProductCard(product) {
     </div>
   `;
 
-  card.addEventListener(
-    "click",
-    (event) => {
-      if (
-        event.target.closest("a, button")
-      ) {
-        return;
-      }
-
-      openPreviewForProduct(product);
-    }
-  );
+   card.addEventListener(
+     "click",
+     (event) => {
+       if (
+         event.target.closest(
+           'a, button, input, select, textarea, .qty-link-stack, [data-role="qty-link-control"]'
+         )
+       ) {
+         return;
+       }
+   
+       openPreviewForProduct(product);
+     }
+   );
 
 card
   .querySelector(".save-action")
@@ -1488,50 +1506,114 @@ card
     }
   );
 
-card
-  .querySelector("[data-qty-basket-control]")
-  ?.addEventListener("click", async (event) => {
+const qtyStack =
+  card.querySelector(".qty-link-stack");
+
+qtyStack?.addEventListener(
+  "click",
+  async (event) => {
     event.stopPropagation();
 
-    const control = event.currentTarget;
-    const input = control.querySelector("[data-qty-input]");
-    const basketButton = control.querySelector(".basket-action");
+    const inputClick =
+      event.target.closest(".qty-link-number");
 
-    let quantity = Math.max(1, Number(input?.value || 1));
+    if (inputClick) {
+      return;
+    }
 
-    const decreaseButton = event.target.closest("[data-qty-decrease]");
-    const increaseButton = event.target.closest("[data-qty-increase]");
-    const addButton = event.target.closest(".basket-action");
+    event.preventDefault();
 
-    if (decreaseButton) {
-      quantity = Math.max(1, quantity - 1);
+    const control =
+      event.currentTarget.querySelector(
+        '[data-role="qty-link-control"]'
+      );
 
-      if (input) {
-        input.value = String(quantity);
-      }
+    const input =
+      control?.querySelector(".qty-link-number");
+
+    const stepButton =
+      event.target.closest("[data-qty-step]");
+
+    const basketButton =
+      event.target.closest(
+        '[data-qty-action="basket"]'
+      );
+
+    if (!control || !input) return;
+
+    const currentQty =
+      clampQty(input.value);
+
+    if (stepButton) {
+      const step =
+        Number(stepButton.dataset.qtyStep || 0);
+
+      const nextQty =
+        updateQtyInput(
+          control,
+          currentQty + step
+        );
+
+      basketQuantitiesByProductId.set(
+        product.id,
+        nextQty
+      );
 
       return;
     }
 
-    if (increaseButton) {
-      quantity += 1;
-
-      if (input) {
-        input.value = String(quantity);
-      }
-
-      return;
-    }
-
-    if (addButton) {
+    if (basketButton) {
       await addMarketplaceProductToBasket(
         product,
-        basketButton || addButton,
-        quantity
+        basketButton,
+        clampQty(input.value)
       );
     }
-  });
+  }
+);
 
+qtyStack?.addEventListener(
+  "input",
+  (event) => {
+    event.stopPropagation();
+
+    const input =
+      event.target.closest(".qty-link-number");
+
+    if (!input) return;
+
+    const qty =
+      clampQty(input.value);
+
+    basketQuantitiesByProductId.set(
+      product.id,
+      qty
+    );
+  }
+);
+
+qtyStack?.addEventListener(
+  "change",
+  (event) => {
+    event.stopPropagation();
+
+    const input =
+      event.target.closest(".qty-link-number");
+
+    if (!input) return;
+
+    const qty =
+      clampQty(input.value);
+
+    input.value = String(qty);
+
+    basketQuantitiesByProductId.set(
+      product.id,
+      qty
+    );
+  }
+);
+   
   card
     .querySelector(
       '[data-action="add-routine"]'
