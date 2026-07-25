@@ -3726,3 +3726,152 @@ body::after {
   text-orientation: initial !important;
   transform: none;
 }
+
+/* =========================================================
+   COMPACT LINKED QTY + BASKET CONTROL
+   Marketplace + sourcing shared override
+   ========================================================= */
+
+.qty-link-stack {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+}
+
+.qty-link-label {
+  width: 26px;
+  padding-left: 0;
+  color: #6d809c;
+  font-size: 0.62rem;
+  line-height: 1;
+  letter-spacing: 0.08em;
+  text-align: right;
+  text-transform: uppercase;
+  font-weight: 950;
+}
+
+.qty-link-control {
+  display: inline-flex;
+  align-items: stretch;
+  min-height: 38px;
+  border: 2px solid #d8e0ea;
+  border-radius: 15px;
+  overflow: hidden;
+  background: #ffffff;
+  box-shadow: 0 2px 6px rgba(22, 40, 73, 0.05);
+}
+
+.qty-link-step,
+.qty-link-number,
+.qty-link-action {
+  height: 38px;
+  min-height: 38px;
+}
+
+.qty-link-step {
+  width: 34px;
+  border: 0;
+  border-right: 1px solid #e1e7ef;
+  background: #ffffff;
+  color: #183153;
+  font-size: 1.1rem;
+  line-height: 1;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.qty-link-step:hover {
+  background: #f4f8fb;
+}
+
+.qty-link-number-wrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 38px;
+  border-right: 1px solid #e1e7ef;
+  background: #ffffff;
+}
+
+.qty-link-number {
+  width: 36px;
+  height: 38px;
+  min-height: 38px;
+  border: 0;
+  background: transparent;
+  color: #183153;
+  text-align: center;
+  font-size: 0.95rem;
+  font-weight: 950;
+  outline: none;
+}
+
+.qty-link-number::-webkit-outer-spin-button,
+.qty-link-number::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.qty-link-number[type="number"] {
+  -moz-appearance: textfield;
+}
+
+.qty-link-action {
+  width: 40px;
+  min-width: 40px;
+  border: 0;
+  border-radius: 0;
+  background: #ffffff;
+  color: #183153;
+  box-shadow: none;
+}
+
+.qty-link-action svg {
+  width: 17px;
+  height: 17px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2.15;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.qty-link-control.is-basket-active {
+  border-color: rgba(18, 198, 106, 0.92);
+  box-shadow:
+    0 0 0 3px rgba(18, 198, 106, 0.08),
+    0 10px 22px rgba(18, 198, 106, 0.12);
+}
+
+.qty-link-control.is-basket-active .qty-link-action:not(.qty-link-trash),
+.qty-link-action.is-active-basket {
+  background: #12c66a;
+  color: #ffffff;
+}
+
+.qty-link-action.is-checking {
+  background: #12c66a;
+  color: #ffffff;
+  transform: scale(1.04);
+}
+
+.qty-link-action.is-checking svg {
+  fill: none;
+}
+
+.qty-link-action.qty-link-trash:hover {
+  background: #fff1ee;
+  color: #c94232;
+}
+
+.marketplace-action-cluster {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.marketplace-action-cluster .qty-link-stack,
+.marketplace-action-cluster .marketplace-icon-btn {
+  flex-shrink: 0;
+}
