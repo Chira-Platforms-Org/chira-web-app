@@ -22,31 +22,116 @@
     return await window.LocalityAuthService.getCurrentUser();
   }
 
-  function normalizeProductPayload(product = {}) {
-    return {
-      business_profile_id: product.business_profile_id,
-      name: product.name || "",
-      category: product.category || "",
-      description: product.description || "",
+const allowedOrderModes = new Set([
+  "buy_now",
+  "request_only",
+  "not_orderable"
+]);
 
-      image_url: product.image_url || "",
+function normalizeProductPayload(product = {}) {
+  const requestedOrderMode =
+    String(product.order_mode || "")
+      .trim()
+      .toLowerCase();
 
-      price_display: product.price_display || "",
-      price_unit: product.price_unit || "",
-      unit_description: product.unit_description || "",
-      minimum_order: product.minimum_order || "",
+  const orderMode =
+    allowedOrderModes.has(requestedOrderMode)
+      ? requestedOrderMode
+      : "buy_now";
 
-      availability_status: product.availability_status || "",
-      season_notes: product.season_notes || "",
-      fulfillment_notes: product.fulfillment_notes || "",
+  const rawBuyNowLimit =
+    product.buy_now_limit;
 
-      featured: Boolean(product.featured),
-      visibility: product.visibility || "draft",
-      sort_order: Number.isFinite(Number(product.sort_order))
+  const parsedBuyNowLimit =
+    rawBuyNowLimit === null ||
+    rawBuyNowLimit === undefined ||
+    rawBuyNowLimit === ""
+      ? null
+      : Number(rawBuyNowLimit);
+
+  const hasValidBuyNowLimit =
+    orderMode === "buy_now" &&
+    Number.isFinite(parsedBuyNowLimit) &&
+    parsedBuyNowLimit > 0;
+
+  const buyNowLimitUnit =
+    orderMode === "buy_now"
+      ? (
+          product.buy_now_limit_unit ||
+          product.price_unit ||
+          ""
+        )
+      : null;
+
+  return {
+    business_profile_id:
+      product.business_profile_id,
+
+    name:
+      product.name || "",
+
+    category:
+      product.category || "",
+
+    description:
+      product.description || "",
+
+    image_url:
+      product.image_url || "",
+
+    price_display:
+      product.price_display || "",
+
+    price_unit:
+      product.price_unit || "",
+
+    unit_description:
+      product.unit_description || "",
+
+    minimum_order:
+      product.minimum_order || "",
+
+    order_mode:
+      orderMode,
+
+    buy_now_limit:
+      hasValidBuyNowLimit
+        ? parsedBuyNowLimit
+        : null,
+
+    buy_now_limit_unit:
+      buyNowLimitUnit,
+
+    request_threshold_note:
+      String(
+        product.request_threshold_note || ""
+      )
+        .trim()
+        .slice(0, 240),
+
+    availability_status:
+      product.availability_status || "",
+
+    season_notes:
+      product.season_notes || "",
+
+    fulfillment_notes:
+      product.fulfillment_notes || "",
+
+    featured:
+      Boolean(product.featured),
+
+    visibility:
+      product.visibility || "draft",
+
+    sort_order:
+      Number.isFinite(
+        Number(product.sort_order)
+      )
         ? Number(product.sort_order)
         : 0
-    };
-  }
+  };
+}
 
   async function getProductsForBusinessProfile(businessProfileId) {
     const supabase = getClient();
@@ -167,12 +252,33 @@ async function getPublicMarketplaceProducts() {
 
       image_url: normalizedUpdates.image_url,
 
-      price_display: normalizedUpdates.price_display,
-      price_unit: normalizedUpdates.price_unit,
-      unit_description: normalizedUpdates.unit_description,
-      minimum_order: normalizedUpdates.minimum_order,
+      price_display:
+        normalizedUpdates.price_display,
 
-      availability_status: normalizedUpdates.availability_status,
+      price_unit:
+        normalizedUpdates.price_unit,
+
+      unit_description:
+        normalizedUpdates.unit_description,
+
+      minimum_order:
+        normalizedUpdates.minimum_order,
+
+      order_mode:
+        normalizedUpdates.order_mode,
+
+      buy_now_limit:
+        normalizedUpdates.buy_now_limit,
+
+      buy_now_limit_unit:
+        normalizedUpdates.buy_now_limit_unit,
+
+      request_threshold_note:
+        normalizedUpdates.request_threshold_note,
+
+      availability_status:
+        normalizedUpdates.availability_status,
+       
       season_notes: normalizedUpdates.season_notes,
       fulfillment_notes: normalizedUpdates.fulfillment_notes,
 
