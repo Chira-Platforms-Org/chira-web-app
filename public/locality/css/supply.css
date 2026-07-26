@@ -381,7 +381,7 @@
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
-.product-card.expanded .product-expanded-details {
+.product-card.expanded 
   display: grid;
 }
 
@@ -527,6 +527,56 @@
   font-size: 0.84rem;
   font-weight: 850;
   line-height: 1.45;
+}
+
+/* =========================
+   BUYER ORDERING CONTROLS
+========================= */
+
+.supply-buyer-ordering {
+  display: grid;
+  gap: 7px;
+  padding-top: 2px;
+}
+
+.supply-buyer-ordering
+.qty-link-stack {
+  width: 100%;
+}
+
+.supply-buyer-ordering
+.qty-link-control {
+  flex: 1;
+}
+
+.supply-buyer-ordering
+.qty-link-number-wrap {
+  flex: 1;
+}
+
+.supply-buyer-ordering
+.buyer-order-status {
+  margin-left: 32px;
+}
+
+.supply-order-disabled {
+  min-height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 32px;
+  padding: 8px 13px;
+  border: 1px solid rgba(12, 33, 66, 0.12);
+  border-radius: 15px;
+  background: rgba(12, 33, 66, 0.055);
+  color: #65758d;
+  font-size: 0.78rem;
+  font-weight: 950;
+}
+
+.product-card.expanded
+.supply-buyer-ordering {
+  max-width: 430px;
 }
 
 .product-expanded-details {
