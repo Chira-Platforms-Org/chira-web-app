@@ -592,6 +592,130 @@
   border-color: rgba(238, 181, 42, 0.28);
 }
 
+/* =========================
+   SELLER ORDERING SUMMARY
+========================= */
+
+.seller-ordering-summary {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 12px;
+  align-items: flex-start;
+  padding: 13px 14px;
+  border: 1px solid rgba(8, 196, 100, 0.16);
+  border-radius: 18px;
+  background:
+    linear-gradient(
+      135deg,
+      rgba(235, 255, 243, 0.9),
+      rgba(255, 255, 255, 0.82)
+    );
+}
+
+.seller-ordering-badge {
+  min-height: 27px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px 9px;
+  border-radius: 999px;
+  background: rgba(8, 196, 100, 0.12);
+  color: var(--green);
+  font-size: 0.66rem;
+  font-weight: 950;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.seller-ordering-copy {
+  min-width: 0;
+  display: grid;
+  gap: 4px;
+}
+
+.seller-ordering-copy strong {
+  color: var(--navy);
+  font-size: 0.84rem;
+  font-weight: 950;
+  line-height: 1.25;
+}
+
+.seller-ordering-copy p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 760;
+  line-height: 1.42;
+}
+
+/* Buy now with no product-level limit */
+
+.seller-ordering-summary.is-buy-now {
+  border-color: rgba(8, 196, 100, 0.16);
+}
+
+.seller-ordering-summary.is-buy-now
+.seller-ordering-badge {
+  background: rgba(8, 196, 100, 0.12);
+  color: var(--green);
+}
+
+/* Buy now until a quantity threshold */
+
+.seller-ordering-summary.is-limited {
+  border-color: rgba(217, 163, 58, 0.24);
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255, 249, 231, 0.94),
+      rgba(255, 255, 255, 0.84)
+    );
+}
+
+.seller-ordering-summary.is-limited
+.seller-ordering-badge {
+  background: rgba(217, 163, 58, 0.15);
+  color: #946512;
+}
+
+/* Every quantity requires seller approval */
+
+.seller-ordering-summary.is-request {
+  border-color: rgba(217, 163, 58, 0.3);
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255, 246, 216, 0.96),
+      rgba(255, 255, 255, 0.84)
+    );
+  box-shadow:
+    inset 3px 0 0 rgba(217, 163, 58, 0.62);
+}
+
+.seller-ordering-summary.is-request
+.seller-ordering-badge {
+  background: rgba(217, 163, 58, 0.18);
+  color: #8b5d0e;
+}
+
+/* Buyers may view, but not order */
+
+.seller-ordering-summary.is-blocked {
+  border-color: rgba(12, 33, 66, 0.13);
+  background:
+    linear-gradient(
+      135deg,
+      rgba(239, 243, 246, 0.96),
+      rgba(255, 255, 255, 0.84)
+    );
+}
+
+.seller-ordering-summary.is-blocked
+.seller-ordering-badge {
+  background: rgba(12, 33, 66, 0.09);
+  color: var(--muted);
+}
+
 .unit-clarity {
   padding: 10px 12px;
   border-radius: 16px;
