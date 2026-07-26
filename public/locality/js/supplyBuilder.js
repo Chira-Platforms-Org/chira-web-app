@@ -345,27 +345,102 @@ function renderBusinessHeader(profile) {
 }
 
 function normalizeProduct(product = {}, index = 0) {
+  const allowedOrderModes = [
+    "buy_now",
+    "request_only",
+    "not_orderable"
+  ];
+
+  const orderMode =
+    allowedOrderModes.includes(product.order_mode)
+      ? product.order_mode
+      : "buy_now";
+
+  const rawBuyNowLimit =
+    product.buy_now_limit;
+
+  const parsedBuyNowLimit =
+    rawBuyNowLimit === null ||
+    rawBuyNowLimit === undefined ||
+    rawBuyNowLimit === ""
+      ? null
+      : Number(rawBuyNowLimit);
+
   return {
     id: product.id,
-    business_profile_id: product.business_profile_id || currentProfile?.id || "",
-    name: product.name || "",
-    category: product.category || "Other",
-    description: product.description || "",
-    image_url: product.image_url || "",
-    price_display: product.price_display || "",
-    price_unit: product.price_unit || "lb",
-    unit_description: product.unit_description || "",
-    minimum_order: product.minimum_order || "",
-    availability_status: product.availability_status || "Available now",
-    season_notes: product.season_notes || "",
-    fulfillment_notes: product.fulfillment_notes || "",
-    featured: Boolean(product.featured),
-    visibility: product.visibility || "draft",
-    sort_order: Number.isFinite(Number(product.sort_order))
-      ? Number(product.sort_order)
-      : index,
-    created_at: product.created_at || null,
-    updated_at: product.updated_at || null
+
+    business_profile_id:
+      product.business_profile_id ||
+      currentProfile?.id ||
+      "",
+
+    name:
+      product.name || "",
+
+    category:
+      product.category || "Other",
+
+    description:
+      product.description || "",
+
+    image_url:
+      product.image_url || "",
+
+    price_display:
+      product.price_display || "",
+
+    price_unit:
+      product.price_unit || "lb",
+
+    unit_description:
+      product.unit_description || "",
+
+    minimum_order:
+      product.minimum_order || "",
+
+    order_mode:
+      orderMode,
+
+    buy_now_limit:
+      Number.isFinite(parsedBuyNowLimit) &&
+      parsedBuyNowLimit > 0
+        ? parsedBuyNowLimit
+        : null,
+
+    buy_now_limit_unit:
+      product.buy_now_limit_unit ||
+      product.price_unit ||
+      "lb",
+
+    request_threshold_note:
+      product.request_threshold_note || "",
+
+    availability_status:
+      product.availability_status ||
+      "Available now",
+
+    season_notes:
+      product.season_notes || "",
+
+    fulfillment_notes:
+      product.fulfillment_notes || "",
+
+    featured:
+      Boolean(product.featured),
+
+    visibility:
+      product.visibility || "draft",
+
+    sort_order:
+      Number.isFinite(Number(product.sort_order))
+        ? Number(product.sort_order)
+        : index,
+
+    created_at:
+      product.created_at || null,
+
+    updated_at:
+      product.updated_at || null
   };
 }
 
@@ -812,10 +887,15 @@ function renderProductEditor(product) {
       <section class="product-form-section">
         <h4>Pricing and units</h4>
 
-        <div class="form-grid three-columns">
+        <div class="form-grid two-columns">
           <label class="form-field">
             Price display
-            <input name="price_display" type="text" placeholder="$20" maxlength="40" />
+            <input
+              name="price_display"
+              type="text"
+              placeholder="$20"
+              maxlength="40"
+            />
           </label>
 
           <label class="form-field">
@@ -838,18 +918,182 @@ function renderProductEditor(product) {
               <option value="custom">custom unit</option>
             </select>
           </label>
-
-          <label class="form-field">
-            Minimum order
-            <input name="minimum_order" type="text" placeholder="4 cases" maxlength="80" />
-          </label>
         </div>
 
         <label class="form-field unit-description-field">
           Explain this unit
-          <input name="unit_description" type="text" placeholder="Example: 1 case = 5 lbs, 1 box = 12 bunches, or 1 crate = approx. 20 lbs" maxlength="140" />
-          <span class="field-note">Required for custom or ambiguous units like case, box, crate, bag, flat, pallet, or custom.</span>
+          <input
+            name="unit_description"
+            type="text"
+            placeholder="Example: 1 case = 5 lbs, 1 box = 12 bunches, or 1 crate = approximately 20 lbs"
+            maxlength="140"
+          />
+          <span class="field-note">
+            Required for custom or ambiguous units like case,
+            box, crate, bag, flat, pallet, or custom.
+          </span>
         </label>
+      </section>
+
+      <section
+        class="product-form-section ordering-rules-section"
+        data-ordering-section
+        data-order-mode="buy_now"
+      >
+        <div class="ordering-section-heading">
+          <div>
+            <h4>Ordering rules</h4>
+            <p>
+              Decide whether buyers can order immediately,
+              need your approval, or can only view this listing.
+            </p>
+          </div>
+
+          <span
+            class="ordering-rule-preview"
+            data-order-preview
+          >
+            Buy now
+          </span>
+        </div>
+
+        <div
+          class="order-mode-options"
+          role="radiogroup"
+          aria-label="How buyers can order this product"
+        >
+          <label
+            class="order-mode-option"
+            data-order-mode-option="buy_now"
+          >
+            <input
+              type="radio"
+              name="order_mode"
+              value="buy_now"
+              checked
+            />
+
+            <span class="order-mode-marker"></span>
+
+            <span class="order-mode-copy">
+              <strong>Buy now</strong>
+              <small>
+                Buyers can order immediately. You may set an
+                optional maximum quantity.
+              </small>
+            </span>
+          </label>
+
+          <label
+            class="order-mode-option"
+            data-order-mode-option="request_only"
+          >
+            <input
+              type="radio"
+              name="order_mode"
+              value="request_only"
+            />
+
+            <span class="order-mode-marker"></span>
+
+            <span class="order-mode-copy">
+              <strong>Request only</strong>
+              <small>
+                Every quantity requires your approval before
+                it becomes an order.
+              </small>
+            </span>
+          </label>
+
+          <label
+            class="order-mode-option"
+            data-order-mode-option="not_orderable"
+          >
+            <input
+              type="radio"
+              name="order_mode"
+              value="not_orderable"
+            />
+
+            <span class="order-mode-marker"></span>
+
+            <span class="order-mode-copy">
+              <strong>Not orderable</strong>
+              <small>
+                Keep the listing visible, but prevent buyers
+                from adding it to a basket.
+              </small>
+            </span>
+          </label>
+        </div>
+
+        <div class="ordering-rule-details">
+          <div
+            class="ordering-limit-panel"
+            data-buy-now-limit-panel
+          >
+            <label class="form-field">
+              Buy-now limit
+              <div class="ordering-input-unit">
+                <input
+                  name="buy_now_limit"
+                  type="number"
+                  min="1"
+                  step="1"
+                  inputmode="numeric"
+                  placeholder="No limit"
+                />
+
+                <span data-buy-now-unit>lb</span>
+              </div>
+
+              <span class="field-note">
+                Optional. Leave this blank to allow any
+                quantity to be ordered immediately.
+              </span>
+            </label>
+          </div>
+
+          <input
+            name="buy_now_limit_unit"
+            type="hidden"
+          />
+
+          <label class="form-field ordering-note-field">
+            <span data-order-note-label>
+              Message shown above the limit
+            </span>
+
+            <textarea
+              name="request_threshold_note"
+              maxlength="240"
+              placeholder="Example: Larger quantities need confirmation so we can verify harvest availability and pickup timing."
+            ></textarea>
+
+            <span
+              class="field-note"
+              data-order-note-help
+            >
+              Optional. Buyers see this explanation if they
+              select more than your buy-now limit.
+            </span>
+          </label>
+        </div>
+
+        <div class="ordering-buyer-preview">
+          <span class="ordering-preview-eyebrow">
+            Buyer sees
+          </span>
+
+          <strong data-order-buyer-title>
+            Buy now
+          </strong>
+
+          <p data-order-buyer-copy>
+            Buyers can order this product immediately with
+            no buy-now limit.
+          </p>
+        </div>
       </section>
 
       <section class="product-form-section">
@@ -912,20 +1156,56 @@ function renderProductEditor(product) {
   const status = card.querySelector(".editor-status");
 
   const fields = {
-    name: form.elements.name,
-    category: form.elements.category,
-    description: form.elements.description,
-    image_url: form.elements.image_url,
-    image_file: form.elements.image_file,
-    price_display: form.elements.price_display,
-    price_unit: form.elements.price_unit,
-    minimum_order: form.elements.minimum_order,
-    unit_description: form.elements.unit_description,
-    availability_status: form.elements.availability_status,
-    season_notes: form.elements.season_notes,
-    fulfillment_notes: form.elements.fulfillment_notes,
-    featured: form.elements.featured,
-    visibility: form.elements.visibility
+    name:
+      form.elements.name,
+
+    category:
+      form.elements.category,
+
+    description:
+      form.elements.description,
+
+    image_url:
+      form.elements.image_url,
+
+    image_file:
+      form.elements.image_file,
+
+    price_display:
+      form.elements.price_display,
+
+    price_unit:
+      form.elements.price_unit,
+
+    unit_description:
+      form.elements.unit_description,
+
+    order_mode:
+      form.elements.order_mode,
+
+    buy_now_limit:
+      form.elements.buy_now_limit,
+
+    buy_now_limit_unit:
+      form.elements.buy_now_limit_unit,
+
+    request_threshold_note:
+      form.elements.request_threshold_note,
+
+    availability_status:
+      form.elements.availability_status,
+
+    season_notes:
+      form.elements.season_notes,
+
+    fulfillment_notes:
+      form.elements.fulfillment_notes,
+
+    featured:
+      form.elements.featured,
+
+    visibility:
+      form.elements.visibility
   };
 
   fields.name.value = product?.name || "";
@@ -964,21 +1244,78 @@ function renderProductEditor(product) {
           photoUploadBtn.classList.add("has-image");
         }
       }); 
-  fields.price_display.value = product?.price_display || "";
-  fields.price_unit.value = product?.price_unit || "lb";
-  fields.minimum_order.value = product?.minimum_order || "";
-  fields.unit_description.value = product?.unit_description || "";
-  fields.availability_status.value = product?.availability_status || "Available now";
-  fields.season_notes.value = product?.season_notes || "";
-  fields.fulfillment_notes.value = product?.fulfillment_notes || "";
-  fields.featured.checked = Boolean(product?.featured);
-  fields.visibility.value = product?.visibility || "draft";
+   
+  fields.price_display.value =
+    product?.price_display || "";
+
+  fields.price_unit.value =
+    product?.price_unit || "lb";
+
+  fields.unit_description.value =
+    product?.unit_description || "";
+
+  fields.order_mode.value =
+    product?.order_mode || "buy_now";
+
+  fields.buy_now_limit.value =
+    product?.buy_now_limit ?? "";
+
+  fields.buy_now_limit_unit.value =
+    product?.buy_now_limit_unit ||
+    product?.price_unit ||
+    "lb";
+
+  fields.request_threshold_note.value =
+    product?.request_threshold_note || "";
+
+  fields.availability_status.value =
+    product?.availability_status ||
+    "Available now";
+
+  fields.season_notes.value =
+    product?.season_notes || "";
+
+  fields.fulfillment_notes.value =
+    product?.fulfillment_notes || "";
+
+  fields.featured.checked =
+    Boolean(product?.featured);
+
+  fields.visibility.value =
+    product?.visibility || "draft";
 
   updateUnitRequirementForForm(form);
+  updateOrderingRuleFields(form);
 
-  fields.price_unit.addEventListener("change", () => {
-    updateUnitRequirementForForm(form);
-  });
+  fields.price_unit.addEventListener(
+    "change",
+    () => {
+      updateUnitRequirementForForm(form);
+      updateOrderingRuleFields(form);
+    }
+  );
+
+  form
+    .querySelectorAll('input[name="order_mode"]')
+    .forEach((input) => {
+      input.addEventListener("change", () => {
+        updateOrderingRuleFields(form);
+      });
+    });
+
+  fields.buy_now_limit.addEventListener(
+    "input",
+    () => {
+      updateOrderingRuleFields(form);
+    }
+  );
+
+  fields.request_threshold_note.addEventListener(
+    "input",
+    () => {
+      updateOrderingRuleFields(form);
+    }
+  );
 
   form.addEventListener("submit", async (event) => {
   event.preventDefault();
@@ -1012,26 +1349,310 @@ function updateUnitRequirementForForm(form) {
   unitDescriptionInput.required = isRequired;
 }
 
-function buildPayloadFromForm(form, existingProduct = null) {
+function formatOrderingQuantity(value) {
+  const number = Number(value);
+
+  if (!Number.isFinite(number)) {
+    return "";
+  }
+
+  return Number.isInteger(number)
+    ? String(number)
+    : String(
+        Number(number.toFixed(2))
+      );
+}
+
+function updateOrderingRuleFields(form) {
+  const orderMode =
+    form.elements.order_mode.value ||
+    "buy_now";
+
+  const priceUnit =
+    form.elements.price_unit.value ||
+    "unit";
+
+  const readableUnit =
+    getUnitLabel(priceUnit);
+
+  const rawLimit =
+    form.elements.buy_now_limit.value.trim();
+
+  const parsedLimit =
+    rawLimit
+      ? Number(rawLimit)
+      : null;
+
+  const customNote =
+    form.elements.request_threshold_note
+      .value
+      .trim();
+
+  const orderingSection =
+    form.querySelector(
+      "[data-ordering-section]"
+    );
+
+  const limitPanel =
+    form.querySelector(
+      "[data-buy-now-limit-panel]"
+    );
+
+  const limitUnit =
+    form.querySelector(
+      "[data-buy-now-unit]"
+    );
+
+  const previewBadge =
+    form.querySelector(
+      "[data-order-preview]"
+    );
+
+  const noteLabel =
+    form.querySelector(
+      "[data-order-note-label]"
+    );
+
+  const noteHelp =
+    form.querySelector(
+      "[data-order-note-help]"
+    );
+
+  const buyerTitle =
+    form.querySelector(
+      "[data-order-buyer-title]"
+    );
+
+  const buyerCopy =
+    form.querySelector(
+      "[data-order-buyer-copy]"
+    );
+
+  form.elements.buy_now_limit_unit.value =
+    priceUnit;
+
+  if (orderingSection) {
+    orderingSection.dataset.orderMode =
+      orderMode;
+  }
+
+  if (limitPanel) {
+    limitPanel.hidden =
+      orderMode !== "buy_now";
+  }
+
+  if (limitUnit) {
+    limitUnit.textContent =
+      readableUnit;
+  }
+
+  form
+    .querySelectorAll(
+      "[data-order-mode-option]"
+    )
+    .forEach((option) => {
+      option.classList.toggle(
+        "is-selected",
+        option.dataset.orderModeOption ===
+          orderMode
+      );
+    });
+
+  let statusTitle = "";
+  let statusCopy = "";
+  let noteFieldLabel = "";
+  let noteFieldHelp = "";
+
+  if (orderMode === "request_only") {
+    statusTitle =
+      "Seller approval required";
+
+    statusCopy =
+      customNote ||
+      "The seller must confirm this item before the order is final.";
+
+    noteFieldLabel =
+      "Request instructions for buyers";
+
+    noteFieldHelp =
+      "Optional. Explain availability, lead time, pickup timing, or what you need to confirm.";
+  } else if (
+    orderMode === "not_orderable"
+  ) {
+    statusTitle =
+      "Not available to order";
+
+    statusCopy =
+      customNote ||
+      "This listing is visible for reference, but buyers cannot add it to their basket.";
+
+    noteFieldLabel =
+      "Why is this not orderable?";
+
+    noteFieldHelp =
+      "Optional. Tell buyers when it may return or how they should contact you.";
+  } else if (
+    Number.isFinite(parsedLimit) &&
+    parsedLimit > 0
+  ) {
+    const formattedLimit =
+      formatOrderingQuantity(parsedLimit);
+
+    statusTitle =
+      `Buy now up to ${formattedLimit} ${readableUnit}`;
+
+    statusCopy =
+      customNote ||
+      `Buyers can order up to ${formattedLimit} ${readableUnit} immediately. Larger quantities require seller approval.`;
+
+    noteFieldLabel =
+      "Message shown above the limit";
+
+    noteFieldHelp =
+      "Optional. Buyers see this explanation when their selected quantity exceeds your buy-now limit.";
+  } else {
+    statusTitle =
+      "Buy now";
+
+    statusCopy =
+      "Buyers can order this product immediately with no buy-now limit.";
+
+    noteFieldLabel =
+      "Message shown above the limit";
+
+    noteFieldHelp =
+      "Optional. This message is only used after you enter a buy-now limit.";
+  }
+
+  if (previewBadge) {
+    previewBadge.textContent =
+      orderMode === "request_only"
+        ? "Request only"
+        : orderMode === "not_orderable"
+          ? "Not orderable"
+          : "Buy now";
+  }
+
+  if (noteLabel) {
+    noteLabel.textContent =
+      noteFieldLabel;
+  }
+
+  if (noteHelp) {
+    noteHelp.textContent =
+      noteFieldHelp;
+  }
+
+  if (buyerTitle) {
+    buyerTitle.textContent =
+      statusTitle;
+  }
+
+  if (buyerCopy) {
+    buyerCopy.textContent =
+      statusCopy;
+  }
+}
+
+function buildPayloadFromForm(
+  form,
+  existingProduct = null
+) {
   const fields = form.elements;
-  const maxSortOrder = products.reduce((max, product) => Math.max(max, Number(product.sort_order) || 0), -1);
+
+  const maxSortOrder =
+    products.reduce(
+      (max, product) =>
+        Math.max(
+          max,
+          Number(product.sort_order) || 0
+        ),
+      -1
+    );
+
+  const orderMode =
+    fields.order_mode.value ||
+    "buy_now";
+
+  const rawBuyNowLimit =
+    fields.buy_now_limit.value.trim();
+
+  const parsedBuyNowLimit =
+    rawBuyNowLimit
+      ? Number(rawBuyNowLimit)
+      : null;
+
+  const validBuyNowLimit =
+    orderMode === "buy_now" &&
+    Number.isFinite(parsedBuyNowLimit) &&
+    parsedBuyNowLimit > 0
+      ? parsedBuyNowLimit
+      : null;
 
   return {
-    business_profile_id: currentProfile.id,
-    name: fields.name.value.trim(),
-    category: fields.category.value,
-    description: fields.description.value.trim(),
-    image_url: fields.image_url.value.trim(),
-    price_display: fields.price_display.value.trim(),
-    price_unit: fields.price_unit.value,
-    unit_description: fields.unit_description.value.trim(),
-    minimum_order: fields.minimum_order.value.trim(),
-    availability_status: fields.availability_status.value,
-    season_notes: fields.season_notes.value.trim(),
-    fulfillment_notes: fields.fulfillment_notes.value.trim(),
-    featured: fields.featured.checked,
-    visibility: fields.visibility.value,
-    sort_order: existingProduct?.sort_order ?? maxSortOrder + 1
+    business_profile_id:
+      currentProfile.id,
+
+    name:
+      fields.name.value.trim(),
+
+    category:
+      fields.category.value,
+
+    description:
+      fields.description.value.trim(),
+
+    image_url:
+      fields.image_url.value.trim(),
+
+    price_display:
+      fields.price_display.value.trim(),
+
+    price_unit:
+      fields.price_unit.value,
+
+    unit_description:
+      fields.unit_description.value.trim(),
+
+    // Preserve old data while the legacy field
+    // is no longer shown in the editor.
+    minimum_order:
+      existingProduct?.minimum_order || "",
+
+    order_mode:
+      orderMode,
+
+    buy_now_limit:
+      validBuyNowLimit,
+
+    buy_now_limit_unit:
+      orderMode === "buy_now"
+        ? fields.price_unit.value
+        : null,
+
+    request_threshold_note:
+      fields.request_threshold_note
+        .value
+        .trim(),
+
+    availability_status:
+      fields.availability_status.value,
+
+    season_notes:
+      fields.season_notes.value.trim(),
+
+    fulfillment_notes:
+      fields.fulfillment_notes.value.trim(),
+
+    featured:
+      fields.featured.checked,
+
+    visibility:
+      fields.visibility.value,
+
+    sort_order:
+      existingProduct?.sort_order ??
+      maxSortOrder + 1
   };
 }
 
@@ -1058,6 +1679,28 @@ async function saveProductFromForm(form, existingProduct, statusElement) {
     statusElement.textContent =
       "Please explain what this unit means so buyers understand exactly what they are ordering.";
     form.elements.unit_description.focus();
+    return;
+  }
+
+     const rawBuyNowLimit =
+    form.elements.buy_now_limit
+      .value
+      .trim();
+
+  if (
+    payload.order_mode === "buy_now" &&
+    rawBuyNowLimit &&
+    (
+      !Number.isInteger(
+        Number(rawBuyNowLimit)
+      ) ||
+      Number(rawBuyNowLimit) <= 0
+    )
+  ) {
+    statusElement.textContent =
+      "Enter a whole-number buy-now limit greater than zero, or leave the field blank for no limit.";
+
+    form.elements.buy_now_limit.focus();
     return;
   }
 
