@@ -3916,9 +3916,9 @@ body::after {
 }
 
 .buyer-order-status.is-limited {
-  border-color: rgba(217, 163, 58, 0.24);
-  background: rgba(255, 247, 218, 0.92);
-  color: #8b5d0e;
+  border-color: rgba(8, 196, 100, 0.18);
+  background: rgba(8, 196, 100, 0.09);
+  color: #087b49;
 }
 
 .buyer-order-status.is-request {
@@ -3979,7 +3979,21 @@ body::after {
   line-height: 1.45;
 }
 
-.buyer-order-detail.is-limited,
+.buyer-order-detail.is-limited {
+  border-color: rgba(8, 196, 100, 0.16);
+  background:
+    linear-gradient(
+      135deg,
+      rgba(235, 255, 243, 0.9),
+      rgba(255, 255, 255, 0.84)
+    );
+}
+
+.buyer-order-detail.is-limited
+.buyer-order-detail-eyebrow {
+  color: #087b49;
+}
+
 .buyer-order-detail.is-request {
   border-color: rgba(217, 163, 58, 0.27);
   background:
@@ -3990,8 +4004,6 @@ body::after {
     );
 }
 
-.buyer-order-detail.is-limited
-.buyer-order-detail-eyebrow,
 .buyer-order-detail.is-request
 .buyer-order-detail-eyebrow {
   color: #8b5d0e;
