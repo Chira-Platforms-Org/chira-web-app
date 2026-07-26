@@ -51,6 +51,12 @@ let currentProfile = null;
 let products = [];
 let expandedProductId = null;
 
+let basketProductIds =
+  new Set();
+
+let basketQuantitiesByProductId =
+  new Map();
+
 
 function initializeBuilderAccountMenu() {
   const accountMenu = document.querySelector(".builder-account-menu");
@@ -222,26 +228,100 @@ function renderBusinessHeader(profile) {
   }
 }
 
-function normalizeProduct(product = {}, index = 0) {
+function normalizeProduct(
+  product = {},
+  index = 0
+) {
+  const orderMode =
+    window.LocalityOrderingRules
+      ?.normalizeOrderMode(
+        product.order_mode
+      ) || "buy_now";
+
+  const rawBuyNowLimit =
+    product.buy_now_limit;
+
+  const parsedBuyNowLimit =
+    rawBuyNowLimit === null ||
+    rawBuyNowLimit === undefined ||
+    rawBuyNowLimit === ""
+      ? null
+      : Number(rawBuyNowLimit);
+
   return {
-    id: product.id,
-    name: product.name || "",
-    category: product.category || "Other",
-    description: product.description || "",
-    image_url: product.image_url || "",
-    price_display: product.price_display || "",
-    price_unit: product.price_unit || "",
-    unit_description: product.unit_description || "",
-    minimum_order: product.minimum_order || "",
-    availability_status: product.availability_status || "",
-    season_notes: product.season_notes || "",
-    fulfillment_notes: product.fulfillment_notes || "",
-    featured: Boolean(product.featured),
-    visibility: product.visibility || "draft",
-    sort_order: Number.isFinite(Number(product.sort_order))
-      ? Number(product.sort_order)
-      : index,
-    created_at: product.created_at || null
+    id:
+      product.id,
+
+    business_profile_id:
+      product.business_profile_id || "",
+
+    name:
+      product.name || "",
+
+    category:
+      product.category || "Other",
+
+    description:
+      product.description || "",
+
+    image_url:
+      product.image_url || "",
+
+    price_display:
+      product.price_display || "",
+
+    price_unit:
+      product.price_unit || "",
+
+    unit_description:
+      product.unit_description || "",
+
+    minimum_order:
+      product.minimum_order || "",
+
+    order_mode:
+      orderMode,
+
+    buy_now_limit:
+      Number.isFinite(
+        parsedBuyNowLimit
+      ) &&
+      parsedBuyNowLimit > 0
+        ? parsedBuyNowLimit
+        : null,
+
+    buy_now_limit_unit:
+      product.buy_now_limit_unit ||
+      product.price_unit ||
+      "",
+
+    request_threshold_note:
+      product.request_threshold_note || "",
+
+    availability_status:
+      product.availability_status || "",
+
+    season_notes:
+      product.season_notes || "",
+
+    fulfillment_notes:
+      product.fulfillment_notes || "",
+
+    featured:
+      Boolean(product.featured),
+
+    visibility:
+      product.visibility || "draft",
+
+    sort_order:
+      Number.isFinite(
+        Number(product.sort_order)
+      )
+        ? Number(product.sort_order)
+        : index,
+
+    created_at:
+      product.created_at || null
   };
 }
 
@@ -249,6 +329,251 @@ function getUnitLabel(unit) {
   if (!unit) return "unit";
   if (unit === "custom") return "custom unit";
   return unit;
+}
+
+function clampSupplyQuantity(value) {
+  return window.LocalityOrderingRules
+    ?.clampQuantity(value) || 1;
+}
+
+function getSupplyBasketIconSvg() {
+  return `
+    <svg
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+    >
+      <path d="M7 10h10l-1 8H8l-1-8Z"></path>
+      <path d="M9 10 12 6l3 4"></path>
+      <path d="M10 13.5h4"></path>
+    </svg>
+  `;
+}
+
+function getSupplyCheckIconSvg() {
+  return `
+    <svg
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+    >
+      <path d="M5 12.5 10 17l9-10"></path>
+    </svg>
+  `;
+}
+
+function buildSupplyQtyControl({
+  productId,
+  quantity = 1,
+  isActive = false
+}) {
+  return `
+    <div
+      class="qty-link-stack"
+      data-supply-product-id="${productId}"
+    >
+      <span class="qty-link-label">
+        Qty
+      </span>
+
+      <div
+        class="qty-link-control ${
+          isActive
+            ? "is-basket-active"
+            : ""
+        }"
+        data-role="qty-link-control"
+      >
+        <button
+          type="button"
+          class="qty-link-step"
+          data-qty-step="-1"
+          aria-label="Decrease quantity"
+        >
+          −
+        </button>
+
+        <div class="qty-link-number-wrap">
+          <input
+            class="qty-link-number"
+            type="number"
+            min="1"
+            step="1"
+            value="${clampSupplyQuantity(
+              quantity
+            )}"
+            inputmode="numeric"
+            aria-label="Quantity"
+          />
+        </div>
+
+        <button
+          type="button"
+          class="qty-link-step"
+          data-qty-step="1"
+          aria-label="Increase quantity"
+        >
+          +
+        </button>
+
+        <button
+          type="button"
+          class="qty-link-action ${
+            isActive
+              ? "is-active-basket"
+              : ""
+          }"
+          data-qty-action="basket"
+          aria-label="Add selected quantity to basket"
+          title="Add selected quantity to basket"
+        >
+          ${getSupplyBasketIconSvg()}
+        </button>
+      </div>
+    </div>
+  `;
+}
+
+function getSupplyOrderStatus(
+  product,
+  quantity = 1
+) {
+  return window.LocalityOrderingRules
+    .getProductOrderStatus(
+      product,
+      quantity,
+      currentProfile?.name ||
+      "this business"
+    );
+}
+
+function applySupplyOrderPresentation(
+  card,
+  product,
+  quantity
+) {
+  const status =
+    getSupplyOrderStatus(
+      product,
+      quantity
+    );
+
+  const compactStatus =
+    card.querySelector(
+      "[data-buyer-order-status]"
+    );
+
+  if (compactStatus) {
+    compactStatus.className =
+      `buyer-order-status is-${status.tone}`;
+
+    compactStatus
+      .querySelector("strong")
+      .textContent =
+        status.compactLabel;
+
+    compactStatus.title =
+      status.description;
+  }
+
+  const detailPanel =
+    card.querySelector(
+      "[data-buyer-order-detail]"
+    );
+
+  if (detailPanel) {
+    detailPanel.className =
+      `buyer-order-detail is-${status.tone}`;
+
+    detailPanel
+      .querySelector(
+        "[data-order-detail-title]"
+      )
+      .textContent =
+        status.title;
+
+    detailPanel
+      .querySelector(
+        "[data-order-detail-description]"
+      )
+      .textContent =
+        status.description;
+
+    const sellerNote =
+      detailPanel.querySelector(
+        "[data-order-seller-note]"
+      );
+
+    if (sellerNote) {
+      sellerNote.hidden =
+        !status.sellerNote;
+
+      sellerNote.textContent =
+        status.sellerNote
+          ? `Seller note: ${status.sellerNote}`
+          : "";
+    }
+  }
+}
+
+async function loadSupplyBasketState() {
+  if (
+    !window.LocalitySourcingService
+      ?.getBasketItems
+  ) {
+    return;
+  }
+
+  const user =
+    await window.LocalityAuthService
+      ?.getCurrentUser?.();
+
+  if (!user) {
+    return;
+  }
+
+  const result =
+    await window.LocalitySourcingService
+      .getBasketItems();
+
+  if (
+    result.error ||
+    !result.data
+  ) {
+    console.error(
+      "Unable to load basket state:",
+      result.error
+    );
+
+    return;
+  }
+
+  const basketItems =
+    result.data.basketItems || [];
+
+  basketProductIds =
+    new Set(
+      basketItems
+        .map((item) => item.product_id)
+        .filter(Boolean)
+    );
+
+  basketQuantitiesByProductId =
+    new Map(
+      basketItems
+        .filter((item) => item.product_id)
+        .map((item) => [
+          item.product_id,
+          clampSupplyQuantity(
+            item.quantity_value ||
+            item.quantity ||
+            1
+          )
+        ])
+    );
+
+  window.LocalityAppShell
+    ?.setBasketCount?.(
+      basketItems.length
+    );
 }
 
 function getProductsInCustomOrder(list = products) {
@@ -441,21 +766,128 @@ function toggleProductExpansion(productId) {
   }
 }
 
-async function addSupplyProductToBasket(product) {
-  if (!window.LocalitySourcingService?.addProductToBasket) {
-    window.location.href = "account.html";
-    return { error: "Sourcing service unavailable." };
+async function addSupplyProductToBasket(
+  product,
+  quantityValue = 1,
+  button = null
+) {
+  if (
+    !window.LocalitySourcingService
+      ?.addProductToBasket
+  ) {
+    window.location.href =
+      "account.html";
+
+    return {
+      error:
+        "Sourcing service unavailable."
+    };
   }
 
-  if (!currentProfile?.id || !product?.id) {
-    return { error: "Missing product or business profile." };
+  if (
+    !currentProfile?.id ||
+    !product?.id
+  ) {
+    return {
+      error:
+        "Missing product or business profile."
+    };
   }
 
-  return await window.LocalitySourcingService.addProductToBasket({
-    productId: product.id,
-    businessProfileId: currentProfile.id,
-    quantityValue: 1
-  });
+  const quantity =
+    clampSupplyQuantity(
+      quantityValue
+    );
+
+  const orderingStatus =
+    getSupplyOrderStatus(
+      product,
+      quantity
+    );
+
+  if (
+    !orderingStatus.canAddToBasket
+  ) {
+    return {
+      error:
+        "This product is not currently orderable."
+    };
+  }
+
+  button?.classList.add(
+    "is-busy"
+  );
+
+  const result =
+    await window.LocalitySourcingService
+      .addProductToBasket({
+        productId:
+          product.id,
+
+        businessProfileId:
+          currentProfile.id,
+
+        quantityValue:
+          quantity
+      });
+
+  button?.classList.remove(
+    "is-busy"
+  );
+
+  if (result.error) {
+    console.error(
+      "Unable to add supply product to basket:",
+      result.error
+    );
+
+    button?.classList.add(
+      "is-error"
+    );
+
+    return result;
+  }
+
+  basketProductIds.add(
+    product.id
+  );
+
+  basketQuantitiesByProductId.set(
+    product.id,
+    quantity
+  );
+
+  if (button) {
+    button.classList.add(
+      "is-checking"
+    );
+
+    button.innerHTML =
+      getSupplyCheckIconSvg();
+  }
+
+  const countResult =
+    await window.LocalitySourcingService
+      .getBasketCount?.();
+
+  if (!countResult?.error) {
+    window.LocalityAppShell
+      ?.setBasketCount?.(
+        countResult.data || 0
+      );
+  }
+
+  window.dispatchEvent(
+    new CustomEvent(
+      "locality:basket-updated"
+    )
+  );
+
+  window.setTimeout(() => {
+    renderProducts();
+  }, 650);
+
+  return result;
 }
 
 async function saveSupplyProduct(product) {
@@ -475,132 +907,570 @@ async function saveSupplyProduct(product) {
 }
 
 function renderProductCard(product) {
-  const isExpanded = expandedProductId === product.id;
+  const isExpanded =
+    expandedProductId === product.id;
 
-  const card = document.createElement("article");
-  card.className = `product-card${product.featured ? " is-featured-card" : ""}${isExpanded ? " expanded" : ""}`;
-  card.dataset.productId = product.id;
+  const basketQuantity =
+    basketQuantitiesByProductId
+      .get(product.id) || 1;
 
-   const expandButton = document.createElement("button");
-   expandButton.type = "button";
-   expandButton.className = "product-expand-toggle";
-   expandButton.title = isExpanded ? "Minimize product details" : "Expand product details";
-   expandButton.setAttribute(
-     "aria-label",
-     isExpanded ? "Minimize product details" : "Expand product details"
-   );
-   expandButton.innerHTML = getExpandIconSvg(isExpanded);
-   expandButton.addEventListener("click", (event) => {
-     event.stopPropagation();
-     toggleProductExpansion(product.id);
-   });
+  const isInBasket =
+    basketProductIds.has(
+      product.id
+    );
 
-card.appendChild(expandButton);
+  const initialOrderStatus =
+    getSupplyOrderStatus(
+      product,
+      basketQuantity
+    );
 
-  card.appendChild(renderProductImage(product));
+  const card =
+    document.createElement("article");
 
-  const body = document.createElement("div");
-  body.className = "product-card-body";
+  card.className =
+    `product-card${
+      product.featured
+        ? " is-featured-card"
+        : ""
+    }${
+      isExpanded
+        ? " expanded"
+        : ""
+    }`;
 
-  const heading = document.createElement("div");
-  heading.className = "product-card-heading";
+  card.dataset.productId =
+    product.id;
 
-  const title = document.createElement("h3");
-  title.textContent = product.name || "Unnamed product";
+  const expandButton =
+    document.createElement("button");
 
-  const description = document.createElement("p");
-  description.textContent = product.description || "Product details will appear here.";
+  expandButton.type =
+    "button";
+
+  expandButton.className =
+    "product-expand-toggle";
+
+  expandButton.title =
+    isExpanded
+      ? "Minimize product details"
+      : "Expand product details";
+
+  expandButton.setAttribute(
+    "aria-label",
+    isExpanded
+      ? "Minimize product details"
+      : "Expand product details"
+  );
+
+  expandButton.innerHTML =
+    getExpandIconSvg(
+      isExpanded
+    );
+
+  expandButton.addEventListener(
+    "click",
+    (event) => {
+      event.stopPropagation();
+
+      toggleProductExpansion(
+        product.id
+      );
+    }
+  );
+
+  card.appendChild(
+    expandButton
+  );
+
+  card.appendChild(
+    renderProductImage(product)
+  );
+
+  const body =
+    document.createElement("div");
+
+  body.className =
+    "product-card-body";
+
+  const heading =
+    document.createElement("div");
+
+  heading.className =
+    "product-card-heading";
+
+  const title =
+    document.createElement("h3");
+
+  title.textContent =
+    product.name ||
+    "Unnamed product";
+
+  const description =
+    document.createElement("p");
+
+  description.textContent =
+    product.description ||
+    "Product details will appear here.";
 
   heading.appendChild(title);
   heading.appendChild(description);
 
-  const metaGrid = document.createElement("div");
-  metaGrid.className = "product-meta-grid";
+  const metaGrid =
+    document.createElement("div");
+
+  metaGrid.className =
+    "product-meta-grid";
 
   metaGrid.appendChild(
     createMetaItem(
       "Price",
       product.price_display
-        ? `${product.price_display} / ${getUnitLabel(product.price_unit)}`
+        ? `${product.price_display} / ${getUnitLabel(
+            product.price_unit
+          )}`
         : "Not set"
     )
   );
 
-  metaGrid.appendChild(createMetaItem("Minimum", product.minimum_order || "Not set"));
-  metaGrid.appendChild(createMetaItem("Availability", product.availability_status || "Not set"));
-  metaGrid.appendChild(createMetaItem("Category", product.category || "Product"));
+  metaGrid.appendChild(
+    createMetaItem(
+      "Unit",
+      product.unit_description ||
+      (
+        product.price_unit
+          ? `per ${getUnitLabel(
+              product.price_unit
+            )}`
+          : "Not set"
+      )
+    )
+  );
+
+  metaGrid.appendChild(
+    createMetaItem(
+      "Availability",
+      product.availability_status ||
+      "Not set"
+    )
+  );
+
+  metaGrid.appendChild(
+    createMetaItem(
+      "Category",
+      product.category ||
+      "Product"
+    )
+  );
 
   body.appendChild(heading);
   body.appendChild(metaGrid);
 
   if (product.unit_description) {
-    const unitClarity = document.createElement("div");
-    unitClarity.className = "unit-clarity";
-    unitClarity.textContent = product.unit_description;
-    body.appendChild(unitClarity);
+    const unitClarity =
+      document.createElement("div");
+
+    unitClarity.className =
+      "unit-clarity";
+
+    unitClarity.textContent =
+      product.unit_description;
+
+    body.appendChild(
+      unitClarity
+    );
   }
 
-  const expandedDetails = document.createElement("div");
-  expandedDetails.className = "product-expanded-details";
+  const orderingArea =
+    document.createElement("div");
 
-  expandedDetails.appendChild(createDetailBlock("Timing", product.season_notes));
-  expandedDetails.appendChild(createDetailBlock("Fulfillment", product.fulfillment_notes));
+  orderingArea.className =
+    "supply-buyer-ordering";
 
-  const actions = document.createElement("div");
-  actions.className = "product-public-actions";
+  if (
+    initialOrderStatus
+      .canAddToBasket
+  ) {
+    orderingArea.innerHTML = `
+      ${buildSupplyQtyControl({
+        productId:
+          product.id,
 
-  const basketLink = document.createElement("a");
-   basketLink.href = "#";
-   basketLink.className = "primary";
-   basketLink.textContent = "Add to basket";
-   basketLink.addEventListener("click", async (event) => {
-     event.preventDefault();
-     event.stopPropagation();
-   
-     basketLink.textContent = "Adding...";
-   
-     const result =
-       await addSupplyProductToBasket(product);
-   
-     basketLink.textContent =
-       result.error ? "Try again" : "Added";
-   });
-   
-   const messageLink = document.createElement("a");
-   messageLink.href = "coming-soon.html";
-   messageLink.textContent = "Message business";
-   messageLink.addEventListener("click", (event) => event.stopPropagation());
-   
-   const saveLink = document.createElement("a");
-   saveLink.href = "#";
-   saveLink.textContent = "Save product";
-   saveLink.addEventListener("click", async (event) => {
-     event.preventDefault();
-     event.stopPropagation();
-   
-     saveLink.textContent = "Saving...";
-   
-     const result =
-       await saveSupplyProduct(product);
-   
-     saveLink.textContent =
-       result.error ? "Try again" : "Saved";
-   });
-   
-   actions.appendChild(basketLink);
-   actions.appendChild(messageLink);
-   actions.appendChild(saveLink);
+        quantity:
+          basketQuantity,
 
-  expandedDetails.appendChild(actions);
-  body.appendChild(expandedDetails);
+        isActive:
+          isInBasket
+      })}
+
+      <div
+        class="buyer-order-status is-${
+          initialOrderStatus.tone
+        }"
+        data-buyer-order-status
+        aria-live="polite"
+      >
+        <span
+          class="buyer-order-status-dot"
+          aria-hidden="true"
+        ></span>
+
+        <strong>
+          ${
+            initialOrderStatus
+              .compactLabel
+          }
+        </strong>
+      </div>
+    `;
+  } else {
+    orderingArea.innerHTML = `
+      <div
+        class="supply-order-disabled"
+        aria-disabled="true"
+      >
+        Not available to order
+      </div>
+
+      <div
+        class="buyer-order-status is-${
+          initialOrderStatus.tone
+        }"
+        data-buyer-order-status
+      >
+        <span
+          class="buyer-order-status-dot"
+          aria-hidden="true"
+        ></span>
+
+        <strong>
+          ${
+            initialOrderStatus
+              .compactLabel
+          }
+        </strong>
+      </div>
+    `;
+  }
+
+  body.appendChild(
+    orderingArea
+  );
+
+  const expandedDetails =
+    document.createElement("div");
+
+  expandedDetails.className =
+    "product-expanded-details";
+
+  const orderDetail =
+    document.createElement("div");
+
+  orderDetail.className =
+    `buyer-order-detail is-${
+      initialOrderStatus.tone
+    }`;
+
+  orderDetail.setAttribute(
+    "data-buyer-order-detail",
+    ""
+  );
+
+  orderDetail.innerHTML = `
+    <span class="buyer-order-detail-eyebrow">
+      Ordering
+    </span>
+
+    <strong data-order-detail-title>
+      ${initialOrderStatus.title}
+    </strong>
+
+    <p data-order-detail-description>
+      ${initialOrderStatus.description}
+    </p>
+
+    <small
+      data-order-seller-note
+      ${
+        initialOrderStatus.sellerNote
+          ? ""
+          : "hidden"
+      }
+    >
+      ${
+        initialOrderStatus.sellerNote
+          ? `Seller note: ${initialOrderStatus.sellerNote}`
+          : ""
+      }
+    </small>
+  `;
+
+  expandedDetails.appendChild(
+    orderDetail
+  );
+
+  expandedDetails.appendChild(
+    createDetailBlock(
+      "Timing",
+      product.season_notes
+    )
+  );
+
+  expandedDetails.appendChild(
+    createDetailBlock(
+      "Fulfillment",
+      product.fulfillment_notes
+    )
+  );
+
+  const actions =
+    document.createElement("div");
+
+  actions.className =
+    "product-public-actions";
+
+  const messageLink =
+    document.createElement("a");
+
+  messageLink.href =
+    "coming-soon.html";
+
+  messageLink.textContent =
+    "Message business";
+
+  messageLink.addEventListener(
+    "click",
+    (event) =>
+      event.stopPropagation()
+  );
+
+  const saveLink =
+    document.createElement("a");
+
+  saveLink.href = "#";
+
+  saveLink.textContent =
+    "Save product";
+
+  saveLink.addEventListener(
+    "click",
+    async (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+
+      saveLink.textContent =
+        "Saving...";
+
+      const result =
+        await saveSupplyProduct(
+          product
+        );
+
+      saveLink.textContent =
+        result.error
+          ? "Try again"
+          : "Saved";
+    }
+  );
+
+  actions.appendChild(
+    messageLink
+  );
+
+  actions.appendChild(
+    saveLink
+  );
+
+  expandedDetails.appendChild(
+    actions
+  );
+
+  body.appendChild(
+    expandedDetails
+  );
 
   card.appendChild(body);
 
-card.addEventListener("click", (event) => {
-  if (event.target.closest("a, button")) return;
+  const qtyStack =
+    card.querySelector(
+      ".qty-link-stack"
+    );
 
-  toggleProductExpansion(product.id);
-});
+  qtyStack?.addEventListener(
+    "click",
+    async (event) => {
+      event.stopPropagation();
+
+      if (
+        event.target.closest(
+          ".qty-link-number"
+        )
+      ) {
+        return;
+      }
+
+      event.preventDefault();
+
+      const control =
+        qtyStack.querySelector(
+          '[data-role="qty-link-control"]'
+        );
+
+      const input =
+        control?.querySelector(
+          ".qty-link-number"
+        );
+
+      const stepButton =
+        event.target.closest(
+          "[data-qty-step]"
+        );
+
+      const basketButton =
+        event.target.closest(
+          '[data-qty-action="basket"]'
+        );
+
+      if (!control || !input) {
+        return;
+      }
+
+      const currentQuantity =
+        clampSupplyQuantity(
+          input.value
+        );
+
+      if (stepButton) {
+        const step =
+          Number(
+            stepButton.dataset
+              .qtyStep || 0
+          );
+
+        const nextQuantity =
+          clampSupplyQuantity(
+            currentQuantity + step
+          );
+
+        input.value =
+          String(nextQuantity);
+
+        basketQuantitiesByProductId
+          .set(
+            product.id,
+            nextQuantity
+          );
+
+        applySupplyOrderPresentation(
+          card,
+          product,
+          nextQuantity
+        );
+
+        return;
+      }
+
+      if (basketButton) {
+        await addSupplyProductToBasket(
+          product,
+          currentQuantity,
+          basketButton
+        );
+      }
+    }
+  );
+
+  qtyStack?.addEventListener(
+    "input",
+    (event) => {
+      event.stopPropagation();
+
+      const input =
+        event.target.closest(
+          ".qty-link-number"
+        );
+
+      if (!input) {
+        return;
+      }
+
+      const quantity =
+        clampSupplyQuantity(
+          input.value
+        );
+
+      basketQuantitiesByProductId
+        .set(
+          product.id,
+          quantity
+        );
+
+      applySupplyOrderPresentation(
+        card,
+        product,
+        quantity
+      );
+    }
+  );
+
+  qtyStack?.addEventListener(
+    "change",
+    (event) => {
+      event.stopPropagation();
+
+      const input =
+        event.target.closest(
+          ".qty-link-number"
+        );
+
+      if (!input) {
+        return;
+      }
+
+      const quantity =
+        clampSupplyQuantity(
+          input.value
+        );
+
+      input.value =
+        String(quantity);
+
+      basketQuantitiesByProductId
+        .set(
+          product.id,
+          quantity
+        );
+
+      applySupplyOrderPresentation(
+        card,
+        product,
+        quantity
+      );
+    }
+  );
+
+  card.addEventListener(
+    "click",
+    (event) => {
+      if (
+        event.target.closest(
+          "a, button, input"
+        )
+      ) {
+        return;
+      }
+
+      toggleProductExpansion(
+        product.id
+      );
+    }
+  );
+
+  applySupplyOrderPresentation(
+    card,
+    product,
+    basketQuantity
+  );
 
   return card;
 }
@@ -819,11 +1689,13 @@ async function loadSupplyPage() {
         product.visibility === "public"
     );
 
-  products =
-    getProductsInCustomOrder(products);
-
-  refreshFilterOptions();
-  renderProducts();
+   products =
+     getProductsInCustomOrder(products);
+   
+   await loadSupplyBasketState();
+   
+   refreshFilterOptions();
+   renderProducts();
 
   setSupplyStatus(
     products.length
