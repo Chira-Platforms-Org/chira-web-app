@@ -3875,3 +3875,144 @@ body::after {
 .marketplace-action-cluster .marketplace-icon-btn {
   flex-shrink: 0;
 }
+
+/* =========================================================
+   BUYER ORDERING STATUS
+   Shared by Marketplace, Supply, and future basket review.
+========================================================= */
+
+.buyer-order-status {
+  width: fit-content;
+  max-width: 100%;
+  min-height: 27px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 9px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  font-size: 0.68rem;
+  font-weight: 950;
+  line-height: 1.25;
+}
+
+.buyer-order-status strong {
+  color: inherit;
+  font: inherit;
+}
+
+.buyer-order-status-dot {
+  width: 7px;
+  height: 7px;
+  flex: 0 0 auto;
+  border-radius: 999px;
+  background: currentColor;
+}
+
+.buyer-order-status.is-buy-now {
+  border-color: rgba(8, 196, 100, 0.18);
+  background: rgba(8, 196, 100, 0.09);
+  color: #087b49;
+}
+
+.buyer-order-status.is-limited {
+  border-color: rgba(217, 163, 58, 0.24);
+  background: rgba(255, 247, 218, 0.92);
+  color: #8b5d0e;
+}
+
+.buyer-order-status.is-request {
+  border-color: rgba(217, 163, 58, 0.34);
+  background: rgba(255, 242, 196, 0.96);
+  color: #805206;
+}
+
+.buyer-order-status.is-blocked {
+  border-color: rgba(12, 33, 66, 0.12);
+  background: rgba(12, 33, 66, 0.065);
+  color: #65758d;
+}
+
+.buyer-order-detail {
+  display: grid;
+  gap: 6px;
+  padding: 14px 16px;
+  border: 1px solid rgba(8, 196, 100, 0.16);
+  border-radius: 19px;
+  background:
+    linear-gradient(
+      135deg,
+      rgba(235, 255, 243, 0.9),
+      rgba(255, 255, 255, 0.84)
+    );
+}
+
+.buyer-order-detail-eyebrow {
+  color: #087b49;
+  font-size: 0.66rem;
+  font-weight: 950;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+}
+
+.buyer-order-detail strong {
+  color: var(--navy);
+  font-size: 0.96rem;
+  font-weight: 950;
+  line-height: 1.25;
+}
+
+.buyer-order-detail p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 770;
+  line-height: 1.5;
+}
+
+.buyer-order-detail small {
+  padding-top: 7px;
+  border-top: 1px solid rgba(12, 33, 66, 0.08);
+  color: var(--navy);
+  font-size: 0.76rem;
+  font-weight: 850;
+  line-height: 1.45;
+}
+
+.buyer-order-detail.is-limited,
+.buyer-order-detail.is-request {
+  border-color: rgba(217, 163, 58, 0.27);
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255, 248, 221, 0.95),
+      rgba(255, 255, 255, 0.86)
+    );
+}
+
+.buyer-order-detail.is-limited
+.buyer-order-detail-eyebrow,
+.buyer-order-detail.is-request
+.buyer-order-detail-eyebrow {
+  color: #8b5d0e;
+}
+
+.buyer-order-detail.is-request {
+  box-shadow:
+    inset 3px 0 0 rgba(217, 163, 58, 0.64);
+}
+
+.buyer-order-detail.is-blocked {
+  border-color: rgba(12, 33, 66, 0.13);
+  background:
+    linear-gradient(
+      135deg,
+      rgba(240, 243, 246, 0.97),
+      rgba(255, 255, 255, 0.86)
+    );
+}
+
+.buyer-order-detail.is-blocked
+.buyer-order-detail-eyebrow {
+  color: #65758d;
+}
