@@ -508,6 +508,10 @@ function getVisibleProducts() {
         product.price_unit,
         product.unit_description,
         product.minimum_order,
+        product.order_mode,
+        product.buy_now_limit,
+        product.buy_now_limit_unit,
+        product.request_threshold_note,
         product.availability_status,
         product.season_notes,
         product.fulfillment_notes
@@ -561,6 +565,122 @@ function createMetaItem(label, value) {
   item.appendChild(valueElement);
 
   return item;
+}
+
+function getSellerOrderingSummary(product = {}) {
+  const orderMode =
+    product.order_mode || "buy_now";
+
+  const rawLimit =
+    Number(product.buy_now_limit);
+
+  const hasBuyNowLimit =
+    orderMode === "buy_now" &&
+    Number.isFinite(rawLimit) &&
+    rawLimit > 0;
+
+  const readableUnit =
+    getUnitLabel(
+      product.buy_now_limit_unit ||
+      product.price_unit ||
+      "unit"
+    );
+
+  const customNote =
+    String(
+      product.request_threshold_note || ""
+    ).trim();
+
+  if (orderMode === "request_only") {
+    return {
+      tone: "is-request",
+      badge: "Request only",
+      title: "Seller approval required",
+      copy:
+        customNote ||
+        "Any order from your business containing this product will require your approval before it becomes final."
+    };
+  }
+
+  if (orderMode === "not_orderable") {
+    return {
+      tone: "is-blocked",
+      badge: "Not orderable",
+      title: "Ordering is disabled",
+      copy:
+        customNote ||
+        "Buyers can view this listing, but they cannot add it to a basket."
+    };
+  }
+
+  if (hasBuyNowLimit) {
+    const formattedLimit =
+      formatOrderingQuantity(rawLimit);
+
+    return {
+      tone: "is-limited",
+      badge: "Buy-now limit",
+      title:
+        `Buy now up to ${formattedLimit} ${readableUnit}`,
+      copy:
+        customNote ||
+        `If a buyer selects more than ${formattedLimit} ${readableUnit}, their entire order from your business becomes a request.`
+    };
+  }
+
+  return {
+    tone: "is-buy-now",
+    badge: "Buy now",
+    title: "Immediate ordering enabled",
+    copy:
+      "Buyers can order any quantity immediately without requesting seller approval."
+  };
+}
+
+function createSellerOrderingSummary(product = {}) {
+  const summary =
+    getSellerOrderingSummary(product);
+
+  const panel =
+    document.createElement("div");
+
+  panel.className =
+    `seller-ordering-summary ${summary.tone}`;
+
+  const badge =
+    document.createElement("span");
+
+  badge.className =
+    "seller-ordering-badge";
+
+  badge.textContent =
+    summary.badge;
+
+  const copy =
+    document.createElement("div");
+
+  copy.className =
+    "seller-ordering-copy";
+
+  const title =
+    document.createElement("strong");
+
+  title.textContent =
+    summary.title;
+
+  const description =
+    document.createElement("p");
+
+  description.textContent =
+    summary.copy;
+
+  copy.appendChild(title);
+  copy.appendChild(description);
+
+  panel.appendChild(badge);
+  panel.appendChild(copy);
+
+  return panel;
 }
 
 function renderProductImage(product) {
@@ -719,12 +839,34 @@ function renderProductCard(product) {
     )
   );
 
-  metaGrid.appendChild(createMetaItem("Minimum", product.minimum_order || "Not set"));
-  metaGrid.appendChild(createMetaItem("Availability", product.availability_status || "Not set"));
-  metaGrid.appendChild(createMetaItem("Visibility", product.visibility || "draft"));
+  metaGrid.appendChild(
+    createMetaItem(
+      "Category",
+      product.category || "Other"
+    )
+  );
+
+  metaGrid.appendChild(
+    createMetaItem(
+      "Availability",
+      product.availability_status ||
+      "Not set"
+    )
+  );
+
+  metaGrid.appendChild(
+    createMetaItem(
+      "Visibility",
+      product.visibility || "draft"
+    )
+  );
 
   body.appendChild(heading);
   body.appendChild(metaGrid);
+
+  body.appendChild(
+    createSellerOrderingSummary(product)
+  );
 
   if (product.unit_description) {
     const unitClarity = document.createElement("div");
