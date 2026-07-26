@@ -10,9 +10,17 @@ const supplyCompletionPercent = document.getElementById("supplyCompletionPercent
 const supplyCompletionBar = document.getElementById("supplyCompletionBar");
 const supplyCompletionList = document.getElementById("supplyCompletionList");
 
-const saveSupplyDraftBtn = document.getElementById("saveSupplyDraftBtn");
-const finishSupplySetupBtn = document.getElementById("finishSupplySetupBtn");
-const resetProductViewBtn = document.getElementById("resetProductViewBtn");
+const saveSupplyDraftBtn =
+  document.getElementById("saveSupplyDraftBtn");
+
+const finishSupplySetupBtn =
+  document.getElementById("finishSupplySetupBtn");
+
+const supplyCancelChangesBtn =
+  document.getElementById("supplyCancelChangesBtn");
+
+const resetProductViewBtn =
+  document.getElementById("resetProductViewBtn");
 
 const supplyMiniBanner = document.getElementById("supplyMiniBanner");
 const supplyBusinessLogo = document.getElementById("supplyBusinessLogo");
@@ -187,6 +195,7 @@ let products = [];
 let editingProductId = null;
 let isCreatingProduct = false;
 let isSaving = false;
+let hasUnsavedProductChanges = false;
 
 let pendingProductImageFile = null;
 let pendingProductImagePreviewUrl = null;
@@ -194,6 +203,16 @@ let pendingProductImagePreviewUrl = null;
 function setSupplyStatus(message) {
   if (supplyStatusText) {
     supplyStatusText.textContent = message;
+  }
+}
+
+function setSupplyDirtyState(isDirty) {
+  hasUnsavedProductChanges =
+    Boolean(isDirty);
+
+  if (supplyCancelChangesBtn) {
+    supplyCancelChangesBtn.hidden =
+      !hasUnsavedProductChanges;
   }
 }
 
@@ -1459,6 +1478,20 @@ function renderProductEditor(product) {
     }
   );
 
+   const markProductFormDirty = () => {
+     setSupplyDirtyState(true);
+   };
+   
+   form.addEventListener(
+     "input",
+     markProductFormDirty
+   );
+   
+   form.addEventListener(
+     "change",
+     markProductFormDirty
+   );
+
   form.addEventListener("submit", async (event) => {
   event.preventDefault();
   await saveProductFromForm(form, product, status);
@@ -1920,7 +1953,8 @@ if (result.error) {
 function openProductEditorModal(product = null) {
   if (!productEditorModal || !productEditorMount) return;
 
-  pendingProductImageFile = null;
+   setSupplyDirtyState(false);
+   pendingProductImageFile = null;
 
   if (pendingProductImagePreviewUrl) {
     URL.revokeObjectURL(pendingProductImagePreviewUrl);
@@ -1937,6 +1971,7 @@ function openProductEditorModal(product = null) {
 function closeProductEditorModal() {
   if (!productEditorModal || !productEditorMount) return;
 
+  setSupplyDirtyState(false);
   productEditorModal.classList.add("hidden");
   productEditorModal.setAttribute("aria-hidden", "true");
   productEditorMount.innerHTML = "";
@@ -2244,16 +2279,6 @@ async function loadSupplyBuilder() {
     return;
   }
 
-   document.getElementById("supplyCancelChangesBtn")?.addEventListener("click", () => {
-  const confirmCancel = window.confirm(
-    "Cancel your unsaved supply changes and reload the last saved version?"
-  );
-
-  if (confirmCancel) {
-    window.location.reload();
-  }
-});
-
    currentProfile = profileResult.data;
    
    fillBuilderAccountButton(currentProfile);
@@ -2301,9 +2326,44 @@ productCategoryFilter?.addEventListener("change", renderProducts);
 productAvailabilityFilter?.addEventListener("change", renderProducts);
 productSortSelect?.addEventListener("change", renderProducts);
 
-resetProductViewBtn?.addEventListener("click", resetProductView);
-saveSupplyDraftBtn?.addEventListener("click", saveSupplyDraft);
-finishSupplySetupBtn?.addEventListener("click", finishSupplySetup);
+resetProductViewBtn?.addEventListener(
+  "click",
+  resetProductView
+);
+
+saveSupplyDraftBtn?.addEventListener(
+  "click",
+  saveSupplyDraft
+);
+
+finishSupplySetupBtn?.addEventListener(
+  "click",
+  finishSupplySetup
+);
+
+supplyCancelChangesBtn?.addEventListener(
+  "click",
+  () => {
+    if (!hasUnsavedProductChanges) {
+      return;
+    }
+
+    const confirmCancel =
+      window.confirm(
+        "Discard the unsaved changes in this product editor?"
+      );
+
+    if (!confirmCancel) {
+      return;
+    }
+
+    cancelEditing();
+
+    setSupplyStatus(
+      "Unsaved product changes discarded."
+    );
+  }
+);
 
 initializeBuilderAccountMenu();
 applySupplyBuilderMode();
