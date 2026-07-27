@@ -2407,7 +2407,7 @@ function renderMarketplace() {
           <strong>Reserve</strong>
 
           <small>
-            Actively request or hold available goods.
+            Select quantities before placing an order or sending a request.
           </small>
         </div>
       </div>
