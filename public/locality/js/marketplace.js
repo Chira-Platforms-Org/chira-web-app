@@ -1693,7 +1693,7 @@ function createProductCard(product) {
                 View public supply
               </a>
             `
-
+            : `
               <button
                 type="button"
                 class="gold-result-action"
@@ -1712,7 +1712,7 @@ function createProductCard(product) {
             `
         }
       </div>
-    </div>
+   </div>
   `;
 
    card.addEventListener(
@@ -2038,47 +2038,89 @@ function createBusinessCard(profile) {
       }
     </div>
 
-      <div class="result-actions">
-        ${
-          ownListing
-            ? `
-              <a
-                href="supply-builder.html"
-                class="primary-result-action"
-              >
-                Manage listing
-              </a>
+    <div class="result-actions">
+      ${
+        ownBusiness
+          ? `
+            <a
+              href="profile-builder.html"
+              class="primary-result-action"
+            >
+              Edit profile
+            </a>
 
-              <a
-                href="${getPublicSupplyUrl(
-                  product.sourceProfile || {}
-                )}"
-                target="_blank"
-                rel="noopener"
-                class="secondary-result-action"
-              >
-                View public supply
-              </a>
-            `
-            : `
-              <button
-                type="button"
-                class="gold-result-action"
-                data-action="add-routine"
-              >
-                Remind me
-              </button>
+            ${
+              roleInfo.canSell
+                ? `
+                  <a
+                    href="supply-builder.html"
+                    class="gold-result-action"
+                  >
+                    Manage products
+                  </a>
+                `
+                : ""
+            }
 
-              <button
-                type="button"
-                class="secondary-result-action"
-                data-action="view-business"
-              >
-                View business
-              </button>
-            `
-        }
-      </div>
+            <a
+              href="${getPublicProfileUrl(
+                profile
+              )}"
+              target="_blank"
+              rel="noopener"
+              class="secondary-result-action"
+            >
+              View public profile
+            </a>
+          `
+          : `
+            ${
+              roleInfo.canSell &&
+              listedProducts.length
+                ? `
+                  <button
+                    type="button"
+                    class="primary-result-action"
+                    data-action="see-products"
+                  >
+                    See products
+                  </button>
+                `
+                : ""
+            }
+
+            <a
+              href="coming-soon.html"
+              class="secondary-result-action"
+            >
+              Message
+            </a>
+
+            <button
+              type="button"
+              class="gold-result-action"
+              data-action="save-business"
+            >
+              ${
+                saved
+                  ? "Saved"
+                  : "Save business"
+              }
+            </button>
+
+            <a
+              href="${getPublicProfileUrl(
+                profile
+              )}"
+              target="_blank"
+              rel="noopener"
+              class="secondary-result-action"
+            >
+              Full profile
+            </a>
+          `
+      }
+    </div>
   `;
 
   card.addEventListener(
