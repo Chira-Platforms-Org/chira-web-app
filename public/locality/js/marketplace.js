@@ -452,9 +452,34 @@ async function addMarketplaceProductToBasket(product, button, quantityValue = 1)
   }
 
   const qty =
-    Math.max(1, Number(quantityValue) || 1);
+    Math.max(
+      1,
+      Number(quantityValue) || 1
+    );
 
-  button?.classList.add("is-busy");
+  const orderingStatus =
+    getMarketplaceOrderStatus(
+      product,
+      qty
+    );
+
+  if (
+    !orderingStatus.canAddToBasket
+  ) {
+    console.warn(
+      "This product is not currently orderable."
+    );
+
+    button?.classList.add(
+      "is-error"
+    );
+
+    return;
+  }
+
+  button?.classList.add(
+    "is-busy"
+  );
 
   try {
     const result =
@@ -969,9 +994,41 @@ function normalizeSupabaseProduct(product = {}, producer = {}) {
     price: getPublicProductPrice(product),
     note: product.availability_status || "Availability available",
 
-    minimumOrder: product.minimum_order || "",
-    seasonNotes: product.season_notes || "",
-    fulfillmentNotes: product.fulfillment_notes || "",
+    minimumOrder:
+      product.minimum_order || "",
+
+    priceUnit:
+      product.price_unit || "",
+
+    unitDescription:
+      product.unit_description || "",
+
+    orderMode:
+      window.LocalityOrderingRules
+        ?.normalizeOrderMode(
+          product.order_mode
+        ) || "buy_now",
+
+    buyNowLimit:
+      product.buy_now_limit === null ||
+      product.buy_now_limit === undefined ||
+      product.buy_now_limit === ""
+        ? null
+        : Number(product.buy_now_limit),
+
+    buyNowLimitUnit:
+      product.buy_now_limit_unit ||
+      product.price_unit ||
+      "",
+
+    requestThresholdNote:
+      product.request_threshold_note || "",
+
+    seasonNotes:
+      product.season_notes || "",
+
+    fulfillmentNotes:
+      product.fulfillment_notes || "",
 
     featured: Boolean(product.featured),
     organic: Boolean(producer.organic),
@@ -1319,6 +1376,150 @@ function setBusinessRole(role) {
   renderMarketplace();
 }
 
+function getMarketplaceOrderStatus(
+  product,
+  quantity = 1
+) {
+  if (
+    window.LocalityOrderingRules
+      ?.getProductOrderStatus
+  ) {
+    return window.LocalityOrderingRules
+      .getProductOrderStatus(
+        product,
+        quantity,
+        product.producerName ||
+        "this business"
+      );
+  }
+
+  return {
+    tone: "buy-now",
+    compactLabel: "Buy now",
+    title: "Buy now",
+    description:
+      "This product can be ordered immediately.",
+    sellerNote: "",
+    canAddToBasket: true,
+    requiresRequest: false
+  };
+}
+
+function escapeMarketplaceOrderText(
+  value = ""
+) {
+  return window.LocalityOrderingRules
+    ?.escapeHtml
+    ? window.LocalityOrderingRules
+        .escapeHtml(value)
+    : String(value);
+}
+
+function buildMarketplaceOrderStatusMarkup(
+  status
+) {
+  return `
+    <div
+      class="buyer-order-status is-${
+        status.tone
+      }"
+      data-marketplace-order-status
+      title="${escapeMarketplaceOrderText(
+        status.description
+      )}"
+      aria-live="polite"
+    >
+      <span
+        class="buyer-order-status-dot"
+        aria-hidden="true"
+      ></span>
+
+      <strong>
+        ${escapeMarketplaceOrderText(
+          status.compactLabel
+        )}
+      </strong>
+    </div>
+  `;
+}
+
+function buildMarketplaceOrderDetailMarkup(
+  status
+) {
+  return `
+    <div
+      class="buyer-order-detail is-${
+        status.tone
+      }"
+      data-marketplace-order-detail
+    >
+      <span class="buyer-order-detail-eyebrow">
+        Ordering
+      </span>
+
+      <strong>
+        ${escapeMarketplaceOrderText(
+          status.title
+        )}
+      </strong>
+
+      <p>
+        ${escapeMarketplaceOrderText(
+          status.description
+        )}
+      </p>
+
+      ${
+        status.sellerNote
+          ? `
+            <small>
+              Seller note:
+              ${escapeMarketplaceOrderText(
+                status.sellerNote
+              )}
+            </small>
+          `
+          : ""
+      }
+    </div>
+  `;
+}
+
+function applyMarketplaceOrderPresentation(
+  card,
+  product,
+  quantity
+) {
+  const status =
+    getMarketplaceOrderStatus(
+      product,
+      quantity
+    );
+
+  const statusElement =
+    card.querySelector(
+      "[data-marketplace-order-status]"
+    );
+
+  if (!statusElement) {
+    return;
+  }
+
+  statusElement.className =
+    `buyer-order-status is-${status.tone}`;
+
+  statusElement.title =
+    status.description;
+
+  const statusText =
+    statusElement.querySelector("strong");
+
+  if (statusText) {
+    statusText.textContent =
+      status.compactLabel;
+  }
+}
+
 function createProductCard(product) {
    const saved =
       isSavedProduct(product.id);
@@ -1331,6 +1532,12 @@ function createProductCard(product) {
    
    const ownListing =
      isOwnProduct(product);
+
+   const orderStatus =
+     getMarketplaceOrderStatus(
+       product,
+       basketQty
+     );
 
   const card =
     document.createElement("article");
@@ -1382,32 +1589,70 @@ function createProductCard(product) {
           }
         </div>
 
-        ${
-          ownListing
-            ? ""
-            : `
-         <div class="marketplace-action-cluster">
-           ${buildQtyLinkedControl({
-             productId: product.id,
-             quantity: basketQty,
-             mode: "basket",
-             isActive: inBasket
-           })}
-         
-           <button
-             type="button"
-             class="marketplace-icon-btn save-action ${
-               saved ? "is-active-save is-saved" : ""
-             }"
-             aria-label="${saved ? "Saved product" : "Save product"}"
-             aria-pressed="${saved ? "true" : "false"}"
-             title="${saved ? "Saved product" : "Save product"}"
-           >
-             ${bookmarkIconSvg()}
-           </button>
-         </div>
-            `
-        }
+         ${
+           ownListing
+             ? ""
+             : `
+          <div class="marketplace-action-cluster">
+            <div
+              class="marketplace-order-stack ${
+                orderStatus.canAddToBasket
+                  ? ""
+                  : "is-disabled"
+              }"
+            >
+              ${
+                orderStatus.canAddToBasket
+                  ? buildQtyLinkedControl({
+                      productId:
+                        product.id,
+
+                      quantity:
+                        basketQty,
+
+                      mode:
+                        "basket",
+
+                      isActive:
+                        inBasket
+                    })
+                  : ""
+              }
+
+              ${buildMarketplaceOrderStatusMarkup(
+                orderStatus
+              )}
+            </div>
+          
+            <button
+              type="button"
+              class="marketplace-icon-btn save-action ${
+                saved
+                  ? "is-active-save is-saved"
+                  : ""
+              }"
+              aria-label="${
+                saved
+                  ? "Saved product"
+                  : "Save product"
+              }"
+              aria-pressed="${
+                saved
+                  ? "true"
+                  : "false"
+              }"
+              title="${
+                saved
+                  ? "Saved product"
+                  : "Save product"
+              }"
+            >
+              ${bookmarkIconSvg()}
+            </button>
+          </div>
+             `
+         }
+        
       </div>
 
       <div>
@@ -1448,13 +1693,6 @@ function createProductCard(product) {
                 View public supply
               </a>
             `
-            : `
-              <a
-                href="coming-soon.html"
-                class="primary-result-action"
-              >
-                Reserve
-              </a>
 
               <button
                 type="button"
@@ -1559,8 +1797,13 @@ qtyStack?.addEventListener(
         nextQty
       );
 
+      applyMarketplaceOrderPresentation(
+        card,
+        product,
+        nextQty
+      );
+
       return;
-    }
 
     if (basketButton) {
       await addMarketplaceProductToBasket(
@@ -1589,6 +1832,12 @@ qtyStack?.addEventListener(
       product.id,
       qty
     );
+
+    applyMarketplaceOrderPresentation(
+      card,
+      product,
+      qty
+    );
   }
 );
 
@@ -1609,6 +1858,12 @@ qtyStack?.addEventListener(
 
     basketQuantitiesByProductId.set(
       product.id,
+      qty
+    );
+
+    applyMarketplaceOrderPresentation(
+      card,
+      product,
       qty
     );
   }
@@ -2368,6 +2623,16 @@ function openPreviewForProduct(product) {
   const ownListing =
     isOwnProduct(product);
 
+  const previewQuantity =
+    basketQuantitiesByProductId
+      .get(product.id) || 1;
+
+  const orderStatus =
+    getMarketplaceOrderStatus(
+      product,
+      previewQuantity
+    );
+
   previewPanelContent.innerHTML = `
     <article class="preview-hero-card">
       <div class="preview-cover">
@@ -2433,6 +2698,14 @@ function openPreviewForProduct(product) {
           }
         </div>
 
+        ${
+          ownListing
+            ? ""
+            : buildMarketplaceOrderDetailMarkup(
+                orderStatus
+              )
+        }
+
         <p>
           ${
             ownListing
@@ -2463,14 +2736,22 @@ function openPreviewForProduct(product) {
                   View public supply
                 </a>
               `
-              : `
-               <button
-                 type="button"
-                 class="preview-action-primary basket-action"
-                 data-preview-add-basket
-               >
-                 Add to basket
-               </button>
+               : `
+                ${
+                  orderStatus.canAddToBasket
+                    ? `
+                      <button
+                        type="button"
+                        class="preview-action-primary basket-action"
+                        data-preview-add-basket
+                      >
+                        Add to basket
+                      </button>
+                    `
+                    : ""
+                }
+                
+                <button
                
                <button
                  type="button"
@@ -2547,7 +2828,8 @@ function openPreviewForProduct(product) {
    
          await addMarketplaceProductToBasket(
            product,
-           event.currentTarget
+           event.currentTarget,
+           previewQuantity
          );
        }
      );
