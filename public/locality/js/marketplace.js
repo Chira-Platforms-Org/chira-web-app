@@ -1804,6 +1804,7 @@ qtyStack?.addEventListener(
       );
 
       return;
+    }
 
     if (basketButton) {
       await addMarketplaceProductToBasket(
@@ -2708,8 +2709,6 @@ function openPreviewForProduct(product) {
                     `
                     : ""
                 }
-                
-                <button
                
                <button
                  type="button"
